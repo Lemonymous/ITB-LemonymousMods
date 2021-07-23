@@ -1,7 +1,7 @@
 
 local mod =  {
-	id = "lmn_mod_pack",
-	name = "Lemonymous' Modpack",
+	id = "lmn_mods",
+	name = "Lemonymous' Mods",
 	version = "0.2.0",
 	modApiVersion = "2.6.0",
 	icon = "scripts/icon.png",
