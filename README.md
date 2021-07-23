@@ -4,6 +4,6 @@
 # How to use
  Unzip the folder and drop it into your game's mods folder.
 
- Correct folder structure should look like this: `../Into the Breach/mods/ITB-LemonymousModPack-master`
+ Correct folder structure should look like this: `../Into the Breach/mods/ITB-LemonymousMods`
 
  You can rename the folder if you want.
