@@ -6,7 +6,6 @@ local mod =  {
 	modApiVersion = "2.6.0",
 	icon = "scripts/icon.png",
 	description = "A Collection of mods made by Lemonymous",
-	requirements = {},
 	submodFolders = {"mods/"}
 }
 
