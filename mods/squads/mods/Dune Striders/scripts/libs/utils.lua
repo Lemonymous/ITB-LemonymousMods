@@ -88,10 +88,7 @@ function utils.IsTerrainPathable(terrain, pathing)
 			terrain ~= TERRAIN_BUILDING and
 			terrain ~= TERRAIN_HOLE
 			
-	elseif
-		pathing == PATH_GROUND or
-		pathing == 6 -- jumper
-	then
+	else
 		return
 			terrain ~= TERRAIN_MOUNTAIN and
 			terrain ~= TERRAIN_BUILDING and
