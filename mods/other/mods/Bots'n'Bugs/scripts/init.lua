@@ -6,7 +6,7 @@ local mod = {
 	version = "2.1.0",
 	modApiVersion = "2.4.0",
 	icon = "img/icons/mod_icon.png",
-	requirements = {"lmn_mod_pack"}
+	requirements = {}
 }
 
 local choices = {

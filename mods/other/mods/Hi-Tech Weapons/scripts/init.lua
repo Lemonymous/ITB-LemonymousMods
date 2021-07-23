@@ -5,7 +5,7 @@ local mod = {
 	version = "1.1.0",
 	modApiVersion = "2.3.0",
 	icon = "img/mod_icon.png",
-	requirements = {"lmn_mod_pack"},
+	requirements = {},
 }
 
 function mod:init()

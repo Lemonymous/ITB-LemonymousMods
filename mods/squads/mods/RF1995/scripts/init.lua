@@ -5,7 +5,7 @@ local mod =  {
 	version = "1.4.0",
 	modApiVersion = "2.3.0",
 	icon = "img/icons/mod_icon.png",
-	requirements = {"lmn_mod_pack"}
+	requirements = {}
 }
 
 local scripts = {
