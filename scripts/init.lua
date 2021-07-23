@@ -14,7 +14,28 @@ local components = {
 	"scripts/LApi/LApi",
 }
 
-function mod:init()
+function mod:metadata()
+	modApi:addGenerationOption(
+		"cutils_debug",
+		"cutils Debug Methods",
+		"Enables cutils debug methods",
+		{ enabled == false }
+	)
+	modApi:addGenerationOption(
+		"cutils_verbose_init",
+		"cutils Verbose Init",
+		"Additional debug messages when initializing cutils",
+		{ enabled == false }
+	)
+	modApi:addGenerationOption(
+		"cutils_verbose_calls",
+		"cutils Verbose Calls",
+		"Additional debug messages when calling cutils",
+		{ enabled == false }
+	)
+end
+
+function mod:init(options)
 
 	-- initialize components
 	for _, subpath in ipairs(components) do
