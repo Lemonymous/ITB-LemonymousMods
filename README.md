@@ -2,6 +2,8 @@
  This is a mod pack for Into the Breach by Lemonymous @ https://github.com/Lemonymous, adding:
 
 # How to use
+ Go to Releases on the right hand side of this page to find the release you want to download.
+ Click the zip file to download.
  Unzip the folder and drop it into your game's mods folder.
 
  Correct folder structure should look like this: `../Into the Breach/mods/ITB-LemonymousMods`
