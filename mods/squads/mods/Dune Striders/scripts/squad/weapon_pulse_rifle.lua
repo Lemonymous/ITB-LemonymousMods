@@ -60,7 +60,7 @@ lmn_ds_PulseRifle = Skill:new{
 
 
 lmn_ds_PulseRifle_A = lmn_ds_PulseRifle:new{
-	UpgradeDescription = "Create smoke and extinguishing fire at origin before teleporting.",
+	UpgradeDescription = "Create Smoke and extinguish Fire at origin before teleporting.",
 	LeaveSmoke = true
 }
 
