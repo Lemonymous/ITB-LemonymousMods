@@ -32,7 +32,7 @@ end
 
 lmn_ds_DualPistols = Skill:new{
 	Name = "Dual Pistols",
-	Description = "Move in a line as allowed by your movement, and fire at foes to the sides at the last opportunity.",
+	Description = "Move in a line as allowed by your movement, attacking the last enemies you pass.",
 	Icon = "weapons/lmn_ds_dual_pistols.png",
 	Class = "Brute",
 	PowerCost = 1,
@@ -58,8 +58,7 @@ lmn_ds_DualPistols = Skill:new{
 }
 
 lmn_ds_DualPistols_A = lmn_ds_DualPistols:new{
-	UpgradeDescription = "Remove smoke you pass through, and spread it to adjacent tiles; while leaving smoke where you started.",
-	--UpgradeDescription = "Remove desert and smoke you pass through, and spread it to adjacent tiles; while leaving smoke where you started.",
+	UpgradeDescription = "Create Smoke where you started. Passing through Smoke removes it, and spreads it to adjacent tiles.",
 	SpreadSmoke = true,
 	CustomTipImage = "lmn_ds_DualPistols_Tip_A",
 	TipImage = {
