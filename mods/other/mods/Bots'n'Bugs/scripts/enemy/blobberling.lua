@@ -245,9 +245,7 @@ function this:load()
 			local selected = selected:Get()
 			local armedWeapon = selected and selected:GetArmedWeaponId() or 0
 			local isWeaponArmed = armedWeapon > 0
-			LOG("blobberling calls Board:IsHighlighted with argument %s", loc:GetString())
 			local hasFocus = Board:IsHighlighted(loc) or pawn:IsSelected()
-			LOG("blobberling called Board:IsHighlighted successfully %s", loc:GetString())
 			
 			if
 				isBlobberling(pawn)		and
