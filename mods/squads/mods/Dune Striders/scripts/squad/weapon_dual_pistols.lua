@@ -150,8 +150,8 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 		local curr = p1 + vec_forward * k
 		local right = utils.GetProjectileEnd(curr, curr + vec_right)
 		local left = utils.GetProjectileEnd(curr, curr + vec_left)
-		local rightIsEnemy = isEnemy(p1, right)
-		local leftIsEnemy = isEnemy(p1, left)
+		local rightIsEnemy = right ~= curr and isEnemy(p1, right)
+		local leftIsEnemy = left ~= curr and isEnemy(p1, left)
 		
 		if rightIsEnemy or leftIsEnemy then
 			targets = targets + 1
