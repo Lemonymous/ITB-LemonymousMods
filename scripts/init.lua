@@ -11,7 +11,7 @@ local mod =  {
 
 local components = {
 	"scripts/LApi/LApi",
-	--"scripts/ITB-ModUtils/modApiExt/modApiExt",
+	"scripts/modApiExtFinder",
 }
 
 function mod:metadata()
