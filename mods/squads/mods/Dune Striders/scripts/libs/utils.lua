@@ -52,18 +52,13 @@ function utils.IsTerrainPassable(terrain, pathing)
 			terrain ~= TERRAIN_BUILDING and
 			terrain ~= TERRAIN_HOLE
 			
-	elseif
-		pathing == PATH_GROUND or
-		pathing == 6 -- jumper
-	then
+	else
 		return
 			terrain ~= TERRAIN_MOUNTAIN and
 			terrain ~= TERRAIN_BUILDING and
 			terrain ~= TERRAIN_WATER    and
 			terrain ~= TERRAIN_HOLE
 	end
-	
-	return false
 end
 
 -- returns true if pathing can stand in the terrain,
@@ -95,8 +90,6 @@ function utils.IsTerrainPathable(terrain, pathing)
 			terrain ~= TERRAIN_WATER    and
 			terrain ~= TERRAIN_HOLE
 	end
-	
-	return false
 end
 
 -- a variant of GetProjectileEnd with an additional range parameter.
