@@ -5,6 +5,7 @@ local squad = {}
 function squad:load()
 	modApi:addSquad(
 		{
+			id = "lmn_dune_striders",
 			"Dune Striders",
 			"lmn_ds_Commando", "lmn_ds_Gunslinger", "lmn_ds_Swoop"
 		},

@@ -11,6 +11,7 @@ local mod =  {
 
 local components = {
 	"scripts/LApi/LApi",
+	"scripts/modApiExtFinder",
 }
 
 function mod:metadata()
@@ -29,7 +30,8 @@ function mod:metadata()
 	modApi:addGenerationOption(
 		"cutils_verbose_calls",
 		"cutils Verbose Calls",
-		"Additional debug messages when calling cutils",
+		"Additional debug messages when calling cutils"..
+		"\n\nWarning: Very LOG heavy. Only use to debug cutils related crashes",
 		{ enabled == false }
 	)
 end
@@ -42,7 +44,7 @@ function mod:init(options)
 		local comp = require(name)
 		
 		if type(comp) == 'table' and comp.init then
-			comp:init()
+			comp:init(self, options)
 		end
 	end
 end

@@ -9,7 +9,6 @@ local mod = {
 }
 
 local scripts = {
-	"modApiExt/modApiExt.lua",
 	"palette.lua",
 	"libs/",
 	"squad/",
@@ -18,11 +17,11 @@ local scripts = {
 function mod:init()
 	assert(LApi, string.format("Mod %s with id '%s' requires 'LApi' in order to function properly", self.name, self.id))
 	
-	LApi.scripts:init(self.scriptPath, scripts)
+	LApi.scripts:init(self.scriptPath, scripts, self)
 end
 
 function mod:load(options, version)
-	LApi.scripts:load(self.scriptPath, scripts, options, version)
+	LApi.scripts:load(self.scriptPath, scripts, self, options, version)
 end
 
 return mod
