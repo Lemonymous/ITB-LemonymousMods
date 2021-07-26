@@ -29,7 +29,8 @@ function mod:metadata()
 	modApi:addGenerationOption(
 		"cutils_verbose_calls",
 		"cutils Verbose Calls",
-		"Additional debug messages when calling cutils",
+		"Additional debug messages when calling cutils"..
+		"\n\nWarning: Very LOG heavy. Only use to debug cutils related crashes",
 		{ enabled == false }
 	)
 end
