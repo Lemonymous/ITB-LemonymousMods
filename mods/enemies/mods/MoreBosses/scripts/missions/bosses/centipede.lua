@@ -111,9 +111,11 @@ function Mission_CentipedeBoss:Initialize()
 		sets = {acid = acid, disposal = disposal, any = any, mix = mix}
 	end
 	
-	for prefix, maps in pairs(sets) do
-		for _, suffix in ipairs(maps) do
-			table.insert(self.MapList, prefix .. suffix)
+	if sets then
+		for prefix, maps in pairs(sets) do
+			for _, suffix in ipairs(maps) do
+				table.insert(self.MapList, prefix .. suffix)
+			end
 		end
 	end
 	
