@@ -163,14 +163,16 @@ track_items:addItemRemovedHook(function(mission, loc, removed_item)
 		local pawn = Board:GetPawn(loc)
 		local undo_pawn = track_undo_move:GetPawn()
 		
-		if pawn and undo_pawn and pawn:GetId() == undo_pawn:GetId() then
-			-- do nothing
-		else
-			local mine_damage = SpaceDamage(loc, 3)
-			mine_damage.sSound = "/impact/generic/explosion"
-			mine_damage.sAnimation = "ExploAir1"
-			
-			Board:DamageSpace(mine_damage)
+		if pawn then
+			if undo_pawn and pawn:GetId() == undo_pawn:GetId() then
+				-- do nothing
+			elseif not HasMinesweeper(pawn) then
+				local mine_damage = SpaceDamage(loc, 3)
+				mine_damage.sSound = "/impact/generic/explosion"
+				mine_damage.sAnimation = "ExploAir1"
+				
+				Board:DamageSpace(mine_damage)
+			end
 		end
 	end
 end)
