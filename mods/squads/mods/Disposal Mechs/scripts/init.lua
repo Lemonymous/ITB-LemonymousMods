@@ -8,6 +8,10 @@ local mod = {
 	requirements = {}
 }
 
+function mod:metadata()
+	modApi:addGenerationOption("option_dozer", "Dozer Attack", "Alternate Dozer attacks.", {values = {1,2,3}, value = 3, strings = {"Old", "Old+", "New"}})
+end
+
 function mod:init()
 	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 	
@@ -33,8 +37,6 @@ function mod:init()
 	self.mech_chemical:init(self)
 	self.mech_dozer:init(self)
 	self.mech_stacker:init(self)
-	
-	modApi:addGenerationOption("option_dozer", "Dozer Attack", "Alternate Dozer attacks.", {values = {1,2,3}, value = 3, strings = {"Old", "Old+", "New"}})
 end
 
 function mod:load(options, version)
