@@ -21,17 +21,6 @@ function initializeDecks(...)
 	end
 end
 
-local oldSkillGetRarity = Skill.GetRarity
-function Skill:GetRarity()
-	if self.lmn_CustomRarity then
-		assert(type(self.lmn_CustomRarity) == 'number')
-		
-		return math.max(0, math.min(4, self.lmn_CustomRarity))
-	end
-	
-	return oldSkillGetRarity(self)
-end
-
 function this:addWeapon(weapon)
 	assert(type(weapon) == 'table')
 	assert(type(weapon.id) == 'string')
