@@ -7,7 +7,7 @@ local modApiExt = require(scriptPath .."modApiExt/modApiExt")
 local shop = require(scriptPath .."libs/shop")
 local colorMaps = require(scriptPath .."libs/colorMaps")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
-local worldConstants = require(scriptPath .."libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local weaponHover = require(scriptPath .."libs/weaponHover")
 local weaponArmed = require(scriptPath .."libs/weaponArmed")
 
@@ -135,7 +135,7 @@ local function onUnhover(self, type)
 		not weaponHover:IsCurrent(type) and
 		not weaponArmed:IsCurrent(type)
 	then
-		Values.y_velocity = worldConstants.GetDefaultHeight()
+		Values.y_velocity = worldConstants:getDefaultHeight()
 	end
 end
 

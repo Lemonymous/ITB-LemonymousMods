@@ -24,7 +24,6 @@ local scripts = {
 	"libs/weaponArmed",
 	"libs/weaponHover",
 	"libs/weaponMarks",
-	"libs/worldConstants",
 	"palette",
 	"weapons/weapon_launcher",
 	"weapons/weapon_minelayer",

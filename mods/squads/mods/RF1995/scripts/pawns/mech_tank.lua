@@ -4,7 +4,7 @@ local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
 local shop = require(scriptPath .."libs/shop")
-local worldConstants = require(scriptPath .."libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = require(scriptPath .."libs/effectPreview")
 local colorMaps = require(scriptPath .."libs/colorMaps")
@@ -177,9 +177,9 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 			weapon.sSound = "/impact/generic/explosion"
 			weapon.sScript = string.format("Board:AddAnimation(%s, 'explopush1_%s', NO_DELAY)", target:GetString(), dir)
 			
-			worldConstants.SetSpeed(ret, 1)
+			worldConstants:setSpeed(ret, 1)
 			ret:AddProjectile(p1, weapon, "effects/lmn_tank_shot_cannon", NO_DELAY)
-			worldConstants.ResetSpeed(ret)
+			worldConstants:resetSpeed(ret)
 			
 			-- minimum delay between shots.
 			-- can take longer due to board being resolved.
@@ -193,9 +193,9 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 		----------------
 		if isTipImage then
 			-- hardcoded tipimage marks.
-			worldConstants.SetSpeed(ret, 999)
+			worldConstants:setSpeed(ret, 999)
 			ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
-			worldConstants.ResetSpeed(ret)
+			worldConstants:resetSpeed(ret)
 			
 			for i, v in ipairs(self.TipMarks) do
 				local tile = v[1]
@@ -240,9 +240,9 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 			end
 			
 			-- preview projectile path.
-			worldConstants.SetSpeed(ret, 999)
+			worldConstants:setSpeed(ret, 999)
 			ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
-			worldConstants.ResetSpeed(ret)
+			worldConstants:resetSpeed(ret)
 			
 			-- mark tiles with vBoard state.
 			vBoard:MarkDamage(ret, id, "lmn_Tank_Cannon")

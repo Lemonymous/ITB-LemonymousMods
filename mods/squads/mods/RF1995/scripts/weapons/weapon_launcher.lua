@@ -6,7 +6,7 @@ local scriptPath = mod.scriptPath
 local modApiExt = require(scriptPath .."modApiExt/modApiExt")
 local shop = require(scriptPath .."libs/shop")
 local armorDetection = require(scriptPath .."libs/armorDetection")
-local worldConstants = require(scriptPath .."libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = require(scriptPath .."libs/effectPreview")
 local effectBurst = require(scriptPath .."libs/effectBurst")
@@ -321,16 +321,16 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 			
 			if useArtillery then
 				weapon.sScript = string.format("Board:AddAnimation(%s, 'ExploArt1', NO_DELAY)", target:GetString())
-				worldConstants.SetHeight(ret, GetYVelocity(distance) * math.random(80, 120) / 100)
+				worldConstants:setHeight(ret, GetYVelocity(distance) * math.random(80, 120) / 100)
 				ret:AddArtillery(p1, weapon, self.UpShot, NO_DELAY)
-				worldConstants.ResetHeight(ret)
+				worldConstants:resetHeight(ret)
 			else
 				local speed = math.random(55, 70) / 100
 				
 				weapon.sScript = string.format("Board:AddAnimation(%s, 'ExploAir1', NO_DELAY)", target:GetString())
-				worldConstants.SetSpeed(ret, speed)
+				worldConstants:setSpeed(ret, speed)
 				ret:AddProjectile(p1, weapon, self.ProjectileArt, NO_DELAY)
-				worldConstants.ResetSpeed(ret)
+				worldConstants:resetSpeed(ret)
 				
 				for k = 0, distance do
 					local iMax = 3
@@ -338,7 +338,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 						table.insert(
 							events,
 							{
-								time = time + 0.1 + (k - 1 + i/iMax) * 0.08 * worldConstants.GetDefaultSpeed() / speed,
+								time = time + 0.1 + (k - 1 + i/iMax) * 0.08 * worldConstants:getDefaultSpeed() / speed,
 								tile = p1 + DIR_VECTORS[dir] * k,
 								emitter = "lmn_Emitter_Minelayer_Launcher_Trail"
 							}
@@ -373,16 +373,16 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 			if useArtillery then
 				local tile = self.TipImage.Second_Target
 				
-				worldConstants.SetHeight(ret, 0)
+				worldConstants:setHeight(ret, 0)
 				ret:AddArtillery(p1, SpaceDamage(tile), "", NO_DELAY)
-				worldConstants.ResetHeight(ret)
+				worldConstants:resetHeight(ret)
 				
 				local mark = SpaceDamage(tile, self.Attacks)
 				effectPreview:AddDamage(ret, mark)
 			else
-				worldConstants.SetSpeed(ret, 999)
+				worldConstants:setSpeed(ret, 999)
 				ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
-				worldConstants.ResetSpeed(ret)
+				worldConstants:resetSpeed(ret)
 				
 				for i, v in ipairs(self.TipMarks) do
 					local tile = v[1]
@@ -435,14 +435,14 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 			
 			if useArtillery then
 				-- preview projectile path.
-				worldConstants.SetHeight(ret, 0)
+				worldConstants:setHeight(ret, 0)
 				ret:AddArtillery(p1, SpaceDamage(target), "", NO_DELAY)
-				worldConstants.ResetHeight(ret)
+				worldConstants:resetHeight(ret)
 			else
 				-- preview projectile path.
-				worldConstants.SetSpeed(ret, 999)
+				worldConstants:setSpeed(ret, 999)
 				ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
-				worldConstants.ResetSpeed(ret)
+				worldConstants:resetSpeed(ret)
 			end
 			
 			-- mark tiles with vBoard state.
@@ -532,7 +532,7 @@ local function onUnhover(self, type)
 		not weaponArmed:IsCurrent(type) and
 		not weaponHover:IsCurrent(type)
 	then
-		Values.y_velocity = worldConstants.GetDefaultHeight()
+		Values.y_velocity = worldConstants:getDefaultHeight()
 	end
 end
 
