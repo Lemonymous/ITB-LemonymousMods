@@ -2,6 +2,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
+local effectPreview = LApi.library:fetch("effectPreview")
 
 local this = {}
 
@@ -315,13 +316,13 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 				local stop = p1 + step * v.stop
 				
 				worldConstants:setSpeed(ret, self.VelX)
-				this.effectPreview.FilterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
+				effectPreview.FilterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
 				ret:AddCharge(Board:GetPath(start, stop, PATH_FLYER), NO_DELAY)
-				this.effectPreview.RewindTile(ret, start)
+				effectPreview.RewindTile(ret, start)
 				worldConstants:resetSpeed(ret)
 				
 				if start ~= v.initLoc then
-					this.effectPreview.AddCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
+					effectPreview.AddCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
 				end
 			end
 		end
@@ -336,7 +337,7 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 		end
 	end
 	
-	this.effectPreview.AddCharge(ret, p1, moveLoc)
+	effectPreview.AddCharge(ret, p1, moveLoc)
 	
 	if moveLoc ~= p2 then													-- if we should crash,
 		
@@ -623,8 +624,6 @@ function this:init(mod)
 		name = lmn_DozerAtk.Name,
 		desc = "Adds Dozer Blades to the store."
 	})
-	
-	self.effectPreview = require(mod.scriptPath .."effectPreview")
 	
 	modApi:appendAsset("img/units/player/lmn_mech_dozer.png", mod.resourcePath.. "img/units/player/dozer.png")
 	modApi:appendAsset("img/units/player/lmn_mech_dozer_a.png", mod.resourcePath.. "img/units/player/dozer_a.png")
