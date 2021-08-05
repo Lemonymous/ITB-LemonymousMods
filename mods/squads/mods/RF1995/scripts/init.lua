@@ -10,7 +10,6 @@ local mod =  {
 
 local scripts = {
 	"modApiExt/modApiExt",
-	"libs/colorMaps",
 	"libs/effectBurst",
 	"libs/effectPreview",
 	"libs/globals",

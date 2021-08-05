@@ -3,13 +3,13 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local modApiExt = require(scriptPath .."modApiExt/modApiExt")
 local worldConstants = LApi.library:fetch("worldConstants")
 local weaponHover = require(scriptPath .."libs/weaponHover")
 local weaponArmed = require(scriptPath .."libs/weaponArmed")
 local effectBurst = require(scriptPath .."libs/effectBurst")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
-local colorMaps = require(scriptPath .."libs/colorMaps")
 local shop = require(scriptPath .."libs/shop")
 
 modApi:appendAsset("img/units/player/lmn_mech_helicopter.png", resourcePath .."img/units/player/helicopter.png")
@@ -49,7 +49,7 @@ lmn_HelicopterMech = Pawn:new{
 	Health = 1,
 	MoveSpeed = 4,
 	Image = "lmn_MechHelicopter",
-	ImageOffset = colorMaps.Get(mod.id),
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_Helicopter_Rocket" },
 	SoundLocation = "/support/support_drone/",
 	DefaultTeam = TEAM_PLAYER,

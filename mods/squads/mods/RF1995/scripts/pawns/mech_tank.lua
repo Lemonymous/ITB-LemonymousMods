@@ -3,11 +3,11 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local shop = require(scriptPath .."libs/shop")
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = require(scriptPath .."libs/effectPreview")
-local colorMaps = require(scriptPath .."libs/colorMaps")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 
 modApi:appendAsset("img/units/player/lmn_mech_tank.png", resourcePath .."img/units/player/tank.png")
@@ -47,7 +47,7 @@ lmn_TankMech = Pawn:new{
 	Health = 2,
 	MoveSpeed = 4,
 	Image = "lmn_MechTank",
-	ImageOffset = 1,
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_Tank_Cannon" },
 	SoundLocation = "/support/civilian_tank/",
 	DefaultTeam = TEAM_PLAYER,
@@ -342,7 +342,6 @@ lmn_Tank_Cannon_Tip_AB.GetSkillEffect = lmn_Tank_Cannon_Tip.GetSkillEffect
 
 shop:addWeapon{ id = "lmn_Tank_Cannon", desc = "Adds Snubnose Cannon to the store." }
 nonMassiveDeployWarning:AddPawn("lmn_TankMech")
-lmn_TankMech.ImageOffset = colorMaps.Get(mod.id)
 
 local function init() end
 local function load() end
