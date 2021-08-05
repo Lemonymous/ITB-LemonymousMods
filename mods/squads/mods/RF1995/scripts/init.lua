@@ -9,7 +9,6 @@ local mod =  {
 }
 
 local scripts = {
-	"libs/globals",
 	"libs/hooks",
 	"libs/nonMassiveDeployWarning",
 	"libs/shop",
