@@ -50,7 +50,7 @@ local palette = {
 	id = mod.id,
 	name = "Dune Striders Tan",
 	colorMap = colorMap,
-	image = "img/units/player/swoop.png"
+	image = "img/units/player/lmn_ds_swoop_ns.png"
 }
 
 modApi:addPalette(palette)
