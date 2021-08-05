@@ -2,7 +2,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local utils = require(mod.scriptPath .."libs/utils")
 local effectPreview = LApi.library:fetch("effectPreview")
-local effectBurst = require(mod.scriptPath .."libs/effectBurst")
+local effectBurst = LApi.library:fetch("effectBurst")
 local astar = LApi.library:fetch("astar")
 
 lmn_ds_Teleport = Skill:new{}

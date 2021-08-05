@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local utils = require(mod.scriptPath .."libs/utils")
-local effectBurst = require(mod.scriptPath .."libs/effectBurst")
+local effectBurst = LApi.library:fetch("effectBurst")
 local worldConstants = LApi.library:fetch("worldConstants")
 
 modApi:appendAsset("img/effects/lmn_ds_explo_smoke.png", mod.resourcePath .."img/effects/explo_smoke.png")

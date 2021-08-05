@@ -2,7 +2,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local utils = require(mod.scriptPath .."libs/utils")
 local effectPreview = LApi.library:fetch("effectPreview")
-local effectBurst = require(mod.scriptPath .."libs/effectBurst")
+local effectBurst = LApi.library:fetch("effectBurst")
 local worldConstants = LApi.library:fetch("worldConstants")
 
 modApi:copyAsset("img/combat/icons/icon_postmove_glow.png", "img/combat/icons/lmn_ds_icon_bonus_move_glow.png")

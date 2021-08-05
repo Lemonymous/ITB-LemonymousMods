@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local utils = require(mod.scriptPath .."libs/utils")
-local effectBurst = require(mod.scriptPath .."libs/effectBurst")
+local effectBurst = LApi.library:fetch("effectBurst")
 
 modApi:copyAsset("img/combat/icons/icon_sand_glow.png", "img/combat/icons/lmn_ds_icon_sand_glow.png")
 modApi:copyAsset("img/combat/icons/icon_smoke_glow.png", "img/combat/icons/lmn_ds_icon_smoke_glow.png")
