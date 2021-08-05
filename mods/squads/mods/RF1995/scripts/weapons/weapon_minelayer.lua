@@ -9,7 +9,6 @@ local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
 local modApiExt = require(scriptPath .."modApiExt/modApiExt")
-local armorDetection = require(scriptPath .."libs/armorDetection")
 local shop = require(scriptPath .."libs/shop")
 
 modApi:appendAsset("img/weapons/lmn_minelayer_mine.png", resourcePath .."img/weapons/mine.png")
@@ -50,9 +49,7 @@ lmn_Minelayer_Mine_A = lmn_Minelayer_Mine:new{
 }
 
 local function IsMinelayer(pawn)
-	return
-		armorDetection.HasPoweredWeapon(pawn, "lmn_Minelayer_Mine") or
-		armorDetection.HasPoweredWeapon(pawn, "lmn_Minelayer_Mine_A")
+	return pawn:IsWeaponPowered("lmn_Minelayer_Mine")
 end
 
 local function HasMinesweeper(pawn)
@@ -61,7 +58,7 @@ local function HasMinesweeper(pawn)
 	end
 	
 	for _, id in ipairs(extract_table(Board:GetPawns(TEAM_MECH))) do
-		if armorDetection.HasPoweredWeapon(Board:GetPawn(id), "lmn_Minelayer_Mine_A") then
+		if Board:GetPawn(id):IsWeaponPowered("lmn_Minelayer_Mine_A") then
 			return true
 		end
 	end

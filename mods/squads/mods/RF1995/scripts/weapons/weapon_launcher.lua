@@ -5,7 +5,6 @@ local scriptPath = mod.scriptPath
 
 local modApiExt = require(scriptPath .."modApiExt/modApiExt")
 local shop = require(scriptPath .."libs/shop")
-local armorDetection = require(scriptPath .."libs/armorDetection")
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = require(scriptPath .."libs/effectPreview")
@@ -241,7 +240,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 					
 					if pawn:IsAcid() then
 						health = math.ceil(health / 2)
-					elseif armorDetection.IsArmor(pawn) then
+					elseif pawn:IsArmor() then
 						damage = damage - 1
 					end
 					
