@@ -44,10 +44,6 @@ lmn_LiftAtk = Skill:new{
 		Second_Target = Point(2,1),
 	}
 }
-
-local function IsArmor(pawn)
-	return this.armorDetection.IsArmor(pawn)
-end
 	
 -- returns whether thrown pawn can crush target pawn.
 function lmn_LiftAtk:CanCrush(thrown, target)
@@ -211,8 +207,8 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 				crushedPawn:IsAcid()	or
 				thrownPawn:IsAcid()		or
 				Board:IsAcid(p2)		or
-				IsArmor(crushedPawn)	or
-				IsArmor(thrownPawn)
+				crushedPawn:IsArmor()	or
+				thrownPawn:IsArmor()
 			then
 				local death = SpaceDamage(p2, DAMAGE_DEATH)	-- show the skull to hide unwanted
 				ret:AddDamage(death)						-- acid/frozen/shield/armor icons
@@ -338,8 +334,6 @@ function this:init(mod)
 	})
 	
 	lmn_StackerMech.ImageOffset = require(mod.scriptPath .."colorMaps").Get(mod.id)
-	
-	self.armorDetection = require(mod.scriptPath .."armorDetection")
 	
 	modApi:appendAsset("img/units/player/lmn_mech_stacker.png", mod.resourcePath.. "img/units/player/stacker.png")
 	modApi:appendAsset("img/units/player/lmn_mech_stacker_a.png", mod.resourcePath.. "img/units/player/stacker_a.png")
