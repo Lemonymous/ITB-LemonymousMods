@@ -7,7 +7,7 @@ local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local shop = require(scriptPath .."libs/shop")
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
-local effectPreview = require(scriptPath .."libs/effectPreview")
+local effectPreview = LApi.library:fetch("effectPreview")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 
 modApi:appendAsset("img/units/player/lmn_mech_tank.png", resourcePath .."img/units/player/tank.png")

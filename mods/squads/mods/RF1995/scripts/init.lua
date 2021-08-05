@@ -11,7 +11,6 @@ local mod =  {
 local scripts = {
 	"modApiExt/modApiExt",
 	"libs/effectBurst",
-	"libs/effectPreview",
 	"libs/globals",
 	"libs/hooks",
 	"libs/nonMassiveDeployWarning",
