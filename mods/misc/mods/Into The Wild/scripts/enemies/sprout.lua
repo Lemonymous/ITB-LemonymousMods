@@ -130,6 +130,7 @@ function this:init(mod)
 		ImpactMaterial = IMPACT_FLESH,
 		Portrait = "enemy/lmn_Sprout1"
 	}
+	AddPawn("lmn_Sprout1")
 	
 	lmn_Sprout2 = lmn_Sprout1:new{
 		Name = "Alpha Sprout",
@@ -142,6 +143,7 @@ function this:init(mod)
 		Tier = TIER_ALPHA,
 		Portrait = "enemy/lmn_Sprout2"
 	}
+	AddPawn("lmn_Sprout2")
 	
 	lmn_SproutEv = lmn_Sprout1:new{
 		Name = "Evolving Sprout",

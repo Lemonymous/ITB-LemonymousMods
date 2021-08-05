@@ -22,6 +22,7 @@ lmn_BudBoss = lmn_Bud2:new{
 	Tier = TIER_BOSS,
 	--Portrait = "enemy/lmn_BudBoss",
 }
+AddPawn("lmn_BudBoss")
 
 lmn_BudAtkB = lmn_BudAtk1:new{
 	SelfDamage = 0,

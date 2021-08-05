@@ -133,6 +133,7 @@ function this:init(mod)
 		ImpactMaterial = IMPACT_FLESH,
 		Portrait = "enemy/lmn_Infuser1", -- TODO: add portrait
 	}
+	AddPawn("lmn_Infuser1")
 	
 	lmn_InfuserAtk1 = Skill:new{
 		Name = "Infuse",

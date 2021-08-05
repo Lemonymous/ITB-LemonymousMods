@@ -107,26 +107,31 @@ lmn_Floater1 = Pawn:new{
 	Portrait = "enemy/lmn_Floater1",
 	Flying = true
 }
+AddPawn("lmn_Floater1")
 
 lmn_Floater2 = lmn_Floater1:new{
 	Name = "Alpha Floater",
 	Health = 4,
+	Image = "lmn_floater",
 	ImageOffset = 1,
 	SkillList = { "lmn_FloaterAtk2" },
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Floater2",
 }
+AddPawn("lmn_Floater2")
 
 lmn_FloaterBoss = lmn_Floater1:new{
 	Name = "Floater Leader",
 	Health = 5,
 	MoveSpeed = 3,
+	Image = "lmn_floater",
 	ImageOffset = 2,
 	SkillList = { "lmn_FloaterAtkB" },
 	Tier = TIER_BOSS,
 	Massive = true,
 	Portrait = "enemy/lmn_FloaterB",
 }
+AddPawn("lmn_FloaterBoss")
 
 lmn_FloaterAtk1 = SelfTarget:new{
 	Name = "Spawn Colony",
@@ -279,6 +284,7 @@ lmn_Colony1 = Pawn:new{
 	HalfSpawn = true,
 	IsDeathEffect = true,
 }
+AddPawn("lmn_Colony1")
 
 lmn_Colony2 = lmn_Colony1:new{
 	Name = "Alpha Colony",
@@ -287,6 +293,7 @@ lmn_Colony2 = lmn_Colony1:new{
 	SkillList = { "lmn_ColonyAtk2" },
 	Tier = TIER_ALPHA,
 }
+AddPawn("lmn_Colony2")
 
 lmn_ColonyBoss = lmn_Colony1:new{
 	Name = "Leader Colony",
@@ -295,6 +302,7 @@ lmn_ColonyBoss = lmn_Colony1:new{
 	SkillList = { "lmn_ColonyAtkB" },
 	Tier = TIER_BOSS,
 }
+AddPawn("lmn_ColonyBoss")
 
 function lmn_Colony1:GetDeathEffect(p1)
 	local ret = SkillEffect()

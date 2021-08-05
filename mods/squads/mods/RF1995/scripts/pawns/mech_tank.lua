@@ -53,6 +53,7 @@ lmn_TankMech = Pawn:new{
 	DefaultTeam = TEAM_PLAYER,
 	ImpactMaterial = IMPACT_METAL,
 }
+AddPawn("lmn_TankMech")
 
 lmn_Tank_Cannon = Skill:new{
 	Self = "lmn_Tank_Cannon",

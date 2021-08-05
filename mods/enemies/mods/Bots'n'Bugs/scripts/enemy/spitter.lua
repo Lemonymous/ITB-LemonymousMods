@@ -61,22 +61,26 @@ lmn_Spitter1 = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	Portrait = "enemy/lmn_Spitter1",
 }
+AddPawn("lmn_Spitter1")
 
 lmn_Spitter2 = lmn_Spitter1:new{
 	Name = "Alpha Spitter",
 	Health = 5,
 	MoveSpeed = 3,
+	Image = "lmn_spitter",
 	ImageOffset = 1,
 	SkillList = { "lmn_SpitterAtk2" },
 	SoundLocation = "/enemy/centipede_2/",
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Spitter2",
 }
+AddPawn("lmn_Spitter2")
 
 lmn_SpitterBoss = lmn_Spitter1:new{
 	Name = "Spitter Leader",
 	Health = 7,
 	MoveSpeed = 3,
+	Image = "lmn_spitter",
 	ImageOffset = 2,
 	SkillList = { "lmn_SpitterAtkB" },
 	SoundLocation = "/enemy/centipede_2/",
@@ -84,6 +88,7 @@ lmn_SpitterBoss = lmn_Spitter1:new{
 	Portrait = "enemy/lmn_SpitterB",
 	Massive = true,
 }
+AddPawn("lmn_SpitterBoss")
 
 lmn_SpitterAtk1 = Skill:new{
 	Name = "Needle Spines",

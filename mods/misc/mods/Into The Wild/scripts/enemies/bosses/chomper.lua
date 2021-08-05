@@ -20,6 +20,7 @@ lmn_ChomperBoss = lmn_Chomper2:new{
 	Tier = TIER_BOSS,
 	Portrait = "enemy/lmn_ChomperBoss",
 }
+AddPawn("lmn_ChomperBoss")
 
 lmn_ChomperAtkB = lmn_ChomperAtk2:new{
 	Name = "Chomp",

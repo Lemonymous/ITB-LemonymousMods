@@ -92,6 +92,7 @@ lmn_Blobberling1 = Pawn:new{
 	Minor = true, -- double explosive? no thanks.
 	ExplosiveEffect = ExplosiveEffect
 }
+AddPawn("lmn_Blobberling1")
 
 function lmn_Blobberling1:GetDeathEffect(p)
 	local ret = self:ExplosiveEffect(p)
@@ -124,6 +125,7 @@ lmn_Blobberling2 = lmn_Blobberling1:new{
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Blobberling2",
 }
+AddPawn("lmn_Blobberling2")
 
 lmn_Blobberling1_Tip = lmn_Blobberling1:new{ GetDeathEffect = function() return SkillEffect() end }
 lmn_Blobberling2_Tip = lmn_Blobberling2:new{ GetDeathEffect = function() return SkillEffect() end }

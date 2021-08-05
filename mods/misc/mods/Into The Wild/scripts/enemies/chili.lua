@@ -110,6 +110,7 @@ function this:init(mod)
 		IgnoreFire = true,
 		Portrait = "enemy/lmn_Chili1",
 	}
+	AddPawn("lmn_Chili1")
 	
 	lmn_Chili2 = lmn_Chili1:new{
 		Name = "Alpha Chili",
@@ -120,6 +121,7 @@ function this:init(mod)
 		Portrait = "enemy/lmn_Chili2",
 		Tier = TIER_ALPHA,
 	}
+	AddPawn("lmn_Chili2")
 	
 	lmn_ChiliAtk1 = Skill:new{
 		Name = "Chili Breath",
@@ -303,6 +305,7 @@ function this:init(mod)
 		Massive = true,
 		IgnoreFire = true,
 	}
+	AddPawn("lmn_Chili")
 	
 	lmn_ChiliAtk = Skill:new{
 		Name = "Chili Breath",

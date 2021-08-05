@@ -66,6 +66,7 @@ lmn_ShieldBot1 = Pawn:new{
 	ImpactMaterial = IMPACT_METAL,
 	Flying = true,
 }
+AddPawn("lmn_ShieldBot1")
 
 lmn_ShieldBotAtk1 = SelfTarget:new{
 	Name = "NRG Shield Mark I",
@@ -143,6 +144,7 @@ lmn_ShieldBot2 = lmn_ShieldBot1:new{
 	SkillList = { "lmn_ShieldBotAtk2" },
 	Tier = TIER_ALPHA,
 }
+AddPawn("lmn_ShieldBot2")
 
 lmn_ShieldBotAtk2 = lmn_ShieldBotAtk1:new{
 	Name = "NRG Shield Mark II",

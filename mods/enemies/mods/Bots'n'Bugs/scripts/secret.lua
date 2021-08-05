@@ -182,6 +182,7 @@ lmn_Swarmer = Pawn:new{
 	Portrait = "pilots/Pilot_lmn_Swarmer",
 	Massive = true,
 }
+AddPawn("lmn_Swarmer")
 
 lmn_Roach = Pawn:new{
 	Name = "Techno-Roach",
@@ -197,6 +198,7 @@ lmn_Roach = Pawn:new{
 	Massive = true,
 	Armor = true,
 }
+AddPawn("lmn_Roach")
 
 lmn_Spitter = Pawn:new{
 	Name = "Techno-Spitter",
@@ -211,6 +213,7 @@ lmn_Spitter = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	Massive = true,
 }
+AddPawn("lmn_Spitter")
 
 lmn_Wyrm = Pawn:new{
 	Name = "Techno-Wyrm",
@@ -226,6 +229,7 @@ lmn_Wyrm = Pawn:new{
 	Massive = true,
 	Flying = true,
 }
+AddPawn("lmn_Wyrm")
 
 lmn_Crusher = Pawn:new{
 	Name = "Techno-Crusher",
@@ -240,6 +244,7 @@ lmn_Crusher = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	Massive = true,
 }
+AddPawn("lmn_Crusher")
 
 lmn_CrusherAtkDummy = Pawn:new{
 	Name = "",

@@ -20,6 +20,7 @@ lmn_ChiliBoss = lmn_Chili2:new{
 	Tier = TIER_BOSS,
 	Portrait = "enemy/lmn_ChiliBoss",
 }
+AddPawn("lmn_ChiliBoss")
 
 lmn_ChiliAtkB = lmn_ChiliAtk2:new{
 	Icon = "weapons/lmn_ChiliAtkB.png",

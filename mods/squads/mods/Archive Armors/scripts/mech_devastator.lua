@@ -14,6 +14,7 @@ lmn_DevastatorMech = Pawn:new{
 	ImpactMaterial = IMPACT_METAL,
 	Massive = true,
 }
+AddPawn("lmn_DevastatorMech")
 
 lmn_DevastatorCannon = Skill:new{
 	Name = "Devastator",

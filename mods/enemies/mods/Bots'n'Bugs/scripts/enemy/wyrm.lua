@@ -58,22 +58,26 @@ lmn_Wyrm1 = Pawn:new{
 	Portrait = "enemy/lmn_Wyrm1",
 	Flying = true,
 }
+AddPawn("lmn_Wyrm1")
 
 lmn_Wyrm2 = lmn_Wyrm1:new{
 	Name = "Alpha Wyrm",
 	Health = 5,
 	MoveSpeed = 4,
+	Image = "lmn_wyrm",
 	ImageOffset = 1,
 	SkillList = { "lmn_WyrmAtk2" },
 	SoundLocation = "/enemy/hornet_2/",
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Wyrm2",
 }
+AddPawn("lmn_Wyrm2")
 
 lmn_WyrmBoss = lmn_Wyrm1:new{
 	Name = "Wyrm Leader",
 	Health = 7,
 	MoveSpeed = 3,
+	Image = "lmn_wyrm",
 	ImageOffset = 2,
 	SkillList = { "lmn_WyrmAtkB" },
 	SoundLocation = "/enemy/hornet_2/",
@@ -81,6 +85,7 @@ lmn_WyrmBoss = lmn_Wyrm1:new{
 	Portrait = "enemy/lmn_WyrmB",
 	Massive = true,
 }
+AddPawn("lmn_WyrmBoss")
 
 lmn_WyrmAtk1 = Skill:new{
 	Name = "Glaive Wurm",

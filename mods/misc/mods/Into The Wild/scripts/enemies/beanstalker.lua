@@ -90,6 +90,7 @@ function this:init(mod)
 		ImpactMaterial = IMPACT_FLESH,
 		Portrait = "enemy/lmn_Beanstalker1",
 	}
+	AddPawn("lmn_Beanstalker1")
 	
 	lmn_BeanstalkerAtk1 = Skill:new{
 		Name = "Rush",

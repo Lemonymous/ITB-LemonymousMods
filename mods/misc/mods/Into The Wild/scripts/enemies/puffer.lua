@@ -176,6 +176,7 @@ function this:init(mod)
 		Pushable = false,
 		Portrait = "enemy/lmn_Puffer1",
 	}
+	AddPawn("lmn_Puffer1")
 	
 	lmn_Puffer2 = lmn_Puffer1:new{
 		Name = "Alpha Puffer",
@@ -186,6 +187,7 @@ function this:init(mod)
 		Tier = TIER_ALPHA,
 		Portrait = "enemy/lmn_Puffer2",
 	}
+	AddPawn("lmn_Puffer2")
 	
 	lmn_PufferAtk1 = Skill:new{
 		Name = "Spore Puff",
@@ -325,6 +327,7 @@ function this:init(mod)
 		Burrows = true,
 		Pushable = false,
 	}
+	AddPawn("lmn_Puffer")
 	
 	local oldMove = Move.GetTargetArea
 	function Move:GetTargetArea(p, ...)

@@ -50,22 +50,26 @@ lmn_Roach1 = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	Portrait = "enemy/lmn_Roach1",
 }
+AddPawn("lmn_Roach1")
 
 lmn_Roach2 = lmn_Roach1:new{
 	Name = "Alpha Roach",
 	Health = 4,
 	MoveSpeed = 4,
+	Image = "lmn_roach",
 	ImageOffset = 1,
 	SkillList = { "lmn_RoachAtk2" },
 	SoundLocation = "/enemy/scorpion_soldier_2/",
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Roach2",
 }
+AddPawn("lmn_Roach2")
 
 lmn_RoachBoss = lmn_Roach1:new{
 	Name = "Roach Leader",
 	Health = 6,
 	MoveSpeed = 4,
+	Image = "lmn_roach",
 	ImageOffset = 2,
 	SkillList = { "lmn_RoachAtkB" },
 	SoundLocation = "/enemy/scorpion_soldier_2/",
@@ -73,6 +77,7 @@ lmn_RoachBoss = lmn_Roach1:new{
 	Portrait = "enemy/lmn_RoachB",
 	Massive = true,
 }
+AddPawn("lmn_RoachBoss")
 
 lmn_RoachAtk1 = Skill:new{
 	Name = "Scything Talons",

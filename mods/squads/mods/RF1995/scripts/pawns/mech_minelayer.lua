@@ -37,6 +37,7 @@ lmn_MinelayerMech = Pawn:new{
 	DefaultTeam = TEAM_PLAYER,
 	ImpactMaterial = IMPACT_METAL,
 }
+AddPawn("lmn_MinelayerMech")
 
 nonMassiveDeployWarning:AddPawn("lmn_MinelayerMech")
 weapon_launcher:load()

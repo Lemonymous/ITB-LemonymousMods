@@ -42,6 +42,7 @@ lmn_JeepMech = Pawn:new{
 	DefaultTeam = TEAM_PLAYER,
 	ImpactMaterial = IMPACT_METAL,
 }
+AddPawn("lmn_JeepMech")
 
 lmn_Jeep_Grenade = Skill:new{
 	Name = "Hand Grenades",

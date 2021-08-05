@@ -14,6 +14,7 @@ lmn_DozerMech = Pawn:new{
 	ImpactMaterial = IMPACT_METAL,
 	Massive = true,
 }
+AddPawn("lmn_DozerMech")
 
 lmn_DozerAtk = Skill:new{
 	Name = "Dozer Blades",

@@ -14,6 +14,7 @@ lmn_ChemMech = Pawn:new{
 	ImpactMaterial = IMPACT_METAL,
 	Massive = true,
 }
+AddPawn("lmn_ChemMech")
 
 lmn_ChemicalAtk = Skill:new{
 	Name = "Acid Jet",

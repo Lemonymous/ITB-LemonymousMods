@@ -50,6 +50,7 @@ lmn_KnightBot1 = Pawn:new{
 	ImpactMaterial = IMPACT_METAL,
 	Armor = true,
 }
+AddPawn("lmn_KnightBot1")
 
 lmn_KnightBotAtk1 = Punch:new{
 	Name = "0th KPR Sword Mark I",
@@ -152,6 +153,7 @@ lmn_KnightBot2 = lmn_KnightBot1:new{
 	SoundLocation = "/enemy/snowlaser_2/",
 	Tier = TIER_ALPHA,
 }
+AddPawn("lmn_KnightBot2")
 
 lmn_KnightBotAtk2 = lmn_KnightBotAtk1:new{
 	Name = "0th KPR Sword Mark II",
