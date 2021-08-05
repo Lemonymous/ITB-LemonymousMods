@@ -67,10 +67,8 @@ local this = {}
 -- move all pawns away from a tile.
 -- use RewindTile to revert changes.
 function this:ClearTile(effect, tile)
-	assert(type(effect) == 'userdata')
-	assert(type(tile) == 'userdata')
-	assert(type(tile.x) == 'number')
-	assert(type(tile.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(tile, "Argument #2")
 	
 	effect:AddScript([[
 		lmn_effect_preview_displaced = {};
@@ -87,11 +85,9 @@ end
 -- move all pawns away from a tile, except pawn with id == 'id'
 -- use RewindTile to revert changes.
 function this:FilterTile(effect, tile, id)
-	assert(type(effect) == 'userdata')
-	assert(type(tile) == 'userdata')
-	assert(type(tile.x) == 'number')
-	assert(type(tile.y) == 'number')
-	assert(type(id) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(tile, "Argument #2")
+	Assert.Equals('number', type(id), "Argument #1")
 	
 	effect:AddScript([[
 		lmn_effect_preview_displaced = {};
@@ -108,10 +104,8 @@ end
 -- moves all displaced pawns back to it's tile.
 -- used after ClearTile or FilterTile
 function this:RewindTile(effect, tile)
-	assert(type(effect) == 'userdata')
-	assert(type(tile) == 'userdata')
-	assert(type(tile.x) == 'number')
-	assert(type(tile.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(tile, "Argument #2")
 	
 	effect:AddScript([[
 		for _, id in ipairs(lmn_effect_preview_displaced) do
@@ -121,10 +115,8 @@ function this:RewindTile(effect, tile)
 end
 
 function this:SaveTile(effect, tile)
-	assert(type(effect) == 'userdata')
-	assert(type(tile) == 'userdata')
-	assert(type(tile.x) == 'number')
-	assert(type(tile.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(tile, "Argument #2")
 	
 	effect:AddScript("_G['".. self.tileState .."']:Save(".. tile:GetString() ..")")
 end
@@ -135,11 +127,9 @@ end
 
 -- previews damage.
 function this:AddDamage(effect, spaceDamage)
-	assert(type(effect) == 'userdata')
-	assert(type(spaceDamage) == 'userdata')
-	assert(type(spaceDamage.loc) == 'userdata')
-	assert(type(spaceDamage.loc.x) == 'number')
-	assert(type(spaceDamage.loc.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.Equals('userdata', type(spaceDamage), "Argument #2")
+	Assert.TypePoint(spaceDamage.loc)
 	
 	self:ClearTile(effect, spaceDamage.loc)
 	effect:AddDamage(spaceDamage)
@@ -148,13 +138,9 @@ end
 
 -- previews a charge, but does not move any pawns.
 function this:AddCharge(effect, p1, p2, pathing)
-	assert(type(effect) == 'userdata')
-	assert(type(p1) == 'userdata')
-	assert(type(p1.x) == 'number')
-	assert(type(p1.y) == 'number')
-	assert(type(p2) == 'userdata')
-	assert(type(p2.x) == 'number')
-	assert(type(p2.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(p1, "Argument #2")
+	Assert.TypePoint(p2, "Argument #3")
 	
 	pathing = pathing or PATH_FLYER
 	
@@ -165,13 +151,9 @@ end
 
 -- previews a leap, but does not move any pawns.
 function this:AddLeap(effect, p1, p2)
-	assert(type(effect) == 'userdata')
-	assert(type(p1) == 'userdata')
-	assert(type(p1.x) == 'number')
-	assert(type(p1.y) == 'number')
-	assert(type(p2) == 'userdata')
-	assert(type(p2.x) == 'number')
-	assert(type(p2.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(p1, "Argument #2")
+	Assert.TypePoint(p2, "Argument #3")
 	
 	local leap = PointList()
 	leap:push_back(p1)
@@ -184,13 +166,9 @@ end
 
 -- previews teleport, but does not move any pawns.
 function this:AddTeleport(effect, p1, p2)
-	assert(type(effect) == 'userdata')
-	assert(type(p1) == 'userdata')
-	assert(type(p2) == 'userdata')
-	assert(type(p1.x) == 'number')
-	assert(type(p1.y) == 'number')
-	assert(type(p2.x) == 'number')
-	assert(type(p2.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(p1, "Argument #2")
+	Assert.TypePoint(p2, "Argument #3")
 	
 	self:ClearTile(effect, p1)
 	effect:AddTeleport(p1, p2, NO_DELAY)
@@ -200,11 +178,9 @@ end
 -- previews a move action, but does not move any pawns.
 -- pathing is optional.
 function this:AddMove(effect, pawn, p2, pathing)
-	assert(type(effect) == 'userdata')
-	assert(type(pawn) == 'userdata')
-	assert(type(p2) == 'userdata')
-	assert(type(p2.x) == 'number')
-	assert(type(p2.y) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.Equals('userdata', type(pawn), "Argument #2")
+	Assert.TypePoint(p2, "Argument #3")
 	
 	pathing = pathing or pawn:GetPathProf()
 	
@@ -219,15 +195,10 @@ end
 -- (should probably be in another library)
 -- causes a pawn to leap, while hiding it's preview arc.
 function this:AddHiddenLeap(effect, p1, p2, delay)
-	assert(type(effect) == 'userdata')
-	assert(type(p1) == 'userdata')
-	assert(type(p1.x) == 'number')
-	assert(type(p1.y) == 'number')
-	assert(type(p2) == 'userdata')
-	assert(type(p2.x) == 'number')
-	assert(type(p2.y) == 'number')
-	
-	assert(type(delay) == 'number')
+	Assert.Equals('userdata', type(effect), "Argument #1")
+	Assert.TypePoint(p1, "Argument #2")
+	Assert.TypePoint(p2, "Argument #3")
+	Assert.Equals('number', type(delay), "Argument #4")
 	
 	local leap = PointList()
 	leap:push_back(p1)
