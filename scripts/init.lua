@@ -9,11 +9,6 @@ local mod =  {
 	submodFolders = {"mods/"}
 }
 
-local components = {
-	"scripts/LApi/LApi",
-	"scripts/modApiExtFinder",
-}
-
 function mod:metadata()
 	modApi:addGenerationOption(
 		"cutils_debug",
@@ -37,29 +32,15 @@ function mod:metadata()
 end
 
 function mod:init(options)
-
-	-- initialize components
-	for _, subpath in ipairs(components) do
-		local name = self.resourcePath .. subpath
-		local comp = require(name)
-		
-		if type(comp) == 'table' and comp.init then
-			comp:init(self, options)
-		end
-	end
+	require(self.scriptPath.."LApi/LApi")
+	LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt"):init()
 end
 
 function mod:load(options, version)
-
-	-- load components
-	for _, subpath in ipairs(components) do
-		local name = self.resourcePath .. subpath
-		local comp = require(name)
-		
-		if type(comp) == 'table' and comp.load then
-			comp:load(self, options, version)
-		end
-	end
+	LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt"):load(
+		options,
+		version
+	)
 end
 
 return mod
