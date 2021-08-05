@@ -26,9 +26,6 @@ function mod:init()
 end
 
 function mod:load(options, version)
-	local shop = LApi.library:fetch("shop")
-	shop:load(options)
-	
 	self.mech_chemical:load(self.modApiExt)
 	self.mech_dozer:load(options, self.modApiExt)
 	self.mech_stacker:load(self.modApiExt)
