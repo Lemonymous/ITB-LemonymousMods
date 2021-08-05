@@ -1,4 +1,6 @@
 
+local shop = LApi.library:fetch("shop")
+
 local this = {}
 
 lmn_BomberMech = Pawn:new{
@@ -241,7 +243,7 @@ lmn_Bombrun_Tip_B.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 lmn_Bombrun_Tip_AB.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
+	shop:addWeapon({
 		id = "lmn_Bombrun",
 		desc = "Adds Bomb Run to the store."
 	})

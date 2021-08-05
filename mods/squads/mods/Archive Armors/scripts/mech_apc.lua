@@ -1,4 +1,6 @@
 
+local shop = LApi.library:fetch("shop")
+
 local this = {}
 
 lmn_SmokeMech = Pawn:new{
@@ -393,7 +395,7 @@ end
 
 function this:init(mod)
 	self.mod = mod
-	require(mod.scriptPath .."shop"):addWeapon({
+	shop:addWeapon({
 		id = "lmn_SmokeLauncher",
 		desc = "Adds Smoke Launcher to the store."
 	})

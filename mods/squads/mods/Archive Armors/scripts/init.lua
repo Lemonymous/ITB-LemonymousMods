@@ -21,8 +21,6 @@ function mod:init()
 end
 
 function mod:load(options, version)
-	require(self.scriptPath .."shop"):load(options)
-	
 	self.devastator:load(self.modApiExt)
 	self.bomber:load(self.modApiExt)
 	self.apc:load(self.modApiExt)

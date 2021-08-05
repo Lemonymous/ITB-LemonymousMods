@@ -1,4 +1,6 @@
 
+local shop = LApi.library:fetch("shop")
+
 local this = {}
 
 lmn_DevastatorMech = Pawn:new{
@@ -136,7 +138,7 @@ lmn_DevastatorCannon_A = lmn_DevastatorCannon:new{
 }
 
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
+	shop:addWeapon({
 		id = "lmn_DevastatorCannon",
 		desc = "Adds Devastator to the store."
 	})
