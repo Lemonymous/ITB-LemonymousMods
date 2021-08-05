@@ -8,7 +8,7 @@ local modApiExt = require(scriptPath .."modApiExt/modApiExt")
 local worldConstants = LApi.library:fetch("worldConstants")
 local weaponHover = require(scriptPath .."libs/weaponHover")
 local weaponArmed = require(scriptPath .."libs/weaponArmed")
-local effectBurst = require(scriptPath .."libs/effectBurst")
+local effectBurst = LApi.library:fetch("effectBurst")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 local shop = require(scriptPath .."libs/shop")
 

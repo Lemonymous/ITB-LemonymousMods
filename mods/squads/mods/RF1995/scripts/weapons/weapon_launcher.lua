@@ -8,7 +8,7 @@ local shop = require(scriptPath .."libs/shop")
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
-local effectBurst = require(scriptPath .."libs/effectBurst")
+local effectBurst = LApi.library:fetch("effectBurst")
 local weaponHover = require(scriptPath .."libs/weaponHover")
 local weaponArmed = require(scriptPath .."libs/weaponArmed")
 
