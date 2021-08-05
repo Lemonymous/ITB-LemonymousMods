@@ -3,6 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectPreview = LApi.library:fetch("effectPreview")
+local shop = LApi.library:fetch("shop")
 
 local this = {}
 
@@ -619,7 +620,7 @@ local function injectValues(dst, src)
 end
 
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
+	shop:addWeapon({
 		id = "lmn_DozerAtk",
 		name = lmn_DozerAtk.Name,
 		desc = "Adds Dozer Blades to the store."

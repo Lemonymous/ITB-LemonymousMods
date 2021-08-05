@@ -1,6 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
+local shop = LApi.library:fetch("shop")
 
 local this = {}
 
@@ -331,7 +332,7 @@ lmn_LiftAtk_Tip_B.GetSkillEffect = lmn_LiftAtk_Tip.GetSkillEffect
 lmn_LiftAtk_Tip_AB.GetSkillEffect = lmn_LiftAtk_Tip.GetSkillEffect
 
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
+	shop:addWeapon({
 		id = "lmn_LiftAtk",
 		desc = "Adds Fork Lift to the store."
 	})

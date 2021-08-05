@@ -1,6 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
+local shop = LApi.library:fetch("shop")
 local this = {}
 
 lmn_ChemMech = Pawn:new{
@@ -138,7 +139,7 @@ end
 lmn_ChemicalAtk_Tip_B.GetSkillEffect = lmn_ChemicalAtk_Tip.GetSkillEffect
 
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
+	shop:addWeapon({
 		id = "lmn_ChemicalAtk",
 		desc = "Adds Acid Jet to the store."
 	})
