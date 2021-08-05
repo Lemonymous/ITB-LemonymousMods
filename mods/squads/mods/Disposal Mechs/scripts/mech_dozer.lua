@@ -1,4 +1,6 @@
 
+local worldConstants = LApi.library:fetch("worldConstants")
+
 local this = {}
 
 lmn_DozerMech = Pawn:new{
@@ -294,9 +296,9 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 		addCharge(k, data.distanceMoved)									-- init charge recursion.
 	end
 	
-	this.worldConstants.SetSpeed(ret, self.VelX)
+	worldConstants:setSpeed(ret, self.VelX)
 	ret:AddCharge(Board:GetPath(p1, moveLoc, PATH_FLYER), NO_DELAY)			-- charge dozer.
-	this.worldConstants.ResetSpeed(ret)
+	worldConstants:resetSpeed(ret)
 	
 	local damage = SpaceDamage(p1)											-- throw dust behind dozer.
 	damage.sAnimation = "exploout0_".. (dir+2)%4
@@ -310,11 +312,11 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 				local start = p1 + step * v.start
 				local stop = p1 + step * v.stop
 				
-				this.worldConstants.SetSpeed(ret, self.VelX)
+				worldConstants:setSpeed(ret, self.VelX)
 				this.effectPreview.FilterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
 				ret:AddCharge(Board:GetPath(start, stop, PATH_FLYER), NO_DELAY)
 				this.effectPreview.RewindTile(ret, start)
-				this.worldConstants.ResetSpeed(ret)
+				worldConstants:resetSpeed(ret)
 				
 				if start ~= v.initLoc then
 					this.effectPreview.AddCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
@@ -328,7 +330,7 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 		end
 		
 		if k <= data.distanceMoved then
-			ret:AddDelay(0.08 * this.worldConstants.GetDefaultSpeed() / self.VelX)
+			ret:AddDelay(0.08 * worldConstants:getDefaultSpeed() / self.VelX)
 		end
 	end
 	
@@ -622,7 +624,6 @@ function this:init(mod)
 	
 	lmn_DozerMech.ImageOffset = require(mod.scriptPath .."colorMaps").Get(mod.id)
 	
-	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.effectPreview = require(mod.scriptPath .."effectPreview")
 	
 	modApi:appendAsset("img/units/player/lmn_mech_dozer.png", mod.resourcePath.. "img/units/player/dozer.png")
