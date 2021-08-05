@@ -368,7 +368,7 @@ lmn_SmokeLauncher_Tip_AB.GetSkillEffect = lmn_SmokeLauncher_Tip.GetSkillEffect
 
 local function HasSmokeLauncher()
 	for i = 0, 2 do
-		if this.armorDetection.HasPoweredWeapon(Game:GetPawn(i), "lmn_SmokeLauncher") then
+		if Game:GetPawn(i):IsWeaponPowered("lmn_SmokeLauncher") then
 			return true
 		end
 	end
@@ -406,8 +406,6 @@ function this:init(mod)
 		"Disconnecting them does save our grid, but they're still expensive. Keep this one online."
 	}
 	
-	self.armorDetection = require(mod.scriptPath.."armorDetection")
-	
 	modApi:appendAsset("img/units/player/lmn_mech_apc.png", mod.resourcePath .."img/units/player/apc.png")
 	modApi:appendAsset("img/units/player/lmn_mech_apc_a.png", mod.resourcePath .."img/units/player/apc_a.png")
 	modApi:appendAsset("img/units/player/lmn_mech_apc_broken.png", mod.resourcePath .."img/units/player/apc_broken.png")
@@ -439,14 +437,14 @@ function this:load(modApiExt)
 	modApiExt:addTileUnhighlightedHook(function() self.highlighted = nil end)
 	
 	modApiExt:addPawnSelectedHook(function(_, pawn)
-		if self.armorDetection.HasPoweredWeapon(pawn, "lmn_SmokeLauncher_A") then
+		if pawn:IsWeaponPowered("lmn_SmokeLauncher_A") then
 			self.orig_ignoreSmoke = _G[pawn:GetType()].IgnoreSmoke
 			_G[pawn:GetType()].IgnoreSmoke = true
 		end
 	end)
 	
 	modApiExt:addPawnDeselectedHook(function(_, pawn)
-		if self.armorDetection.HasPoweredWeapon(pawn, "lmn_SmokeLauncher_A") then
+		if pawn:IsWeaponPowered("lmn_SmokeLauncher_A") then
 			_G[pawn:GetType()].IgnoreSmoke = self.orig_ignoreSmoke
 		end
 	end)
