@@ -1,7 +1,5 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
---local colorMaps = require(mod.scriptPath .."libs/colorMaps")
---local imageOffset = colorMaps.Get(mod.id)
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
 modApi:appendAsset("img/units/player/lmn_ds_commando.png", mod.resourcePath.. "img/units/player/commando.png")
