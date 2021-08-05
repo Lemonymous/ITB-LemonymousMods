@@ -9,7 +9,6 @@ local mod =  {
 }
 
 local scripts = {
-	"modApiExt/modApiExt",
 	"libs/globals",
 	"libs/hooks",
 	"libs/nonMassiveDeployWarning",

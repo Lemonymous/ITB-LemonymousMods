@@ -50,7 +50,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
-local modApiExt = require(scriptPath .."modApiExt/modApiExt")
+local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 
 local this = {
 	id = mod.id .."_DeploymentWarning",

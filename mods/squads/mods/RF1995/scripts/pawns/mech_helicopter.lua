@@ -4,7 +4,7 @@ local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
-local modApiExt = require(scriptPath .."modApiExt/modApiExt")
+local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local worldConstants = LApi.library:fetch("worldConstants")
 local weaponHover = require(scriptPath .."libs/weaponHover")
 local weaponArmed = require(scriptPath .."libs/weaponArmed")

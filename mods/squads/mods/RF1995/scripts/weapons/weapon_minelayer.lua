@@ -8,7 +8,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
-local modApiExt = require(scriptPath .."modApiExt/modApiExt")
+local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local shop = require(scriptPath .."libs/shop")
 
 modApi:appendAsset("img/weapons/lmn_minelayer_mine.png", resourcePath .."img/weapons/mine.png")
