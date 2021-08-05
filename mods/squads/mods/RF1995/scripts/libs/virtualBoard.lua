@@ -13,7 +13,7 @@
 -- if there are additions you can think of, feel free to make
 -- suggestions in #modding-discussion in the ITB discord.
 --
--- requires libraries armorDetection and markDamage,
+-- requires libraries markDamage,
 -- and icons found in /img/virtualBoard/
 --
 --        ------------------------------------------------
@@ -251,7 +251,6 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
-local armorDetection = require(scriptPath .."libs/armorDetection")
 local weaponMarks = require(scriptPath .."libs/weaponMarks")
 
 local this = {
@@ -275,17 +274,6 @@ end
 
 local function HasCorpse(pawn)
 	return pawn:IsMech() or _G[pawn:GetType()]:GetCorpse()
-end
-
-local function HasForceAmp()
-	-- only applicable for TEAM_MECH
-	pawns = extract_table(Board:GetPawns(TEAM_MECH))
-	for _, id in ipairs(pawns) do
-		if armorDetection.HasPoweredPassive(Board:GetPawn(id), "Passive_ForceAmp") then
-			return true
-		end
-	end
-	return false
 end
 
 -- gets the virtual state of a pawn.
@@ -322,7 +310,7 @@ function this:GetPawnState(pawnId)
 	pawnState.isFrozen = pawn:IsFrozen()
 	pawnState.isShield = pawn:IsShield()
 	pawnState.isAcid = pawn:IsAcid()
-	pawnState.isArmor = armorDetection.IsArmor(pawn)
+	pawnState.isArmor = pawn:IsArmor()
 	pawnState.isKilled = false
 	
 	pawnState.damage = 0
@@ -737,7 +725,7 @@ function this:DamageSpace(spaceDamage)
 	local tile = spaceDamage.loc
 	local tileState = self:GetTileState(spaceDamage.loc)
 	local damage = spaceDamage.iDamage
-	local bumpDamage = HasForceAmp() and 2 or 1
+	local bumpDamage = IsPassiveSkill("Passive_ForceAmp") and 2 or 1
 	
 	------------------
 	-- direct damage.
