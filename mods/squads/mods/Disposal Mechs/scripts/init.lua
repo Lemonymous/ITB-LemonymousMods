@@ -9,8 +9,7 @@ local mod = {
 }
 
 function mod:init()
-	self.modApiExt = require(self.scriptPath .."modApiExt/modApiExt")
-	self.modApiExt:init()
+	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 	
 	self.colorMaps = require(self.scriptPath .."colorMaps")
 	self.colorMaps.Add(
@@ -39,8 +38,6 @@ function mod:init()
 end
 
 function mod:load(options, version)
-	self.modApiExt:load(self, options, version)
-	
 	require(self.scriptPath .."shop"):load(options)
 	
 	self.mech_chemical:load(self.modApiExt)
