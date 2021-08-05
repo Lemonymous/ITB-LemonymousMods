@@ -1,4 +1,7 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
+
 local this = {}
 
 lmn_StackerMech = Pawn:new{
@@ -7,7 +10,7 @@ lmn_StackerMech = Pawn:new{
 	Health = 3,
 	MoveSpeed = 3,
 	Image = "lmn_MechStacker",
-	ImageOffset = 1,
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_LiftAtk" },
 	SoundLocation = "/mech/prime/punch_mech/",
 	DefaultTeam = TEAM_PLAYER,
@@ -332,8 +335,6 @@ function this:init(mod)
 		id = "lmn_LiftAtk",
 		desc = "Adds Fork Lift to the store."
 	})
-	
-	lmn_StackerMech.ImageOffset = require(mod.scriptPath .."colorMaps").Get(mod.id)
 	
 	modApi:appendAsset("img/units/player/lmn_mech_stacker.png", mod.resourcePath.. "img/units/player/stacker.png")
 	modApi:appendAsset("img/units/player/lmn_mech_stacker_a.png", mod.resourcePath.. "img/units/player/stacker_a.png")

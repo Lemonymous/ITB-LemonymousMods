@@ -1,4 +1,6 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 
 local this = {}
@@ -9,7 +11,7 @@ lmn_DozerMech = Pawn:new{
 	Health = 3,
 	MoveSpeed = 3,
 	Image = "lmn_MechDozer",
-	ImageOffset = 1,
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_DozerAtk" },
 	SoundLocation = "/mech/brute/tank/",
 	DefaultTeam = TEAM_PLAYER,
@@ -621,8 +623,6 @@ function this:init(mod)
 		name = lmn_DozerAtk.Name,
 		desc = "Adds Dozer Blades to the store."
 	})
-	
-	lmn_DozerMech.ImageOffset = require(mod.scriptPath .."colorMaps").Get(mod.id)
 	
 	self.effectPreview = require(mod.scriptPath .."effectPreview")
 	

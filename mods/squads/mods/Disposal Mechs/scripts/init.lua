@@ -14,21 +14,7 @@ end
 
 function mod:init()
 	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
-	
-	self.colorMaps = require(self.scriptPath .."colorMaps")
-	self.colorMaps.Add(
-		self.id,
-		{
-			lights =         { 46, 229, 229},
-			main_highlight = {172, 140, 108},
-			main_light =     {105,  68,  72},
-			main_mid =       { 67,  45,  50},
-			main_dark =      { 23,  17,  19},
-			metal_dark =     { 36,  37,  29},
-			metal_mid =      { 82,  88,  70},
-			metal_light =    {169, 183, 147}
-		}
-	)
+	require(self.scriptPath.."palette")
 	
 	self.mech_chemical = require(self.scriptPath .."mech_chemical")
 	self.mech_dozer = require(self.scriptPath .."mech_dozer")

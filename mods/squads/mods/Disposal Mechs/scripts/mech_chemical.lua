@@ -1,4 +1,6 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local this = {}
 
 lmn_ChemMech = Pawn:new{
@@ -7,7 +9,7 @@ lmn_ChemMech = Pawn:new{
 	Health = 3,
 	MoveSpeed = 3,
 	Image = "lmn_MechDissolver",
-	ImageOffset = 1,
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_ChemicalAtk" },
 	SoundLocation = "/mech/science/pulse_mech/",
 	DefaultTeam = TEAM_PLAYER,
@@ -140,8 +142,6 @@ function this:init(mod)
 		id = "lmn_ChemicalAtk",
 		desc = "Adds Acid Jet to the store."
 	})
-	
-	lmn_ChemMech.ImageOffset = require(mod.scriptPath .."colorMaps").Get(mod.id)
 	
 	modApi:appendAsset("img/units/player/lmn_mech_dissolver.png", mod.resourcePath.. "img/units/player/dissolver.png")
 	modApi:appendAsset("img/units/player/lmn_mech_dissolver_a.png", mod.resourcePath.. "img/units/player/dissolver_a.png")
