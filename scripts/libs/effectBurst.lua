@@ -10,7 +10,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
-require(scriptPath .."libs/globals")
+LApi.library:fetch("globals")
 local index_terrain
 local index_hp
 
