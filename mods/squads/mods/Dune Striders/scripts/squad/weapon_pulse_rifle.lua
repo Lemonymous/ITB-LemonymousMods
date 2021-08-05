@@ -1,7 +1,6 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local utils = require(mod.scriptPath .."libs/utils")
-local effectPreview = require(mod.scriptPath .."libs/effectPreview")
 local effectBurst = require(mod.scriptPath .."libs/effectBurst")
 local worldConstants = LApi.library:fetch("worldConstants")
 
