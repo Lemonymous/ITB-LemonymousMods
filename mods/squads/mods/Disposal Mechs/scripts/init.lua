@@ -13,7 +13,6 @@ function mod:metadata()
 end
 
 function mod:init()
-	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 	require(self.scriptPath.."palette")
 	require(self.scriptPath.."mech_chemical")
 	require(self.scriptPath.."mech_dozer")
