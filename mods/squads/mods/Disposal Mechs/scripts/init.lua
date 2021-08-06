@@ -18,19 +18,10 @@ function mod:init()
 	require(self.scriptPath.."mech_chemical")
 	require(self.scriptPath.."mech_dozer")
 	require(self.scriptPath.."mech_stacker")
+	require(self.scriptPath.."squad/squad")
 end
 
 function mod:load(options, version)
-	
-	modApi:addSquad(
-		{
-			"Disposal Mechs",
-			"lmn_StackerMech", "lmn_DozerMech", "lmn_ChemMech"
-		},
-		"Disposal Mechs",
-		"Originally made by Detritus as waste disposal mechs. Now repurposed to fight the Vek.",
-		self.resourcePath .. "img/icons/squad_icon.png"
-	)
 end
 
 return mod
