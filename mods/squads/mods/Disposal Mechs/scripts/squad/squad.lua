@@ -8,7 +8,9 @@ modApi.events.onModLoaded:subscribe(function(id)
 		{
 			id = "lmn_Disposal_Mechs",
 			"Disposal Mechs",
-			"lmn_StackerMech", "lmn_DozerMech", "lmn_ChemMech"
+			"lmn_StackerMech",
+			"lmn_DozerMech",
+			"lmn_ChemMech"
 		},
 		"Disposal Mechs",
 		"Originally made by Detritus as waste disposal mechs. Now repurposed to fight the Vek.",
