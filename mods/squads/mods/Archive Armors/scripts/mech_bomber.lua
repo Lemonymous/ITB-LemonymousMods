@@ -1,7 +1,7 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
 local shop = LApi.library:fetch("shop")
-
-local this = {}
 
 lmn_BomberMech = Pawn:new{
 	Name = "Bomber Mech",
@@ -242,41 +242,33 @@ lmn_Bombrun_Tip_A.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 lmn_Bombrun_Tip_B.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 lmn_Bombrun_Tip_AB.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 
-function this:init(mod)
-	shop:addWeapon({
-		id = "lmn_Bombrun",
-		desc = "Adds Bomb Run to the store."
-	})
+shop:addWeapon({
+	id = "lmn_Bombrun",
+	desc = "Adds Bomb Run to the store."
+})
 
-	modApi:appendAsset("img/units/player/lmn_mech_bomber.png", mod.resourcePath .."img/units/player/bomber.png")
-	modApi:appendAsset("img/units/player/lmn_mech_bomber_a.png", mod.resourcePath .."img/units/player/bomber_a.png")
-	modApi:appendAsset("img/units/player/lmn_mech_bomber_broken.png", mod.resourcePath .."img/units/player/bomber_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_bomber_w_broken.png", mod.resourcePath .."img/units/player/bomber_w_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_bomber_ns.png", mod.resourcePath .."img/units/player/bomber_ns.png")
-	modApi:appendAsset("img/units/player/lmn_mech_bomber_h.png", mod.resourcePath .."img/units/player/bomber_h.png")
-	
-	modApi:appendAsset("img/weapons/lmn_bombrun.png", mod.resourcePath .."img/weapons/bombrun.png")
-	modApi:appendAsset("img/effects/lmn_explo_bomb.png", mod.resourcePath .."img/effects/explo_bomb.png")
-	
-	setfenv(1, ANIMS)
-	lmn_MechBomber =			MechUnit:new{ Image = "units/player/lmn_mech_bomber.png", PosX = -20, PosY = -10 }
-	lmn_MechBombera =			lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_a.png", NumFrames = 4 }
-	lmn_MechBomber_broken =		lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_broken.png", PosX = -21, PosY = 2 }
-	lmn_MechBomberw =			lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_w_broken.png",  PosX = -21, PosY = 9 }
-	lmn_MechBomberw_broken =	lmn_MechBomberw:new{ Image = "units/player/lmn_mech_bomber_w_broken.png" }
-	lmn_MechBomber_ns =			MechIcon:new{ Image = "units/player/lmn_mech_bomber_ns.png" }
-	
-	lmn_bombdrop = Animation:new{
-		Image = "effects/lmn_explo_bomb.png",
-		NumFrames = 10,
-		Time = 0.032, --multiple of 0.008
-		PosX = -18,
-		PosY = -12
-	}
-end
+modApi:appendAsset("img/units/player/lmn_mech_bomber.png", resourcePath .."img/units/player/bomber.png")
+modApi:appendAsset("img/units/player/lmn_mech_bomber_a.png", resourcePath .."img/units/player/bomber_a.png")
+modApi:appendAsset("img/units/player/lmn_mech_bomber_broken.png", resourcePath .."img/units/player/bomber_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_bomber_w_broken.png", resourcePath .."img/units/player/bomber_w_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_bomber_ns.png", resourcePath .."img/units/player/bomber_ns.png")
+modApi:appendAsset("img/units/player/lmn_mech_bomber_h.png", resourcePath .."img/units/player/bomber_h.png")
 
-function this:load(modApiExt)
-	
-end
+modApi:appendAsset("img/weapons/lmn_bombrun.png", resourcePath .."img/weapons/bombrun.png")
+modApi:appendAsset("img/effects/lmn_explo_bomb.png", resourcePath .."img/effects/explo_bomb.png")
 
-return this
+setfenv(1, ANIMS)
+lmn_MechBomber =			MechUnit:new{ Image = "units/player/lmn_mech_bomber.png", PosX = -20, PosY = -10 }
+lmn_MechBombera =			lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_a.png", NumFrames = 4 }
+lmn_MechBomber_broken =		lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_broken.png", PosX = -21, PosY = 2 }
+lmn_MechBomberw =			lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_w_broken.png",  PosX = -21, PosY = 9 }
+lmn_MechBomberw_broken =	lmn_MechBomberw:new{ Image = "units/player/lmn_mech_bomber_w_broken.png" }
+lmn_MechBomber_ns =			MechIcon:new{ Image = "units/player/lmn_mech_bomber_ns.png" }
+
+lmn_bombdrop = Animation:new{
+	Image = "effects/lmn_explo_bomb.png",
+	NumFrames = 10,
+	Time = 0.032, --multiple of 0.008
+	PosX = -18,
+	PosY = -12
+}

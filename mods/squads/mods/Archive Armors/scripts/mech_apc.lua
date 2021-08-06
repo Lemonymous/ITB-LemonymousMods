@@ -1,7 +1,8 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
 local shop = LApi.library:fetch("shop")
-
-local this = {}
+local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 
 lmn_SmokeMech = Pawn:new{
 	Name = "APC Mech",
@@ -149,8 +150,8 @@ function lmn_SmokeLauncher:ReplacePylon()
 	
 	local voiceId = "MissionFinal_Pylon_Smoked"
 	
-	if not mission[this.mod.id .."_smokeEvac"] then
-		mission[this.mod.id .."_smokeEvac"] = true
+	if not mission[mod.id .."_smokeEvac"] then
+		mission[mod.id .."_smokeEvac"] = true
 		voiceId = "MissionFinal_Pylon_Smoked_First"
 	end
 	
@@ -393,77 +394,72 @@ function TriggerVoiceEvent(event, ...)
 	oldTriggerVoiceEvent(event, ...)
 end
 
-function this:init(mod)
-	self.mod = mod
-	shop:addWeapon({
-		id = "lmn_SmokeLauncher",
-		desc = "Adds Smoke Launcher to the store."
-	})
-	
-	Personality["CEO_Sand"]["MissionFinal_Pylons_Replace"] = {"Sending down power pylons. Keep them operational, we don't have many more."}
-	Personality["CEO_Sand"]["MissionFinal_Pylon_Smoked_First"] = {"Sending down a replacement pylon. Keep this one intact."}
-	Personality["CEO_Sand"]["MissionFinal_Pylon_Smoked"] = {
-		"Sending down a replacement pylon. Take care of this one.",
-		"Sending another pylon. You need them to stay connected to the grid.",
-		"Disconnecting them does save our grid, but they're still expensive. Keep this one online."
-	}
-	
-	modApi:appendAsset("img/units/player/lmn_mech_apc.png", mod.resourcePath .."img/units/player/apc.png")
-	modApi:appendAsset("img/units/player/lmn_mech_apc_a.png", mod.resourcePath .."img/units/player/apc_a.png")
-	modApi:appendAsset("img/units/player/lmn_mech_apc_broken.png", mod.resourcePath .."img/units/player/apc_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_apc_w.png", mod.resourcePath .."img/units/player/apc_w.png")
-	modApi:appendAsset("img/units/player/lmn_mech_apc_w_broken.png", mod.resourcePath .."img/units/player/apc_w_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_apc_ns.png", mod.resourcePath .."img/units/player/apc_ns.png")
-	modApi:appendAsset("img/units/player/lmn_mech_apc_h.png", mod.resourcePath .."img/units/player/apc_h.png")
-	
-	modApi:appendAsset("img/weapons/lmn_smoke_launcher.png", mod.resourcePath .."img/weapons/smoke_launcher.png")
-	
-	modApi:copyAsset("img/combat/icons/people.png", "img/combat/icons/lmn_people.png")
-	modApi:appendAsset("img/combat/icons/lmn_people_none.png", mod.resourcePath .."img/combat/icons/people_none.png")
-	Location["combat/icons/lmn_people.png"] = Point(-35,-17)
-	Location["combat/icons/lmn_people_none.png"] = Point(-35,-17)
-	
-	setfenv(1, ANIMS)
-	lmn_MechApc =			MechUnit:new{ Image = "units/player/lmn_mech_apc.png", PosX = -19, PosY = 3 }
-	lmn_MechApca =			lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_a.png", NumFrames = 4 }
-	lmn_MechApc_broken =	lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_broken.png", }
-	lmn_MechApcw =			lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_w.png", PosY = 13 }
-	lmn_MechApcw_broken =	lmn_MechApcw:new{ Image = "units/player/lmn_mech_apc_w_broken.png" }
-	lmn_MechApc_ns =		MechIcon:new{ Image = "units/player/lmn_mech_apc_ns.png" }
-end
+local orig_ignoreSmoke
+modApi.events.onModLoaded:subscribe(function(id)
+	if id ~= mod.id then return end
 
-function this:load(modApiExt)
-	self.modApiExt = modApiExt
-	
-	modApiExt:addTileHighlightedHook(function(_, tile) self.highlighted = tile end)
-	modApiExt:addTileUnhighlightedHook(function() self.highlighted = nil end)
-	
 	modApiExt:addPawnSelectedHook(function(_, pawn)
 		if pawn:IsWeaponPowered("lmn_SmokeLauncher_A") then
-			self.orig_ignoreSmoke = _G[pawn:GetType()].IgnoreSmoke
+			orig_ignoreSmoke = _G[pawn:GetType()].IgnoreSmoke
 			_G[pawn:GetType()].IgnoreSmoke = true
 		end
 	end)
-	
+
 	modApiExt:addPawnDeselectedHook(function(_, pawn)
 		if pawn:IsWeaponPowered("lmn_SmokeLauncher_A") then
-			_G[pawn:GetType()].IgnoreSmoke = self.orig_ignoreSmoke
+			_G[pawn:GetType()].IgnoreSmoke = orig_ignoreSmoke
 		end
 	end)
-	
-	modApi:addMissionUpdateHook(function()
-		if	targetInfo.pawn												and
-			targetInfo.target == self.highlighted						and
-			targetInfo.weaponId > 0										and
-			targetInfo.pawn:GetArmedWeaponId() == targetInfo.weaponId	and
-			
-			Board:IsBuilding(targetInfo.target)							and					
-			Board:IsPowered(targetInfo.target)							and
-			not Board:IsUniqueBuilding(targetInfo.target)				then
-			
-			Board:MarkFlashing(targetInfo.target, true)
-		end
-	end)
-end
+end)
 
-return this
+modApi.events.onMissionUpdate:subscribe(function()
+	local highlighted = Board:GetHighlighted()
+
+	if	targetInfo.pawn												and
+		targetInfo.target == highlighted							and
+		targetInfo.weaponId > 0										and
+		targetInfo.pawn:GetArmedWeaponId() == targetInfo.weaponId	and
+		
+		Board:IsBuilding(targetInfo.target)							and					
+		Board:IsPowered(targetInfo.target)							and
+		not Board:IsUniqueBuilding(targetInfo.target)				then
+		
+		Board:MarkFlashing(targetInfo.target, true)
+	end
+end)
+
+shop:addWeapon({
+	id = "lmn_SmokeLauncher",
+	desc = "Adds Smoke Launcher to the store."
+})
+
+Personality["CEO_Sand"]["MissionFinal_Pylons_Replace"] = {"Sending down power pylons. Keep them operational, we don't have many more."}
+Personality["CEO_Sand"]["MissionFinal_Pylon_Smoked_First"] = {"Sending down a replacement pylon. Keep this one intact."}
+Personality["CEO_Sand"]["MissionFinal_Pylon_Smoked"] = {
+	"Sending down a replacement pylon. Take care of this one.",
+	"Sending another pylon. You need them to stay connected to the grid.",
+	"Disconnecting them does save our grid, but they're still expensive. Keep this one online."
+}
+
+modApi:appendAsset("img/units/player/lmn_mech_apc.png", resourcePath .."img/units/player/apc.png")
+modApi:appendAsset("img/units/player/lmn_mech_apc_a.png", resourcePath .."img/units/player/apc_a.png")
+modApi:appendAsset("img/units/player/lmn_mech_apc_broken.png", resourcePath .."img/units/player/apc_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_apc_w.png", resourcePath .."img/units/player/apc_w.png")
+modApi:appendAsset("img/units/player/lmn_mech_apc_w_broken.png", resourcePath .."img/units/player/apc_w_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_apc_ns.png", resourcePath .."img/units/player/apc_ns.png")
+modApi:appendAsset("img/units/player/lmn_mech_apc_h.png", resourcePath .."img/units/player/apc_h.png")
+
+modApi:appendAsset("img/weapons/lmn_smoke_launcher.png", resourcePath .."img/weapons/smoke_launcher.png")
+
+modApi:copyAsset("img/combat/icons/people.png", "img/combat/icons/lmn_people.png")
+modApi:appendAsset("img/combat/icons/lmn_people_none.png", resourcePath .."img/combat/icons/people_none.png")
+Location["combat/icons/lmn_people.png"] = Point(-35,-17)
+Location["combat/icons/lmn_people_none.png"] = Point(-35,-17)
+
+setfenv(1, ANIMS)
+lmn_MechApc =			MechUnit:new{ Image = "units/player/lmn_mech_apc.png", PosX = -19, PosY = 3 }
+lmn_MechApca =			lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_a.png", NumFrames = 4 }
+lmn_MechApc_broken =	lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_broken.png", }
+lmn_MechApcw =			lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_w.png", PosY = 13 }
+lmn_MechApcw_broken =	lmn_MechApcw:new{ Image = "units/player/lmn_mech_apc_w_broken.png" }
+lmn_MechApc_ns =		MechIcon:new{ Image = "units/player/lmn_mech_apc_ns.png" }

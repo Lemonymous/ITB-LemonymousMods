@@ -1,7 +1,7 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
 local shop = LApi.library:fetch("shop")
-
-local this = {}
 
 lmn_DevastatorMech = Pawn:new{
 	Name = "Devastator Mech",
@@ -137,35 +137,27 @@ lmn_DevastatorCannon_A = lmn_DevastatorCannon:new{
 	Damage = 5,
 }
 
-function this:init(mod)
-	shop:addWeapon({
-		id = "lmn_DevastatorCannon",
-		desc = "Adds Devastator to the store."
-	})
-	
-	modApi:appendAsset("img/units/player/lmn_mech_devastator.png", mod.resourcePath .."img/units/player/devastator.png")
-	modApi:appendAsset("img/units/player/lmn_mech_devastator_a.png", mod.resourcePath .."img/units/player/devastator_a.png")
-	modApi:appendAsset("img/units/player/lmn_mech_devastator_broken.png", mod.resourcePath .."img/units/player/devastator_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_devastator_w.png", mod.resourcePath .."img/units/player/devastator_w.png")
-	modApi:appendAsset("img/units/player/lmn_mech_devastator_w_broken.png", mod.resourcePath .."img/units/player/devastator_w_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_devastator_ns.png", mod.resourcePath .."img/units/player/devastator_ns.png")
-	modApi:appendAsset("img/units/player/lmn_mech_devastator_h.png", mod.resourcePath .."img/units/player/devastator_h.png")
-	
-	modApi:appendAsset("img/weapons/lmn_devastaor.png", mod.resourcePath .."img/weapons/devastaor.png")
-	modApi:appendAsset("img/effects/lmn_shot_devastator_U.png", mod.resourcePath .."img/effects/shot_devastator_U.png")
-	modApi:appendAsset("img/effects/lmn_shot_devastator_R.png", mod.resourcePath .."img/effects/shot_devastator_R.png")
-	
-	setfenv(1, ANIMS)
-	lmn_MechDevastator =			MechUnit:new{ Image = "units/player/lmn_mech_devastator.png", PosX = -16, PosY = 1 }
-	lmn_MechDevastatora =			lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_a.png", NumFrames = 4 }
-	lmn_MechDevastator_broken =		lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_broken.png", }
-	lmn_MechDevastatorw =			lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_w.png", PosY = 9 }
-	lmn_MechDevastatorw_broken =	lmn_MechDevastatorw:new{ Image = "units/player/lmn_mech_devastator_w_broken.png" }
-	lmn_MechDevastator_ns =			MechIcon:new{ Image = "units/player/lmn_mech_devastator_ns.png" }
-end
+shop:addWeapon({
+	id = "lmn_DevastatorCannon",
+	desc = "Adds Devastator to the store."
+})
 
-function this:load(modApiExt)
-	
-end
+modApi:appendAsset("img/units/player/lmn_mech_devastator.png", resourcePath .."img/units/player/devastator.png")
+modApi:appendAsset("img/units/player/lmn_mech_devastator_a.png", resourcePath .."img/units/player/devastator_a.png")
+modApi:appendAsset("img/units/player/lmn_mech_devastator_broken.png", resourcePath .."img/units/player/devastator_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_devastator_w.png", resourcePath .."img/units/player/devastator_w.png")
+modApi:appendAsset("img/units/player/lmn_mech_devastator_w_broken.png", resourcePath .."img/units/player/devastator_w_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_devastator_ns.png", resourcePath .."img/units/player/devastator_ns.png")
+modApi:appendAsset("img/units/player/lmn_mech_devastator_h.png", resourcePath .."img/units/player/devastator_h.png")
 
-return this
+modApi:appendAsset("img/weapons/lmn_devastaor.png", resourcePath .."img/weapons/devastaor.png")
+modApi:appendAsset("img/effects/lmn_shot_devastator_U.png", resourcePath .."img/effects/shot_devastator_U.png")
+modApi:appendAsset("img/effects/lmn_shot_devastator_R.png", resourcePath .."img/effects/shot_devastator_R.png")
+
+setfenv(1, ANIMS)
+lmn_MechDevastator =			MechUnit:new{ Image = "units/player/lmn_mech_devastator.png", PosX = -16, PosY = 1 }
+lmn_MechDevastatora =			lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_a.png", NumFrames = 4 }
+lmn_MechDevastator_broken =		lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_broken.png", }
+lmn_MechDevastatorw =			lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_w.png", PosY = 9 }
+lmn_MechDevastatorw_broken =	lmn_MechDevastatorw:new{ Image = "units/player/lmn_mech_devastator_w_broken.png" }
+lmn_MechDevastator_ns =			MechIcon:new{ Image = "units/player/lmn_mech_devastator_ns.png" }
