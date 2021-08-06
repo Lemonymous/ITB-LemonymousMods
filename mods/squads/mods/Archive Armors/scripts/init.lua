@@ -8,25 +8,14 @@ local mod = {
 	requirements = {}
 }
 
+local scripts = {
+	"squad/",
+}
+
 function mod:init()
-	require(self.scriptPath .."mech_devastator")
-	require(self.scriptPath .."mech_bomber")
-	require(self.scriptPath .."mech_apc")
+	LApi.scripts:init(self.scriptPath, scripts)
 end
 
-function mod:load(options, version)
-	
-	modApi:addSquad(
-		{
-			"Archive Armors",
-			"lmn_DevastatorMech",
-			"lmn_BomberMech",
-			"lmn_SmokeMech"
-		},
-		"Archive Armors",
-		"Archive designed this squad for engagements so dire, collateral damage was deemed unavoidable.",
-		self.resourcePath .."img/icons/squad_icon.png"
-	)
-end
+function mod:load(options, version) end
 
 return mod
