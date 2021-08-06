@@ -34,6 +34,7 @@ end
 function mod:init(options)
 	require(self.scriptPath.."LApi/LApi")
 	LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt"):init()
+	LApi.library:fetch("artilleryArc")
 end
 
 function mod:load(options, version)
