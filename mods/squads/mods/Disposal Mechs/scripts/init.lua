@@ -15,20 +15,12 @@ end
 function mod:init()
 	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 	require(self.scriptPath.."palette")
-	
-	self.mech_chemical = require(self.scriptPath .."mech_chemical")
-	self.mech_dozer = require(self.scriptPath .."mech_dozer")
-	self.mech_stacker = require(self.scriptPath .."mech_stacker")
-	
-	self.mech_chemical:init(self)
-	self.mech_dozer:init(self)
-	self.mech_stacker:init(self)
+	require(self.scriptPath.."mech_chemical")
+	require(self.scriptPath.."mech_dozer")
+	require(self.scriptPath.."mech_stacker")
 end
 
 function mod:load(options, version)
-	self.mech_chemical:load(self.modApiExt)
-	self.mech_dozer:load(options, self.modApiExt)
-	self.mech_stacker:load(self.modApiExt)
 	
 	modApi:addSquad(
 		{

@@ -1,8 +1,8 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local shop = LApi.library:fetch("shop")
-local this = {}
 
 lmn_ChemMech = Pawn:new{
 	Name = "Dissolver Mech",
@@ -138,73 +138,66 @@ end
 
 lmn_ChemicalAtk_Tip_B.GetSkillEffect = lmn_ChemicalAtk_Tip.GetSkillEffect
 
-function this:init(mod)
-	shop:addWeapon({
-		id = "lmn_ChemicalAtk",
-		desc = "Adds Acid Jet to the store."
-	})
-	
-	modApi:appendAsset("img/units/player/lmn_mech_dissolver.png", mod.resourcePath.. "img/units/player/dissolver.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dissolver_a.png", mod.resourcePath.. "img/units/player/dissolver_a.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dissolver_w.png", mod.resourcePath.. "img/units/player/dissolver_w.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dissolver_broken.png", mod.resourcePath.. "img/units/player/dissolver_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dissolver_w_broken.png", mod.resourcePath.. "img/units/player/dissolver_w_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dissolver_ns.png", mod.resourcePath.. "img/units/player/dissolver_ns.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dissolver_h.png", mod.resourcePath.. "img/units/player/dissolver_h.png")
-	
-	modApi:appendAsset("img/weapons/lmn_weapon_chem.png", mod.resourcePath .."img/weapons/acidjet.png")
-	for k = 1, 3 do
-		for _, dir in ipairs({"D", "L", "R", "U"}) do
-			local ext = k .."_".. dir ..".png"
-			modApi:appendAsset("img/effects/lmn_acidthrower".. ext, mod.resourcePath .."img/effects/acidthrower".. ext)
-		end
+shop:addWeapon({
+	id = "lmn_ChemicalAtk",
+	desc = "Adds Acid Jet to the store."
+})
+
+modApi:appendAsset("img/units/player/lmn_mech_dissolver.png", resourcePath.. "img/units/player/dissolver.png")
+modApi:appendAsset("img/units/player/lmn_mech_dissolver_a.png", resourcePath.. "img/units/player/dissolver_a.png")
+modApi:appendAsset("img/units/player/lmn_mech_dissolver_w.png", resourcePath.. "img/units/player/dissolver_w.png")
+modApi:appendAsset("img/units/player/lmn_mech_dissolver_broken.png", resourcePath.. "img/units/player/dissolver_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_dissolver_w_broken.png", resourcePath.. "img/units/player/dissolver_w_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_dissolver_ns.png", resourcePath.. "img/units/player/dissolver_ns.png")
+modApi:appendAsset("img/units/player/lmn_mech_dissolver_h.png", resourcePath.. "img/units/player/dissolver_h.png")
+
+modApi:appendAsset("img/weapons/lmn_weapon_chem.png", resourcePath .."img/weapons/acidjet.png")
+for k = 1, 3 do
+	for _, dir in ipairs({"D", "L", "R", "U"}) do
+		local ext = k .."_".. dir ..".png"
+		modApi:appendAsset("img/effects/lmn_acidthrower".. ext, resourcePath .."img/effects/acidthrower".. ext)
 	end
-	
-	setfenv(1, ANIMS)
-	lmn_MechDissolver =			MechUnit:new{ Image = "units/player/lmn_mech_dissolver.png", PosX = -19, PosY = 0 }
-	lmn_MechDissolvera =		lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_a.png", NumFrames = 4 }
-	lmn_MechDissolver_broken =	lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_broken.png" }
-	lmn_MechDissolverw =		lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_w.png", PosY = 8 }
-	lmn_MechDissolverw_broken =	lmn_MechDissolverw:new{ Image = "units/player/lmn_mech_dissolver_w_broken.png" }
-	lmn_MechDissolver_ns =		MechIcon:new{ Image = "units/player/lmn_mech_dissolver_ns.png" }
-	
-	lmn_acidthrower1_0 = Animation:new{
-		Image = "effects/lmn_acidthrower1_U.png",
-		NumFrames = 9,
-		Time = 0.07,
-		PosX = -60,
-		PosY = -8
-	}
-	lmn_acidthrower2_0 = lmn_acidthrower1_0:new{ Image = "effects/lmn_acidthrower2_U.png" }
-	lmn_acidthrower3_0 = lmn_acidthrower1_0:new{ Image = "effects/lmn_acidthrower3_U.png" }
-
-	lmn_acidthrower1_1 = lmn_acidthrower1_0:new{
-		Image = "effects/lmn_acidthrower1_R.png",
-		PosX = -62,
-		PosY = -34
-	}
-	lmn_acidthrower2_1 = lmn_acidthrower1_1:new{ Image = "effects/lmn_acidthrower2_R.png" }
-	lmn_acidthrower3_1 = lmn_acidthrower1_1:new{ Image = "effects/lmn_acidthrower3_R.png" }
-
-	lmn_acidthrower1_2 = lmn_acidthrower1_0:new{
-		Image = "effects/lmn_acidthrower1_D.png",
-		PosX = -25,
-		PosY = -34
-	}
-	lmn_acidthrower2_2 = lmn_acidthrower1_2:new{ Image = "effects/lmn_acidthrower2_D.png" }
-	lmn_acidthrower3_2 = lmn_acidthrower1_2:new{ Image = "effects/lmn_acidthrower3_D.png" }
-
-	lmn_acidthrower1_3 = lmn_acidthrower1_0:new{
-		Image = "effects/lmn_acidthrower1_L.png",
-		PosX = -22,
-		PosY = -8
-	}
-	lmn_acidthrower2_3 = lmn_acidthrower1_3:new{ Image = "effects/lmn_acidthrower2_L.png" }
-	lmn_acidthrower3_3 = lmn_acidthrower1_3:new{ Image = "effects/lmn_acidthrower3_L.png" }
 end
 
-function this:load(modApiExt)
-	self.modApiExt = modApiExt
-end
+setfenv(1, ANIMS)
+lmn_MechDissolver =			MechUnit:new{ Image = "units/player/lmn_mech_dissolver.png", PosX = -19, PosY = 0 }
+lmn_MechDissolvera =		lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_a.png", NumFrames = 4 }
+lmn_MechDissolver_broken =	lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_broken.png" }
+lmn_MechDissolverw =		lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_w.png", PosY = 8 }
+lmn_MechDissolverw_broken =	lmn_MechDissolverw:new{ Image = "units/player/lmn_mech_dissolver_w_broken.png" }
+lmn_MechDissolver_ns =		MechIcon:new{ Image = "units/player/lmn_mech_dissolver_ns.png" }
 
-return this
+lmn_acidthrower1_0 = Animation:new{
+	Image = "effects/lmn_acidthrower1_U.png",
+	NumFrames = 9,
+	Time = 0.07,
+	PosX = -60,
+	PosY = -8
+}
+lmn_acidthrower2_0 = lmn_acidthrower1_0:new{ Image = "effects/lmn_acidthrower2_U.png" }
+lmn_acidthrower3_0 = lmn_acidthrower1_0:new{ Image = "effects/lmn_acidthrower3_U.png" }
+
+lmn_acidthrower1_1 = lmn_acidthrower1_0:new{
+	Image = "effects/lmn_acidthrower1_R.png",
+	PosX = -62,
+	PosY = -34
+}
+lmn_acidthrower2_1 = lmn_acidthrower1_1:new{ Image = "effects/lmn_acidthrower2_R.png" }
+lmn_acidthrower3_1 = lmn_acidthrower1_1:new{ Image = "effects/lmn_acidthrower3_R.png" }
+
+lmn_acidthrower1_2 = lmn_acidthrower1_0:new{
+	Image = "effects/lmn_acidthrower1_D.png",
+	PosX = -25,
+	PosY = -34
+}
+lmn_acidthrower2_2 = lmn_acidthrower1_2:new{ Image = "effects/lmn_acidthrower2_D.png" }
+lmn_acidthrower3_2 = lmn_acidthrower1_2:new{ Image = "effects/lmn_acidthrower3_D.png" }
+
+lmn_acidthrower1_3 = lmn_acidthrower1_0:new{
+	Image = "effects/lmn_acidthrower1_L.png",
+	PosX = -22,
+	PosY = -8
+}
+lmn_acidthrower2_3 = lmn_acidthrower1_3:new{ Image = "effects/lmn_acidthrower2_L.png" }
+lmn_acidthrower3_3 = lmn_acidthrower1_3:new{ Image = "effects/lmn_acidthrower3_L.png" }
+	

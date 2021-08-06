@@ -1,11 +1,10 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectPreview = LApi.library:fetch("effectPreview")
 local shop = LApi.library:fetch("shop")
-
-local this = {}
 
 lmn_DozerMech = Pawn:new{
 	Name = "Dozer Mech",
@@ -173,15 +172,17 @@ function lmn_DozerAtk:GetDozerData(point, dir, range)
 	return ret
 end
 
+local imageMarkTip
+local imageMark
 function lmn_DozerAtk:GetTargetArea(point, parentSkill, isTipImage)
 	
 	local ret = PointList()
 	local pathing = Pawn:GetPathProf()
 	
 	if isTipImage then
-		this.isImageMarkTip = {}
+		imageMarkTip = {}
 	else
-		this.isImageMark = {}
+		imageMark = {}
 	end
 	
 	for dir = DIR_START, DIR_END do
@@ -189,11 +190,11 @@ function lmn_DozerAtk:GetTargetArea(point, parentSkill, isTipImage)
 		local isImageMark
 		
 		if isTipImage then
-			this.isImageMarkTip[dir] = {}
-			isImageMark = this.isImageMarkTip[dir]
+			imageMarkTip[dir] = {}
+			isImageMark = imageMarkTip[dir]
 		else
-			this.isImageMark[dir] = {}
-			isImageMark = this.isImageMark[dir]
+			imageMark[dir] = {}
+			isImageMark = imageMark[dir]
 		end
 		
 		for k = 1, INT_MAX do										-- populate a table for imageMarks
@@ -253,9 +254,9 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 	
 	local isImageMark
 	if isTipImage then
-		isImageMark = this.isImageMarkTip[dir]
+		isImageMark = imageMarkTip[dir]
 	else
-		isImageMark = this.isImageMark[dir]
+		isImageMark = imageMark[dir]
 	end
 	
 	local data = self:GetDozerData(p1, dir, distance)						-- get data for this target tile.
@@ -317,13 +318,13 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 				local stop = p1 + step * v.stop
 				
 				worldConstants:setSpeed(ret, self.VelX)
-				effectPreview.FilterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
+				effectPreview:FilterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
 				ret:AddCharge(Board:GetPath(start, stop, PATH_FLYER), NO_DELAY)
-				effectPreview.RewindTile(ret, start)
+				effectPreview:RewindTile(ret, start)
 				worldConstants:resetSpeed(ret)
 				
 				if start ~= v.initLoc then
-					effectPreview.AddCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
+					effectPreview:AddCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
 				end
 			end
 		end
@@ -338,7 +339,7 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 		end
 	end
 	
-	effectPreview.AddCharge(ret, p1, moveLoc)
+	effectPreview:AddCharge(ret, p1, moveLoc)
 	
 	if moveLoc ~= p2 then													-- if we should crash,
 		
@@ -619,35 +620,11 @@ local function injectValues(dst, src)
 	end
 end
 
-function this:init(mod)
-	shop:addWeapon({
-		id = "lmn_DozerAtk",
-		name = lmn_DozerAtk.Name,
-		desc = "Adds Dozer Blades to the store."
-	})
-	
-	modApi:appendAsset("img/units/player/lmn_mech_dozer.png", mod.resourcePath.. "img/units/player/dozer.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dozer_a.png", mod.resourcePath.. "img/units/player/dozer_a.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dozer_w.png", mod.resourcePath.. "img/units/player/dozer_w.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dozer_broken.png", mod.resourcePath.. "img/units/player/dozer_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dozer_w_broken.png", mod.resourcePath.. "img/units/player/dozer_w_broken.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dozer_ns.png", mod.resourcePath.. "img/units/player/dozer_ns.png")
-	modApi:appendAsset("img/units/player/lmn_mech_dozer_h.png", mod.resourcePath.. "img/units/player/dozer_h.png")
-	
-	modApi:appendAsset("img/weapons/lmn_weapon_dozer.png", mod.resourcePath .."img/weapons/dozer.png")
-	
-	setfenv(1, ANIMS)
-	lmn_MechDozer =			MechUnit:new{ Image = "units/player/lmn_mech_dozer.png", PosX = -19, PosY = 2 }
-	lmn_MechDozera =		lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_a.png", NumFrames = 3 }
-	lmn_MechDozer_broken =	lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_broken.png" }
-	lmn_MechDozerw =		lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_w.png", PosX = -20, PosY = 11 }
-	lmn_MechDozerw_broken =	lmn_MechDozerw:new{ Image = "units/player/lmn_mech_dozer_w_broken.png" }
-	lmn_MechDozer_ns =		MechIcon:new{ Image = "units/player/lmn_mech_dozer_ns.png" }
-end
+modApi.events.onModLoaded:subscribe(function(id)
+	if id ~= mod.id then return end
 
-function this:load(options, modApiExt)
-	self.modApiExt = modApiExt
-	
+	local options = mod_loader.currentModContent[id].options
+
 	if options["option_dozer"].value == 2 then
 		injectValues(lmn_DozerAtk, lmn_DozerAtk_2)
 		injectValues(lmn_DozerAtk_A, lmn_DozerAtk_2A)
@@ -674,6 +651,28 @@ function this:load(options, modApiExt)
 		injectValues(lmn_DozerAtk_Tip, lmn_DozerAtk_1)
 		injectValues(lmn_DozerAtk_Tip_A, lmn_DozerAtk_1A)
 	end
-end
+end)
 
-return this
+shop:addWeapon({
+	id = "lmn_DozerAtk",
+	name = lmn_DozerAtk.Name,
+	desc = "Adds Dozer Blades to the store."
+})
+
+modApi:appendAsset("img/units/player/lmn_mech_dozer.png", resourcePath.. "img/units/player/dozer.png")
+modApi:appendAsset("img/units/player/lmn_mech_dozer_a.png", resourcePath.. "img/units/player/dozer_a.png")
+modApi:appendAsset("img/units/player/lmn_mech_dozer_w.png", resourcePath.. "img/units/player/dozer_w.png")
+modApi:appendAsset("img/units/player/lmn_mech_dozer_broken.png", resourcePath.. "img/units/player/dozer_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_dozer_w_broken.png", resourcePath.. "img/units/player/dozer_w_broken.png")
+modApi:appendAsset("img/units/player/lmn_mech_dozer_ns.png", resourcePath.. "img/units/player/dozer_ns.png")
+modApi:appendAsset("img/units/player/lmn_mech_dozer_h.png", resourcePath.. "img/units/player/dozer_h.png")
+
+modApi:appendAsset("img/weapons/lmn_weapon_dozer.png", resourcePath .."img/weapons/dozer.png")
+
+setfenv(1, ANIMS)
+lmn_MechDozer =			MechUnit:new{ Image = "units/player/lmn_mech_dozer.png", PosX = -19, PosY = 2 }
+lmn_MechDozera =		lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_a.png", NumFrames = 3 }
+lmn_MechDozer_broken =	lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_broken.png" }
+lmn_MechDozerw =		lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_w.png", PosX = -20, PosY = 11 }
+lmn_MechDozerw_broken =	lmn_MechDozerw:new{ Image = "units/player/lmn_mech_dozer_w_broken.png" }
+lmn_MechDozer_ns =		MechIcon:new{ Image = "units/player/lmn_mech_dozer_ns.png" }
