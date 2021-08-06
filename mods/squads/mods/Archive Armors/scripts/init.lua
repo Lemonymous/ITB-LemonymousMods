@@ -9,8 +9,6 @@ local mod = {
 }
 
 function mod:init()
-	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
-	
 	require(self.scriptPath .."mech_devastator")
 	require(self.scriptPath .."mech_bomber")
 	require(self.scriptPath .."mech_apc")
