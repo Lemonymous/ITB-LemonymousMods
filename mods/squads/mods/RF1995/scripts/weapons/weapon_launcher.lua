@@ -9,10 +9,12 @@ local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
 local effectBurst = LApi.library:fetch("effectBurst")
-local weaponHover = require(scriptPath .."libs/weaponHover")
-local weaponArmed = require(scriptPath .."libs/weaponArmed")
 
 local hoveredTile
+
+local function GetYVelocity(distance)
+	return 6 + 16 * (distance / 8)
+end
 
 modApi:appendAsset("img/weapons/lmn_minelayer_launcher.png", resourcePath .."img/weapons/launcher.png")
 modApi:appendAsset("img/effects/lmn_minelayer_shot_missile_U.png", resourcePath .."img/effects/shot_missile_U.png")
@@ -67,6 +69,7 @@ lmn_Minelayer_Launcher = Skill:new{
 	Range = INT_MAX,
 	Attacks = 2,
 	AttacksRemaining = {},
+	ArtilleryHeight = GetYVelocity(3),
 	Damage = 1,
 	PowerCost = 1,
 	Upgrades = 2,
@@ -85,6 +88,17 @@ lmn_Minelayer_Launcher = Skill:new{
 		Second_Target = Point(2,0)
 	}
 }
+
+function lmn_Minelayer_Launcher.UpdateArtilleryHeight()
+	local hoveredSkill = modApi:getHoveredSkill()
+	if hoveredSkill then return end
+
+	if hoveredTile then
+		local pawn = Board:GetSelectedPawn()
+		local distance = pawn:GetSpace():Manhattan(hoveredTile)
+		Values.y_velocity = GetYVelocity(distance)
+	end
+end
 
 lmn_Minelayer_Launcher_A = lmn_Minelayer_Launcher:new{
 	Self = "lmn_Minelayer_Launcher_A",
@@ -111,10 +125,6 @@ lmn_Minelayer_Launcher_AB = lmn_Minelayer_Launcher:new{
 	TipImage = shallow_copy(lmn_Minelayer_Launcher.TipImage)
 }
 lmn_Minelayer_Launcher_AB.TipImage.CustomEnemy = "Scarab2"
-
-local function GetYVelocity(distance)
-	return 6 + 16 * (distance / 8)
-end
 
 -- returns true if pawn will die on this tile
 local function InPit(pawn)
@@ -522,52 +532,7 @@ lmn_Minelayer_Launcher_Tip_AB.GetSkillEffect = lmn_Minelayer_Launcher_Tip.GetSki
 
 shop:addWeapon{ id = "lmn_Minelayer_Launcher", desc = "Adds MR Launcher to the store." }
 
-local function onHover(self, type)
-	Values.y_velocity = GetYVelocity(3)
-end
-
-local function onUnhover(self, type)
-	if
-		not weaponArmed:IsCurrent(type) and
-		not weaponHover:IsCurrent(type)
-	then
-		Values.y_velocity = worldConstants:getDefaultHeight()
-	end
-end
-
-weaponHover:Add("lmn_Minelayer_Launcher", onHover, onUnhover)
-weaponHover:Add("lmn_Minelayer_Launcher_A", onHover, onUnhover)
-weaponHover:Add("lmn_Minelayer_Launcher_B", onHover, onUnhover)
-weaponHover:Add("lmn_Minelayer_Launcher_AB", onHover, onUnhover)
-
-weaponArmed:Add("lmn_Minelayer_Launcher", onHover, onUnhover)
-weaponArmed:Add("lmn_Minelayer_Launcher_A", onHover, onUnhover)
-weaponArmed:Add("lmn_Minelayer_Launcher_B", onHover, onUnhover)
-weaponArmed:Add("lmn_Minelayer_Launcher_AB", onHover, onUnhover)
-
 local function init() end
-local function load()
-	modApi:addMissionUpdateHook(function()
-		local skill, skillType = weaponArmed:GetCurrent()
-		
-		if
-			skillType == "lmn_Minelayer_Launcher"	or
-			skillType == "lmn_Minelayer_Launcher_A"	or
-			skillType == "lmn_Minelayer_Launcher_B"	or
-			skillType == "lmn_Minelayer_Launcher_AB"
-		then
-			if
-				not weaponHover:GetCurrent() and
-				hoveredTile
-			then
-				local pawn = weaponArmed:GetPawn()
-				if pawn then
-					local distance = pawn:GetSpace():Manhattan(hoveredTile)
-					Values.y_velocity = GetYVelocity(distance)
-				end
-			end
-		end
-	end)
-end
+local function load() end
 
 return { init = init, load = load }

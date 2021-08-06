@@ -8,8 +8,6 @@ local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local shop = require(scriptPath .."libs/shop")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 local worldConstants = LApi.library:fetch("worldConstants")
-local weaponHover = require(scriptPath .."libs/weaponHover")
-local weaponArmed = require(scriptPath .."libs/weaponArmed")
 
 modApi:appendAsset("img/units/player/lmn_mech_jeep.png", resourcePath .."img/units/player/jeep.png")
 modApi:appendAsset("img/units/player/lmn_mech_jeep_a.png", resourcePath .."img/units/player/jeep_a.png")
@@ -54,7 +52,7 @@ lmn_Jeep_Grenade = Skill:new{
 	Damage = 2,
 	Push = 0,
 	PowerCost = 1,
-	Y_Velocity = 14,
+	ArtilleryHeight = 14,
 	Upgrades = 2,
 	UpgradeCost = {1, 3},
 	UpgradeList = {"Push", "+2 Damage"},
@@ -125,29 +123,6 @@ lmn_Jeep_Grenade_AB = lmn_Jeep_Grenade:new{
 	Damage = 4,
 	Push = 1,
 }
-
-local function onHover(self, type)
-	Values.y_velocity = self.Y_Velocity
-end
-
-local function onUnhover(self, type)
-	if
-		not weaponHover:IsCurrent(type) and
-		not weaponArmed:IsCurrent(type)
-	then
-		Values.y_velocity = worldConstants:getDefaultHeight()
-	end
-end
-
-weaponHover:Add("lmn_Jeep_Grenade", onHover, onUnhover)
-weaponHover:Add("lmn_Jeep_Grenade_A", onHover, onUnhover)
-weaponHover:Add("lmn_Jeep_Grenade_B", onHover, onUnhover)
-weaponHover:Add("lmn_Jeep_Grenade_AB", onHover, onUnhover)
-
-weaponArmed:Add("lmn_Jeep_Grenade", onHover, onUnhover)
-weaponArmed:Add("lmn_Jeep_Grenade_A", onHover, onUnhover)
-weaponArmed:Add("lmn_Jeep_Grenade_B", onHover, onUnhover)
-weaponArmed:Add("lmn_Jeep_Grenade_AB", onHover, onUnhover)
 
 nonMassiveDeployWarning:AddPawn("lmn_JeepMech")
 shop:addWeapon{ id = "lmn_Jeep_Grenade", desc = "Adds Hand Grenades to the store." }

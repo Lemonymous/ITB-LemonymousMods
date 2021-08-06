@@ -15,8 +15,6 @@ local scripts = {
 	"libs/track_items",
 	"libs/track_undo_move",
 	"libs/virtualBoard",
-	"libs/weaponArmed",
-	"libs/weaponHover",
 	"libs/weaponMarks",
 	"palette",
 	"weapons/weapon_launcher",

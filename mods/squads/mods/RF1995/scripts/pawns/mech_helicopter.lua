@@ -6,8 +6,6 @@ local scriptPath = mod.scriptPath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local worldConstants = LApi.library:fetch("worldConstants")
-local weaponHover = require(scriptPath .."libs/weaponHover")
-local weaponArmed = require(scriptPath .."libs/weaponArmed")
 local effectBurst = LApi.library:fetch("effectBurst")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 local shop = require(scriptPath .."libs/shop")
@@ -70,7 +68,7 @@ lmn_Helicopter_Rocket = Skill:new{
 	Damage = 1,
 	PowerCost = 1,
 	PointBlank = 0,
-	Y_Velocity = 15,
+	ArtilleryHeight = 15,
 	Upgrades = 2,
 	UpgradeCost = {1, 2},
 	UpgradeList = {"Point Blank", "+1 Damage"},
@@ -180,29 +178,6 @@ end
 lmn_Helicopter_Rocket_Tip_A.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect
 lmn_Helicopter_Rocket_Tip_B.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect
 lmn_Helicopter_Rocket_Tip_AB.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect
-
-local function onHover(self, type)
-	Values.y_velocity = self.Y_Velocity
-end
-
-local function onUnhover(self, type)
-	if
-		not weaponHover:IsCurrent(type) and
-		not weaponArmed:IsCurrent(type)
-	then
-		Values.y_velocity = worldConstants:getDefaultHeight()
-	end
-end
-
-weaponHover:Add("lmn_Helicopter_Rocket", onHover, onUnhover)
-weaponHover:Add("lmn_Helicopter_Rocket_A", onHover, onUnhover)
-weaponHover:Add("lmn_Helicopter_Rocket_B", onHover, onUnhover)
-weaponHover:Add("lmn_Helicopter_Rocket_AB", onHover, onUnhover)
-
-weaponArmed:Add("lmn_Helicopter_Rocket", onHover, onUnhover)
-weaponArmed:Add("lmn_Helicopter_Rocket_A", onHover, onUnhover)
-weaponArmed:Add("lmn_Helicopter_Rocket_B", onHover, onUnhover)
-weaponArmed:Add("lmn_Helicopter_Rocket_AB", onHover, onUnhover)
 
 nonMassiveDeployWarning:AddPawn("lmn_HelicopterMech")
 shop:addWeapon{ id = "lmn_Helicopter_Rocket", desc = "Adds Leto Rockets to the store." }
