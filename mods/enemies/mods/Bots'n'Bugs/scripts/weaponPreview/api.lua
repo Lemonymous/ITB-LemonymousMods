@@ -175,7 +175,6 @@ local path = mod.scriptPath
 local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local isTipImage = require(path .."weaponPreview/lib/isTipImage")
 local selected = require(path .."weaponPreview/lib/selected")
-local highlighted = require(path .."weaponPreview/lib/highlighted")
 local spaceEmitter = require(path .."weaponPreview/lib/spaceEmitter")
 
 local this = {}
@@ -488,7 +487,6 @@ function this:load()
 	loaded = true
 	
 	selected:load()
-	highlighted:load()
 	
 	modApi:addModsLoadedHook(function() loaded = nil end)
 	modApi:addMissionStartHook(clearMarks)
@@ -527,7 +525,7 @@ function this:load()
 					doMark = true
 				elseif markType == 'effect' then
 					local selectedTile = selected:GetSpace()
-					local cursorTile = highlighted:Get() -- mouseTile() -- post mod loader 2.4.0
+					local cursorTile = Board:GetHighlighted()
 					local markId = marker.weapon.root .."_p".. p2idx(selectedTile)
 					
 					doMark = doMarkTile[markId]
