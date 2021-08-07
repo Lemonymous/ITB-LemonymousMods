@@ -271,7 +271,6 @@ function mod:init()
 	self.modApiExt = require(self.scriptPath .."modApiExt/modApiExt")
 	self.modApiExt:init()
 	
-	require(self.scriptPath .."globalize_bot_table")
 	
 	-- init enemies
 	for id, v in pairs(enemies) do
