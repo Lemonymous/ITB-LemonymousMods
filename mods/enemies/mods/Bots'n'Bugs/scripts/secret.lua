@@ -8,8 +8,7 @@ local selected = require(path .."scripts/libs/selected")
 local weaponApi = require(path .."scripts/weapons/api")
 local multishot = require(path .."scripts/multishot/api")
 local worldConstants = LApi.library:fetch("worldConstants")
-local weaponArmed = require(path .."scripts/libs/weaponArmed")
-local weaponHover = require(path .."scripts/libs/weaponHover")
+local weaponArmed = LApi.library:fetch("weaponArmed")
 local previewer = require(path .."scripts/weaponPreview/api")
 local tips = LApi.library:fetch("tutorialTips")
 local a = ANIMS
@@ -448,6 +447,10 @@ end
 --	  Roach Attack
 --	'‾‾‾‾‾‾‾‾‾‾‾‾‾‾'
 
+function GetArtilleryHeight(distance)
+	return -3 + 3 * distance / 1
+end
+
 lmn_RoachAtk = lmn_RoachAtk1:new{
 	Name = "Scything Talons",
 	Description = "Lob A.C.I.D. a short distance, and slash in the same direction.",
@@ -457,6 +460,7 @@ lmn_RoachAtk = lmn_RoachAtk1:new{
 	Damage = 1,
 	Push = false,
 	PowerCost = 0,
+	ArtilleryHeight = GetArtilleryHeight(3),
 	Upgrades = 2,
 	UpgradeCost = {1, 3},
 	UpgradeList = {"Push", "+2 Damage"},
@@ -472,6 +476,27 @@ lmn_RoachAtk = lmn_RoachAtk1:new{
 		Second_Target = Point(2,1)
 	}
 }
+
+local roachAtk = {
+	"lmn_RoachAtk",
+	"lmn_RoachAtk_A",
+	"lmn_RoachAtk_B",
+	"lmn_RoachAtk_AB",
+}
+
+function lmn_RoachAtk:UpdateArtilleryHeight()
+	local hoveredSkill = modApi:getHoveredSkill()
+	if hoveredSkill then return end
+
+	local armedSkill = weaponArmed:getArmedWeapon()
+	local hoveredTile = Board:GetHighlighted()
+
+	if hoveredTile and list_contains(roachAtk, armedSkill.__Id) then
+		local pawn = Board:GetSelectedPawn()
+		local distance = pawn:GetSpace():Manhattan(hoveredTile)
+		Values.y_velocity = GetArtilleryHeight(distance)
+	end
+end
 
 lmn_RoachAtk_A = lmn_RoachAtk:new{
 	UpgradeDescription = "Both attacks will now push.",
@@ -504,10 +529,6 @@ function lmn_RoachAtk:GetTargetArea(p)
 	end
 	
 	return ret
-end
-
-function lmn_RoachAtk.GetYVelocity(distance)
-	return -3 + 3 * distance / 1
 end
 
 function lmn_RoachAtk:GetSkillEffect(p1, p2)
@@ -591,36 +612,6 @@ function lmn_RoachAtk:GetSkillEffect(p1, p2)
 	
 	return ret
 end
-
-local roachAtk = {
-	"lmn_RoachAtk",
-	"lmn_RoachAtk_A",
-	"lmn_RoachAtk_B",
-	"lmn_RoachAtk_AB",
-}
-
-local function isRoachAtk(skillType)
-	return list_contains(roachAtk, skillType)
-end
-
-weaponHover:addWeaponHoverHook(function(skill, skillType)
-	if isRoachAtk(skillType) then
-		local VelY = lmn_RoachAtk.GetYVelocity(3)
-		Values.y_velocity = VelY
-	end
-end)
-
-weaponHover:addWeaponUnhoverHook(function(skill, skillType)
-	if isRoachAtk(skillType) then
-		Values.y_velocity = worldConstants:getDefaultHeight()
-	end
-end)
-
-weaponArmed:addWeaponUnarmedHook(function(skill, skillType)
-	if isRoachAtk(skillType) then
-		Values.y_velocity = worldConstants:getDefaultHeight()
-	end
-end)
 
 
 --	.________________.
@@ -1315,21 +1306,6 @@ lmn_CrusherAtk_AB = lmn_CrusherAtk:new{
 --	‾‾‾‾‾‾‾‾‾‾‾‾
 
 function this:load()
-	modApi:addMissionUpdateHook(function()
-		local _, armedType = weaponArmed:GetCurrent()
-		local tileFocused = Board:GetHighlighted()
-		local weaponHovered = weaponHover:GetCurrent()
-		local selected = selected:Get()
-		
-		-- change artillery height when hovering weapon.
-		if isRoachAtk(armedType) then
-			if not weaponHovered and tileFocused and selected then
-				local distance = selected:GetSpace():Manhattan(tileFocused)
-				Values.y_velocity = lmn_RoachAtk.GetYVelocity(distance)
-			end
-		end
-	end)
-	
 	modUtils:addPodLandedHook(function(p)
 		local mission = GetCurrentMission()
 		if not mission then return end
@@ -1350,10 +1326,5 @@ function this:load()
 		end
 	end)
 end
-
-weaponHover:registerWeapon("lmn_RoachAtk")
-weaponHover:registerWeapon("lmn_RoachAtk_A")
-weaponHover:registerWeapon("lmn_RoachAtk_B")
-weaponHover:registerWeapon("lmn_RoachAtk_AB")
 
 return this
