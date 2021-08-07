@@ -2,7 +2,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
-local worldConstants = require(path .."scripts/libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local tips = require(path .."scripts/libs/tutorialTips")
 local a = ANIMS
 local writepath = "img/units/aliens/"
@@ -248,9 +248,9 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			ret:AddQueuedSound("enemy/spider_soldier_1/hurt")
 			ret:AddQueuedSound("impact/generic/web")
 			
-			worldConstants.QueuedSetSpeed(ret, .3)
+			worldConstants:queuedSetSpeed(ret, .3)
 			ret:AddQueuedProjectile(d, "effects/shot_firefly2", NO_DELAY)
-			worldConstants.QueuedResetSpeed(ret)
+			worldConstants:queuedResetSpeed(ret)
 			ret:AddQueuedDelay(0.20)
 			ret:AddQueuedScript(string.format("Board:AddAnimation(%s, 'ExploFirefly2', NO_DELAY)", loc:GetString()))
 			
@@ -307,9 +307,9 @@ function lmn_WyrmAtk1:Bounce(p1, p2, iOwner)
 	fx.iOwner = iOwner
 	
 	local d = SpaceDamage(p2)
-	worldConstants.SetSpeed(fx, .5)
+	worldConstants:setSpeed(fx, .5)
 	fx:AddProjectile(p1, d, "effects/shot_firefly2", NO_DELAY)
-	worldConstants.ResetSpeed(fx)
+	worldConstants:resetSpeed(fx)
 	
 	Board:AddEffect(fx)
 end

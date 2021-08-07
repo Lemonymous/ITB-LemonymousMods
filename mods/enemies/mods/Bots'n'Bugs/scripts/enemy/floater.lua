@@ -2,7 +2,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local a = ANIMS
-local worldConstants = require(path .."scripts/libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local tips = require(path .."scripts/libs/tutorialTips")
 local astar = require(path .."scripts/libs/astar")
 local utils = require(path .."scripts/libs/utils")
@@ -472,9 +472,9 @@ function lmn_ColonyAtk1_Tip:GetSkillEffect(p1, p2)
 		ret:AddQueuedDelay(0.16)
 	end
 	
-	worldConstants.QueuedSetHeight(ret, 0)
+	worldConstants:queuedSetHeight(ret, 0)
 	ret:AddQueuedArtillery(SpaceDamage(target), "", NO_DELAY)
-	worldConstants.QueuedResetHeight(ret)
+	worldConstants:queuedResetHeight(ret)
 	
 	ret:AddQueuedAnimation(target, "lmn_ExploColony")
 	ret:AddQueuedDelay(.04 * 3)
@@ -763,9 +763,9 @@ function lmn_ColonyAtk1:GetSkillEffect(p1, p2)
 		end
 		
 		-- preview artillery attack.
-		worldConstants.QueuedSetHeight(ret, 0)
+		worldConstants:queuedSetHeight(ret, 0)
 		ret:AddQueuedArtillery(SpaceDamage(target), "", NO_DELAY)
-		worldConstants.QueuedResetHeight(ret)
+		worldConstants:queuedResetHeight(ret)
 		
 		local d = SpaceDamage(target, self.Damage)
 		ret:AddQueuedAnimation(target, "lmn_ExploColony")

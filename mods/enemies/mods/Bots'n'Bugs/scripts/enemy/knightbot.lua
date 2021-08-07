@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local worldConstants = require(path .."scripts/libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local ID = mod.id .."_blobberlings"
 local a = ANIMS
 local writepath = "img/units/snowbots/"
@@ -125,9 +125,9 @@ function lmn_KnightBotAtk1:GetSkillEffect(p1, p2)
 		ret:AddQueuedDamage(s)
 		
 		local newSpeed = 1.0
-		worldConstants.QueuedSetSpeed(ret, newSpeed)
+		worldConstants:queuedSetSpeed(ret, newSpeed)
 		ret:AddQueuedCharge(Board:GetSimplePath(p1, target), NO_DELAY)
-		worldConstants.QueuedResetSpeed(ret)
+		worldConstants:queuedResetSpeed(ret)
 		
 		local distance = p1:Manhattan(target)
 		ret:AddQueuedDelay(distance * 0.07 * worldConstants.GetDefaultSpeed() / newSpeed - 0.1)

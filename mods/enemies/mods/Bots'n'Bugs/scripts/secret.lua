@@ -8,7 +8,7 @@ local selected = require(path .."scripts/libs/selected")
 local weaponApi = require(path .."scripts/weapons/api")
 local multishot = require(path .."scripts/multishot/api")
 local armorDetection = require(path .."scripts/libs/armorDetection")
-local worldConstants = require(path .."scripts/libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local weaponArmed = require(path .."scripts/libs/weaponArmed")
 local weaponHover = require(path .."scripts/libs/weaponHover")
 local previewer = require(path .."scripts/weaponPreview/api")
@@ -613,13 +613,13 @@ end)
 
 weaponHover:addWeaponUnhoverHook(function(skill, skillType)
 	if isRoachAtk(skillType) then
-		Values.y_velocity = worldConstants.GetDefaultHeight()
+		Values.y_velocity = worldConstants:getDefaultHeight()
 	end
 end)
 
 weaponArmed:addWeaponUnarmedHook(function(skill, skillType)
 	if isRoachAtk(skillType) then
-		Values.y_velocity = worldConstants.GetDefaultHeight()
+		Values.y_velocity = worldConstants:getDefaultHeight()
 	end
 end)
 
@@ -698,7 +698,7 @@ function lmn_SpitterAtk:GetSkillEffect(p1, p2)
 		ret:AddSound("impact/generic/metal")
 		ret:AddAnimation(p1, self.RangedLaunchArt .. dir)
 		
-		worldConstants.SetSpeed(ret, 1)
+		worldConstants:setSpeed(ret, 1)
 		
 		local d = SpaceDamage(target)
 		d.sSound = self.RangedImpactSound1
@@ -710,7 +710,7 @@ function lmn_SpitterAtk:GetSkillEffect(p1, p2)
 		d.sSound = self.RangedImpactSound2
 		ret:AddProjectile(p1, d, self.ProjectileArt, NO_DELAY)
 		
-		worldConstants.ResetSpeed(ret)
+		worldConstants:resetSpeed(ret)
 	end
 	
 	return ret
@@ -981,9 +981,9 @@ function lmn_WyrmAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			ret:AddSound("enemy/spider_soldier_1/hurt")
 			ret:AddSound("impact/generic/web")
 			
-			worldConstants.SetSpeed(ret, .3)
+			worldConstants:setSpeed(ret, .3)
 			ret:AddProjectile(p1, d, "effects/shot_firefly2", NO_DELAY)
-			worldConstants.ResetSpeed(ret)
+			worldConstants:resetSpeed(ret)
 			
 			-- delay should be about 0.06 divided by projectile speed
 			-- the correct delay will cause explosion to align with projectile collision,

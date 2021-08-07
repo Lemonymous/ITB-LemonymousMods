@@ -6,7 +6,7 @@ local writepath = "img/units/aliens/"
 local readpath = path .. writepath
 local imagepath = writepath:sub(5,-1)
 local utils = require(path .."scripts/libs/utils")
-local worldConstants = require(path .."scripts/libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local this = {}
 
 -- unit
@@ -181,7 +181,7 @@ function lmn_SpitterAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		ret:AddQueuedAnimation(p1, self.RangedLaunchArt .. dir)
 		ret.q_effect:index(ret.q_effect:size()).bHide = true
 		
-		worldConstants.QueuedSetSpeed(ret, 1)
+		worldConstants:queuedSetSpeed(ret, 1)
 		
 		local d = SpaceDamage(target)
 		d.sSound = self.RangedImpactSound1
@@ -192,7 +192,7 @@ function lmn_SpitterAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		d.sSound = self.RangedImpactSound2
 		ret:AddQueuedProjectile(d, self.ProjectileArt, NO_DELAY)
 		
-		worldConstants.QueuedResetSpeed(ret)
+		worldConstants:queuedResetSpeed(ret)
 		
 		-- extra targetscore for long shot vs building
 		if isTargetScore and Board:IsBuilding(target) and p1:Manhattan(target) > 4 then

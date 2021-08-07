@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local worldConstants = require(path .."scripts/libs/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local getModOptions = require(path .."scripts/libs/getModOptions")
 local tips = require(path .."scripts/libs/tutorialTips")
 local id_spit = mod.id .."_roach_spit"
@@ -200,10 +200,10 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 				ret:AddProjectile(p1, spit, self.Shot, NO_DELAY)
 				ret:AddProjectile(p1, sound, "", NO_DELAY)
 			else
-				worldConstants.SetHeight(ret, self.VelY)
+				worldConstants:setHeight(ret, self.VelY)
 				ret:AddArtillery(p1, spit, self.Upshot, NO_DELAY)
 				ret:AddArtillery(p1, sound, "", NO_DELAY)
-				worldConstants.ResetHeight(ret)
+				worldConstants:resetHeight(ret)
 			end
 		end
 		
@@ -217,9 +217,9 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			ret:AddQueuedMelee(p1, d)
 		else
 			-- hack to preview projectile dots.
-			worldConstants.QueuedSetSpeed(ret, 999)
+			worldConstants:queuedSetSpeed(ret, 999)
 			ret:AddQueuedProjectile(SpaceDamage(p2), "", NO_DELAY)
-			worldConstants.QueuedResetSpeed(ret)
+			worldConstants:queuedResetSpeed(ret)
 			
 			local ranged = SpaceDamage(p2, self.Damage)
 			ranged.bHidePath = true
@@ -230,10 +230,10 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			sound.bHide = true
 			sound.sSound = self.AcidSound2
 			
-			worldConstants.QueuedSetHeight(ret, self.VelY)
+			worldConstants:queuedSetHeight(ret, self.VelY)
 			ret:AddQueuedArtillery(ranged, self.Upshot, NO_DELAY)
 			ret:AddQueuedArtillery(sound, "", NO_DELAY)
-			worldConstants.QueuedResetHeight(ret)
+			worldConstants:queuedResetHeight(ret)
 		end
 	end
 	
