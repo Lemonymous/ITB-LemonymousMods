@@ -1,7 +1,9 @@
 
 ------
 -- A*
-------
+--
+-- v2.0 by Lemonymous
+---------------------
 -- finds a shortest path from a to b in an efficient way.
 
 local astar = {}
