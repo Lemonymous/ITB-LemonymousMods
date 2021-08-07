@@ -1,6 +1,6 @@
 
 --------------------------------------------
--- World Constants v.1.4 - code library
+-- World Constants v.1.5 - code library
 --------------------------------------------
 -- provides functions for setting/resetting
 -- projectile/charge speed,
@@ -34,7 +34,7 @@
 -- initialization:
 -------------------
 
--- local worldConstants = require(self.scriptPath ..'worldConstants')
+-- local worldConstants = require(self.scriptPath..'worldConstants')
 
 
 --------------------------------------------------------
@@ -54,7 +54,7 @@
 ----------------------------
 
 ----------------------------------------------------------------------------------------
--- worldConstants.SetSpeed(effect, value, isQueued)
+-- worldConstants:setSpeed(effect, value, isQueued)
 ----------------------------------------------------------------------------------------
 -- sets projectile/charge speed to 'value'
 --
@@ -66,7 +66,7 @@
 ----------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------
--- worldConstants.ResetSpeed(effect, isQueued)
+-- worldConstants:resetSpeed(effect, isQueued)
 ----------------------------------------------------------------------------------------
 -- resets projectile/charge speed
 --
@@ -76,11 +76,11 @@
 -- isQueued - boolean     - if the constant change should be queued. defaults to false.
 ----------------------------------------------------------------------------------------
 
--- worldConstants.QueuedSetSpeed(effect, value)		-> calls set function with isQueued = true
--- worldConstants.QueuedResetSpeed(effect)			-> calls set function with isQueued = true
+-- worldConstants:queuedSetSpeed(effect, value)		-> calls set function with isQueued = true
+-- worldConstants:queuedResetSpeed(effect)			-> calls set function with isQueued = true
 
 -------------------------------------------------------
--- worldConstants.GetDefaultSpeed()
+-- worldConstants:getDefaultSpeed()
 -------------------------------------------------------
 -- returns the game's default projectile/charge speed.
 -------------------------------------------------------
@@ -93,11 +93,11 @@
 -- default = 18
 -----------------------------------------------
 
--- worldConstants.SetHeight(...)
--- worldConstants.ResetHeight(...)
--- worldConstants.QueuedSetHeight(...)
--- worldConstants.QueuedResetHeight(...)
--- worldConstants.GetDefaultHeight(...)
+-- worldConstants:setHeight(...)
+-- worldConstants:resetHeight(...)
+-- worldConstants:queuedSetHeight(...)
+-- worldConstants:queuedResetHeight(...)
+-- worldConstants:getDefaultHeight(...)
 -----------------------------------------------
 
 
@@ -107,11 +107,11 @@
 -- default = 3
 -----------------------------------------------
 
--- worldConstants.SetGravity(...)
--- worldConstants.ResetGravity(...)
--- worldConstants.QueuedSetGravity(...)
--- worldConstants.QueuedResetGravity(...)
--- worldConstants.GetDefaultGravity(...)
+-- worldConstants:setGravity(...)
+-- worldConstants:resetGravity(...)
+-- worldConstants:queuedSetGravity(...)
+-- worldConstants:queuedResetGravity(...)
+-- worldConstants:getDefaultGravity(...)
 -----------------------------------------------
 
 
@@ -121,11 +121,11 @@
 -- default = 0.5
 -----------------------------------------------
 
--- worldConstants.SetLaserDuration(...)
--- worldConstants.ResetLaserDuration(...)
--- worldConstants.QueuedSetLaserDuration(...)
--- worldConstants.QueuedResetLaserDuration(...)
--- worldConstants.GetDefaultLaserDuration(...)
+-- worldConstants:setLaserDuration(...)
+-- worldConstants:resetLaserDuration(...)
+-- worldConstants:queuedSetLaserDuration(...)
+-- worldConstants:queuedResetLaserDuration(...)
+-- worldConstants:getDefaultLaserDuration(...)
 -----------------------------------------------
 
 
