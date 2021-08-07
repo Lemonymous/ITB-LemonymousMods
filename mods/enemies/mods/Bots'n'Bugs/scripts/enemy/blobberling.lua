@@ -235,7 +235,7 @@ function this:load()
 	-- this whole thing should probably be exported to some library
 	-- to enable streamlined additional preview to queued attacks.
 	modApi:addMissionUpdateHook(function(m)
-		if m == Mission_test then return end
+		if m == Mission_Test then return end
 		
 		local pawns = extract_table(Board:GetPawns(TEAM_ANY))
 		
