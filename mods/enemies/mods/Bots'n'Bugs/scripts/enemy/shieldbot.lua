@@ -2,7 +2,6 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
-local getQueued = require(path .."scripts/libs/getQueued")
 local ID = mod.id .."_blobberlings"
 local a = ANIMS
 local writepath = "img/units/snowbots/"
@@ -46,7 +45,7 @@ local function getQueuedSkill(pawn)
 	
 	local pawnId = pawn:GetId()
 	local pawnType = pawn:GetType()
-	local queuedAttack = getQueued(pawnId) --pawn:GetQueued()
+	local queuedAttack = pawn:GetQueued()
 	
 	if queuedAttack and queuedAttack.iQueuedSkill > 0 then
 		return _G[pawnType].SkillList[queuedAttack.iQueuedSkill]

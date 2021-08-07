@@ -3,7 +3,6 @@ local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local selected = require(path .."scripts/libs/selected")
-local getQueued = require(path .."scripts/libs/getQueued")
 local trait = require(path .."scripts/libs/trait")
 local tips = LApi.library:fetch("tutorialTips")
 local a = ANIMS
@@ -243,7 +242,7 @@ function this:load()
 		for _, pawnId in ipairs(pawns) do
 			local pawn = Board:GetPawn(pawnId)
 			local loc = pawn:GetSpace()
-			local queuedAttack = getQueued(pawnId) --pawn:GetQueued()
+			local queuedAttack = pawn:GetQueued()
 			local selected = selected:Get()
 			local armedWeapon = selected and selected:GetArmedWeaponId() or 0
 			local isWeaponArmed = armedWeapon > 0
