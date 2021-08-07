@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local modUtils = require(path .."modApiExt/modApiExt")
+local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 
 return function(id)
 	assert(Game)

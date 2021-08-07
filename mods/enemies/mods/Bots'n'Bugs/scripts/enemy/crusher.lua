@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local modUtils = require(path .."scripts/modApiExt/modApiExt")
+local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local tips = require(path .."scripts/libs/tutorialTips")
 local a = ANIMS
 local writepath = "img/units/aliens/"

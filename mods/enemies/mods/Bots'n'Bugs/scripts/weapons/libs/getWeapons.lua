@@ -8,7 +8,7 @@
 	requires modApiExt loaded to function.
 ]]
 local mod = mod_loader.mods[modApi.currentMod]
-local modUtils = require(mod.scriptPath .."modApiExt/modApiExt")
+local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local this = {}
 
 local function getWeapons(pawnId)

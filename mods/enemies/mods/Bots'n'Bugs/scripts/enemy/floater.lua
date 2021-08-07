@@ -2,7 +2,6 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local a = ANIMS
-local modUtils = require(path .."scripts/modApiExt/modApiExt")
 local worldConstants = require(path .."scripts/libs/worldConstants")
 local tips = require(path .."scripts/libs/tutorialTips")
 local astar = require(path .."scripts/libs/astar")

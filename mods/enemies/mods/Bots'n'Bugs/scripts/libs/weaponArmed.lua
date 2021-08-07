@@ -99,7 +99,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local modUtils = require(path .."scripts/modApiExt/modApiExt")
+local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local selected = require(path .."scripts/libs/selected")
 local hooks = require(path .."scripts/libs/hooks")
 
