@@ -2,7 +2,7 @@
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local achvApi = require(path .."achievements/api")
 local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
-local switch = require(path .."libs/switch")
+local switch = LApi.library:fetch("switch")
 local this = {}
 
 local bosses = {
