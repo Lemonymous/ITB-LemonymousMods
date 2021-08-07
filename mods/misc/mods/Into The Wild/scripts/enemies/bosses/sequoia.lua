@@ -341,7 +341,7 @@ lmn_SequoiaBoss = Pawn:new{
 	Pushable = false,
 	Portrait = "enemy/lmn_SequoiaBoss",
 }
-AddPawn("lmn_SequoiaBoss")
+AddPawnName("lmn_SequoiaBoss")
 
 lmn_SequoiaBossBroken = lmn_SequoiaBoss:new{
 	Health = 0,

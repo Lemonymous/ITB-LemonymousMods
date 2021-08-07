@@ -17,7 +17,7 @@ lmn_StackerMech = Pawn:new{
 	ImpactMaterial = IMPACT_METAL,
 	Massive = true,
 }
-AddPawn("lmn_StackerMech")
+AddPawnName("lmn_StackerMech")
 
 lmn_LiftAtk = Skill:new{
 	Name = "Fork Lift",

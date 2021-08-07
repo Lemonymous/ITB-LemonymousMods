@@ -41,7 +41,7 @@ lmn_ds_Commando = {
 	Massive = true,
 	Teleporter = true
 }
-AddPawn("lmn_ds_Commando")
+AddPawnName("lmn_ds_Commando")
 
 lmn_ds_Gunslinger = {
 	Name = "Gunslinger Mech",
@@ -56,7 +56,7 @@ lmn_ds_Gunslinger = {
 	ImpactMaterial = IMPACT_METAL,
 	Massive = true
 }
-AddPawn("lmn_ds_Gunslinger")
+AddPawnName("lmn_ds_Gunslinger")
 
 lmn_ds_Swoop = {
 	Name = "Swoop Mech",
@@ -72,7 +72,7 @@ lmn_ds_Swoop = {
 	Massive = true,
 	Flying = true
 }
-AddPawn("lmn_ds_Swoop")
+AddPawnName("lmn_ds_Swoop")
 
 setfenv(1, ANIMS)
 lmn_ds_Commando =				MechUnit:new{ Image = "units/player/lmn_ds_commando.png", PosX = -12, PosY = -10 }

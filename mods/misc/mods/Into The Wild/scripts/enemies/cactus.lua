@@ -255,7 +255,7 @@ function this:init(mod)
 		Pushable = false,
 		Portrait = "enemy/lmn_Cactus1",
 	}
-	AddPawn("lmn_Cactus1")
+	AddPawnName("lmn_Cactus1")
 	
 	lmn_Cactus2 = lmn_Cactus1:new{
 		Name = "Alpha Cactus",
@@ -267,7 +267,7 @@ function this:init(mod)
 		Portrait = "enemy/lmn_Cactus2",
 		Tier = TIER_ALPHA,
 	}
-	AddPawn("lmn_Cactus2")
+	AddPawnName("lmn_Cactus2")
 	
 	lmn_CactusAtk1 = SelfTarget:new{
 		Name = "Cactus Spines",

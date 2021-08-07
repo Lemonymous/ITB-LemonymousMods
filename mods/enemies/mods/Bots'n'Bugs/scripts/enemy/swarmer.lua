@@ -51,7 +51,7 @@ lmn_Swarmer1 = Pawn:new{
 	HalfSpawn = true,
 	Clones = 1,
 }
-AddPawn("lmn_Swarmer1")
+AddPawnName("lmn_Swarmer1")
 
 lmn_Swarmer2 = lmn_Swarmer1:new{
 	Name = "Alpha Swarmer",
@@ -63,7 +63,7 @@ lmn_Swarmer2 = lmn_Swarmer1:new{
 	SkillList = { "lmn_SwarmerAtk2" },
 	Tier = TIER_ALPHA,
 }
-AddPawn("lmn_Swarmer2")
+AddPawnName("lmn_Swarmer2")
 
 lmn_SwarmerBoss = lmn_Swarmer1:new{
 	Name = "Swarmer Leader",
@@ -76,7 +76,7 @@ lmn_SwarmerBoss = lmn_Swarmer1:new{
 	Tier = TIER_BOSS,
 	Massive = true,
 }
-AddPawn("lmn_SwarmerBoss")
+AddPawnName("lmn_SwarmerBoss")
 
 lmn_SwarmerAtk1 = Skill:new{
 	Name = "Bladed Talons",

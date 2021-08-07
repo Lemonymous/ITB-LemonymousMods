@@ -61,7 +61,7 @@ lmn_Spitter1 = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	Portrait = "enemy/lmn_Spitter1",
 }
-AddPawn("lmn_Spitter1")
+AddPawnName("lmn_Spitter1")
 
 lmn_Spitter2 = lmn_Spitter1:new{
 	Name = "Alpha Spitter",
@@ -74,7 +74,7 @@ lmn_Spitter2 = lmn_Spitter1:new{
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Spitter2",
 }
-AddPawn("lmn_Spitter2")
+AddPawnName("lmn_Spitter2")
 
 lmn_SpitterBoss = lmn_Spitter1:new{
 	Name = "Spitter Leader",
@@ -88,7 +88,7 @@ lmn_SpitterBoss = lmn_Spitter1:new{
 	Portrait = "enemy/lmn_SpitterB",
 	Massive = true,
 }
-AddPawn("lmn_SpitterBoss")
+AddPawnName("lmn_SpitterBoss")
 
 lmn_SpitterAtk1 = Skill:new{
 	Name = "Needle Spines",

@@ -58,7 +58,7 @@ lmn_Wyrm1 = Pawn:new{
 	Portrait = "enemy/lmn_Wyrm1",
 	Flying = true,
 }
-AddPawn("lmn_Wyrm1")
+AddPawnName("lmn_Wyrm1")
 
 lmn_Wyrm2 = lmn_Wyrm1:new{
 	Name = "Alpha Wyrm",
@@ -71,7 +71,7 @@ lmn_Wyrm2 = lmn_Wyrm1:new{
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Wyrm2",
 }
-AddPawn("lmn_Wyrm2")
+AddPawnName("lmn_Wyrm2")
 
 lmn_WyrmBoss = lmn_Wyrm1:new{
 	Name = "Wyrm Leader",
@@ -85,7 +85,7 @@ lmn_WyrmBoss = lmn_Wyrm1:new{
 	Portrait = "enemy/lmn_WyrmB",
 	Massive = true,
 }
-AddPawn("lmn_WyrmBoss")
+AddPawnName("lmn_WyrmBoss")
 
 lmn_WyrmAtk1 = Skill:new{
 	Name = "Glaive Wurm",

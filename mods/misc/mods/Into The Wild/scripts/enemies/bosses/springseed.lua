@@ -25,7 +25,7 @@ lmn_SpringseedBoss = lmn_Springseed2:new{
 	Tier = TIER_BOSS,
 	Portrait = "enemy/lmn_SpringseedBoss",
 }
-AddPawn("lmn_SpringseedBoss")
+AddPawnName("lmn_SpringseedBoss")
 
 lmn_SpringseedAtkB = lmn_SpringseedAtk2:new{
 	Name = "Spring-time!",

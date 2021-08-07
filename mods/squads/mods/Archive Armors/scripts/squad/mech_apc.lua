@@ -18,7 +18,7 @@ lmn_SmokeMech = Pawn:new{
 	Massive = true,
 	Armor = true,
 }
-AddPawn("lmn_SmokeMech")
+AddPawnName("lmn_SmokeMech")
 
 lmn_SmokeLauncher = Skill:new{
 	Name = "Smoke Launcher",

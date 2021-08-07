@@ -102,7 +102,7 @@ function this:init(mod)
 		Jumper = true,
 		Portrait = "enemy/lmn_Springseed1"
 	}
-	AddPawn("lmn_Springseed1")
+	AddPawnName("lmn_Springseed1")
 	
 	lmn_Springseed2 = lmn_Springseed1:new{
 		Name = "Alpha Springseed",
@@ -115,7 +115,7 @@ function this:init(mod)
 		Portrait = "enemy/lmn_Springseed2",
 		Tier = TIER_ALPHA,
 	}
-	AddPawn("lmn_Springseed2")
+	AddPawnName("lmn_Springseed2")
 	
 	lmn_SpringseedAtk1 = Skill:new{
 		Name = "Spring",

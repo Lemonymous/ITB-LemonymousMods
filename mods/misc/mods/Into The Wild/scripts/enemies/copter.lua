@@ -72,7 +72,7 @@ function this:init(mod)
 		Flying = true,
 		Portrait = "enemy/lmn_Copter1",
 	}
-	AddPawn("lmn_Copter1")
+	AddPawnName("lmn_Copter1")
 	
 	lmn_Copter2 = lmn_Copter1:new{
 		Name = "Alpha Copter",
@@ -84,7 +84,7 @@ function this:init(mod)
 		Portrait = "enemy/lmn_Copter2",
 		Tier = TIER_ALPHA,
 	}
-	AddPawn("lmn_Copter2")
+	AddPawnName("lmn_Copter2")
 	
 	lmn_CopterAtk1 = Skill:new{
 		Name = "Stinger",

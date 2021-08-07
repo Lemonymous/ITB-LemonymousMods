@@ -59,7 +59,7 @@ lmn_Crusher1 = Pawn:new{
 	Portrait = "enemy/lmn_Crusher1",
 	Massive = true,
 }
-AddPawn("lmn_Crusher1")
+AddPawnName("lmn_Crusher1")
 
 lmn_Crusher2 = lmn_Crusher1:new{
 	Name = "Alpha Crusher",
@@ -72,7 +72,7 @@ lmn_Crusher2 = lmn_Crusher1:new{
 	Tier = TIER_ALPHA,
 	Portrait = "enemy/lmn_Crusher2",
 }
-AddPawn("lmn_Crusher2")
+AddPawnName("lmn_Crusher2")
 
 lmn_CrusherBoss = lmn_Crusher1:new{
 	Name = "Crusher Leader",
@@ -84,7 +84,7 @@ lmn_CrusherBoss = lmn_Crusher1:new{
 	Tier = TIER_BOSS,
 	Portrait = "enemy/lmn_CrusherB",
 }
-AddPawn("lmn_CrusherBoss")
+AddPawnName("lmn_CrusherBoss")
 
 lmn_CrusherAtk1 = Skill:new{
 	Name = "Kaizer Blades",

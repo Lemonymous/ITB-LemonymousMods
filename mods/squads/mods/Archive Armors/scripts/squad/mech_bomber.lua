@@ -17,7 +17,7 @@ lmn_BomberMech = Pawn:new{
 	Massive = true,
 	Flying = true,
 }
-AddPawn("lmn_BomberMech")
+AddPawnName("lmn_BomberMech")
 
 lmn_Bombrun = Skill:new{
 	Name = "Bomb Run",

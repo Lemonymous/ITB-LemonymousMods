@@ -110,7 +110,7 @@ function this:init(mod)
 		ImpactMaterial = IMPACT_FLESH,
 		Portrait = "enemy/lmn_Chomper1",
 	}
-	AddPawn("lmn_Chomper1")
+	AddPawnName("lmn_Chomper1")
 	
 	lmn_Chomper2 = lmn_Chomper1:new{
 		Name = "Alpha Chomper",
@@ -121,7 +121,7 @@ function this:init(mod)
 		Portrait = "enemy/lmn_Chomper2",
 		Tier = TIER_ALPHA,
 	}
-	AddPawn("lmn_Chomper2")
+	AddPawnName("lmn_Chomper2")
 	
 	lmn_ChomperAtk1 = Skill:new{
 		Name = "Chomp",
@@ -235,7 +235,7 @@ function this:init(mod)
 		ImpactMaterial = IMPACT_FLESH,
 		Massive = true
 	}
-	AddPawn("lmn_Chomper")
+	AddPawnName("lmn_Chomper")
 	
 	lmn_ChomperAtk = Skill:new{
 		Name = "Iron Jaws",

@@ -72,7 +72,7 @@ function this:init(mod)
 		Pushable = false,
 		Portrait = "enemy/lmn_Bud1",
 	}
-	AddPawn("lmn_Bud1")
+	AddPawnName("lmn_Bud1")
 	
 	lmn_Bud2 = lmn_Bud1:new{
 		Name = "Alpha Bud",
@@ -84,7 +84,7 @@ function this:init(mod)
 		Portrait = "enemy/lmn_Bud2",
 		Tier = TIER_ALPHA,
 	}
-	AddPawn("lmn_Bud2")
+	AddPawnName("lmn_Bud2")
 	
 	lmn_BudAtk1 = Skill:new{
 		Name = "Chucker",

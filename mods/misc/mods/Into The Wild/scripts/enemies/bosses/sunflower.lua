@@ -21,7 +21,7 @@ lmn_SunflowerBoss = lmn_Sunflower2:new{
 	Tier = TIER_BOSS,
 	Portrait = "enemy/lmn_SunflowerBoss",
 }
-AddPawn("lmn_SunflowerBoss")
+AddPawnName("lmn_SunflowerBoss")
 
 lmn_SunflowerAtkB = lmn_SunflowerAtk2:new{
 	Name = "Seed Blaster",

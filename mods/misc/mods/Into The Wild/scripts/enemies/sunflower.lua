@@ -100,7 +100,7 @@ function this:init(mod)
 		ImpactMaterial = IMPACT_FLESH,
 		Portrait = "enemy/lmn_Sunflower1",
 	}
-	AddPawn("lmn_Sunflower1")
+	AddPawnName("lmn_Sunflower1")
 	
 	lmn_Sunflower2 = lmn_Sunflower1:new{
 		Name = "Alpha Sunflower",
@@ -112,7 +112,7 @@ function this:init(mod)
 		Portrait = "enemy/lmn_Sunflower2",
 		Tier = TIER_ALPHA,
 	}
-	AddPawn("lmn_Sunflower2")
+	AddPawnName("lmn_Sunflower2")
 	
 	lmn_SunflowerAtk1 = Skill:new{
 		Name = "Seed Cannon",

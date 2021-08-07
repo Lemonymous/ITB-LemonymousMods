@@ -54,7 +54,7 @@ lmn_HelicopterMech = Pawn:new{
 	ImpactMaterial = IMPACT_METAL,
 	Flying = true,
 }
-AddPawn("lmn_HelicopterMech")
+AddPawnName("lmn_HelicopterMech")
 
 lmn_Helicopter_Rocket = Skill:new{
 	Name = "Leto Rockets",
