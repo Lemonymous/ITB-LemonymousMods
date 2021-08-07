@@ -7,7 +7,6 @@ local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local selected = require(path .."scripts/libs/selected")
 local weaponApi = require(path .."scripts/weapons/api")
 local multishot = require(path .."scripts/multishot/api")
-local armorDetection = require(path .."scripts/libs/armorDetection")
 local worldConstants = LApi.library:fetch("worldConstants")
 local weaponArmed = require(path .."scripts/libs/weaponArmed")
 local weaponHover = require(path .."scripts/libs/weaponHover")
@@ -578,7 +577,7 @@ function lmn_RoachAtk:GetSkillEffect(p1, p2)
 		
 		local pawn = Board:GetPawn(p3)
 		if pawn and not pawn:IsAcid() and not pawn:IsShield() and not pawn:IsFrozen() then
-			if armorDetection.IsArmor(pawn) then
+			if pawn:IsArmor() then
 				d.iDamage = self.Damage * 2 + 1
 			else
 				d.iDamage = self.Damage * 2

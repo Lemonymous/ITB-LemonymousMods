@@ -2,7 +2,6 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath .."multishot/"
 local imagepath = "combat/icons/".. mod.id .."_multishot/"
-local armorDetection = require(path .."libs/armorDetection")
 local highestMark = require(path .."init").highestMark
 
 local this = {}
@@ -14,7 +13,7 @@ local function getPrefix(loc)
 	if pawn then
 		if pawn:IsAcid() then
 			ret = "acid_"
-		elseif armorDetection.IsArmor(pawn) then
+		elseif pawn:IsArmor() then
 			ret = ""
 		end
 	end
