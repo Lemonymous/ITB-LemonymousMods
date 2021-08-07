@@ -4,7 +4,7 @@ local path = mod.resourcePath
 local a = ANIMS
 local worldConstants = LApi.library:fetch("worldConstants")
 local tips = require(path .."scripts/libs/tutorialTips")
-local astar = require(path .."scripts/libs/astar")
+local astar = LApi.library:fetch("astar")
 local utils = require(path .."scripts/libs/utils")
 local writepath = "img/units/aliens/"
 local readpath = path .. writepath
@@ -306,7 +306,7 @@ AddPawnName("lmn_ColonyBoss")
 function lmn_Colony1:GetDeathEffect(p1)
 	local ret = SkillEffect()
 	
-	local creep = astar.GetTraversable(p1, isCreep)
+	local creep = astar:getTraversable(p1, isCreep)
 	local colonies = {}
 	local remCreep = {}
 	
@@ -443,7 +443,7 @@ function lmn_ColonyAtk1_Tip:GetSkillEffect(p1, p2)
 		addCreep(curr)
 	end
 	
-	local creep = astar.GetTraversable(p1, isCreep)
+	local creep = astar:getTraversable(p1, isCreep)
 	for _, n in pairs(creep) do
 		for dir = DIR_START, DIR_END do
 			local curr = n.loc + DIR_VECTORS[dir]
@@ -455,7 +455,7 @@ function lmn_ColonyAtk1_Tip:GetSkillEffect(p1, p2)
 	
 	local target = self.TipImage.Enemy
 	local d = SpaceDamage(target, self.Damage)
-	local path = astar.GetPath(p1, target, isCreep)
+	local path = astar:getPath(p1, target, isCreep)
 	
 	for i = 1, #path do
 		local p = path[i]
@@ -576,7 +576,7 @@ function lmn_ColonyAtk1:GetSkillEffect(p1, p2)
 	local priority = {}
 	local targets = {}
 	local newCreep = {}
-	local oldCreep = astar.GetTraversable(p1, isCreep)
+	local oldCreep = astar:getTraversable(p1, isCreep)
 	local rng = {}
 	local lockTargets = false
 	
@@ -617,7 +617,7 @@ function lmn_ColonyAtk1:GetSkillEffect(p1, p2)
 			if isValidTarget(n.loc) then
 				table.insert(targets, {
 					loc = n.loc,
-					path = astar.GetPath(p1, n.loc, isCreep)
+					path = astar:getPath(p1, n.loc, isCreep)
 				})
 			end
 			

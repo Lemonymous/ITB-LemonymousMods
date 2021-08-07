@@ -2,7 +2,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local astar = require(path .."scripts/libs/astar")
+local astar = LApi.library:fetch("astar")
 local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local selected = require(path .."scripts/libs/selected")
 local weaponApi = require(path .."scripts/weapons/api")
@@ -329,7 +329,7 @@ function lmn_SwarmerAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	
 	for i = #agents, 1, -1 do
 		local agent = agents[i]
-		agent.path = astar.GetPath(p1, agent.goal, isValidTile)
+		agent.path = astar:getPath(p1, agent.goal, isValidTile)
 		
 		-- remove agents that cannot reach the target in time.
 		if #agent.path == 0 or (#agent.path - 1) > Pawn:GetMoveSpeed() then
@@ -785,7 +785,7 @@ end
 function lmn_WyrmAtk:GetTargetArea(p)
 	local ret = PointList()
 	
-	self.Traversable = astar.GetTraversable(p, self.IsValidTile)
+	self.Traversable = astar:getTraversable(p, self.IsValidTile)
 	
 	for _, node in pairs(self.Traversable) do
 		ret:push_back(node.loc)
