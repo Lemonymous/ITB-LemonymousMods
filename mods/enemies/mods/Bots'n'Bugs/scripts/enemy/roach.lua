@@ -3,7 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local worldConstants = LApi.library:fetch("worldConstants")
 local getModOptions = require(path .."scripts/libs/getModOptions")
-local tips = require(path .."scripts/libs/tutorialTips")
+local tips = LApi.library:fetch("tutorialTips")
 local id_spit = mod.id .."_roach_spit"
 local a = ANIMS
 local writepath = "img/units/aliens/"
@@ -156,9 +156,9 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			
 		elseif self == lmn_RoachAtkB then
 			ret:AddScript(string.format([[
-				local tips = require(%q .."scripts/libs/tutorialTips");
-				tips:Trigger("Roach_Boss_Atk", %s);
-			]], path, p1:GetString()))
+				local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+				tips:trigger("Roach_Boss_Atk", %s);
+			]], p1:GetString()))
 		end
 		
 		for k = 1, self.Range do

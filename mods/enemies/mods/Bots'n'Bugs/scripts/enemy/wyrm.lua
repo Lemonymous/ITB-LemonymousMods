@@ -3,7 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
 local worldConstants = LApi.library:fetch("worldConstants")
-local tips = require(path .."scripts/libs/tutorialTips")
+local tips = LApi.library:fetch("tutorialTips")
 local a = ANIMS
 local writepath = "img/units/aliens/"
 local readpath = path .. writepath
@@ -154,9 +154,9 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	
 	if not isTipImage then
 		ret:AddScript(string.format([[
-			local tips = require(%q .."scripts/libs/tutorialTips");
-			tips:Trigger("Wyrm_Atk", %s);
-		]], path, p1:GetString()))
+			local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+			tips:trigger("Wyrm_Atk", %s);
+		]], p1:GetString()))
 	end
 	
 	local mission = GetCurrentMission()

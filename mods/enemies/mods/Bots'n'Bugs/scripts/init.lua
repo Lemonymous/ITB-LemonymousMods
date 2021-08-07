@@ -267,8 +267,9 @@ end
 
 function mod:init()
 	assert(LApi, string.format("Mod %s with id '%s' requires 'LApi' in order to function properly", self.name, self.id))
-	
-	
+
+	LApi.library:new("tutorialTips")
+
 	-- init enemies
 	for id, v in pairs(enemies) do
 		WeakPawns[id] = v.weakpawn
@@ -436,7 +437,7 @@ function mod:load(options, version)
 	
 	-- toggle optional delayed roach spit
 	if options["option_reset_tips"].enabled then
-		require(self.scriptPath .. "libs/tutorialTips"):ResetAll()
+		LApi.library:fetch("tutorialTips"):resetAll()
 		options["option_reset_tips"].enabled = false
 	end
 end

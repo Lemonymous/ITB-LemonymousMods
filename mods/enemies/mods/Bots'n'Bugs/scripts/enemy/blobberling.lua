@@ -5,7 +5,7 @@ local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local selected = require(path .."scripts/libs/selected")
 local getQueued = require(path .."scripts/libs/getQueued")
 local trait = require(path .."scripts/libs/trait")
-local tips = require(path .."scripts/libs/tutorialTips")
+local tips = LApi.library:fetch("tutorialTips")
 local a = ANIMS
 local writepath = "img/units/aliens/"
 local readpath = path .. writepath
@@ -166,9 +166,9 @@ function lmn_BlobberlingAtk1:GetSkillEffect(p1, p2)
 	ret:AddQueuedDamage(SpaceDamage(p1))
 	
 	ret:AddScript(string.format([[
-		local tips = require(%q .."scripts/libs/tutorialTips");
-		tips:Trigger("Blobberling_Atk", %s);
-	]], path, p1:GetString()))
+		local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+		tips:trigger("Blobberling_Atk", %s);
+	]], p1:GetString()))
 	
 	local pawn = Board:GetPawn(p1)
 	if not pawn then
@@ -274,7 +274,7 @@ function this:load()
 	
 	modUtils:addPawnTrackedHook(function(m, pawn)
 		if isBlobberling(pawn) then
-			tips:Trigger("Blobberling", pawn:GetSpace())
+			tips:trigger("Blobberling", pawn:GetSpace())
 		end
 	end)
 end

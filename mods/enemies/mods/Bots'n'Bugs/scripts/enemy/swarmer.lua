@@ -4,7 +4,7 @@ local path = mod.resourcePath
 local weaponApi = require(path .."scripts/weapons/api")
 local multishot = require(path .."scripts/multishot/api")
 local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
-local tips = require(path .."scripts/libs/tutorialTips")
+local tips = LApi.library:fetch("tutorialTips")
 local a = ANIMS
 local writepath = "img/units/aliens/"
 local readpath = path .. writepath
@@ -205,7 +205,7 @@ end
 function this:load()
 	modUtils:addPawnTrackedHook(function(m, pawn)
 		if IsSwarmer(pawn) then
-			tips:Trigger("Swarmer", pawn:GetSpace())
+			tips:trigger("Swarmer", pawn:GetSpace())
 		end
 	end)
 end

@@ -139,9 +139,9 @@ function lmn_SpitterAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	
 	if not isTipImage then
 		ret:AddScript(string.format([[
-			local tips = require(%q .."scripts/libs/tutorialTips");
-			tips:Trigger("Spitter_Atk", %s);
-		]], path, p1:GetString()))
+			local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+			tips:trigger("Spitter_Atk", %s);
+		]], p1:GetString()))
 	end
 	
 	local dir = GetDirection(p2 - p1)

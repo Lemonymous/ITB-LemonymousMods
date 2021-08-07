@@ -3,7 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local a = ANIMS
 local worldConstants = LApi.library:fetch("worldConstants")
-local tips = require(path .."scripts/libs/tutorialTips")
+local tips = LApi.library:fetch("tutorialTips")
 local astar = LApi.library:fetch("astar")
 local utils = require(path .."scripts/libs/utils")
 local writepath = "img/units/aliens/"
@@ -339,9 +339,9 @@ function lmn_Colony1:GetDeathEffect(p1)
 	
 	if #remCreep > 0 then
 		ret:AddScript(string.format([[
-			local tips = require(%q .."libs/tutorialTips");
-			tips:Trigger("Creep_Death", %s);
-		]], mod.scriptPath, p1:GetString()))
+			local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+			tips:trigger("Creep_Death", %s);
+		]], p1:GetString()))
 	end
 	
 	for _, p in ipairs(remCreep) do
@@ -666,14 +666,14 @@ function lmn_ColonyAtk1:GetSkillEffect(p1, p2)
 	
 	if #newCreep > 0 then
 		ret:AddScript(string.format([[
-			local tips = require(%q .."libs/tutorialTips");
-			tips:Trigger("Creep", %s);
-		]], mod.scriptPath, newCreep[1]:GetString()))
+			local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+			tips:trigger("Creep", %s);
+		]], newCreep[1]:GetString()))
 		
 		ret:AddScript(string.format([[
-			local tips = require(%q .."libs/tutorialTips");
-			tips:Trigger("Colony_Atk", %s);
-		]], mod.scriptPath, p1:GetString()))
+			local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+			tips:trigger("Colony_Atk", %s);
+		]], p1:GetString()))
 	end
 	
 	table.sort(targets, function(n,o)

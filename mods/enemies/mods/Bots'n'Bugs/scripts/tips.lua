@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local tips = require(path .."libs/tutorialTips")
+local tips = LApi.library:fetch("tutorialTips")
 
 tips:Add{
 	id = "Garden",

@@ -11,7 +11,7 @@ local worldConstants = LApi.library:fetch("worldConstants")
 local weaponArmed = require(path .."scripts/libs/weaponArmed")
 local weaponHover = require(path .."scripts/libs/weaponHover")
 local previewer = require(path .."scripts/weaponPreview/api")
-local tips = require(path .."scripts/libs/tutorialTips")
+local tips = LApi.library:fetch("tutorialTips")
 local a = ANIMS
 local this = {}
 
@@ -401,8 +401,8 @@ function lmn_SwarmerAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	for _, agent in ipairs(agents) do
 		if a[_G[pawnType].Image .."e"] then
 			ret:AddScript(string.format([[
-				local loc, path = %s, %q;
-				local tips = require(path .."scripts/libs/tutorialTips");
+				local loc = %s;
+				local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
 				local pawn = Board:GetPawn(loc);
 				if pawn then
 					if pawn:IsFrozen() then
@@ -412,7 +412,7 @@ function lmn_SwarmerAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 				else
 					tips:Trigger("Swarmer_Dead", loc);
 				end;
-			]], agent.goal:GetString(), path))
+			]], agent.goal:GetString()))
 			
 			ret:AddScript(string.format([[
 				local pawnType, p1, clone = %q, %s, Board:GetPawn(%s);
