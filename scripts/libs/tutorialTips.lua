@@ -1,12 +1,14 @@
 
 ---------------------------------------------------------------------
 -- Tutorial Tips v1.1 - code library
+--
+-- by Lemonymous
 ---------------------------------------------------------------------
 -- small helper lib to manage tutorial tips that will only display once per profile.
 -- can be reset, and would likely be done via a mod option.
 
 local mod = mod_loader.mods[modApi.currentMod]
-local this = {}
+local tips = {}
 local cachedTips
 
 sdlext.config(
@@ -48,7 +50,7 @@ local function readData(id)
 	return result
 end
 
-function this:ResetAll()
+function tips:ResetAll()
 	sdlext.config(
 		"modcontent.lua",
 		function(obj)
@@ -59,12 +61,12 @@ function this:ResetAll()
 	)
 end
 
-function this:Reset(id)
+function tips:Reset(id)
 	assert(type(id) == 'string')
 	writeData(id, nil)
 end
 
-function this:Add(tip)
+function tips:Add(tip)
 	assert(type(tip) == 'table')
 	assert(type(tip.id) == 'string')
 	assert(type(tip.title) == 'string')
@@ -74,7 +76,7 @@ function this:Add(tip)
 	Global_Texts[mod.id .. tip.id .."_Text"] = tip.text
 end
 
-function this:Trigger(id, loc)
+function tips:Trigger(id, loc)
 	assert(type(id) == 'string')
 	assert(type(loc) == 'userdata')
 	assert(type(loc.x) == 'number')
@@ -86,4 +88,4 @@ function this:Trigger(id, loc)
 	end
 end
 
-return this
+return tips
