@@ -26,7 +26,7 @@ modApi:appendAsset("img/units/player/lmn_ds_swoop_w_broken.png", mod.resourcePat
 modApi:appendAsset("img/units/player/lmn_ds_swoop_ns.png", mod.resourcePath.. "img/units/player/swoop_ns.png")
 modApi:appendAsset("img/units/player/lmn_ds_swoop_h.png", mod.resourcePath.. "img/units/player/swoop_h.png")
 
-lmn_ds_Commando = {
+lmn_ds_Commando = Pawn:new{
 	Name = "Commando Mech",
 	Class = "Prime",
 	Image = "lmn_ds_Commando",
@@ -43,7 +43,7 @@ lmn_ds_Commando = {
 }
 AddPawnName("lmn_ds_Commando")
 
-lmn_ds_Gunslinger = {
+lmn_ds_Gunslinger = Pawn:new{
 	Name = "Gunslinger Mech",
 	Class = "Brute",
 	Image = "lmn_ds_Gunslinger",
@@ -58,7 +58,7 @@ lmn_ds_Gunslinger = {
 }
 AddPawnName("lmn_ds_Gunslinger")
 
-lmn_ds_Swoop = {
+lmn_ds_Swoop = Pawn:new{
 	Name = "Swoop Mech",
 	Class = "Science",
 	Image = "lmn_ds_Swoop",

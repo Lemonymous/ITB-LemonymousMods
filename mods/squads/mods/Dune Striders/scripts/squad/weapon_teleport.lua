@@ -26,7 +26,7 @@ function lmn_ds_Teleport:GetSkillEffect(p1, p2)
 		end
 	end
 	
-	effectPreview.AddTeleport(ret, p1, p2)
+	effectPreview:addTeleport(ret, p1, p2)
 	ret:AddSound("/props/smoke_cloud")
 	ret:AddSound("/enemy/shared/moved")
 	ret:AddSound("/props/pylon_fall")

@@ -220,7 +220,7 @@ function lmn_ds_HaulerHooks:GetSkillEffect(p1, p2)
 	end
 	
 	-- weapon preview looks better if we end with the main charge
-	effectPreview.AddCharge(ret, p1, p2, Pawn:GetPathProf())
+	effectPreview:addCharge(ret, p1, p2, Pawn:GetPathProf())
 	
 	return ret
 end
