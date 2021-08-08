@@ -23,17 +23,17 @@
 -- local effectPreview = require(self.scriptPath..'effectPreview')
 --
 --    Methods:
--- .addDamage(effect, spaceDamage)
--- .addCharge(effect, p1, p2, pathing)
--- .addLeap(effect, p1, p2)
--- .addTeleport(effect, p1, p2)
--- .addMove(effect, pawn, p2, pathing)
--- .addHiddenLeap(effect, p1, p2, delay)
+-- :addDamage(effect, spaceDamage)
+-- :addCharge(effect, p1, p2, pathing)
+-- :addLeap(effect, p1, p2)
+-- :addTeleport(effect, p1, p2)
+-- :addMove(effect, pawn, p2, pathing)
+-- :addHiddenLeap(effect, p1, p2, delay)
 --
 --    Methods for internal use:
--- .clearTile(effect, tile)
--- .filterTile(effect, tile)
--- .rewindTile(effect, tile)
+-- :clearTile(effect, tile)
+-- :filterTile(effect, tile)
+-- :rewindTile(effect, tile)
 --
 --------------------------------------------------------
 
