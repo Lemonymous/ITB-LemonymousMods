@@ -228,7 +228,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	d.bHide = true
 	ret:AddDamage(d)
 	
-	this.effectPreview:AddHiddenLeap(ret, t1, t1, NO_DELAY)
+	this.effectPreview:addHiddenLeap(ret, t1, t1, NO_DELAY)
 	ret:AddSound(tData.SoundLocation .."hurt")
 	
 	local delay = 0
@@ -319,7 +319,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		]])
 		
 		-- preview movement.
-		this.effectPreview:AddMove(ret, target, p2)
+		this.effectPreview:addMove(ret, target, p2)
 		
 	elseif target:IsTeleporter() then
 		ret:AddTeleport(p1, p2, FULL_DELAY)
@@ -377,7 +377,7 @@ function this:init(mod)
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.effectBurst = require(mod.scriptPath .."effectBurst")
-	self.effectPreview = require(mod.scriptPath .."effectPreview")
+	self.effectPreview = LApi.library:fetch("effectPreview")
 	
 	modApi:appendAsset("img/weapons/lmn_psionic_transmitter.png", mod.resourcePath.. "img/weapons/psionic_transmitter.png")
 	

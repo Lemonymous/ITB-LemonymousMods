@@ -215,7 +215,7 @@ function lmn_Autocannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 				mark.sImageMark = mark.sImageMark .. damage ..".png"
 			end
 			
-			this.effectPreview:AddDamage(ret, mark)
+			this.effectPreview:addDamage(ret, mark)
 		end
 	else
 		local vBoard = this.virtualBoard.new()
@@ -336,7 +336,7 @@ function this:init(mod)
 	self.armorDetection = require(mod.scriptPath .."armorDetection")
 	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
-	self.effectPreview = require(mod.scriptPath .."effectPreview")
+	self.effectPreview = LApi.library:fetch("effectPreview")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_autocannon.png", mod.resourcePath .."img/weapons/autocannon.png")
