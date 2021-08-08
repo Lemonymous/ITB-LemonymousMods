@@ -140,7 +140,17 @@ end
 local function add(self, trait)
 	Assert.ResourceDatIsOpen()
 	Assert.Equals('table', type(trait), "Argument #1")
-	Assert.Equals('string', type(trait.icon), "Field 'icon'")
+	Assert.Equals({'nil', 'string'}, type(trait.icon), "Field 'icon'")
+	Assert.Equals({'nil', 'string'}, type(trait.icon_glow), "Field 'icon_glow'")
+	Assert.Equals({'nil', 'userdata'}, type(trait.icon_offset), "Field 'icon_offset'")
+
+	trait.icon_offset = trait.icon_offset or Point(0,0)
+
+	if type(trait.desc) == 'table' then
+		trait.desc_title = trait.desc.title or trait.desc[1]
+		trait.desc_text = trait.desc.text or trait.desc[2]
+	end
+
 	Assert.TypePoint(trait.icon_offset, "Field 'icon_offset'")
 	Assert.Equals('string', type(trait.desc_title), "Field 'desc_title'")
 	Assert.Equals('string', type(trait.desc_text), "Field 'desc_text'")
@@ -148,7 +158,8 @@ local function add(self, trait)
 	local func = trait.func
 	local pilotSkill = trait.pilotSkill
 	local pawnType = trait.pawnType
-	local icon = trait.icon:match(".-.png$") or trait.icon..".png"
+	local icon = trait.icon
+	local icon_glow = trait.icon_glow
 	local icon_offset = trait.icon_offset
 	local desc_title = trait.desc_title
 	local desc_text = trait.desc_text
@@ -175,29 +186,43 @@ local function add(self, trait)
 	local id = "trait"..#self
 	local path = "combat/icons/icon_"..id..".png"
 	local pathGlow = "combat/icons/icon_"..id.."_glow.png"
-	local icon_glow = icon:sub(1, -5).."_glow.png"
-	local is_vanilla_asset = icon:find("^img/")
 
 	trait.id = id
 
-	if is_vanilla_asset then
-		if modApi:assetExists(icon) then
-			modApi:copyAsset(icon, "img/"..path)
-		end
+	if icon then
+		icon = icon:match(".-.png$") or icon..".png"
 
-		if modApi:assetExists(icon_glow) then
-			modApi:copyAsset(icon_glow, "img/"..pathGlow)
-			Location[pathGlow] = icon_offset
+		local is_vanilla_asset = icon:find("^img/")
+		if is_vanilla_asset then
+			if modApi:assetExists(icon) then
+				modApi:copyAsset(icon, "img/"..path)
+			end
+		else
+			if modApi:fileExists(icon) then
+				modApi:appendAsset("img/"..path, icon)
+			end
 		end
 	else
-		if modApi:fileExists(icon) then
-			modApi:appendAsset("img/"..path, icon)
+		modApi:copyAsset("img/empty.png", "img/"..path)
+	end
+
+	if icon_glow then
+		icon_glow = icon_glow:match(".-.png$") or icon_glow..".png"
+
+		local is_vanilla_asset = icon_glow:find("^img/")
+		if is_vanilla_asset then
+			if modApi:assetExists(icon_glow) then
+				modApi:copyAsset(icon_glow, "img/"..pathGlow)
+			end
+		else
+			if modApi:fileExists(icon_glow) then
+				modApi:appendAsset("img/"..pathGlow, icon_glow)
+			end
 		end
 
-		if modApi:fileExists(icon_glow) then
-			modApi:appendAsset("img/"..pathGlow, icon_glow)
-			Location[pathGlow] = icon_offset
-		end
+		Location[pathGlow] = icon_offset
+	else
+		modApi:copyAsset("img/empty.png", "img/"..pathGlow)
 	end
 end
 
