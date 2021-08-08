@@ -1,8 +1,34 @@
 
+---------------------------------------------------
+-- Artillery Arc v1.0.0 - code library
+--
+-- by Lemonymous
+---------------------------------------------------
+-- When Artillery Arc has executed, skills can set
+-- the following fields to automatically adjust
+-- artillery height, both when they are armed, and
+-- when viewed in the tooltip:
+--
+--    Skill.ArtilleryHeight - if defined,
+-- specifies the height of any artillery attack in
+-- the skill.
+--
+--    Skill.GetArtilleryHeight - function variant
+-- of Skill.ArtilleryHeight.
+--
+--    Skill.UpdateArtilleryHeight - if defined,
+-- this function will be called each update when
+-- the skill is armed or viewed in the tipimage,
+-- allowing you to set a conditional artillery
+-- height. The library will handle resetting the
+-- value automatically.
+--
+---------------------------------------------------
+
 local weaponArmed = LApi.library:fetch("weaponArmed")
 local worldConstants = LApi.library:fetch("worldConstants")
 
-local VERSION = "0.0.0"
+local VERSION = "1.0.0"
 
 local function onModsInitialized()
 	if VERSION < ArtilleryArc.version then
