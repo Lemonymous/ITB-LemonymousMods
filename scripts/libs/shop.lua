@@ -1,6 +1,8 @@
 
 ---------------------------------------------------
--- Shop v2.0beta - helper functions
+-- Shop v2.0 - helper functions
+--
+-- by Lemonymous
 ---------------------------------------------------
 -- provides functions for adding weapons to shop,
 -- set custom rarity to weapons,
