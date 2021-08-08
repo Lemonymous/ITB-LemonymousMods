@@ -1,6 +1,6 @@
 
 ---------------------------------------------------
--- Globals v2.0 - code library
+-- Globals v2.0.0 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------
@@ -20,7 +20,7 @@
 -- globals:rem(myGlobalIndex)
 ---------------------------------------------------
 
-local VERSION = "0.1.0"
+local VERSION = "2.0.0"
 
 if globals == nil or modApi:isVersion(VERSION, globals.version) then
 	globals = globals or {
