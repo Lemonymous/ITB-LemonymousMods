@@ -27,7 +27,7 @@ if globals == nil or modApi:isVersion(VERSION, globals.version) then
 		last = 0, -- a rolling index given out when there are no unused indices left
 		free = {}, -- list of unused indices
 	}
-	
+
 	function globals:new()
 		local index = self.free[#self.free]
 		
@@ -36,11 +36,11 @@ if globals == nil or modApi:isVersion(VERSION, globals.version) then
 			self[index] = nil
 			return index
 		end
-		
+
 		self.last = self.last + 1
 		return self.last
 	end
-	
+
 	function globals:rem(index)
 		self[index] = nil
 		table.insert(self.free, index)
