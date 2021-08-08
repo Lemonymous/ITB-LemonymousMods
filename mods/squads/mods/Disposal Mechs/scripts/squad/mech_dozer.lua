@@ -318,13 +318,13 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 				local stop = p1 + step * v.stop
 				
 				worldConstants:setSpeed(ret, self.VelX)
-				effectPreview:FilterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
+				effectPreview:filterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
 				ret:AddCharge(Board:GetPath(start, stop, PATH_FLYER), NO_DELAY)
-				effectPreview:RewindTile(ret, start)
+				effectPreview:rewindTile(ret, start)
 				worldConstants:resetSpeed(ret)
 				
 				if start ~= v.initLoc then
-					effectPreview:AddCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
+					effectPreview:addCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
 				end
 			end
 		end
@@ -339,7 +339,7 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 		end
 	end
 	
-	effectPreview:AddCharge(ret, p1, moveLoc)
+	effectPreview:addCharge(ret, p1, moveLoc)
 	
 	if moveLoc ~= p2 then													-- if we should crash,
 		
