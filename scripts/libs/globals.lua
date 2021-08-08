@@ -1,4 +1,25 @@
 
+---------------------------------------------------
+-- Globals v2.0 - code library
+--
+-- by Lemonymous
+---------------------------------------------------
+-- Provides a way to create and access globals
+-- variables dynamically.
+--
+--    Create a new global index:
+-- local myGlobalIndex = globals:new()
+--
+--    Set my personal global variable:
+-- globals[myGlobalIndex] = "myGlobalContent"
+--
+--    Get my personal global variable:
+-- LOG(globals[myGlobalIndex])
+--
+--    Remove my personal global index:
+-- globals:rem(myGlobalIndex)
+---------------------------------------------------
+
 local VERSION = "0.1.0"
 
 if globals == nil or modApi:isVersion(VERSION, globals.version) then
