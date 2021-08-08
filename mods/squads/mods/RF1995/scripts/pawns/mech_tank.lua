@@ -212,7 +212,7 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 					mark.sImageMark = "combat/lmn_tank_cannon_damage_faded_".. damage ..".png"
 				end
 				
-				effectPreview:AddDamage(ret, mark)
+				effectPreview:addDamage(ret, mark)
 			end
 		else
 			-- mark board.

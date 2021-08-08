@@ -387,7 +387,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 				worldConstants:resetHeight(ret)
 				
 				local mark = SpaceDamage(tile, self.Attacks)
-				effectPreview:AddDamage(ret, mark)
+				effectPreview:addDamage(ret, mark)
 			else
 				worldConstants:setSpeed(ret, 999)
 				ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
@@ -405,7 +405,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 					
 					mark.sImageMark = mark.sImageMark .. damage ..".png"
 					
-					effectPreview:AddDamage(ret, mark)
+					effectPreview:addDamage(ret, mark)
 					
 					-- hack to replace mountain we just did damage to.
 					if tile == self.TipProjectileEnd then
