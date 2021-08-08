@@ -20,7 +20,8 @@
 --    trait.pilotSkill - trait applies to pawns with this pilotSkill
 --    trait.pawnType - trait applies to pawns with this pawnType
 --    trait.func - trait applies to pawns which this function returns true for
---    trait.icon - path to icon; either relative to mod, or path to asset in resource.dat
+--    trait.icon - path to icon used in the pilot tooltip; either relative to mod, or path to asset in resource.dat
+--    trait.icon_glow - path to icon used on the Board; either relative to mod, or path to asset in resource.dat
 --    trait.icon_offset
 --    trait.desc_title
 --    trait.desc_text
