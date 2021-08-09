@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
+local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local pawnSpace = require(path .."libs/pawnSpace")
 local getNearestLoc = require(path .."libs/getNearestLoc")
 local utils = require(path .."libs/utils")

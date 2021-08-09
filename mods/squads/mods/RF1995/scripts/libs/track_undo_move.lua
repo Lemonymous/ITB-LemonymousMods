@@ -10,7 +10,7 @@
 -- returns the pawn undoing its move this frame
 
 local mod = mod_loader.mods[modApi.currentMod]
-local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 VERSION = "0.1.0"
 

@@ -5,7 +5,7 @@
 	needs to be loaded to function.
 ]]
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
+local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {}
 
 sdlext.addGameExitedHook(function()

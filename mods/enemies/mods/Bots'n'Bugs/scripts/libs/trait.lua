@@ -15,7 +15,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local module_id = mod.id .."_trait"
-local modUtils = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
+local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local traits = {
 	--[[
 	[pawnType] = {

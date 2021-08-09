@@ -4,7 +4,7 @@ local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
-local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local shop = require(scriptPath .."libs/shop")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 local worldConstants = LApi.library:fetch("worldConstants")

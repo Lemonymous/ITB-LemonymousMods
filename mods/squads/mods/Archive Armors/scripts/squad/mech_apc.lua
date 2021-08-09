@@ -2,7 +2,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local shop = LApi.library:fetch("shop")
-local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 lmn_SmokeMech = Pawn:new{
 	Name = "APC Mech",
