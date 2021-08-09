@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local trait = require(path .."scripts/trait")
+local trait = LApi.library:fetch("trait")
 local achvApi = require(path .."scripts/achievements/api")
 local getModUtils = require(path .."scripts/getModUtils")
 local tutorialTips = require(path .."scripts/tutorialTips")
@@ -108,15 +108,14 @@ function this:init(mod)
 	a.lmn_SproutEvd = a.lmn_Sprout1gd
 	a.lmn_SproutEvw = a.lmn_Sprout1gw
 	
-	trait:Add(
-		"lmn_evolve",
-		"lmn_Sprout1",
-		{"img/combat/bloom.png", Point(0,0)},
-		"img/empty.png",
-		{"Bloom", "Can choose to bloom to its alpha stage instead of attacking."},
-		{"Bloom", "This unit can choose to spend its turn blooming to its alpha stage instead of attacking."}
-	)
-	
+	trait:add{
+		pawnType = "lmn_Sprout1",
+		icon = "img/combat/bloom.png",
+		icon_offset = Point(0,0),
+		desc_title = "Bloom",
+		dec_text = "Can choose to bloom to its alpha stage instead of attacking."
+	}
+
 	lmn_Sprout1 = Pawn:new{
 		Name = "Sprout",
 		Health = 1,

@@ -323,7 +323,6 @@ function mod:load(options, version)
 	require(scriptPath .."deathPetals"):load()
 	require(scriptPath .."customAnim"):load()		-- probably unused
 	require(scriptPath .."customEmitter"):load()
-	require(scriptPath .."trait"):load()
 	require(scriptPath .."teamTurn"):load()
 	--require(scriptPath .."exampleChievo"):load() -- example for other mods.
 	require(scriptPath .."achievementTriggers"):load()
