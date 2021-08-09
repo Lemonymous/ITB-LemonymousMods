@@ -4,7 +4,7 @@ local utils = require(path .."scripts/utils")
 local switch = require(path .."scripts/switch")
 local customEmitter = require(path .."scripts/customEmitter")
 local teamTurn = require(path .."scripts/teamTurn")
-local tutorialTips = require(path .."scripts/tutorialTips")
+local tutorialTips = LApi.library:fetch("tutorialTips")
 local getModUtils = require(path .."scripts/getModUtils")
 local this = {}
 
@@ -286,10 +286,11 @@ function this:init(mod)
 		layer = LAYER_FRONT
 	}
 	
-	tutorialTips:Add("lmn_Infuser", {
+	tutorialTips:add{
+		id = "infuser",
 		title = "Infuse",
 		text = "This unit's attack can change normal units into alphas, and alphas into bosses."
-	})
+	}
 end
 
 function this:load(mod, options, version)
@@ -298,7 +299,7 @@ function this:load(mod, options, version)
 	modUtils:addPawnTrackedHook(function(_, pawn)
 		
 		if pawn:GetType() == "lmn_Infuser1" then
-			tutorialTips:Trigger("lmn_Infuser", pawn:GetSpace())
+			tutorialTips:trigger("infuser", pawn:GetSpace())
 		end
 	end)
 	

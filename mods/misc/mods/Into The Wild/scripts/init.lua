@@ -256,6 +256,7 @@ function mod:init()
 	islandApi:AddCorp(corp)
 	islandApi:AddIsland(island)
 	
+	LApi.library:new("tutorialTips")
 	require(scriptPath .."weaponPreview/api")
 	require(scriptPath .."armorDetection")
 	require(scriptPath .."achievements/init")

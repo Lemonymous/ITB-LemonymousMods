@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local tutorialTips = require(path .."scripts/tutorialTips")
+local tutorialTips = LApi.library:fetch("tutorialTips")
 local armorDetection = require(path .."scripts/armorDetection")
 local getModUtils = require(path .."scripts/getModUtils")
 local achvApi = require(path .."scripts/achievements/api")
@@ -283,10 +283,11 @@ function this:init(mod)
 	lmn_Emitter_Sunflower2d = lmn_Emitter_Sunflower1d:new{image = "effects/emitters/lmn_petal_sunflower2.png"}
 	lmn_Emitter_SunflowerBd = lmn_Emitter_Sunflower1d:new{image = "effects/emitters/lmn_petal_sunflowerB.png"}
 	
-	tutorialTips:Add("lmn_Sunflower", {
+	tutorialTips:add{
+		id = "lmn_Sunflower",
 		title = "Multishot",
 		text = "This unit can attack multiple times, and will hit tiles behind its target if the first attacks destroy it."
-	})
+	}
 end
 
 function this:load(mod, options, version)
@@ -296,7 +297,7 @@ function this:load(mod, options, version)
 		
 		if isSunFlower(pawn:GetType()) then
 			local loc = pawn:GetSpace()
-			tutorialTips:Trigger("lmn_Sunflower", loc)
+			tutorialTips:trigger("lmn_Sunflower", loc)
 		end
 	end)
 	

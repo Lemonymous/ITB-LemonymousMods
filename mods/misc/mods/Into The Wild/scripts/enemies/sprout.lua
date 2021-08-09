@@ -4,7 +4,7 @@ local utils = require(path .."scripts/utils")
 local trait = LApi.library:fetch("trait")
 local achvApi = require(path .."scripts/achievements/api")
 local getModUtils = require(path .."scripts/getModUtils")
-local tutorialTips = require(path .."scripts/tutorialTips")
+local tutorialTips = LApi.library:fetch("tutorialTips")
 local this = {
 	sprouts = {"lmn_Sprout1", "lmn_Sprout2", "lmn_SproutEv", "lmn_SproutBud1", "lmn_SproutBud2"}
 }
@@ -116,6 +116,18 @@ function this:init(mod)
 		dec_text = "Can choose to bloom to its alpha stage instead of attacking."
 	}
 
+	tutorialTips:add{
+		id = "evolve",
+		title = "Bloom",
+		text = "This unit can choose to spend its turn blooming to its alpha stage instead of attacking."
+	}
+
+	tutorialTips:add{
+		id = "sprout_Hotseat",
+		title = "Evolve",
+		text = "Sprouts can evolve to Alpha Sprouts by targeting their own tile."
+	}
+
 	lmn_Sprout1 = Pawn:new{
 		Name = "Sprout",
 		Health = 1,
@@ -180,6 +192,11 @@ function this:init(mod)
 			isAcid = shooter:IsAcid(),
 			isFire = shooter:IsFire()
 		}
+
+		ret:AddScript(string.format([[
+			local tutorialTips = LApi.library:fetch("tutorialTips", "lmn_into_the_wild");
+			tutorialTips:trigger("evolve", %s);
+		]], p1:GetString()))
 		
 		ret:AddQueuedScript(string.format("Board:RemovePawn(%s)", p1:GetString()))
 		ret:AddQueuedAnimation(p1, self.GrowAnim)
@@ -353,11 +370,6 @@ function this:init(mod)
 	
 	lmn_Emitter_Sprout1gd = lmn_Emitter_Sprout1d:new{x = 0, y = 14}
 	lmn_Emitter_Sprout2gd = lmn_Emitter_Sprout2d:new{x = 0, y = 14}
-	
-	tutorialTips:Add("lmn_Sprout_Hotseat", {
-		title = "Evolve",
-		text = "Sprouts can evolve to Alpha Sprouts by targeting their own tile."
-	})
 end
 
 local hook_registered
@@ -378,7 +390,7 @@ function this:load(mod, options, version)
 				return
 			end
 			
-			local tip_id = "lmn_Sprout_Hotseat"
+			local tip_id = "sprout_Hotseat"
 			if modApi:readProfileData(tip_id) then
 				return
 			end
@@ -386,7 +398,7 @@ function this:load(mod, options, version)
 			for _, pawnId in ipairs(extract_table(Board:GetPawns(TEAM_PLAYER))) do
 				local pawn = Board:GetPawn(pawnId)
 				if pawn:GetType() == "lmn_Sprout1" then
-					tutorialTips:Trigger(tip_id, pawn:GetSpace())
+					tutorialTips:trigger(tip_id, pawn:GetSpace())
 					break
 				end
 			end

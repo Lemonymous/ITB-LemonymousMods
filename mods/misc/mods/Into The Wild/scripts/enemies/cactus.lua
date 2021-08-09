@@ -4,7 +4,7 @@ local utils = require(path .."scripts/utils")
 local worldConstants = require(path .."scripts/worldConstants")
 --local moveUtils = require(path .."scripts/moveUtils")
 local teamTurn = require(path .."scripts/teamTurn")
-local tutorialTips = require(path .."scripts/tutorialTips")
+local tutorialTips = LApi.library:fetch("tutorialTips")
 local achvApi = require(path .."scripts/achievements/api")
 local getModUtils = require(path .."scripts/getModUtils")
 local this = {
@@ -549,10 +549,11 @@ function this:init(mod)
 		burst_count = 4,
 	}
 	
-	tutorialTips:Add("lmn_Cactus", {
+	tutorialTips:add{
+		id = "cactus",
 		title = "Retarget",
 		text = "This unit will always attack the nearest target, and can change direction at any time the board state changes."
-	})
+	}
 end
 
 function this:load(mod, options, version)
@@ -570,7 +571,7 @@ function this:load(mod, options, version)
 		if isCactus(pawn:GetType()) then
 			Achievement_Fail(mission)
 			
-			tutorialTips:Trigger("lmn_Cactus", pawn:GetSpace())
+			tutorialTips:trigger("cactus", pawn:GetSpace())
 		end
 	end)
 	
