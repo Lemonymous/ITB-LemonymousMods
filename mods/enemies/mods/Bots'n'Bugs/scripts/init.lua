@@ -346,7 +346,6 @@ function mod:load(options, version)
 	
 	for _, name in ipairs{
 		"libs/selected",
-		"libs/trait",
 		"enemy/swarmer",
 		"enemy/roach",
 		"enemy/spitter",

@@ -3,7 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local selected = require(path .."scripts/libs/selected")
-local trait = require(path .."scripts/libs/trait")
+local trait = LApi.library:fetch("trait")
 local tips = LApi.library:fetch("tutorialTips")
 local a = ANIMS
 local writepath = "img/units/aliens/"
@@ -40,16 +40,22 @@ end
 
 local pawnTypes = {"lmn_Blobberling1", "lmn_Blobberling2", "lmn_BlobberlingBoss"}
 
-trait:Add{
-	PawnTypes = "lmn_Blobberling1",
-	Icon = {"img/combat/icons/icon_explode.png", Point(0,8)},
-	Description = {"Extremely Volatile", "This unit will always explode on death, dealing 1 damage to adjacent tiles."}
+trait:add{
+	pawnType = "lmn_Blobberling1",
+	icon = "img/combat/icons/icon_explode.png",
+	icon_glow = "img/combat/icons/icon_explode_glow.png",
+	icon_offset = Point(0,8),
+	desc_title = "Extremely Volatile",
+	desc_text = "This unit will always explode on death, dealing 1 damage to adjacent tiles."
 }
 
-trait:Add{
-	PawnTypes = "lmn_Blobberling2",
-	Icon = {"img/combat/icons/icon_explode.png", Point(0,8)},
-	Description = {"Extremely Volatile", "This unit will always explode on death, dealing 2 damage to adjacent tiles."}
+trait:add{
+	pawnType = "lmn_Blobberling2",
+	icon = "img/combat/icons/icon_explode.png",
+	icon_glow = "img/combat/icons/icon_explode_glow.png",
+	icon_offset = Point(0,8),
+	desc_title = "Extremely Volatile",
+	desc_text = "This unit will always explode on death, dealing 1 damage to adjacent tiles."
 }
 
 local function ExplosiveEffect(self, p)
