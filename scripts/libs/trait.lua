@@ -90,6 +90,7 @@ local function updateLoc(loc)
 end
 
 local function updateAll()
+	if not Board then return end
 	local pawns = Board:GetPawns(TEAM_ANY)
 	for i = 1, pawns:size() do
 		local pawnId = pawns:index(i)
@@ -114,12 +115,6 @@ local function onModsLoaded()
 	modApiExt:addPawnTrackedHook(updatePawn)
 	modApiExt:addPawnUntrackedHook(updatePawn)
 	modApiExt:addPawnPositionChangedHook(pawnMoved)
-end
-
-local function onGameLoaded()
-	modApi:runLater(function()
-		updateAll()
-	end)
 end
 
 local function overrideGetStatusTooltip()
@@ -254,9 +249,8 @@ if Traits == nil or modApi:isVersion(VERSION, Traits.version) then
 
 		overrideGetStatusTooltip()
 
-		modApi.events.onTestMechEntered:subscribe(updateAll)
-		modApi.events.onPostLoadGame:subscribe(onGameLoaded)
 		modApi.events.onModsLoaded:subscribe(onModsLoaded)
+		modApi.events.onSaveDataUpdated:subscribe(updateAll)
 	end
 end
 
