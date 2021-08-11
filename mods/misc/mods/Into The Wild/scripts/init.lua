@@ -271,8 +271,6 @@ function mod:init()
 		require(scriptPath .."spaceDamageObjects")
 	--end
 	
-	--require(scriptPath .."logMap")
-	--require(self.scriptPath .."logMission")
 	local convert = require(scriptPath .."convert")
 	
 	local achvApi = require(scriptPath .."/achievements/api")
