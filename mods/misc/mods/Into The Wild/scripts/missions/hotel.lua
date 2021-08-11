@@ -1,7 +1,7 @@
 
 local this = {id = "Mission_lmn_Hotel"}
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local switch = require(path .."scripts/switch")
+local switch = LApi.library:fetch("switch")
 local missionTemplates = require(path .."scripts/missions/missionTemplates")
 local prefix, suffix = "lmn_", ""
 local asset = prefix .."hotel".. suffix

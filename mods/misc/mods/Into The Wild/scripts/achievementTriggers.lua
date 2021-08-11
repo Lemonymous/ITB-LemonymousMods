@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local switch = require(path .."switch")
+local switch = LApi.library:fetch("switch")
 local achvApi = require(path .."achievements/api")
 local getModUtils = require(path .."getModUtils")
 local utils = require(path .."utils")

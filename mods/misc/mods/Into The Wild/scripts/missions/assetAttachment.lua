@@ -1,7 +1,7 @@
 
 -- simple system to attack emitters or other init code to assets.
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local switch = require(path .."switch")
+local switch = LApi.library:fetch("switch")
 
 local this = {
 	start = switch{ default = function(mission, loc) return nil end },

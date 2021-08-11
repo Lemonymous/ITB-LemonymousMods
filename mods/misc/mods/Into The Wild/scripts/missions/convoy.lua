@@ -6,7 +6,7 @@
 local this = {id = "Mission_lmn_Convoy"}
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local utils = require(path .."utils")
-local switch = require(path .."switch")
+local switch = LApi.library:fetch("switch")
 
 -- returns number of pawns alive
 -- in a list of pawn id's.

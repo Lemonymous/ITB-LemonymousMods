@@ -3,7 +3,7 @@
 local this = {id = "Mission_lmn_Runway"}
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local switch = require(path .."scripts/switch")
+local switch = LApi.library:fetch("switch")
 local pawnSpace = require(path .."scripts/pawnSpace")
 local worldConstants = LApi.library:fetch("worldConstants")
 modApi:appendAsset("img/combat/tiles_grass/lmn_ground_runway.png", path .."img/tileset_plant/ground_runway.png")

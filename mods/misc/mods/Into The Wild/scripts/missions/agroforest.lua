@@ -1,7 +1,7 @@
 
 local this = {id = "Mission_lmn_Agroforest"}
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local switch = require(path .."switch")
+local switch = LApi.library:fetch("switch")
 local missionTemplates = require(path .."missions/missionTemplates")
 local prefix, suffix = "lmn_", ""
 local asset = prefix .."agroforest".. suffix
