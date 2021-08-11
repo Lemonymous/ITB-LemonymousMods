@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local bonus = require(path .."scripts/missions/bonusObjective")
-local worldConstants = require(path .."scripts/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 
 local this = {id = "lmn_bonus_specimen"}
 local specimenBonus = 3
@@ -103,10 +103,10 @@ function Mission.MissionEnd(self, ...)
 						
 					elseif e.type == "launch" then
 						fx:AddSound("/props/airstrike")
-						worldConstants.SetSpeed(fx, .5)
+						worldConstants:setSpeed(fx, .5)
 						fx:AddAirstrike(e.loc, "units/mission/lmn_specimen_plane.png")
 						fx.effect:index(fx.effect:size()).fDelay = 0
-						worldConstants.ResetSpeed(fx)
+						worldConstants:resetSpeed(fx)
 						
 					elseif e.type == "drop" then
 						fx:AddScript(string.format("Board:AddAnimation(%s, 'lmn_Specimen_Drop_1', ANIM_NO_DELAY)", e.loc:GetString()))

@@ -3,7 +3,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local this = {id = "Mission_lmn_Geyser"}
 local missionTemplates = require(path .."scripts/missions/missionTemplates")
 local customEmitter = require(path .."scripts/customEmitter")
-local worldConstants = require(path.. "scripts/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local utils = require(path.. "scripts/utils")
 
 modApi:appendAsset("img/effects/smoke/lmn_geyser_spray.png", path .. "img/effects/smoke/geyser_spray.png")
@@ -183,9 +183,9 @@ function Env_lmn_Geyser:GetAttackEffect(loc)
 		leap:push_back(loc)
 		leap:push_back(vacant)
 		
-		worldConstants.SetHeight(fx, 50)
+		worldConstants:setHeight(fx, 50)
 		fx:AddLeap(leap, NO_DELAY)
-		worldConstants.ResetHeight(fx)
+		worldConstants:resetHeight(fx)
 		
 		fx:AddDelay(.50)
 		fx:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1,-1))", pawnId))
@@ -196,9 +196,9 @@ function Env_lmn_Geyser:GetAttackEffect(loc)
 		leap:push_back(vacant)
 		leap:push_back(dest)
 		
-		worldConstants.SetHeight(fx, 50)
+		worldConstants:setHeight(fx, 50)
 		fx:AddLeap(leap, NO_DELAY)
-		worldConstants.ResetHeight(fx)
+		worldConstants:resetHeight(fx)
 		
 		---- voice ----
 		if pawn:IsEnemy() then

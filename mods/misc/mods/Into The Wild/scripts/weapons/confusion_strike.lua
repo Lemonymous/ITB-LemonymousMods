@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local worldConstants = require(path .."scripts/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 
 modApi:appendAsset("img/weapons/lmn_confusion_strike.png", path .."img/weapons/confusion_strike.png")
 
@@ -45,10 +45,10 @@ function lmn_Confusion_Strike:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	ret:AddSound("/props/airstrike")
-	worldConstants.SetSpeed(ret, .5)
+	worldConstants:setSpeed(ret, .5)
 	ret:AddAirstrike(p2, "units/mission/lmn_specimen_plane.png")
 	ret.effect:index(ret.effect:size()).fDelay = 0
-	worldConstants.ResetSpeed(ret)
+	worldConstants:resetSpeed(ret)
 	
 	ret:AddDelay(.15 + .20 * (p2.x + 1))
 	ret:AddScript(string.format("Board:AddAnimation(%s, 'lmn_Specimen_Drop_1', ANIM_NO_DELAY)", p2:GetString()))

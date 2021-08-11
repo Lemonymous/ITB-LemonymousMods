@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local worldConstants = require(path .."scripts/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 
 -- icon
 modApi:appendAsset("img/weapons/lmn_deflector_ray.png", path .."img/weapons/deflector_ray.png")
@@ -234,9 +234,9 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 	local laser = SpaceDamage(targets[#targets])
 	
 	local function fireLaser(art, duration)
-		worldConstants.SetLaserDuration(ret, duration)
+		worldConstants:setLaserDuration(ret, duration)
 		ret:AddProjectile(laser, art, NO_DELAY)
-		worldConstants.ResetLaserDuration(ret)
+		worldConstants:resetLaserDuration(ret)
 	end
 	
 	if pts.acid then

@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local worldConstants = require(path .."scripts/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 --local moveUtils = require(path .."scripts/moveUtils")
 local teamTurn = require(path .."scripts/teamTurn")
 local tutorialTips = LApi.library:fetch("tutorialTips")
@@ -467,10 +467,10 @@ function this:init(mod)
 			ret:AddDelay(0.08)
 			
 			-- increase speed so fake projectile hits instantly.
-			worldConstants.QueuedSetSpeed(ret, 1000)
+			worldConstants:queuedSetSpeed(ret, 1000)
 			ret:AddQueuedProjectile(damage, "", NO_DELAY)
 			ret:AddQueuedProjectile(repair, "", NO_DELAY)
-			worldConstants.QueuedResetSpeed(ret)
+			worldConstants:queuedResetSpeed(ret)
 			
 			-- display redirected projectile arrow.
 			ret:AddScript(string.format("Board:AddAnimation(%s, 'lmn_Cactus_Damage_Close_'.. %s, ANIM_NO_DELAY)", dest:GetString(), self.Damage))

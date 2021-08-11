@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local worldConstants = require(path .."scripts/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 local teamTurn = require(path .."scripts/teamTurn")
 local this = {}
 
@@ -152,9 +152,9 @@ function this:init(mod)
 		ret:AddDamage(SpaceDamage(p1, self.SelfDamage))
 		ret:AddSound("enemy/hornet_1/move")
 		
-		worldConstants.SetHeight(ret, 20)
+		worldConstants:setHeight(ret, 20)
 		ret:AddArtillery(p1, seed, self.Projectile, NO_DELAY)
-		worldConstants.ResetHeight(ret)
+		worldConstants:resetHeight(ret)
 		
 		-- seriously dumb hack to prevent several copters aimed at the same tile.
 		-- units with move speed 0 doesn't always seem to be willing to wait for the

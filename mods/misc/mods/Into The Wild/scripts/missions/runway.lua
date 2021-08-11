@@ -5,7 +5,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local switch = require(path .."scripts/switch")
 local pawnSpace = require(path .."scripts/pawnSpace")
-local worldConstants = require(path .."scripts/worldConstants")
+local worldConstants = LApi.library:fetch("worldConstants")
 modApi:appendAsset("img/combat/tiles_grass/lmn_ground_runway.png", path .."img/tileset_plant/ground_runway.png")
 
 for i = 0, 5 do
@@ -315,9 +315,9 @@ function lmn_RunwayPlaneAtk:GetSkillEffect(p1, p2, _, isTipImage)
 	end
 	
 	local distance = p1:Manhattan(target)
-	worldConstants.QueuedSetSpeed(ret, .5)
+	worldConstants:queuedSetSpeed(ret, .5)
 	ret:AddQueuedCharge(Board:GetSimplePath(p1, target), FULL_DELAY)
-	worldConstants.QueuedResetSpeed(ret)
+	worldConstants:queuedResetSpeed(ret)
 	
 	if isCrash then
 		local d = SpaceDamage(target + DIR_VECTORS[dir], self.Damage)
