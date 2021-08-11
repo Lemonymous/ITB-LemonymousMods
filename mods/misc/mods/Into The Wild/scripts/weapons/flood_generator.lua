@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local astar = require(path .."scripts/astar")
+local astar = LApi.library:fetch("astar")
 local weaponPreview = require(path .."scripts/weaponPreview/api")
 
 modApi:appendAsset("img/weapons/lmn_flood_generator.png", path .."img/weapons/flood_generator.png")
@@ -74,7 +74,7 @@ function lmn_Flood_Generator:GetSkillEffect(p1, p2)
 	table.sort(targets, function(a,b) return a:Manhattan(across) < b:Manhattan(across) end)
 	
 	for _, target in ipairs(targets) do
-		locs = astar.GetPath(p2, target, function(p) return Env_lmn_FlashFlood:IsValidTarget(p) end)
+		locs = astar:getPath(p2, target, function(p) return Env_lmn_FlashFlood:IsValidTarget(p) end)
 		if #locs > 0 then
 			break
 		end

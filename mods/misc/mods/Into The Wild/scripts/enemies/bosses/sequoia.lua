@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local astar = require(path .."scripts/astar")
+local astar = LApi.library:fetch("astar")
 local pushArrows = require(path .."scripts/pushArrows")
 local getModUtils = require(path .."scripts/getModUtils")
 local this = {}
@@ -133,7 +133,7 @@ function Env_lmn_Sequoia:Plan(mission)
 	
 	stop = random_element(stops)]]
 	
-	self.Planned = astar.GetPath(start, stop, function(loc) return self:IsValidTarget(loc) end)
+	self.Planned = astar:getPath(start, stop, function(loc) return self:IsValidTarget(loc) end)
 	self.MarkInProgress = true
 	self.MarkLocations = {}
 	

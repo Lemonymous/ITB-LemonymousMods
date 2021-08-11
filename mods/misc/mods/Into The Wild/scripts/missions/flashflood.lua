@@ -2,7 +2,7 @@
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local missionTemplates = require(path .."missions/missionTemplates")
 local utils = require(path .."utils")
-local astar = require(path .."astar")
+local astar = LApi.library:fetch("astar")
 local this = {id = "Mission_lmn_FlashFlood"}
 
 Mission_lmn_FlashFlood = Mission_Infinite:new{
@@ -86,7 +86,7 @@ function Env_lmn_FlashFlood:Plan()
 		table.sort(locs, function(a,b) return a:Manhattan(across) < b:Manhattan(across) end)
 		
 		for _, last in ipairs(locs) do
-			self.Locations = astar.GetPath(first, last, function(p) return self:IsValidTarget(p) end)
+			self.Locations = astar:getPath(first, last, function(p) return self:IsValidTarget(p) end)
 			if #self.Locations > 0 then
 				self.MarkInProgress = true
 				self.MarkLocations = {}
