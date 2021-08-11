@@ -265,11 +265,7 @@ function mod:init()
 	require(scriptPath .."tiles_jungleforest")
 	require(scriptPath .."tiles_emitters")
 	require(scriptPath .."damageNumbers/damageNumbers")
-	
-	--if not modApi:isVersion("2.3.2", modApi.version) then -- TODO: figure out correct version checker code.
-		require(scriptPath .."queuedExtended")
-		require(scriptPath .."spaceDamageObjects")
-	--end
+	require(scriptPath .."spaceDamageObjects")
 	
 	local convert = require(scriptPath .."convert")
 	
