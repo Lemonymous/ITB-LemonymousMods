@@ -5,7 +5,7 @@ local worldConstants = LApi.library:fetch("worldConstants")
 local teamTurn = require(path .."scripts/teamTurn")
 local tutorialTips = LApi.library:fetch("tutorialTips")
 local achvApi = require(path .."scripts/achievements/api")
-local getModUtils = require(path .."scripts/getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {
 	cactuses = {"lmn_Cactus1", "lmn_Cactus2"}
 }
@@ -556,8 +556,6 @@ function this:init(mod)
 end
 
 function this:load(mod, options, version)
-	local modUtils = getModUtils()
-	
 	local function Achievement_Fail(mission)
 		mission = mission or GetCurrentMission()
 		if not mission then return end
@@ -565,7 +563,7 @@ function this:load(mod, options, version)
 		mission.lmn_achv_cactus = false
 	end
 	
-	modUtils:addPawnTrackedHook(function(mission, pawn)
+	modApiExt:addPawnTrackedHook(function(mission, pawn)
 		
 		if isCactus(pawn:GetType()) then
 			Achievement_Fail(mission)
@@ -574,7 +572,7 @@ function this:load(mod, options, version)
 		end
 	end)
 	
-	modApi:addMissionEndHook(function(mission)
+	modApiExt:addMissionEndHook(function(mission)
 		if mission.lmn_achv_cactus then
 			achvApi:TriggerChievo("cactus")
 		end
