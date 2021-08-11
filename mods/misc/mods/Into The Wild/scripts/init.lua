@@ -291,7 +291,6 @@ function mod:load(options, version)
 	self.bosses:load(self, options, version)
 	
 	require(scriptPath .."selected"):load()
-	require(scriptPath .."moveUtils"):load()		-- sometimes throws errors? invesigate.
 	require(scriptPath .."deathPetals"):load()
 	require(scriptPath .."customAnim"):load()		-- probably unused
 	require(scriptPath .."customEmitter"):load()
