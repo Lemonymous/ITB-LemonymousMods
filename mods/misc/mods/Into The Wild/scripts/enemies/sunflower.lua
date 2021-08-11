@@ -2,7 +2,6 @@
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local tutorialTips = LApi.library:fetch("tutorialTips")
-local armorDetection = require(path .."scripts/armorDetection")
 local getModUtils = require(path .."scripts/getModUtils")
 local achvApi = require(path .."scripts/achievements/api")
 
@@ -195,7 +194,7 @@ function this:init(mod)
 		local pawn = Board:GetPawn(target)
 		if Board:IsAcid(target) then
 			mark = "acid"
-		elseif pawn and armorDetection.IsArmor(pawn) then
+		elseif pawn and pawn:IsArmor() then
 			mark = ""
 		end
 		

@@ -14,8 +14,6 @@
 	local attacks = math.min(maxAttacks, multishot:GetMaxAttacks(Point(0,0), 1, false)
 ]]
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local armorDetection = require(path .."armorDetection")
 local this = {}
 
 function this:GetMaxAttacks(loc, damage, isPush, isTipImage)
@@ -40,7 +38,7 @@ function this:GetMaxAttacks(loc, damage, isPush, isTipImage)
 				-- TODO: account for multishot weapons using acid on first shot?
 				if pawn:IsAcid() then
 					health = math.ceil(health / 2)
-				elseif armorDetection.IsArmor(pawn) then
+				elseif pawn:IsArmor() then
 					damage = damage - 1
 				end
 				

@@ -258,7 +258,6 @@ function mod:init()
 	
 	LApi.library:new("tutorialTips")
 	require(scriptPath .."weaponPreview/api")
-	require(scriptPath .."armorDetection")
 	require(scriptPath .."achievements/init")
 	require(scriptPath .."achievements")
 	require(scriptPath .."side_objectives")
