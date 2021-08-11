@@ -16,7 +16,7 @@
 
 local this = {}
 
-function this:GetMaxAttacks(loc, damage, isPush, isTipImage)
+function this:GetMaxAttacks(loc, damage, isPush)
 	if isPush then
 		local pawn = Board:GetPawn(loc)
 		if
@@ -48,7 +48,7 @@ function this:GetMaxAttacks(loc, damage, isPush, isTipImage)
 				if Board:GetTerrain(loc) == TERRAIN_ICE then
 					-- only shoot until ice breaks.
 					-- TODO: account for flying pawns?
-					local tileHealth = tileHealth:Get(loc, isTipImage)
+					local tileHealth = Board:GetHealth(loc)
 					return math.max(1, tileHealth)
 				else
 					-- caluculate damage until pawn is dead.
@@ -74,7 +74,7 @@ function this:GetMaxAttacks(loc, damage, isPush, isTipImage)
 		else
 			-- shot is blocked by something. Calculate max damage.
 			local terrain = Board:GetTerrain(loc)
-			local health = tileHealth:Get(loc, isTipImage)
+			local health = Board:GetHealth(loc)
 			
 			if Board:IsFrozen(loc) then
 				if terrain == TERRAIN_MOUNTAIN then
