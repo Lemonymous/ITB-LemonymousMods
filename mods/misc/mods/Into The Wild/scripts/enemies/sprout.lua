@@ -110,7 +110,7 @@ function this:init(mod)
 	
 	trait:add{
 		pawnType = "lmn_Sprout1",
-		icon = "img/combat/bloom.png",
+		icon = path.."img/combat/bloom.png",
 		icon_offset = Point(0,0),
 		desc_title = "Bloom",
 		desc_text = "Can choose to bloom to its alpha stage instead of attacking."
