@@ -2,7 +2,6 @@
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local tileToScreen = require(path .."scripts/tileToScreen")
-local getWeapons = require(path .."scripts/getWeapons")
 local weaponPreview = require(path .."scripts/weaponPreview/api")
 
 modApi:appendAsset("img/weapons/lmn_bioscanner.png", path .."img/weapons/bioscanner.png")
@@ -55,15 +54,12 @@ end
 
 local function createUi(p)
 	local root = sdlext.getUiRoot()
-	
 	local pawn = Board:GetPawn(p)
-	if not pawn then return end
-	local weapons = getWeapons:GetPoweredBase(pawn)
-	local weaponIndex = list_indexof(weapons, "lmn_Bioscanner")
-	weaponIndex = weaponIndex > 0 and weaponIndex or nil
-	
 	local m = GetCurrentMission()
-	if not m or not Board or pawn:GetArmedWeaponId() ~= weaponIndex then return end
+
+	if not pawn or not m or not Board or pawn:GetArmedWeapon() ~= "lmn_Bioscanner" then
+		return
+	end
 	
 	scan = Ui()
 		:width(1)
@@ -72,7 +68,7 @@ local function createUi(p)
 	scan.translucent = true
 	
 	scan.draw = function(self, ...)
-		if Board and pawn:GetArmedWeaponId() == weaponIndex then
+		if Board and pawn:GetArmedWeapon() == "lmn_Bioscanner" then
 			Ui.draw(self, ...)
 		else
 			Stop()
