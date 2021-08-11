@@ -2,41 +2,11 @@
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local getModUtils = require(path .."scripts/getModUtils")
---local worldConstants = require(path .."scripts/worldConstants")
---local statusTooltip = require(path .."scripts/statusTooltip")
---local statusIcon = require(path .."scripts/statusIcon")
---local teamTurn = require(path .."scripts/teamTurn")
---local trait = require(path .."scripts/trait")
 local this = {}
 
 function this:init(mod)
 	WeakPawns.lmn_Puffer = true
 	Spawner.max_pawns.lmn_Puffer = 2
-	
-	--[[
-	modApi:appendAsset("img/combat/icons/lmn_icon_tunneling.png", path .."img/combat/icon_tunneling.png")
-	statusTooltip("lmn_Puffer1", "burrow", {"Tunneling", "Burrows when moving, but not when damaged."})
-	statusIcon:Add("lmn_Puffer1", "img/combat/icons/icon_burrow.png", path .."img/combat/icon_tunneling.png")
-	
-	trait:Add(
-		"lmn_tunneling",
-		{"lmn_Puffer1", "lmn_Puffer2"},
-		"img/combat/icon_tunneling.png",
-		"img/empty.png",
-		{"Tunneling", "Burrows when moving, but not when damaged."},
-		{"Tunneling", "This unit can burrow to move, but does not hide underground when damaged."},
-		function(pawn)
-			if teamTurn.IsVekMovePhase() then
-				_G["lmn_Puffer1"].Burrows = true
-				_G["lmn_Puffer2"].Burrows = true
-				return false
-			end
-			
-			_G["lmn_Puffer1"].Burrows = false
-			_G["lmn_Puffer2"].Burrows = false
-			return true
-		end
-	)]]
 	
 	local writePath = "img/units/aliens/"
 	local readPath = path .. "img/units/aliens/"
