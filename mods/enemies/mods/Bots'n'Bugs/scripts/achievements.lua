@@ -1,6 +1,6 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
-local achvApi = require(path .."scripts/achievements/api")
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.resourcePath
 
 local bosses = {
 	"swarmer",
@@ -17,7 +17,7 @@ local toast_readpath = path .. "img/achievements/toasts/"
 
 for _, boss in ipairs(bosses) do
 	local Boss = boss:gsub("^.", string.upper) -- capitalize first letter
-	
+
 	modApi:appendAsset(
 		chievo_writepath .. boss ..".png",
 		chievo_readpath .. boss ..".png"
@@ -30,15 +30,15 @@ for _, boss in ipairs(bosses) do
 		toast_writepath .. boss ..".png",
 		toast_readpath .. boss ..".png"
 	)
-	
-	achvApi:AddChievo{
+
+	modApi.achievements:add{
 		id = boss,
 		name = Boss ..' Leader',
-		tip = 'Destroy the '.. Boss ..' Leader\n\nReward: '.. Boss ..' Mech\nin Random Squad.\nAvailable in Custom Squad if Secret Squad is unlocked',
-		img = 'img/achievements/lmn_'.. boss ..'.png',
+		tooltip = 'Destroy the '.. Boss ..' Leader\n\nReward: '.. Boss ..' Mech\nin Random Squad.\nAvailable in Custom Squad if Secret Squad is unlocked',
+		image = 'img/achievements/lmn_'.. boss ..'.png',
 	}
 end
 
-local swarmer = achvApi:GetChievo("swarmer")
+local swarmer = modApi.achievements:get(mod.id, "swarmer")
 swarmer.name = 'Swarmer Leaders'
-swarmer.tip = 'Destroy the Swarmer Leaders\n\nReward: Swarmer Mech in Random Squad.\nAvailable in Custom Squad if Secret Squad is unlocked'
+swarmer.tooltip = 'Destroy the Swarmer Leaders\n\nReward: Swarmer Mech in Random Squad.\nAvailable in Custom Squad if Secret Squad is unlocked'

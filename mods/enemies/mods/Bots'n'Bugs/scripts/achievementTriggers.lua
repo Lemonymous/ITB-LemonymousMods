@@ -1,9 +1,7 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local achvApi = require(path .."achievements/api")
+local mod = mod_loader.mods[modApi.currentMod]
 local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local switch = LApi.library:fetch("switch")
-local this = {}
 
 local bosses = {
 	"swarmer",
@@ -20,30 +18,30 @@ local triggerChievo = switch{ default = function() end }
 for _, boss in ipairs(bosses) do
 	local Boss = boss:gsub("^.", string.upper) -- capitalize first letter
 	toasts[boss] = {
-		unlockTitle = Boss ..' Unlocked!',
+		title = Boss ..' Unlocked!',
 		name = Boss ..' Mech',
-		tip = Boss ..' Mech unlocked.',
-		img = 'img/achievements/toasts/lmn_'.. boss ..'.png'
+		tooltip = Boss ..' Mech unlocked.',
+		image = 'img/achievements/toasts/lmn_'.. boss ..'.png'
 	}
-	
+
 	isCompleted['lmn_'.. Boss ..'Boss'] = function()
-		return achvApi:GetChievoStatus(boss)
+		return modApi.achievements:isComplete(mod.id, boss)
 	end
-	
+
 	triggerChievo['lmn_'.. Boss ..'Boss'] = function()
-		achvApi:TriggerChievo(boss)
-		achvApi:ToastUnlock(toasts[boss])
+		modApi.achievements:trigger(mod.id, boss)
+		modApi.toasts:add(toasts[boss])
 	end
 end
 
-function this:load()
+local function onModsLoaded()
 	modUtils:addPawnKilledHook(function(mission, pawn)
 		local pawnType = pawn:GetType()
-		
+
 		if isCompleted:case(pawnType) then
 			return
 		end
-		
+
 		-- special case for swarmers.
 		if pawnType == 'lmn_SwarmerBoss' then
 			local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
@@ -54,9 +52,9 @@ function this:load()
 				end
 			end
 		end
-		
+
 		triggerChievo:case(pawnType)
 	end)
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)

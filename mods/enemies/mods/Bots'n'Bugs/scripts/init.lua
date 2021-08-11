@@ -313,7 +313,6 @@ function mod:init()
 	end
 	
 	modApi:addModsInitializedHook(function()
-		local achvApi = require(self.scriptPath .."achievements/api")
 		local oldGetStartingSquad = getStartingSquad
 		function getStartingSquad(choice, ...)
 			local result = oldGetStartingSquad(choice, ...)
@@ -329,7 +328,7 @@ function mod:init()
 					
 					-- add technomechs at the end to
 					-- enable them as random and custom mechs.
-					if achvApi:GetChievoStatus(name) then
+					if modApi.achievements:isComplete(self.id, name) then
 						table.insert(copy, 'lmn_'.. Name)
 					end
 				end
@@ -357,7 +356,6 @@ function mod:load(options, version)
 		"enemy/knightbot",
 		"doubleSpawn",
 		"secret",
-		"achievementTriggers",
 		"weaponPreview/api",
 	} do
 		require(self.scriptPath .. name):load()
