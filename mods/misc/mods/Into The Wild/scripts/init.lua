@@ -47,9 +47,6 @@ function mod:init()
 	local scriptPath = self.scriptPath
 	local resourcePath = self.resourcePath
 	
-	self.modApiExt = require(scriptPath .."modApiExt/modApiExt")
-	self.modApiExt:init()
-	
 	require(scriptPath .."enemies/init"):init(self)
 	
 	self.missions = require(scriptPath .."missions/init")
@@ -279,7 +276,6 @@ end
 
 function mod:load(options, version)
 	local scriptPath = self.scriptPath
-	self.modApiExt:load(self, options, version)
 	require(scriptPath .."enemies/init"):load(self, options, version)
 	self.missions:load(self, options, version)
 	self.bosses:load(self, options, version)
