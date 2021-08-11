@@ -3,8 +3,8 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local astar = LApi.library:fetch("astar")
 local pushArrows = require(path .."scripts/pushArrows")
-local getModUtils = require(path .."scripts/getModUtils")
 local this = {}
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 WeakPawns.lmn_Gnarl = false
 Spawner.max_pawns.lmn_Gnarl = 2
@@ -632,9 +632,7 @@ function this:init(mod)
 end
 
 function this:load(mod, options, version)
-	local modUtils = getModUtils()
-	
-	modUtils:addPawnKilledHook(function(_, pawn)
+	modApiExt:addPawnKilledHook(function(_, pawn)
 		if pawn:GetType() ~= "lmn_SequoiaBoss" then return end
 		
 		local corpse = PAWN_FACTORY:CreatePawn("lmn_SequoiaBossBroken")

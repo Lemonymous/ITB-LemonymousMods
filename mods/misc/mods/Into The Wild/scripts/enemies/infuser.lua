@@ -5,7 +5,7 @@ local switch = LApi.library:fetch("switch")
 local customEmitter = require(path .."scripts/customEmitter")
 local teamTurn = require(path .."scripts/teamTurn")
 local tutorialTips = LApi.library:fetch("tutorialTips")
-local getModUtils = require(path .."scripts/getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {}
 
 local Evolution = switch{
@@ -294,9 +294,7 @@ function this:init(mod)
 end
 
 function this:load(mod, options, version)
-	local modUtils = getModUtils()
-	
-	modUtils:addPawnTrackedHook(function(_, pawn)
+	modApiExt:addPawnTrackedHook(function(_, pawn)
 		
 		if pawn:GetType() == "lmn_Infuser1" then
 			tutorialTips:trigger("infuser", pawn:GetSpace())

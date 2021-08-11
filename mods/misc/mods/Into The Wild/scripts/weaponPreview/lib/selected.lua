@@ -5,7 +5,7 @@
 	modified for Weapon Preview library
 ]]
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local getModUtils = require(path .."weaponPreview/lib/getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {}
 
 sdlext.addGameExitedHook(function()
@@ -17,13 +17,11 @@ function this:Get()
 end
 
 function this:load()
-	local modUtils = getModUtils()
-	
-	modUtils:addPawnSelectedHook(function(_, pawn)
+	modApiExt:addPawnSelectedHook(function(_, pawn)
 		self.selected = pawn
 	end)
 	
-	modUtils:addPawnDeselectedHook(function(_, pawn)
+	modApiExt:addPawnDeselectedHook(function(_, pawn)
 		self.selected = nil
 	end)
 	

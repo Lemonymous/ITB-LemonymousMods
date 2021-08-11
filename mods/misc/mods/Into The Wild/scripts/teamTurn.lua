@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local getModUtils = require(path .."getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {}
 
 function this.IsVekTurn()
@@ -34,9 +34,7 @@ function Mission:ApplyEnvironmentEffect(...)
 end
 
 function this:load()
-	local modUtils = getModUtils()
-	
-	modUtils:addVekMoveStartHook(function(mission)
+	modApiExt:addVekMoveStartHook(function(mission)
 		mission.lmn_VekMovePhase = Game:GetTurnCount()
 	end)
 end

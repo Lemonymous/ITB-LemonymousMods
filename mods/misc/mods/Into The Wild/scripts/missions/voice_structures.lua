@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local getModUtils = require(path .."getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local utils = require(path .."utils")
 local this = {}
 
@@ -18,9 +18,7 @@ function lmn_Jungle_Structure_Voice(id)
 end
 
 function this:load()
-	local modUtils = getModUtils()
-	
-	modUtils:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
+	modApiExt:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
 		if not mission then return end
 		if not list_contains(missions, mission.ID) then return end
 		if utils.IsTipImage() then return end

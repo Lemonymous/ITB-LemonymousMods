@@ -2,7 +2,7 @@
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local switch = LApi.library:fetch("switch")
 local achvApi = require(path .."achievements/api")
-local getModUtils = require(path .."getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local utils = require(path .."utils")
 local garble = require(path .."garble")
 local this = {}
@@ -12,10 +12,8 @@ function lmn_JungleIsland_Chievo(id)
 end
 
 function this:load()
-	local modUtils = getModUtils()
-	
 	-- boss fight
-	modUtils:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
+	modApiExt:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
 		if utils.IsTipImage() then return end
 		if not pawn or pawn:GetType():sub(-4,-1) ~= "Boss" then return end
 		if skillEffect.q_effect:empty() then return end
@@ -39,7 +37,7 @@ function this:load()
 	
 	-- flytrap
 	local chompers = {"lmn_Chomper1", "lmn_Chomper2", "lmn_ChomperBoss"}
-	modUtils:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
+	modApiExt:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
 		if utils.IsTipImage() then return end
 		if not pawn or not list_contains(chompers, pawn:GetType()) then return end
 		if skillEffect.q_effect:empty() then return end
@@ -82,7 +80,7 @@ function this:load()
 	}
 	
 	-- leaders
-	modUtils:addPawnKilledHook(function(mission, pawn)
+	modApiExt:addPawnKilledHook(function(mission, pawn)
 		if achvApi:GetChievoStatus("leaders") then return end
 		
 		leaders:case(pawn:GetType())

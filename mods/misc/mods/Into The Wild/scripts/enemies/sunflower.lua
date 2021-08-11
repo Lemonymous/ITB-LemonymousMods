@@ -2,7 +2,7 @@
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local tutorialTips = LApi.library:fetch("tutorialTips")
-local getModUtils = require(path .."scripts/getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local achvApi = require(path .."scripts/achievements/api")
 
 local this = {}
@@ -290,9 +290,7 @@ function this:init(mod)
 end
 
 function this:load(mod, options, version)
-	local modUtils = getModUtils()
-	
-	modUtils:addPawnTrackedHook(function(_, pawn)
+	modApiExt:addPawnTrackedHook(function(_, pawn)
 		
 		if isSunFlower(pawn:GetType()) then
 			local loc = pawn:GetSpace()
@@ -300,7 +298,7 @@ function this:load(mod, options, version)
 		end
 	end)
 	
-	modUtils:addPawnKilledHook(function(m, pawn)
+	modApiExt:addPawnKilledHook(function(m, pawn)
 		
 		if pawn:IsEnemy() then
 			local id = "lmn_achv_sunflower"

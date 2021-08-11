@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local getModUtils = require(path .."scripts/getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {}
 
 function this:init(mod)
@@ -464,8 +464,6 @@ function this:init(mod)
 end
 
 function this:load(mod, options, version)
-	local modUtils = getModUtils()
-	
 	modApi:addNextTurnHook(function(mission)
 		if Game:GetTeamTurn() ~= TEAM_PLAYER then return end
 		
@@ -530,7 +528,7 @@ function this:load(mod, options, version)
 		end
 	end)
 	
-	modUtils:addPawnDamagedHook(function(mission, pawn)
+	modApiExt:addPawnDamagedHook(function(mission, pawn)
 		if pawn:GetType() ~= "lmn_Puffer" then return end
 		if pawn:IsDead() then return end
 		

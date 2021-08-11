@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local getModUtils = require(path .."getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {}
 
 local pawns = {
@@ -8,9 +8,7 @@ local pawns = {
 }
 
 function this:load()
-	local modUtils = getModUtils()
-	
-	modUtils:addPawnKilledHook(function(mission, pawn)
+	modApiExt:addPawnKilledHook(function(mission, pawn)
 		local pawnType = pawn:GetType()
 		local voice = pawns[pawnType]
 		if not voice then return end

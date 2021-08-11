@@ -1,8 +1,8 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local spaceDamageObjects = require(path .."spaceDamageObjects")
-local getModUtils = require(path .."getModUtils")
 local this = {}
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 -- insert into missionEnd to fire pawnKilledHooks on minor enemies killed instead of retreating.
 --[[local pawn = Board:GetPawn(effect.loc)
@@ -36,9 +36,7 @@ end]]
 end)]]
 
 function this:load()
-	local modUtils = getModUtils()
-	
-	modUtils:addPawnKilledHook(function(_, pawn)
+	modApiExt:addPawnKilledHook(function(_, pawn)
 		local petals = _G[pawn:GetType()].lmn_PetalsOnDeath
 		if petals then
 			local loc = pawn:GetSpace()
