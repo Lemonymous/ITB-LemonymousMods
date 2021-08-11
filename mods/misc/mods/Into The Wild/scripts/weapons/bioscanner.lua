@@ -124,9 +124,7 @@ local function createUi(p)
 		radius = radius + 0.2
 		-- and wait a little.
 		weaponPreview:AddDelay(1/60)
-		if not utils.list_isEmpty(spawns) then
-			fx:AddDelay(1/60)
-		end
+		fx:AddDelay(1/60)
 		-- repeat.
 	end
 	
