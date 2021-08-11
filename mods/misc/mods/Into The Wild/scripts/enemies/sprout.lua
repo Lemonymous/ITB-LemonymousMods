@@ -113,7 +113,7 @@ function this:init(mod)
 		icon = "img/combat/bloom.png",
 		icon_offset = Point(0,0),
 		desc_title = "Bloom",
-		dec_text = "Can choose to bloom to its alpha stage instead of attacking."
+		desc_text = "Can choose to bloom to its alpha stage instead of attacking."
 	}
 
 	tutorialTips:add{
