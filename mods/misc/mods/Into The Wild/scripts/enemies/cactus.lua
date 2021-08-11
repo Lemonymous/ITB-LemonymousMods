@@ -2,7 +2,6 @@
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local worldConstants = LApi.library:fetch("worldConstants")
---local moveUtils = require(path .."scripts/moveUtils")
 local teamTurn = require(path .."scripts/teamTurn")
 local tutorialTips = LApi.library:fetch("tutorialTips")
 local achvApi = require(path .."scripts/achievements/api")
@@ -575,63 +574,11 @@ function this:load(mod, options, version)
 		end
 	end)
 	
-	--[[modApi:addMissionStartHook(function(mission)
-		local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
-		for _, id in ipairs(pawns) do
-			if isCactus(Board:GetPawn(id)) then
-				Achievement_Fail(mission)
-			end
-		end
-	end)]]
-	
 	modApi:addMissionEndHook(function(mission)
 		if mission.lmn_achv_cactus then
 			achvApi:TriggerChievo("cactus")
 		end
 	end)
-	
-	--[[local modUtils = modApiExt_internal:getMostRecent()
-	
-	local function savePriority(mission, pawn)
-		local pawnId = pawn:GetId()
-		
-		-- ensure non-nil.
-		mission.lmn_CactusPriority = mission.lmn_CactusPriority or {}
-		mission.lmn_CactusPriorityBackup = mission.lmn_CactusPriorityBackup or {}
-		
-		-- save.
-		LOG("save cactus priority list to".. pawn:GetMechName())
-		mission.lmn_CactusPriorityBackup[pawnId] = copy_table(mission.lmn_CactusPriority)
-	end
-	
-	local function loadPriority(mission, pawn)
-		local pawnId = pawn:GetId()
-		
-		-- ensure non-nil.
-		mission.lmn_CactusPriorityBackup = mission.lmn_CactusPriorityBackup or {}
-		mission.lmn_CactusPriorityBackup[pawnId] = mission.lmn_CactusPriorityBackup[pawnId] or {}
-		
-		-- load.
-		LOG("load cactus priority list from".. pawn:GetMechName())
-		mission.lmn_CactusPriority = copy_table(mission.lmn_CactusPriorityBackup[pawnId])
-	end
-	
-	-- save cactus priority lists when a pawn that has not yet moved is selected.
-	modUtils:addPawnSelectedHook(function(mission, pawn)
-		if not teamTurn.IsPlayerTurn() or moveUtils:HasMoved(pawn) then return end
-		
-		savePriority(mission, pawn)
-	end)
-	
-	-- load cactus priority lists when a pawn that has not yet moved is deselected.
-	modUtils:addPawnDeselectedHook(function(mission, pawn)
-		if not teamTurn.IsPlayerTurn() or moveUtils:HasMoved(pawn) then return end
-		
-		loadPriority(mission, pawn)
-	end)
-	
-	-- load cactus priority lists when a pawn undos it's movement.
-	modUtils:addPawnUndoMoveHook(loadPriority)]]
 end
 
 return this
