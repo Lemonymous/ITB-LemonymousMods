@@ -17,5 +17,3 @@ end
 for i, name in ipairs(bosses) do
 	bosses[i] = require(path .."scripts/enemies/bosses/" .. name)
 end
-
-mod.bosses = bosses
