@@ -282,7 +282,6 @@ function mod:load(options, version)
 	
 	require(scriptPath .."selected"):load()
 	require(scriptPath .."deathPetals"):load()
-	require(scriptPath .."customAnim"):load()		-- probably unused
 	require(scriptPath .."customEmitter"):load()
 	require(scriptPath .."teamTurn"):load()
 	require(scriptPath .."achievementTriggers"):load()
