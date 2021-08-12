@@ -3,7 +3,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local switch = LApi.library:fetch("switch")
 local customEmitter = require(path .."scripts/libs/customEmitter")
-local teamTurn = require(path .."scripts/teamTurn")
+local teamTurn = require(path .."scripts/libs/teamTurn")
 local tutorialTips = LApi.library:fetch("tutorialTips")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 

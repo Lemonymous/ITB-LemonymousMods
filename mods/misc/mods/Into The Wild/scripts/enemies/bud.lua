@@ -2,7 +2,6 @@
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local worldConstants = LApi.library:fetch("worldConstants")
-local teamTurn = require(path .."scripts/teamTurn")
 
 WeakPawns.lmn_Bud = false
 Spawner.max_pawns.lmn_Bud = 2

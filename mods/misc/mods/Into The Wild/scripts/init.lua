@@ -241,7 +241,7 @@ function mod:load(options, version)
 	local scriptPath = self.scriptPath
 	
 	require(scriptPath .."selected"):load()
-	require(scriptPath .."teamTurn"):load()
+	require(scriptPath .."libs/teamTurn"):load()
 	require(scriptPath .."weaponPreview/api"):load()
 
 	if modApi.achievements:isComplete(self.id, "leaders") then
