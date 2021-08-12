@@ -5,7 +5,7 @@ local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_d
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local utils = require(path .."utils")
+local utils = require(path .."libs/utils")
 
 Mission_lmn_Meadow = Mission_Infinite:new{
 	Name = "Flower Field",

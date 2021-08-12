@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 local trait = LApi.library:fetch("trait")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local tutorialTips = LApi.library:fetch("tutorialTips")

@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 
 Mission_lmn_SunflowerBoss = Mission_Boss:new{
 	BossPawn = "lmn_SunflowerBoss",

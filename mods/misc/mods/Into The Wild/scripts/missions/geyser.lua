@@ -8,7 +8,7 @@ local path = mod.resourcePath
 local missionTemplates = require(path .."scripts/missions/missionTemplates")
 local customEmitter = require(path .."scripts/libs/customEmitter")
 local worldConstants = LApi.library:fetch("worldConstants")
-local utils = require(path.. "scripts/utils")
+local utils = require(path.. "scripts/libs/utils")
 
 modApi:appendAsset("img/effects/smoke/lmn_geyser_spray.png", path .. "img/effects/smoke/geyser_spray.png")
 

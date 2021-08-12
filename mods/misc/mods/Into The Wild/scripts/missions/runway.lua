@@ -4,7 +4,7 @@ local filepath_dialog = filepath.."_dialog"
 local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 local switch = LApi.library:fetch("switch")
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
 local worldConstants = LApi.library:fetch("worldConstants")

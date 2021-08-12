@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 local plant_leaders = {
 	"lmn_ChiliBoss",
 	"lmn_ChomperBoss",

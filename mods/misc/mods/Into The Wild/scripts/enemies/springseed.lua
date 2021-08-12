@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
 

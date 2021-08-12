@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 WeakPawns.lmn_Puffer = true

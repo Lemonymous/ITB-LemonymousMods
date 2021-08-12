@@ -3,7 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
 local switch = LApi.library:fetch("switch")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local utils = require(path .."utils")
+local utils = require(path .."libs/utils")
 local secret = require(path .."secret")
 
 function lmn_JungleIsland_Chievo(achievementId)

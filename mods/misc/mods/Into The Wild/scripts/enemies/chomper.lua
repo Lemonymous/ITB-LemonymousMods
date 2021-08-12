@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 
 WeakPawns.lmn_Chomper = true
 Spawner.max_pawns.lmn_Chomper = 3

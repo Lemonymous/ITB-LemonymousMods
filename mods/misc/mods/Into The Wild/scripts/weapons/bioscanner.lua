@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 local tileToScreen = require(path .."scripts/libs/tileToScreen")
 local weaponPreview = require(path .."scripts/weaponPreview/api")
 

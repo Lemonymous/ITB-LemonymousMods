@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local utils = require(path .."scripts/utils")
+local utils = require(path .."scripts/libs/utils")
 local pathfinder = require(path .."scripts/springseed_pathing")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
