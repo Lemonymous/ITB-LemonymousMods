@@ -1,7 +1,6 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local hooks = require(path .."libs/hooks")
 local UiTimer = require(path .."ui/timer")
 local Ui2 = require(path .."ui/Ui2")
 local this = {}
@@ -14,7 +13,7 @@ sdlext.addUiRootCreatedHook(function(screen, uiRoot)
 	uiHolder.translucent = true
 end)
 
-hooks:new("TimerEnded")
+local timerEnded = Event()
 
 local function endTurn()
 	for _, id in ipairs(extract_table(Board:GetPawns(TEAM_PLAYER))) do
@@ -26,7 +25,7 @@ local function endTurn()
 	end
 end
 
-hooks:addTimerEndedHook(function()
+timerEnded:subscribe(function()
 	endTurn()
 end)
 
@@ -130,7 +129,7 @@ function this:load()
 		
 		if not uiTimer.ended and m.lmn_timed_mode.timer == 0 then
 			uiTimer.ended = true
-			hooks:fireTimerEndedHooks()
+			timerEnded:dispatch()
 		end
 	end)
 end
