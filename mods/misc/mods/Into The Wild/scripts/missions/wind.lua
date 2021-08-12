@@ -142,7 +142,7 @@ modApi.events.onPostLoadGame:subscribe(function()
 				LOG("ERROR: mission not found. Not applying wind. This message should be impossible to get.")
 				return
 			end
-			if mission.ID == this.id then
+			if mission.ID == "Mission_lmn_Wind" then
 				addWind()
 			end
 		end)
