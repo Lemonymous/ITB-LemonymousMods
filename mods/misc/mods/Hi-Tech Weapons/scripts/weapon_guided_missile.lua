@@ -1,4 +1,6 @@
 
+local effectBurst = LApi.library:fetch("effectBurst")
+
 local this = {}
 
 lmn_Guided_Missile = Skill:new{
@@ -258,9 +260,9 @@ function lmn_Guided_Missile:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 				
 				if curr ~= p1 then
 					if curr == waypoint then
-						this.effectBurst.Add(ret, curr, "lmn_Emitter_Guided_Static_".. dir, DIR_NONE, isTipImage)
+						effectBurst.Add(ret, curr, "lmn_Emitter_Guided_Static_".. dir, DIR_NONE, isTipImage)
 					else
-						this.effectBurst.Add(ret, curr, "lmn_Emitter_Guided_".. dir, dir, isTipImage)
+						effectBurst.Add(ret, curr, "lmn_Emitter_Guided_".. dir, dir, isTipImage)
 					end
 				end
 			end
@@ -389,7 +391,6 @@ function this:init(mod)
 	})
 	
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
-	self.effectBurst = require(mod.scriptPath .."effectBurst")
 	
 	modApi:appendAsset("img/weapons/lmn_guided_missile.png", mod.resourcePath .."img/weapons/guided_missile.png")
 	modApi:appendAsset("img/effects/lmn_shot_guided_missile_R.png", mod.resourcePath .."img/effects/shot_guided_missile_R.png")

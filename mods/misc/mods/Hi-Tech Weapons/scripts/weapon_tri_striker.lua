@@ -1,5 +1,6 @@
 
 local worldConstants = LApi.library:fetch("worldConstants")
+local effectBurst = LApi.library:fetch("effectBurst")
 
 local this = {}
 
@@ -289,7 +290,7 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			artillery.sSound = "/impact/generic/explosion"
 		end
 		
-		this.effectBurst.Add(ret, p1, "lmn_Emitter_Tri_Striker_Static", DIR_NONE, isTipImage)
+		effectBurst.Add(ret, p1, "lmn_Emitter_Tri_Striker_Static", DIR_NONE, isTipImage)
 		
 		ret:AddScript([[
 			lmn_tri_striker_orig_emitter = Emitter_Missile;
@@ -362,7 +363,6 @@ function this:init(mod)
 	})
 	
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
-	self.effectBurst = require(mod.scriptPath .."effectBurst")
 	
 	modApi:appendAsset("img/weapons/lmn_tri_striker.png", mod.resourcePath .."img/weapons/tri_striker.png")
 	modApi:appendAsset("img/effects/shotup_lmn_tri_strike_missile.png", mod.resourcePath .."img/effects/shotup_tri_strike_missile.png")

@@ -1,4 +1,6 @@
 
+local effectBurst = LApi.library:fetch("effectBurst")
+
 local this = {burrowers = {}}
 
 lmn_Psionic_Transmitter = Skill:new{
@@ -219,7 +221,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	
 	for k = 0, distance - 1 do
 		local curr = p1 + DIR_VECTORS[dir] * k
-		this.effectBurst.Add(ret, curr, "lmn_Emitter_Psi_Stun_".. dir, dir, isTipImage)
+		effectBurst.Add(ret, curr, "lmn_Emitter_Psi_Stun_".. dir, dir, isTipImage)
 		ret:AddDelay(0.05)
 	end
 	
@@ -236,7 +238,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	while delay < 0.7 do
 		delay = delay + inc
 		ret:AddDelay(inc)
-		this.effectBurst.Add(ret, t1, "lmn_Emitter_Psi_Stun_Static_".. dir, DIR_NONE, isTipImage)
+		effectBurst.Add(ret, t1, "lmn_Emitter_Psi_Stun_Static_".. dir, DIR_NONE, isTipImage)
 	end
 	
 	ret:AddSound("ui/battle/radio_window_out")
@@ -375,7 +377,6 @@ function this:init(mod)
 	end)
 	
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
-	self.effectBurst = require(mod.scriptPath .."effectBurst")
 	self.effectPreview = LApi.library:fetch("effectPreview")
 	
 	modApi:appendAsset("img/weapons/lmn_psionic_transmitter.png", mod.resourcePath.. "img/weapons/psionic_transmitter.png")

@@ -1,5 +1,6 @@
 
 local worldConstants = LApi.library:fetch("worldConstants")
+local effectBurst = LApi.library:fetch("effectBurst")
 
 local this = {
 	damage = {},
@@ -144,7 +145,7 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 	local distance = p2:Manhattan(target)
 	for k = 0, distance do
 		local curr = p2 + DIR_VECTORS[dir] * k
-		this.effectBurst.Add(effect, curr, "lmn_Emitter_Railgun_".. dir, dir, isTipImage)
+		effectBurst.Add(effect, curr, "lmn_Emitter_Railgun_".. dir, dir, isTipImage)
 	end
 	
 	---------------------
@@ -324,7 +325,6 @@ function this:init(mod)
 	})
 	
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
-	self.effectBurst = require(mod.scriptPath .."effectBurst")
 	self.effectPreview = LApi.library:fetch("effectPreview")
 	
 	modApi:appendAsset("img/weapons/lmn_gauss_cannon.png", mod.resourcePath .."img/weapons/gauss_cannon.png")
