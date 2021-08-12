@@ -235,7 +235,6 @@ function mod:init()
 	require(scriptPath .."tiles_jungleforest")
 	require(scriptPath .."tiles_emitters")
 	require(scriptPath .."damageNumbers/damageNumbers")
-	require(scriptPath .."spaceDamageObjects")
 end
 
 function mod:load(options, version)
