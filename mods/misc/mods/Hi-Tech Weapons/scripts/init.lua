@@ -16,11 +16,9 @@ function mod:init()
 	
 	self.armorDetection = require(self.scriptPath .."armorDetection")
 	self.weaponMarks = require(self.scriptPath .."weaponMarks")
-	self.virtualBoard = require(self.scriptPath .."virtualBoard")
 	self.shop = require(self.scriptPath .."shop")
 	
 	self.weaponMarks:init(self)
-	self.virtualBoard.init(self)
 	
 	self.guided = require(self.scriptPath .."weapon_guided_missile")
 	self.tri_striker = require(self.scriptPath .."weapon_tri_striker")
@@ -41,7 +39,6 @@ function mod:load(options, version)
 	self.modApiExt:load(self, options, version)
 	
 	self.weaponMarks:load(self.modApiExt)
-	self.virtualBoard.load(self.modApiExt, self.armorDetection, self.weaponMarks)
 	self.shop:load(options)
 	
 	self.guided:load(options, self.modApiExt)
