@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local spaceDamageObjects = require(path .."spaceDamageObjects")
+local spaceDamageObjects = require(path .."libs/spaceDamageObjects")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 local function onModsLoaded()
