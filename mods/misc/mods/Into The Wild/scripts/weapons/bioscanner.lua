@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local tileToScreen = require(path .."scripts/tileToScreen")
+local tileToScreen = require(path .."scripts/libs/tileToScreen")
 local weaponPreview = require(path .."scripts/weaponPreview/api")
 
 modApi:appendAsset("img/weapons/lmn_bioscanner.png", path .."img/weapons/bioscanner.png")
