@@ -1,7 +1,6 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local menu = require(path .."libs/menu")
 local hooks = require(path .."libs/hooks")
 local UiTimer = require(path .."ui/timer")
 local Ui2 = require(path .."ui/Ui2")
@@ -121,7 +120,7 @@ function this:load()
 			return
 		end
 		
-		if not uiTimer or menu.isOpen() or Board:IsBusy()  then
+		if not uiTimer or sdlext.isEscapeMenuWindowVisible() or Board:IsBusy()  then
 			return
 		end
 		
