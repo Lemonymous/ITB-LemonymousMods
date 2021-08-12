@@ -51,8 +51,7 @@ function mod:init()
 	self.missions = require(scriptPath .."missions/init")
 	self.missions:init(self)
 	
-	self.bosses = require(scriptPath .."enemies/bosses/init")
-	self.bosses:init(self)
+	require(scriptPath .."enemies/bosses/init")
 	
 	local islandApi = require(scriptPath .."replaceIsland/api")
 	local recruit = require(scriptPath .."recruit")
@@ -275,7 +274,6 @@ function mod:load(options, version)
 	local scriptPath = self.scriptPath
 	require(scriptPath .."enemies/init"):load(self, options, version)
 	self.missions:load(self, options, version)
-	self.bosses:load(self, options, version)
 	
 	require(scriptPath .."selected"):load()
 	require(scriptPath .."deathPetals"):load()
