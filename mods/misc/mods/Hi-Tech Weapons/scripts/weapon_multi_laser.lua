@@ -1,4 +1,6 @@
 
+local worldConstants = LApi.library:fetch("worldConstants")
+
 local this = {
 	attacks = {},
 }
@@ -209,9 +211,9 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 		weapon.sSound = "/props/shield_destroyed"
 		weapon.sScript = "Board:AddAnimation(".. target:GetString() ..", 'lmn_ExploLaser".. offset .."_".. dir .."', NO_DELAY)"
 		
-		this.worldConstants.SetSpeed(effect, 0.6)
+		worldConstants:setSpeed(effect, 0.6)
 		effect:AddProjectile(p1, weapon, "effects/lmn_multi_las_".. offset, NO_DELAY)
-		this.worldConstants.ResetSpeed(effect)
+		worldConstants:resetSpeed(effect)
 		
 		-- minimum delay between shots.
 		-- can take longer due to board being resolved.
@@ -259,9 +261,9 @@ function lmn_Multi_Laser:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	----------------
 	if isTipImage then
 		-- mark tipimage.
-		this.worldConstants.SetSpeed(ret, 999)
+		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
-		this.worldConstants.ResetSpeed(ret)
+		worldConstants:resetSpeed(ret)
 		
 		for i, v in ipairs(self.TipMarks) do
 			local tile = v[1]
@@ -298,9 +300,9 @@ function lmn_Multi_Laser:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		end
 		
 		-- preview projectile path.
-		this.worldConstants.SetSpeed(ret, 999)
+		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
-		this.worldConstants.ResetSpeed(ret)
+		worldConstants:resetSpeed(ret)
 		
 		-- mark tiles with vBoard state.
 		vBoard:MarkDamage(ret, id, "lmn_Multi_Laser")
@@ -391,7 +393,6 @@ function this:init(mod)
 		desc = lmn_Multi_Laser.Description,
 	})
 	
-	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	self.effectPreview = LApi.library:fetch("effectPreview")

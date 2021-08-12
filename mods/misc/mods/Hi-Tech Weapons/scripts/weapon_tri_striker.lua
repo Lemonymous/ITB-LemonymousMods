@@ -1,4 +1,6 @@
 
+local worldConstants = LApi.library:fetch("worldConstants")
+
 local this = {}
 
 lmn_Tri_Striker = Skill:new{
@@ -293,9 +295,9 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			lmn_tri_striker_orig_emitter = Emitter_Missile;
 			Emitter_Missile = lmn_Emitter_Tri_Striker;
 		]])
-		this.worldConstants.SetHeight(ret, 44)
+		worldConstants:setHeight(ret, 44)
 		ret:AddArtillery(p1, artillery, "effects/shotup_lmn_tri_strike_missile.png", NO_DELAY)
-		this.worldConstants.ResetHeight(ret)
+		worldConstants:resetHeight(ret)
 		ret:AddScript([[
 			Emitter_Missile = lmn_tri_striker_orig_emitter;
 		]])
@@ -359,7 +361,6 @@ function this:init(mod)
 		desc = lmn_Tri_Striker.Description,
 	})
 	
-	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	self.effectBurst = require(mod.scriptPath .."effectBurst")
 	

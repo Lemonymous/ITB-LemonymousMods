@@ -1,4 +1,6 @@
 
+local worldConstants = LApi.library:fetch("worldConstants")
+
 local this = {
 	damage = {},
 }
@@ -193,9 +195,9 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	----------------
 	if isTipImage then
 		-- mark tipimage.
-		this.worldConstants.SetSpeed(ret, 999)
+		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
-		this.worldConstants.ResetSpeed(ret)
+		worldConstants:resetSpeed(ret)
 		
 		for i, v in ipairs(self.TipMarks) do
 			local tile = v[1]
@@ -262,9 +264,9 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		end
 		
 		-- preview projectile path.
-		this.worldConstants.SetSpeed(ret, 999)
+		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
-		this.worldConstants.ResetSpeed(ret)
+		worldConstants:resetSpeed(ret)
 		
 		-- mark tiles with vBoard state.
 		vBoard:MarkDamage(ret, id, "lmn_Gauss_Cannon")
@@ -321,7 +323,6 @@ function this:init(mod)
 		desc = lmn_Gauss_Cannon.Description,
 	})
 	
-	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.effectBurst = require(mod.scriptPath .."effectBurst")
 	self.effectPreview = LApi.library:fetch("effectPreview")

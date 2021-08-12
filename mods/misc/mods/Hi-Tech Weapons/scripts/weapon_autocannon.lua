@@ -1,4 +1,6 @@
 
+local worldConstants = LApi.library:fetch("worldConstants")
+
 local this = {
 	attacks = {},
 }
@@ -139,9 +141,9 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 		weapon.sSound = "/impact/generic/explosion"
 		weapon.sScript = "Board:AddAnimation(".. target:GetString() ..", 'explopush1_".. dir .."', NO_DELAY)"
 		
-		this.worldConstants.SetSpeed(effect, 1)
+		worldConstants:setSpeed(effect, 1)
 		effect:AddProjectile(p1, weapon, "effects/shot_mechtank", NO_DELAY)
-		this.worldConstants.ResetSpeed(effect)
+		worldConstants:resetSpeed(effect)
 		
 		-- minimum delay between shots.
 		-- can take longer due to board being resolved.
@@ -189,9 +191,9 @@ function lmn_Autocannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	----------------
 	if isTipImage then
 		-- hardcoded tipimage marks.
-		this.worldConstants.SetSpeed(ret, 999)
+		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
-		this.worldConstants.ResetSpeed(ret)
+		worldConstants:resetSpeed(ret)
 		
 		for i, v in ipairs(self.TipMarks) do
 			local tile = v[1]
@@ -241,9 +243,9 @@ function lmn_Autocannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		end
 		
 		-- preview projectile path.
-		this.worldConstants.SetSpeed(ret, 999)
+		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
-		this.worldConstants.ResetSpeed(ret)
+		worldConstants:resetSpeed(ret)
 		
 		-- mark tiles with vBoard state.
 		vBoard:MarkDamage(ret, id, "lmn_Autocannon")
@@ -333,7 +335,6 @@ function this:init(mod)
 		desc = lmn_Autocannon.Description,
 	})
 	
-	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.effectPreview = LApi.library:fetch("effectPreview")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")

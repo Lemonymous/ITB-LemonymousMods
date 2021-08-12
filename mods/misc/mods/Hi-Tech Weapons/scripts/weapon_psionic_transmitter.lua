@@ -375,7 +375,6 @@ function this:init(mod)
 	end)
 	
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
-	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.effectBurst = require(mod.scriptPath .."effectBurst")
 	self.effectPreview = LApi.library:fetch("effectPreview")
 	
