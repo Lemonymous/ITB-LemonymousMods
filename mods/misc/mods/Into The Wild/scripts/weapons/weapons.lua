@@ -31,11 +31,6 @@ require(path .."weapons/bioscanner")
 require(path .."weapons/confusion_strike")
 require(path .."weapons/deflector_ray")
 require(path .."weapons/flood_generator")
---require(path .."weapons/deploy_sprout")
---require(path .."weapons/acid_shielding")
---require(path .."weapons/particle_cannon")
---require(path .."weapons/psi_transmitter")
---require(path .."weapons/repeater_cannon")
 
 local oldInitializeDecks = initializeDecks
 function initializeDecks(...)
@@ -55,11 +50,6 @@ function this:Add()
 		"lmn_Confusion_Strike",
 		"lmn_Deflector_Ray",
 		"lmn_Flood_Generator",
-		--"lmn_DeploySkill_Sprout",	-- a lot of work with evolve, and no fun without. cut
-		--"lmn_Acid_Shielding",		-- no acid science on island. cut
-		--"lmn_Particle_Cannon",	-- cool icon, so it would be nice to get this going. However, there is no explicit particle science on the island, so might as well cut
-		--"lmn_Psi_Transmitter",	-- requires some more thought to make it either compatible with hi-tech weapons, override it, or decomission that mod. none are desireable. cut?
-		--"lmn_Repeater_Cannon",	-- need a new twist if I am going to make another multishot weapon. cut?
 	}
 end
 
