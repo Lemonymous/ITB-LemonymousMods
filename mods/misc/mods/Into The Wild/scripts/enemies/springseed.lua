@@ -3,7 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local utils = require(path .."scripts/utils")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
-local pawnSpace = require(path .."scripts/pawnSpace")
+local pawnSpace = require(path .."scripts/libs/pawnSpace")
 
 WeakPawns.lmn_Springseed = true
 Spawner.max_pawns.lmn_Springseed = 3

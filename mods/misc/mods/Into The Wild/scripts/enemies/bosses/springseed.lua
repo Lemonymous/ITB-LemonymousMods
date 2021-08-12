@@ -3,7 +3,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local pathfinder = require(path .."scripts/springseed_pathing")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
-local pawnSpace = require(path .."scripts/pawnSpace")
+local pawnSpace = require(path .."scripts/libs/pawnSpace")
 
 Mission_lmn_SpringseedBoss = Mission_Boss:new{
 	BossPawn = "lmn_SpringseedBoss",
