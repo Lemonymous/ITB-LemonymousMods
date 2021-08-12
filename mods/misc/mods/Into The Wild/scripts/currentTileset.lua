@@ -165,7 +165,7 @@ modApi.events.onPreIslandSelection:subscribe(function()
 end)
 
 modApi.events.onTestMechEntered:subscribe(function()
-	if self.final then
+	if this.final then
 		setTileset("grass")
 	end
 end)
