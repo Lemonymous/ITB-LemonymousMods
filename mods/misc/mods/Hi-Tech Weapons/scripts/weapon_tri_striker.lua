@@ -400,11 +400,7 @@ function this:init(mod)
 	}
 end
 
-function this:load(options, modApiExt)
-	-- if we are not hovering any tiles, reset path.
-	--[[modApi:addMissionUpdateHook(function()
-		self.resetPath = not modApiExt_internal.currentTile
-	end)]]
+function this:load()
 end
 
 return this

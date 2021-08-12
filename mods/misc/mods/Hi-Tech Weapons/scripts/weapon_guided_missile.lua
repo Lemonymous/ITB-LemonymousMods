@@ -465,13 +465,7 @@ function this:init(mod)
 	lmn_Emitter_Guided_3 = lmn_Emitter_Guided_0:new{ angle = angle_3 }
 end
 
-function this:load(options, modApiExt)
-	self.modApiExt = modApiExt
-	
-	-- if we are not hovering any tiles, reset path.
-	--[[modApi:addMissionUpdateHook(function()
-		this.resetPath = not modApiExt_internal.currentTile
-	end)]]
+function this:load()
 end
 
 return this

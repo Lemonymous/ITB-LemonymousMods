@@ -24,7 +24,7 @@
 	weaponMarks:init(self)
 
 	-- in init.lua - function load:
-	weaponMarks:load(modApiExt)
+	weaponMarks:load()
 	
 	
 	-- after you have initialized and loaded it,

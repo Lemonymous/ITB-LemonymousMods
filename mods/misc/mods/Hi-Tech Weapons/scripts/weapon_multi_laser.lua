@@ -436,8 +436,7 @@ function this:init(mod)
 	
 end
 
-function this:load(options, modApiExt)
-	self.modApiExt = modApiExt
+function this:load()
 end
 
 return this

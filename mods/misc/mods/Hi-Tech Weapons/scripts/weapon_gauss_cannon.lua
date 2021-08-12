@@ -361,8 +361,7 @@ function this:init(mod)
 	lmn_Emitter_Railgun_3 = lmn_Emitter_Railgun_0:new{ angle = angle_3 }
 end
 
-function this:load(options, modApiExt)
-	self.modApiExt = modApiExt
+function this:load()
 end
 
 return this

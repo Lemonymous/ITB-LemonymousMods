@@ -1,4 +1,5 @@
 
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local effectBurst = LApi.library:fetch("effectBurst")
 local effectPreview = LApi.library:fetch("effectPreview")
 
@@ -471,9 +472,7 @@ function this:init(mod)
 	}
 end
 
-function this:load(options, modApiExt)
-	self.modApiExt = modApiExt
-	
+function this:load()
 	modApi:addMissionUpdateHook(function()
 		local rem = {}
 		

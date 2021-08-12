@@ -11,9 +11,6 @@ local mod = {
 function mod:init()
 	assert(LApi, string.format("Mod %s with id '%s' requires 'LApi' in order to function properly", self.name, self.id))
 	
-	self.modApiExt = require(self.scriptPath .."modApiExt/modApiExt")
-	self.modApiExt:init()
-	
 	self.weaponMarks = require(self.scriptPath .."weaponMarks")
 	
 	self.weaponMarks:init(self)
@@ -34,16 +31,14 @@ function mod:init()
 end
 
 function mod:load(options, version)
-	self.modApiExt:load(self, options, version)
+	self.weaponMarks:load()
 	
-	self.weaponMarks:load(self.modApiExt)
-	
-	self.guided:load(options, self.modApiExt)
-	self.tri_striker:load(options, self.modApiExt)
-	self.autocannon:load(options, self.modApiExt)
-	self.gauss:load(options, self.modApiExte)
-	self.multi_laser:load(options, self.modApiExt)
-	self.psionic:load(options, self.modApiExt)
+	self.guided:load()
+	self.tri_striker:load()
+	self.autocannon:load()
+	self.gauss:load()
+	self.multi_laser:load()
+	self.psionic:load()
 end
 
 return mod
