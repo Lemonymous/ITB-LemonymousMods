@@ -275,11 +275,7 @@ function mod:load(options, version)
 	self.missions:load(self, options, version)
 	
 	require(scriptPath .."selected"):load()
-	require(scriptPath .."deathPetals"):load()
-	require(scriptPath .."customEmitter"):load()
 	require(scriptPath .."teamTurn"):load()
-	require(scriptPath .."achievementTriggers"):load()
-	require(scriptPath .."currentTileset"):load()
 	require(scriptPath .."weaponPreview/api"):load()
 	if require(scriptPath .."achievements/api"):GetChievoStatus("leaders") then
 		require(scriptPath .."garble"):load()

@@ -120,7 +120,7 @@ local function updateDesc(loc, emitters)
 	end
 end
 
-sdlext.addFrameDrawnHook(function()
+modApi.events.onFrameDrawn:subscribe(function()
 	local mission = GetCurrentMission()
 	if not mission or not Board then return end
 	
@@ -149,44 +149,41 @@ sdlext.addFrameDrawnHook(function()
 	end
 end)
 
-function this:load()
+modApi.events.onMissionUpdate:subscribe(function(mission)
+	mission.lmn_pawnEmitters = mission.lmn_pawnEmitters or {}
+	mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
 	
-	modApi:addMissionUpdateHook(function(mission)
+	for pawnId, emitters in pairs(mission.lmn_pawnEmitters) do
+		local pawn = Board:GetPawn(pawnId)
+		if pawn then
+			updateDesc(pawn:GetSpace(), emitters)
+		end
+	end
+	
+	for pid, emitters in pairs(mission.lmn_tileEmitters) do
+		updateDesc(idx2p(pid), emitters)
+	end
+end)
+
+modApi.events.onPostLoadGame:subscribe(function()
+	modApi:runLater(function(mission)
+		local t = os.clock()
+		
 		mission.lmn_pawnEmitters = mission.lmn_pawnEmitters or {}
 		mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
 		
-		for pawnId, emitters in pairs(mission.lmn_pawnEmitters) do
-			local pawn = Board:GetPawn(pawnId)
-			if pawn then
-				updateDesc(pawn:GetSpace(), emitters)
+		for _, emitters in pairs(mission.lmn_pawnEmitters) do
+			for _, v in pairs(emitters) do
+				v.t = t
 			end
 		end
 		
-		for pid, emitters in pairs(mission.lmn_tileEmitters) do
-			updateDesc(idx2p(pid), emitters)
+		for _, emitters in pairs(mission.lmn_tileEmitters) do
+			for _, v in pairs(emitters) do
+				v.t = t
+			end
 		end
 	end)
-	
-	modApi:addPostLoadGameHook(function()
-		modApi:runLater(function(mission)
-			local t = os.clock()
-			
-			mission.lmn_pawnEmitters = mission.lmn_pawnEmitters or {}
-			mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
-			
-			for _, emitters in pairs(mission.lmn_pawnEmitters) do
-				for _, v in pairs(emitters) do
-					v.t = t
-				end
-			end
-			
-			for _, emitters in pairs(mission.lmn_tileEmitters) do
-				for _, v in pairs(emitters) do
-					v.t = t
-				end
-			end
-		end)
-	end)
-end
+end)
 
 return this

@@ -5,13 +5,12 @@ local achvApi = require(path .."achievements/api")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local utils = require(path .."utils")
 local garble = require(path .."garble")
-local this = {}
 
 function lmn_JungleIsland_Chievo(id)
 	achvApi:TriggerChievo(id)
 end
 
-function this:load()
+local function onModsLoaded()
 	-- boss fight
 	modApiExt:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
 		if utils.IsTipImage() then return end
@@ -99,4 +98,4 @@ function this:load()
 	end)
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)

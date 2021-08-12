@@ -1,11 +1,9 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local spaceDamageObjects = require(path .."spaceDamageObjects")
-local this = {}
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
-
-function this:load()
+local function onModsLoaded()
 	modApiExt:addPawnKilledHook(function(_, pawn)
 		local petals = _G[pawn:GetType()].lmn_PetalsOnDeath
 		if petals then
@@ -15,4 +13,4 @@ function this:load()
 	end)
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)

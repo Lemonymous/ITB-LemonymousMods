@@ -154,54 +154,51 @@ function this:remUnloadTilesetHook(fn)
 	remove_element(fn, hooks.unload)
 end
 
-function this:load()
+modApi.events.onMissionStart:subscribe(function(mission)
+	setCustomTileset(mission)
+end)
+
+modApi.events.onPreIslandSelection:subscribe(function()
+	if Game and Game.GetCorp then
+		setCorp(Game:GetCorp().bark_name)
+	end
+end)
+
+modApi.events.onTestMechEntered:subscribe(function()
+	if self.final then
+		setTileset("grass")
+	end
+end)
+
+modApi.events.onPostMissionAvailable:subscribe(function(mission)
+	if mission.ID == "Mission_Final" then
+		-- volcano seems hardcoded before mission is started.
+		setTileset("volcano", true)
+	end
+end)
+
+modApi.events.onPostLoadGame:subscribe(function()
 	
-	modApi:addMissionStartHook(function(mission)
-		setCustomTileset(mission)
-	end)
-	
-	modApi:addPreIslandSelectionHook(function()
-		if Game and Game.GetCorp then
-			setCorp(Game:GetCorp().bark_name)
-		end
-	end)
-	
-	modApi:addTestMechEnteredHook(function()
-		if self.final then
-			setTileset("grass")
-		end
-	end)
-	
-	modApi:addPostMissionAvailableHook(function(mission)
-		if mission.ID == "Mission_Final" then
-			-- volcano seems hardcoded before mission is started.
-			setTileset("volcano", true)
-		end
-	end)
-	
-	modApi:addPostLoadGameHook(function()
-		
-		modApi:conditionalHook(
-			function()
-				return not Game or not Game.GetCorp or Game:GetCorp().bark_name
-			end,
-			function()
-				local mission = GetCurrentMission()
-				if mission and mission.CustomTile ~= "" then
-					setCustomTileset(mission)
-				else
-					local corpName = Game:GetCorp().bark_name
-					local final = corpName == "" and Game:GetSector() > 2
-					if final then
-						-- volcano seems hardcoded before mission is started.
-						setTileset("volcano", true)
-					elseif corpName ~= "" then
-						setCorp(corpName)
-					end
+	modApi:conditionalHook(
+		function()
+			return not Game or not Game.GetCorp or Game:GetCorp().bark_name
+		end,
+		function()
+			local mission = GetCurrentMission()
+			if mission and mission.CustomTile ~= "" then
+				setCustomTileset(mission)
+			else
+				local corpName = Game:GetCorp().bark_name
+				local final = corpName == "" and Game:GetSector() > 2
+				if final then
+					-- volcano seems hardcoded before mission is started.
+					setTileset("volcano", true)
+				elseif corpName ~= "" then
+					setCorp(corpName)
 				end
 			end
-		)
-	end)
-end
+		end
+	)
+end)
 
 return this
