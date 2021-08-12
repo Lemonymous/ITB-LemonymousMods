@@ -1036,11 +1036,6 @@ local function new()
 	return vBoard
 end
 
-local function init() end
-local function load() end
-
 return {
-	init = init,
-	load = load,
 	new = new
 }
