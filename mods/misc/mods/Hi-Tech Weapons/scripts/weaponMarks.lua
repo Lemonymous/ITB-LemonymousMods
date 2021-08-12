@@ -118,6 +118,11 @@
 ]]---------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
+local scriptPath = mod.scriptPath
+
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 local this = {markers = {}}
 local marker = {}
@@ -135,7 +140,7 @@ local function IsWeaponArmed(pawnId, skill)
 	local pawn = Board:GetPawn(pawnId)
 	local armedWeaponId = pawn:GetArmedWeaponId()
 	
-	local weapons = this.modApiExt.pawn:getWeapons(pawnId)
+	local weapons = modApiExt.pawn:getWeapons(pawnId)
 	if type(weapons[armedWeaponId]) == 'string' then
 		if IsWeapon(skill, weapons[armedWeaponId]) then
 			return true
@@ -267,17 +272,13 @@ function marker:MarkFlashing(tile, bool, sticky)
 	table.insert(self.flashing, {point = tile, bool = bool, sticky = sticky})
 end
 
--- initialize system.
-function this:init(mod)
-	sdlext.addGameExitedHook(function()
-		self.markers = {}
-		self.highlighted = nil
-	end)
-end
+sdlext.addGameExitedHook(function()
+	this.markers = {}
+	this.highlighted = nil
+end)
 
--- load system.
-function this:load(modApiExt)
-	self.modApiExt = modApiExt
+function this:init() end
+function this:load()
 	self.highlighted = nil
 	
 	modApi:addMissionUpdateHook(function()
@@ -289,10 +290,13 @@ function this:load(modApiExt)
 				table.insert(rem, pawnId)
 			else
 				local highlighted = true
-				local targetArea = extract_table(_G[marker.skill]:GetTargetArea(pawn:GetSpace(), nil, true))
 				
-				if not list_contains(targetArea, self.highlighted) then
-					highlighted = false
+				if not IsGamepad() then
+					local targetArea = extract_table(_G[marker.skill]:GetTargetArea(pawn:GetSpace(), nil, true))
+					
+					if not list_contains(targetArea, self.highlighted) then
+						highlighted = false
+					end
 				end
 				
 				if

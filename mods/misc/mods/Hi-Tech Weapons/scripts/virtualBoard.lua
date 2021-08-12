@@ -13,7 +13,7 @@
 -- if there are additions you can think of, feel free to make
 -- suggestions in #modding-discussion in the ITB discord.
 --
--- requires libraries modApiExt, armorDetection and markDamage,
+-- requires libraries markDamage,
 -- and icons found in /img/virtualBoard/
 --
 --        ------------------------------------------------
@@ -36,7 +36,7 @@
 
 	-- in init.lua - function load:
 	local virtualBoard = require(self.scriptPath ..'virtualBoard')
-	virtualBoard.load(modApiExt, armorDetection, markDamage)
+	virtualBoard.load()
 	
 	
 	-- after you have loaded it,
@@ -247,11 +247,26 @@
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
+local scriptPath = mod.scriptPath
+
+local weaponMarks = require(scriptPath .."weaponMarks")
 
 local this = {
+	id = mod.id .."_virtualBoard",
 	pawns = {},	-- private table of pawnStates, indexed by pawnId
 	tiles = {},	-- private table of tileStates, indexed by tileId
 }
+
+for i = 0, 18 do
+	modApi:appendAsset(string.format("img/combat/icons/%s_damage_yellow_%s.png", this.id, i),	string.format("%simg/virtualBoard/damage_%s.png", resourcePath, i))
+	modApi:appendAsset(string.format("img/combat/icons/%s_damage_acid_%s.png", this.id, i),		string.format("%simg/virtualBoard/acid_%s.png", resourcePath, i))
+	modApi:appendAsset(string.format("img/combat/icons/%s_damage_faded_%s.png", this.id, i),	string.format("%simg/virtualBoard/faded_%s.png", resourcePath, i))
+	Location[string.format("combat/icons/%s_damage_yellow_%s.png", this.id, i)] = Point(-9,10)
+	Location[string.format("combat/icons/%s_damage_acid_%s.png", this.id, i)] = Point(-9,10)
+	Location[string.format("combat/icons/%s_damage_faded_%s.png", this.id, i)] = Point(-9,10)
+end
 
 local function IsMassive(pawn)
 	return _G[pawn:GetType()]:GetMassive()
@@ -259,17 +274,6 @@ end
 
 local function HasCorpse(pawn)
 	return pawn:IsMech() or _G[pawn:GetType()]:GetCorpse()
-end
-
-local function HasForceAmp()
-	-- only applicable for TEAM_MECH
-	pawns = extract_table(Board:GetPawns(TEAM_MECH))
-	for _, id in ipairs(pawns) do
-		if this.armorDetection.HasPoweredPassive(Board:GetPawn(id), "Passive_ForceAmp") then
-			return true
-		end
-	end
-	return false
 end
 
 -- gets the virtual state of a pawn.
@@ -306,7 +310,7 @@ function this:GetPawnState(pawnId)
 	pawnState.isFrozen = pawn:IsFrozen()
 	pawnState.isShield = pawn:IsShield()
 	pawnState.isAcid = pawn:IsAcid()
-	pawnState.isArmor = this.armorDetection.IsArmor(pawn)
+	pawnState.isArmor = pawn:IsArmor()
 	pawnState.isKilled = false
 	
 	pawnState.damage = 0
@@ -342,9 +346,10 @@ function this:GetTileState(tile)
 	
 	tileState.loc = tile
 	tileState.pawn = Board:GetPawn(tile)
+	tileState.health = Board:GetHealth(tile)
 	tileState.terrain = Board:GetTerrain(tile)
 	tileState.isFrozen = Board:IsFrozen(tile)
-	tileState.isShield = false -- TODO?
+	tileState.isShield = Board:IsShield(tile)
 	tileState.isAcid = Board:IsAcid(tile)
 	
 	tileState.damage = 0
@@ -362,21 +367,6 @@ function this:GetTileState(tile)
 		local list = shallow_copy(self.pushList)
 		table.sort(list, function(a,b) return a.count > b.count end)
 		return list[1].count > 0 and list[1].dir or DIR_NONE
-	end
-	
-	if not IsTestMechScenario() and this.modApiExt then
-		local tileHealth = this.modApiExt.board:getTileHealth(tile)
-		assert(type(tileHealth) == 'number')
-		
-		tileState.health = tileHealth
-	elseif
-		tileState.terrain == TERRAIN_BUILDING or
-		tileState.terrain == TERRAIN_MOUNTAIN or
-		tileState.terrain == TERRAIN_ICE
-	then
-		tileState.health = 2 -- no way to know unless we tracked it somehow.
-	else
-		tileState.health = 0
 	end
 	
 	if tileState.pawn then
@@ -735,7 +725,7 @@ function this:DamageSpace(spaceDamage)
 	local tile = spaceDamage.loc
 	local tileState = self:GetTileState(spaceDamage.loc)
 	local damage = spaceDamage.iDamage
-	local bumpDamage = HasForceAmp() and 2 or 1
+	local bumpDamage = IsPassiveSkill("Passive_ForceAmp") and 2 or 1
 	
 	------------------
 	-- direct damage.
@@ -962,7 +952,7 @@ function this:MarkDamage(effect, pawnId, weapon)
 	assert(type(pawnId) == 'number')
 	assert(type(weapon) == 'string')
 	
-	local marker = self.weaponMarks:new(pawnId, weapon)
+	local marker = weaponMarks:new(pawnId, weapon)
 	for tileId, tileState in pairs(self.tiles) do
 		local damage = tileState.damage - tileState.damagePawn
 		local loc = idx2p(tileId)
@@ -996,7 +986,7 @@ function this:MarkDamage(effect, pawnId, weapon)
 			
 			if terrain == TERRAIN_BUILDING or terrain == TERRAIN_MOUNTAIN then
 				if
-					damage > 0 and Board:IsFrozen(loc) -- or Board:IsShield(loc))
+					damage > 0 and (Board:IsFrozen(loc) or Board:IsShield(loc))
 				then
 					sImageMark = "combat/icons/".. self.id .."_damage_yellow_".. (damage - tileState.blocked) ..".png"
 					damage = 1
@@ -1046,31 +1036,8 @@ local function new()
 	return vBoard
 end
 
-local function init(mod)
-	assert(type(mod) == 'table')
-	assert(type(mod.id) == 'string')
-	
-	this.id = mod.id .."_virtualBoard"
-	
-	for i = 0, 18 do
-		modApi:appendAsset("img/combat/icons/".. this.id .."_damage_yellow_".. i ..".png", mod.resourcePath .."img/virtualBoard/damage_".. i ..".png")
-		modApi:appendAsset("img/combat/icons/".. this.id .."_damage_acid_".. i ..".png", mod.resourcePath .."img/virtualBoard/acid_".. i ..".png")
-		modApi:appendAsset("img/combat/icons/".. this.id .."_damage_faded_".. i ..".png", mod.resourcePath .."img/virtualBoard/faded_".. i ..".png")
-		Location["combat/icons/".. this.id .."_damage_yellow_".. i ..".png"] = Point(-9,10)
-		Location["combat/icons/".. this.id .."_damage_acid_".. i ..".png"] = Point(-9,10)
-		Location["combat/icons/".. this.id .."_damage_faded_".. i ..".png"] = Point(-9,10)
-	end
-end
-
-local function load(modApiExt, armorDetection, weaponMarks)
-	assert(type(modApiExt) == 'table')
-	assert(type(armorDetection) == 'table')
-	assert(type(weaponMarks) == 'table')
-	
-	this.modApiExt = modApiExt
-	this.weaponMarks = weaponMarks
-	this.armorDetection = armorDetection
-end
+local function init() end
+local function load() end
 
 return {
 	init = init,
