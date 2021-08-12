@@ -1,6 +1,6 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local currentTileset = require(path .."currentTileset")
+local scriptPath = mod_loader.mods[modApi.currentMod].scriptPath
+local currentTileset = require(scriptPath.."libs/currentTileset")
 
 local orig = TILE_TOOLTIPS.forest
 local orig_fire = TILE_TOOLTIPS.forest_fire

@@ -1,6 +1,6 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
-local currentTileset = require(path .."scripts/currentTileset")
+local scriptPath = mod_loader.mods[modApi.currentMod].scriptPath
+local currentTileset = require(scriptPath.."libs/currentTileset")
 
 local orig = TILE_TOOLTIPS.sand
 local sand
