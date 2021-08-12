@@ -4,9 +4,7 @@ local worldConstants = LApi.library:fetch("worldConstants")
 local effectPreview = LApi.library:fetch("effectPreview")
 local virtualBoard = require(mod.scriptPath.."libs/virtualBoard")
 
-local this = {
-	attacks = {},
-}
+totalAttacksRemaining = {}
 
 lmn_Multi_Laser = Skill:new{
 	Self = "lmn_Multi_Laser",
@@ -118,7 +116,7 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 	local target = GetProjectileEnd(p1, p2)
 	
 	local pawn = Board:GetPawn(target)
-	local attacksLeft = this.attacks[id]
+	local attacksLeft = totalAttacksRemaining[id]
 	local attacks = 1
 	
 	----------------------
@@ -181,7 +179,7 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 	end
 	
 	attacks = math.min(attacksLeft, attacks)
-	this.attacks[id] = this.attacks[id] - attacks
+	totalAttacksRemaining[id] = totalAttacksRemaining[id] - attacks
 	
 	---------------------
 	-- damage resolution
@@ -214,7 +212,7 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 	-------------------
 	-- continue attack
 	-------------------
-	if this.attacks[id] > 0 then
+	if totalAttacksRemaining[id] > 0 then
 		effect:AddScript([[
 			local p1 = ]].. p1:GetString() ..[[;
 			local p2 = ]].. p2:GetString() ..[[;
@@ -229,7 +227,7 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 			effect:AddDelay(1.3)
 		end
 		
-		this.attacks[id] = nil
+		totalAttacksRemaining[id] = nil
 	end
 	
 	Board:AddEffect(effect)
@@ -245,7 +243,7 @@ function lmn_Multi_Laser:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
-	this.attacks[id] = self.Attacks
+	totalAttacksRemaining[id] = self.Attacks
 	
 	----------------
 	-- damage marks
@@ -379,64 +377,55 @@ lmn_Multi_Laser_Tip_AB.GetSkillEffect = lmn_Multi_Laser_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_Multi_Laser")
 
-function this:init(mod)
-	
-	modApi:appendAsset("img/weapons/lmn_multi_laser.png", mod.resourcePath .."img/weapons/multi_laser.png")
-	modApi:appendAsset("img/effects/lmn_multi_las_1_R.png", mod.resourcePath .."img/effects/laser_01_R.png")
-	modApi:appendAsset("img/effects/lmn_multi_las_1_U.png", mod.resourcePath .."img/effects/laser_01_U.png")
-	modApi:appendAsset("img/effects/lmn_multi_las_2_R.png", mod.resourcePath .."img/effects/laser_02_R.png")
-	modApi:appendAsset("img/effects/lmn_multi_las_2_U.png", mod.resourcePath .."img/effects/laser_02_U.png")
-	modApi:appendAsset("img/effects/lmn_multi_las_3_R.png", mod.resourcePath .."img/effects/laser_03_R.png")
-	modApi:appendAsset("img/effects/lmn_multi_las_3_U.png", mod.resourcePath .."img/effects/laser_03_U.png")
-	
-	modApi:appendAsset("img/effects/lmn_explo_laser1.png", mod.resourcePath .."img/effects/explo_laser1.png")
-	
-	for i = 1, 6 do
-		modApi:appendAsset("img/combat/lmn_multi_laser_preview_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_".. i ..".png")
-		Location["combat/lmn_multi_laser_preview_".. i ..".png"] = Point(-16, 0)
-	end
-	
-	setfenv(1, ANIMS)
-	--laser 1
-	lmn_ExploLaser1_0 = Animation:new{
-		Image = "effects/lmn_explo_laser1.png",
-		NumFrames = 8,
-		Time = 0.1,
-		
-		PosX = -10,
-		PosY = 5
-	}
-	lmn_ExploLaser1_1 = lmn_ExploLaser1_0:new{}
-	lmn_ExploLaser1_2 = lmn_ExploLaser1_0:new{}
-	lmn_ExploLaser1_3 = lmn_ExploLaser1_0:new{}
-	
-	-- laser 2
-	lmn_ExploLaser2_0 = lmn_ExploLaser1_0:new{
-		PosX = lmn_ExploLaser1_0.PosX + 5,
-		PosY = lmn_ExploLaser1_0.PosY + 4
-	}
-	lmn_ExploLaser2_1 = lmn_ExploLaser1_0:new{
-		PosX = lmn_ExploLaser1_0.PosX - 5,
-		PosY = lmn_ExploLaser1_0.PosY + 4
-	}
-	lmn_ExploLaser2_2 = lmn_ExploLaser2_0:new{}
-	lmn_ExploLaser2_3 = lmn_ExploLaser2_1:new{}
-	
-	-- laser 3
-	lmn_ExploLaser3_0 = lmn_ExploLaser1_0:new{
-		PosX = lmn_ExploLaser1_0.PosX - 5,
-		PosY = lmn_ExploLaser1_0.PosY - 4
-	}
-	lmn_ExploLaser3_1 = lmn_ExploLaser1_0:new{
-		PosX = lmn_ExploLaser1_0.PosX + 5,
-		PosY = lmn_ExploLaser1_0.PosY - 4
-	}
-	lmn_ExploLaser3_2 = lmn_ExploLaser3_0:new{}
-	lmn_ExploLaser3_3 = lmn_ExploLaser3_1:new{}
-	
+modApi:appendAsset("img/weapons/lmn_multi_laser.png", mod.resourcePath .."img/weapons/multi_laser.png")
+modApi:appendAsset("img/effects/lmn_multi_las_1_R.png", mod.resourcePath .."img/effects/laser_01_R.png")
+modApi:appendAsset("img/effects/lmn_multi_las_1_U.png", mod.resourcePath .."img/effects/laser_01_U.png")
+modApi:appendAsset("img/effects/lmn_multi_las_2_R.png", mod.resourcePath .."img/effects/laser_02_R.png")
+modApi:appendAsset("img/effects/lmn_multi_las_2_U.png", mod.resourcePath .."img/effects/laser_02_U.png")
+modApi:appendAsset("img/effects/lmn_multi_las_3_R.png", mod.resourcePath .."img/effects/laser_03_R.png")
+modApi:appendAsset("img/effects/lmn_multi_las_3_U.png", mod.resourcePath .."img/effects/laser_03_U.png")
+
+modApi:appendAsset("img/effects/lmn_explo_laser1.png", mod.resourcePath .."img/effects/explo_laser1.png")
+
+for i = 1, 6 do
+	modApi:appendAsset("img/combat/lmn_multi_laser_preview_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_".. i ..".png")
+	Location["combat/lmn_multi_laser_preview_".. i ..".png"] = Point(-16, 0)
 end
 
-function this:load()
-end
+setfenv(1, ANIMS)
+--laser 1
+lmn_ExploLaser1_0 = Animation:new{
+	Image = "effects/lmn_explo_laser1.png",
+	NumFrames = 8,
+	Time = 0.1,
+	
+	PosX = -10,
+	PosY = 5
+}
+lmn_ExploLaser1_1 = lmn_ExploLaser1_0:new{}
+lmn_ExploLaser1_2 = lmn_ExploLaser1_0:new{}
+lmn_ExploLaser1_3 = lmn_ExploLaser1_0:new{}
 
-return this
+-- laser 2
+lmn_ExploLaser2_0 = lmn_ExploLaser1_0:new{
+	PosX = lmn_ExploLaser1_0.PosX + 5,
+	PosY = lmn_ExploLaser1_0.PosY + 4
+}
+lmn_ExploLaser2_1 = lmn_ExploLaser1_0:new{
+	PosX = lmn_ExploLaser1_0.PosX - 5,
+	PosY = lmn_ExploLaser1_0.PosY + 4
+}
+lmn_ExploLaser2_2 = lmn_ExploLaser2_0:new{}
+lmn_ExploLaser2_3 = lmn_ExploLaser2_1:new{}
+
+-- laser 3
+lmn_ExploLaser3_0 = lmn_ExploLaser1_0:new{
+	PosX = lmn_ExploLaser1_0.PosX - 5,
+	PosY = lmn_ExploLaser1_0.PosY - 4
+}
+lmn_ExploLaser3_1 = lmn_ExploLaser1_0:new{
+	PosX = lmn_ExploLaser1_0.PosX + 5,
+	PosY = lmn_ExploLaser1_0.PosY - 4
+}
+lmn_ExploLaser3_2 = lmn_ExploLaser3_0:new{}
+lmn_ExploLaser3_3 = lmn_ExploLaser3_1:new{}

@@ -4,7 +4,7 @@ local worldConstants = LApi.library:fetch("worldConstants")
 local effectBurst = LApi.library:fetch("effectBurst")
 local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
 
-local this = {}
+local resetPath = false
 
 lmn_Tri_Striker = Skill:new{
 	Name = "Tri-Striker",
@@ -211,7 +211,7 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		------------------
 		-- construct path
 		------------------
-		if self.Path == nil or #self.Path == 0 or this.resetPath then
+		if self.Path == nil or #self.Path == 0 or resetPath then
 			self.Path = GetPath(p1, p2)
 		else
 			ExtendPath(self.Path, p2) -- extend out to p2.
@@ -359,49 +359,41 @@ lmn_Emitter_Tri_Striker = Emitter_Missile:new{
 
 modApi:addWeaponDrop("lmn_Tri_Striker")
 
-function this:init(mod)
-	
-	modApi:appendAsset("img/weapons/lmn_tri_striker.png", mod.resourcePath .."img/weapons/tri_striker.png")
-	modApi:appendAsset("img/effects/shotup_lmn_tri_strike_missile.png", mod.resourcePath .."img/effects/shotup_tri_strike_missile.png")
-	
-	modApi:appendAsset("img/combat/lmn_tri_striker_up_0.png", mod.resourcePath .."img/combat/artillery_icon_up_flipped.png")
-	modApi:appendAsset("img/combat/lmn_tri_striker_up_1.png", mod.resourcePath .."img/combat/artillery_icon_up_flipped.png")
-	modApi:copyAsset("img/combat/artillery_icon_up.png", "img/combat/lmn_tri_striker_up_2.png")
-	modApi:copyAsset("img/combat/artillery_icon_up.png", "img/combat/lmn_tri_striker_up_3.png")
-	modApi:appendAsset("img/combat/lmn_tri_striker_down_0.png", mod.resourcePath .."img/combat/artillery_icon_down_flipped.png")
-	modApi:appendAsset("img/combat/lmn_tri_striker_down_1.png", mod.resourcePath .."img/combat/artillery_icon_down_flipped.png")
-	modApi:copyAsset("img/combat/artillery_icon_down.png", "img/combat/lmn_tri_striker_down_2.png")
-	modApi:copyAsset("img/combat/artillery_icon_down.png", "img/combat/lmn_tri_striker_down_3.png")
-	Location["combat/lmn_tri_striker_up_0.png"] = Point(5, -10)
-	Location["combat/lmn_tri_striker_up_1.png"] = Point(5, 12)
-	Location["combat/lmn_tri_striker_up_2.png"] = Point(-22, 11)
-	Location["combat/lmn_tri_striker_up_3.png"] = Point(-22, -11)
-	Location["combat/lmn_tri_striker_down_0.png"] = Point(-22, 11)
-	Location["combat/lmn_tri_striker_down_1.png"] = Point(-22, -11)
-	Location["combat/lmn_tri_striker_down_2.png"] = Point(4, -10)
-	Location["combat/lmn_tri_striker_down_3.png"] = Point(4, 10)
-	
-	modApi:copyAsset("img/combat/square.png", "img/combat/lmn_square.png")
-	Location["combat/lmn_square.png"] = Point(-27, 2)
-	
-	lmn_Emitter_Tri_Striker_Static = Emitter:new{
-		image = "effects/smoke/art_smoke.png",
-		max_alpha = 0.4,
-		x = 0,
-		y = 17,
-		angle_variance = 360,
-		variance = 0,
-		variance_x = 20,
-		variance_y = 15,
-		burst_count = 20,
-		lifespan = 1.9,
-		speed = 0.3,
-		gravity = false,
-		layer = LAYER_FRONT
-	}
-end
+modApi:appendAsset("img/weapons/lmn_tri_striker.png", mod.resourcePath .."img/weapons/tri_striker.png")
+modApi:appendAsset("img/effects/shotup_lmn_tri_strike_missile.png", mod.resourcePath .."img/effects/shotup_tri_strike_missile.png")
 
-function this:load()
-end
+modApi:appendAsset("img/combat/lmn_tri_striker_up_0.png", mod.resourcePath .."img/combat/artillery_icon_up_flipped.png")
+modApi:appendAsset("img/combat/lmn_tri_striker_up_1.png", mod.resourcePath .."img/combat/artillery_icon_up_flipped.png")
+modApi:copyAsset("img/combat/artillery_icon_up.png", "img/combat/lmn_tri_striker_up_2.png")
+modApi:copyAsset("img/combat/artillery_icon_up.png", "img/combat/lmn_tri_striker_up_3.png")
+modApi:appendAsset("img/combat/lmn_tri_striker_down_0.png", mod.resourcePath .."img/combat/artillery_icon_down_flipped.png")
+modApi:appendAsset("img/combat/lmn_tri_striker_down_1.png", mod.resourcePath .."img/combat/artillery_icon_down_flipped.png")
+modApi:copyAsset("img/combat/artillery_icon_down.png", "img/combat/lmn_tri_striker_down_2.png")
+modApi:copyAsset("img/combat/artillery_icon_down.png", "img/combat/lmn_tri_striker_down_3.png")
+Location["combat/lmn_tri_striker_up_0.png"] = Point(5, -10)
+Location["combat/lmn_tri_striker_up_1.png"] = Point(5, 12)
+Location["combat/lmn_tri_striker_up_2.png"] = Point(-22, 11)
+Location["combat/lmn_tri_striker_up_3.png"] = Point(-22, -11)
+Location["combat/lmn_tri_striker_down_0.png"] = Point(-22, 11)
+Location["combat/lmn_tri_striker_down_1.png"] = Point(-22, -11)
+Location["combat/lmn_tri_striker_down_2.png"] = Point(4, -10)
+Location["combat/lmn_tri_striker_down_3.png"] = Point(4, 10)
 
-return this
+modApi:copyAsset("img/combat/square.png", "img/combat/lmn_square.png")
+Location["combat/lmn_square.png"] = Point(-27, 2)
+
+lmn_Emitter_Tri_Striker_Static = Emitter:new{
+	image = "effects/smoke/art_smoke.png",
+	max_alpha = 0.4,
+	x = 0,
+	y = 17,
+	angle_variance = 360,
+	variance = 0,
+	variance_x = 20,
+	variance_y = 15,
+	burst_count = 20,
+	lifespan = 1.9,
+	speed = 0.3,
+	gravity = false,
+	layer = LAYER_FRONT
+}

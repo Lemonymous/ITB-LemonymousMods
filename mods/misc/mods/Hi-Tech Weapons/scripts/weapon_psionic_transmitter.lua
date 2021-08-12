@@ -5,7 +5,9 @@ local effectBurst = LApi.library:fetch("effectBurst")
 local effectPreview = LApi.library:fetch("effectPreview")
 local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
 
-local this = {burrowers = {}}
+local weapons
+local highlighted
+local selected
 
 lmn_Psionic_Transmitter = Skill:new{
 	Name = "Psi-Transmitter",
@@ -127,8 +129,8 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		-- keep track of this weapon,
 		-- so we can clear Target if
 		-- another weapon is armed.
-		this.weapons = this.weapons or {}
-		this.weapons[shooterId] = {
+		weapons = weapons or {}
+		weapons[shooterId] = {
 			weapon = self,
 			weaponId = shooter:GetArmedWeaponId()
 		}
@@ -369,190 +371,190 @@ lmn_Psionic_Transmitter_Tip_A.GetSkillEffect = lmn_Psionic_Transmitter_Tip.GetSk
 
 modApi:addWeaponDrop("lmn_Psionic_Transmitter")
 
-function this:init(mod)
-	sdlext.addGameExitedHook(function()
-		self.weapons = {}
-		self.highlighted = nil
-		self.selected = nil
-	end)
-	
-	modApi:appendAsset("img/weapons/lmn_psionic_transmitter.png", mod.resourcePath.. "img/weapons/psionic_transmitter.png")
-	
-	modApi:copyAsset("img/combat/square.png", "img/combat/lmn_square.png")
-	Location["combat/lmn_square.png"] = Point(-27, 2)
-	
-	modApi:appendAsset("img/combat/icons/lmn_psi_icon_move_glow.png", mod.resourcePath .."img/combat/icons/icon_move_glow.png")
-	Location["combat/icons/lmn_psi_icon_move_glow.png"] = Point(-13, 13)
-	
-	modApi:appendAsset("img/combat/lmn_psi_arrow_y_0.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
-	modApi:appendAsset("img/combat/lmn_psi_arrow_y_1.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
-	modApi:appendAsset("img/combat/lmn_psi_arrow_y_2.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
-	modApi:appendAsset("img/combat/lmn_psi_arrow_y_3.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
-	modApi:appendAsset("img/combat/lmn_psi_close_y_0.png", mod.resourcePath .."img/combat/projectile_close_02.png")
-	modApi:appendAsset("img/combat/lmn_psi_close_y_1.png", mod.resourcePath .."img/combat/projectile_close_13.png")
-	modApi:appendAsset("img/combat/lmn_psi_close_y_2.png", mod.resourcePath .."img/combat/projectile_close_02.png")
-	modApi:appendAsset("img/combat/lmn_psi_close_y_3.png", mod.resourcePath .."img/combat/projectile_close_13.png")
-	
-	Location["combat/lmn_psi_arrow_y_0.png"] = Point(-16, 0)
-	Location["combat/lmn_psi_arrow_y_1.png"] = Point(-16, 0)
-	Location["combat/lmn_psi_arrow_y_2.png"] = Point(-16, 0)
-	Location["combat/lmn_psi_arrow_y_3.png"] = Point(-16, 0)
-	Location["combat/lmn_psi_close_y_0.png"] = Point(-27, 15)
-	Location["combat/lmn_psi_close_y_1.png"] = Point(-28, -6)
-	Location["combat/lmn_psi_close_y_2.png"] = Point(1, -6)
-	Location["combat/lmn_psi_close_y_3.png"] = Point(0, 15)
-	
-	modApi:appendAsset("img/effects/smoke/lmn_psi_smoke.png", mod.resourcePath .."img/effects/smoke/psi_smoke.png")
-	
-	-- angles matching the board directions,
-	-- with variance going an equal amount to either side.
-	local angle_variance = 10
-	local angle_0 = 323 + angle_variance / 2
-	local angle_1 = 37 + angle_variance / 2
-	local angle_2 = 142 + angle_variance / 2
-	local angle_3 = 218 + angle_variance / 2
-	
-	lmn_Emitter_Psi_Stun_0 = Emitter:new{
-		image = "effects/smoke/lmn_psi_smoke.png",
-		max_alpha = 0.4,
-		x = 0,
-		y = 10,
-		variance = 0,
-		variance_x = 20,
-		variance_y = 5,
-		lifespan = 0.55,
-		speed = 1.5,
-		burst_count = 20,
-		rot_speed = 360,
-		gravity = false,
-		layer = LAYER_FRONT,
-		angle = angle_0,
-		angle_variance = angle_variance,
-	}
-	
-	lmn_Emitter_Psi_Stun_1 = lmn_Emitter_Psi_Stun_0:new{
-		angle = angle_1,
-		angle_variance = angle_variance,
-	}
-	
-	lmn_Emitter_Psi_Stun_2 = lmn_Emitter_Psi_Stun_0:new{
-		angle = angle_2,
-		angle_variance = angle_variance,
-	}
-	
-	lmn_Emitter_Psi_Stun_3 = lmn_Emitter_Psi_Stun_0:new{
-		angle = angle_3,
-		angle_variance = angle_variance,
-	}
-	
-	lmn_Emitter_Psi_Stun_Static_0 = lmn_Emitter_Psi_Stun_0:new{
-		y = 15,
-		angle = 270 - angle_variance / 2,
-		burst_count = 3,
-	}
-	
-	lmn_Emitter_Psi_Stun_Static_1 = lmn_Emitter_Psi_Stun_Static_0:new{}
-	lmn_Emitter_Psi_Stun_Static_2 = lmn_Emitter_Psi_Stun_Static_0:new{}
-	lmn_Emitter_Psi_Stun_Static_3 = lmn_Emitter_Psi_Stun_Static_0:new{}
-	
-	ANIMS.lmn_Psi_Stun = ANIMS.Animation:new{ 	
-		Image = "combat/icons/stun_strip5.png",
-		PosX = -8, PosY = -3,
-		NumFrames = 5,
-		Time = 0.1,
-		Frames = {0,1,2,3,4,0,1},
-	}
-	
-	ANIMS.lmn_Psi_Radio = ANIMS.Animation:new{
-		Image = "combat/icons/radio_animate.png",
-		PosX = -16, PosY = -8,
-		NumFrames = 3,
-		Time = 0.2,
-		Frames = {0,1,2,0,1,2},
-	}
-end
+modApi:appendAsset("img/weapons/lmn_psionic_transmitter.png", mod.resourcePath.. "img/weapons/psionic_transmitter.png")
 
-function this:load()
-	modApi:addMissionUpdateHook(function()
-		local rem = {}
+modApi:copyAsset("img/combat/square.png", "img/combat/lmn_square.png")
+Location["combat/lmn_square.png"] = Point(-27, 2)
+
+modApi:appendAsset("img/combat/icons/lmn_psi_icon_move_glow.png", mod.resourcePath .."img/combat/icons/icon_move_glow.png")
+Location["combat/icons/lmn_psi_icon_move_glow.png"] = Point(-13, 13)
+
+modApi:appendAsset("img/combat/lmn_psi_arrow_y_0.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
+modApi:appendAsset("img/combat/lmn_psi_arrow_y_1.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
+modApi:appendAsset("img/combat/lmn_psi_arrow_y_2.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
+modApi:appendAsset("img/combat/lmn_psi_arrow_y_3.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
+modApi:appendAsset("img/combat/lmn_psi_close_y_0.png", mod.resourcePath .."img/combat/projectile_close_02.png")
+modApi:appendAsset("img/combat/lmn_psi_close_y_1.png", mod.resourcePath .."img/combat/projectile_close_13.png")
+modApi:appendAsset("img/combat/lmn_psi_close_y_2.png", mod.resourcePath .."img/combat/projectile_close_02.png")
+modApi:appendAsset("img/combat/lmn_psi_close_y_3.png", mod.resourcePath .."img/combat/projectile_close_13.png")
+
+Location["combat/lmn_psi_arrow_y_0.png"] = Point(-16, 0)
+Location["combat/lmn_psi_arrow_y_1.png"] = Point(-16, 0)
+Location["combat/lmn_psi_arrow_y_2.png"] = Point(-16, 0)
+Location["combat/lmn_psi_arrow_y_3.png"] = Point(-16, 0)
+Location["combat/lmn_psi_close_y_0.png"] = Point(-27, 15)
+Location["combat/lmn_psi_close_y_1.png"] = Point(-28, -6)
+Location["combat/lmn_psi_close_y_2.png"] = Point(1, -6)
+Location["combat/lmn_psi_close_y_3.png"] = Point(0, 15)
+
+modApi:appendAsset("img/effects/smoke/lmn_psi_smoke.png", mod.resourcePath .."img/effects/smoke/psi_smoke.png")
+
+-- angles matching the board directions,
+-- with variance going an equal amount to either side.
+local angle_variance = 10
+local angle_0 = 323 + angle_variance / 2
+local angle_1 = 37 + angle_variance / 2
+local angle_2 = 142 + angle_variance / 2
+local angle_3 = 218 + angle_variance / 2
+
+lmn_Emitter_Psi_Stun_0 = Emitter:new{
+	image = "effects/smoke/lmn_psi_smoke.png",
+	max_alpha = 0.4,
+	x = 0,
+	y = 10,
+	variance = 0,
+	variance_x = 20,
+	variance_y = 5,
+	lifespan = 0.55,
+	speed = 1.5,
+	burst_count = 20,
+	rot_speed = 360,
+	gravity = false,
+	layer = LAYER_FRONT,
+	angle = angle_0,
+	angle_variance = angle_variance,
+}
+
+lmn_Emitter_Psi_Stun_1 = lmn_Emitter_Psi_Stun_0:new{
+	angle = angle_1,
+	angle_variance = angle_variance,
+}
+
+lmn_Emitter_Psi_Stun_2 = lmn_Emitter_Psi_Stun_0:new{
+	angle = angle_2,
+	angle_variance = angle_variance,
+}
+
+lmn_Emitter_Psi_Stun_3 = lmn_Emitter_Psi_Stun_0:new{
+	angle = angle_3,
+	angle_variance = angle_variance,
+}
+
+lmn_Emitter_Psi_Stun_Static_0 = lmn_Emitter_Psi_Stun_0:new{
+	y = 15,
+	angle = 270 - angle_variance / 2,
+	burst_count = 3,
+}
+
+lmn_Emitter_Psi_Stun_Static_1 = lmn_Emitter_Psi_Stun_Static_0:new{}
+lmn_Emitter_Psi_Stun_Static_2 = lmn_Emitter_Psi_Stun_Static_0:new{}
+lmn_Emitter_Psi_Stun_Static_3 = lmn_Emitter_Psi_Stun_Static_0:new{}
+
+ANIMS.lmn_Psi_Stun = ANIMS.Animation:new{ 	
+	Image = "combat/icons/stun_strip5.png",
+	PosX = -8, PosY = -3,
+	NumFrames = 5,
+	Time = 0.1,
+	Frames = {0,1,2,3,4,0,1},
+}
+
+ANIMS.lmn_Psi_Radio = ANIMS.Animation:new{
+	Image = "combat/icons/radio_animate.png",
+	PosX = -16, PosY = -8,
+	NumFrames = 3,
+	Time = 0.2,
+	Frames = {0,1,2,0,1,2},
+}
+
+modApi.events.onMissionUpdate:subscribe(function()
+	local rem = {}
+	
+	weapons = weapons or {}
+	for id, v in pairs(weapons) do
+		if not selected or v.weaponId ~= selected:GetArmedWeaponId() then
+			v.weapon.Target = nil
+			table.insert(rem, id)
+		end
 		
-		self.weapons = self.weapons or {}
-		for id, v in pairs(self.weapons) do
-			if not self.selected or v.weaponId ~= self.selected:GetArmedWeaponId() then
-				v.weapon.Target = nil
-				table.insert(rem, id)
-			end
+		if v.weapon.Target then
+			local p1 = Board:GetPawn(id):GetSpace()
+			local p2 = v.weapon.Target:GetSpace()
+			local dir = GetDirection(p2 - p1)
+			local distance = p1:Manhattan(p2)
 			
-			if v.weapon.Target then
-				local p1 = Board:GetPawn(id):GetSpace()
-				local p2 = v.weapon.Target:GetSpace()
-				local dir = GetDirection(p2 - p1)
-				local distance = p1:Manhattan(p2)
-				
-				if distance == 1 then
-					local d = SpaceDamage(p2)
-					d.sImageMark = "combat/lmn_psi_close_y_".. dir ..".png"
+			if distance == 1 then
+				local d = SpaceDamage(p2)
+				d.sImageMark = "combat/lmn_psi_close_y_".. dir ..".png"
+				Board:MarkSpaceDamage(d)
+			else
+				for k = 1, distance - 1 do
+					local curr = p1 + DIR_VECTORS[dir] * k
+					local d = SpaceDamage(curr)
+					d.sImageMark = "combat/lmn_psi_arrow_y_".. dir ..".png"
 					Board:MarkSpaceDamage(d)
-				else
-					for k = 1, distance - 1 do
-						local curr = p1 + DIR_VECTORS[dir] * k
-						local d = SpaceDamage(curr)
-						d.sImageMark = "combat/lmn_psi_arrow_y_".. dir ..".png"
-						Board:MarkSpaceDamage(d)
-					end
 				end
 			end
 		end
-		
-		for _, id in ipairs(rem) do
-			self.weapons[id] = nil
+	end
+	
+	for _, id in ipairs(rem) do
+		weapons[id] = nil
+	end
+end)
+	
+modApi.events.onTestMechEntered:subscribe(function()
+	modApi:runLater(function()
+		for id = 0, 2 do
+			selected = Board:GetPawn(id)
+			if selected then
+				break
+			end
 		end
 	end)
-	
+end)
+
+modApi.events.onGameExited:subscribe(function()
+	weapons = {}
+	highlighted = nil
+	selected = nil
+end)
+
+modApi.events.onTestMechExited:subscribe(function()
+	weapons = {}
+	highlighted = nil
+	selected = nil
+end)
+
+modApi.events.onMissionEnd:subscribe(function()
+	weapons = {}
+	highlighted = nil
+	selected = nil
+end)
+
+local function onModsLoaded()
 	modApiExt:addPawnSelectedHook(function(_, pawn)
-		self.selected = pawn
+		selected = pawn
 	end)
 	
 	modApiExt:addPawnDeselectedHook(function()
-		if self.selected then
-			self.weapons = self.weapons or {}
-			self.weapons[self.selected:GetId()] = nil
+		if selected then
+			weapons = weapons or {}
+			weapons[selected:GetId()] = nil
 		end
 		
-		self.selected = nil
+		selected = nil
 	end)
 	
 	modApiExt:addTileHighlightedHook(function(_, tile)
-		self.highlighted = tile
+		highlighted = tile
 	end)
 	
 	modApiExt:addTileUnhighlightedHook(function()
-		self.highlighted = nil
-	end)
-	
-	modApi:addTestMechEnteredHook(function()
-		modApi:runLater(function()
-			for id = 0, 2 do
-				self.selected = Board:GetPawn(id)
-				if self.selected then
-					break
-				end
-			end
-		end)
-	end)
-	
-	modApi:addTestMechExitedHook(function()
-		self.weapons = {}
-		self.highlighted = nil
-		self.selected = nil
-	end)
-	
-	modApi:addMissionEndHook(function()
-		self.weapons = {}
-		self.highlighted = nil
-		self.selected = nil
+		highlighted = nil
 	end)
 end
+
+modApi.events.onModsLoaded:subscribe(onModsLoaded)
 
 lmn_Burrow_Dummy = Pawn:new{
 	Name = "",
@@ -566,5 +568,3 @@ lmn_Burrow_Dummy = Pawn:new{
 	SoundLocation = "",
 	DefaultTeam = TEAM_NONE,
 }
-
-return this

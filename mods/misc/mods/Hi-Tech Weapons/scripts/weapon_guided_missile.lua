@@ -3,7 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local effectBurst = LApi.library:fetch("effectBurst")
 local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
 
-local this = {}
+local resetPath = false
 
 lmn_Guided_Missile = Skill:new{
 	Name = "Guided Missile",
@@ -137,7 +137,7 @@ function lmn_Guided_Missile:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	------------------
 	-- construct path
 	------------------
-	if self.Path == nil or #self.Path == 0 or self.Path[1] ~= p1 or this.resetPath then
+	if self.Path == nil or #self.Path == 0 or self.Path[1] ~= p1 or resetPath then
 		self.Path = extract_table(Board:GetPath(p1, p2, PATH_PROJECTILE))
 	else
 		UnblockPath(self.Path, PATH_PROJECTILE)	-- trim path so it is not blocked.
@@ -387,86 +387,78 @@ lmn_Guided_Missile_Tip_A.GetSkillEffect = lmn_Guided_Missile_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_Guided_Missile")
 
-function this:init(mod)
-	
-	modApi:appendAsset("img/weapons/lmn_guided_missile.png", mod.resourcePath .."img/weapons/guided_missile.png")
-	modApi:appendAsset("img/effects/lmn_shot_guided_missile_R.png", mod.resourcePath .."img/effects/shot_guided_missile_R.png")
-	modApi:appendAsset("img/effects/lmn_shot_guided_missile_U.png", mod.resourcePath .."img/effects/shot_guided_missile_U.png")
-	
-	-- TODO: add color blind marks.
-	modApi:appendAsset("img/combat/lmn_guided_arrow_y_0.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
-	modApi:appendAsset("img/combat/lmn_guided_arrow_y_1.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
-	modApi:appendAsset("img/combat/lmn_guided_arrow_y_2.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
-	modApi:appendAsset("img/combat/lmn_guided_arrow_y_3.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
-	modApi:appendAsset("img/combat/lmn_guided_close_y_0.png", mod.resourcePath .."img/combat/projectile_close_02.png")
-	modApi:appendAsset("img/combat/lmn_guided_close_y_1.png", mod.resourcePath .."img/combat/projectile_close_13.png")
-	modApi:appendAsset("img/combat/lmn_guided_close_y_2.png", mod.resourcePath .."img/combat/projectile_close_02.png")
-	modApi:appendAsset("img/combat/lmn_guided_close_y_3.png", mod.resourcePath .."img/combat/projectile_close_13.png")
-	modApi:appendAsset("img/combat/lmn_guided_corner_y_0.png", mod.resourcePath .."img/combat/projectile_corner_02.png")
-	modApi:appendAsset("img/combat/lmn_guided_corner_y_1.png", mod.resourcePath .."img/combat/projectile_corner_13.png")
-	modApi:appendAsset("img/combat/lmn_guided_corner_y_2.png", mod.resourcePath .."img/combat/projectile_corner_02.png")
-	modApi:appendAsset("img/combat/lmn_guided_corner_y_3.png", mod.resourcePath .."img/combat/projectile_corner_13.png")
+modApi:appendAsset("img/weapons/lmn_guided_missile.png", mod.resourcePath .."img/weapons/guided_missile.png")
+modApi:appendAsset("img/effects/lmn_shot_guided_missile_R.png", mod.resourcePath .."img/effects/shot_guided_missile_R.png")
+modApi:appendAsset("img/effects/lmn_shot_guided_missile_U.png", mod.resourcePath .."img/effects/shot_guided_missile_U.png")
 
-	Location["combat/lmn_guided_arrow_y_0.png"] = Point(-16, 0)
-	Location["combat/lmn_guided_arrow_y_1.png"] = Point(-16, 0)
-	Location["combat/lmn_guided_arrow_y_2.png"] = Point(-16, 0)
-	Location["combat/lmn_guided_arrow_y_3.png"] = Point(-16, 0)
-	Location["combat/lmn_guided_close_y_0.png"] = Point(-27, 15)
-	Location["combat/lmn_guided_close_y_1.png"] = Point(-28, -6)
-	Location["combat/lmn_guided_close_y_2.png"] = Point(1, -6)
-	Location["combat/lmn_guided_close_y_3.png"] = Point(0, 15)
-	Location["combat/lmn_guided_corner_y_0.png"] = Point(-16, 0)
-	Location["combat/lmn_guided_corner_y_1.png"] = Point(-16, 0)
-	Location["combat/lmn_guided_corner_y_2.png"] = Point(-2, 0)
-	Location["combat/lmn_guided_corner_y_3.png"] = Point(-16, 11)
-	
-	modApi:copyAsset("img/combat/square.png", "img/combat/lmn_square.png")
-	Location["combat/lmn_square.png"] = Point(-27, 2)
-	
-	-- angles matching the board directions,
-	-- with variance going an equal amount to either side.
-	local angle_variance = 40
-	local angle_0 = 323 + angle_variance / 2
-	local angle_1 = 37 + angle_variance / 2
-	local angle_2 = 142 + angle_variance / 2
-	local angle_3 = 218 + angle_variance / 2
-	
-	lmn_Emitter_Guided_Static_0 = Emitter:new{
-		image = "effects/smoke/art_smoke.png",
-		max_alpha = 0.4,
-		x = 0,
-		y = 20,
-		angle = angle_0,
-		angle_variance = angle_variance,
-		variance = 25,
-		burst_count = 19,
-		lifespan = 1.6,
-		speed = 0.14,
-		birth_rate = 0,
-		max_particles = 64,
-		gravity = false,
-		layer = LAYER_FRONT
-	}
-	
-	lmn_Emitter_Guided_Static_1 = lmn_Emitter_Guided_Static_0:new{ angle = angle_1 }
-	lmn_Emitter_Guided_Static_2 = lmn_Emitter_Guided_Static_0:new{ angle = angle_2 }
-	lmn_Emitter_Guided_Static_3 = lmn_Emitter_Guided_Static_0:new{ angle = angle_3 }
-	
-	lmn_Emitter_Guided_0 = lmn_Emitter_Guided_Static_0:new{
-		x = 0,
-		y = 10,
-		angle = angle_0,
-		variance = 5,
-		burst_count = 10,
-		lifespan = 1.8,
-	}
-	
-	lmn_Emitter_Guided_1 = lmn_Emitter_Guided_0:new{ angle = angle_1 }
-	lmn_Emitter_Guided_2 = lmn_Emitter_Guided_0:new{ angle = angle_2 }
-	lmn_Emitter_Guided_3 = lmn_Emitter_Guided_0:new{ angle = angle_3 }
-end
+-- TODO: add color blind marks.
+modApi:appendAsset("img/combat/lmn_guided_arrow_y_0.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
+modApi:appendAsset("img/combat/lmn_guided_arrow_y_1.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
+modApi:appendAsset("img/combat/lmn_guided_arrow_y_2.png", mod.resourcePath .."img/combat/projectile_arrow_02.png")
+modApi:appendAsset("img/combat/lmn_guided_arrow_y_3.png", mod.resourcePath .."img/combat/projectile_arrow_13.png")
+modApi:appendAsset("img/combat/lmn_guided_close_y_0.png", mod.resourcePath .."img/combat/projectile_close_02.png")
+modApi:appendAsset("img/combat/lmn_guided_close_y_1.png", mod.resourcePath .."img/combat/projectile_close_13.png")
+modApi:appendAsset("img/combat/lmn_guided_close_y_2.png", mod.resourcePath .."img/combat/projectile_close_02.png")
+modApi:appendAsset("img/combat/lmn_guided_close_y_3.png", mod.resourcePath .."img/combat/projectile_close_13.png")
+modApi:appendAsset("img/combat/lmn_guided_corner_y_0.png", mod.resourcePath .."img/combat/projectile_corner_02.png")
+modApi:appendAsset("img/combat/lmn_guided_corner_y_1.png", mod.resourcePath .."img/combat/projectile_corner_13.png")
+modApi:appendAsset("img/combat/lmn_guided_corner_y_2.png", mod.resourcePath .."img/combat/projectile_corner_02.png")
+modApi:appendAsset("img/combat/lmn_guided_corner_y_3.png", mod.resourcePath .."img/combat/projectile_corner_13.png")
 
-function this:load()
-end
+Location["combat/lmn_guided_arrow_y_0.png"] = Point(-16, 0)
+Location["combat/lmn_guided_arrow_y_1.png"] = Point(-16, 0)
+Location["combat/lmn_guided_arrow_y_2.png"] = Point(-16, 0)
+Location["combat/lmn_guided_arrow_y_3.png"] = Point(-16, 0)
+Location["combat/lmn_guided_close_y_0.png"] = Point(-27, 15)
+Location["combat/lmn_guided_close_y_1.png"] = Point(-28, -6)
+Location["combat/lmn_guided_close_y_2.png"] = Point(1, -6)
+Location["combat/lmn_guided_close_y_3.png"] = Point(0, 15)
+Location["combat/lmn_guided_corner_y_0.png"] = Point(-16, 0)
+Location["combat/lmn_guided_corner_y_1.png"] = Point(-16, 0)
+Location["combat/lmn_guided_corner_y_2.png"] = Point(-2, 0)
+Location["combat/lmn_guided_corner_y_3.png"] = Point(-16, 11)
 
-return this
+modApi:copyAsset("img/combat/square.png", "img/combat/lmn_square.png")
+Location["combat/lmn_square.png"] = Point(-27, 2)
+
+-- angles matching the board directions,
+-- with variance going an equal amount to either side.
+local angle_variance = 40
+local angle_0 = 323 + angle_variance / 2
+local angle_1 = 37 + angle_variance / 2
+local angle_2 = 142 + angle_variance / 2
+local angle_3 = 218 + angle_variance / 2
+
+lmn_Emitter_Guided_Static_0 = Emitter:new{
+	image = "effects/smoke/art_smoke.png",
+	max_alpha = 0.4,
+	x = 0,
+	y = 20,
+	angle = angle_0,
+	angle_variance = angle_variance,
+	variance = 25,
+	burst_count = 19,
+	lifespan = 1.6,
+	speed = 0.14,
+	birth_rate = 0,
+	max_particles = 64,
+	gravity = false,
+	layer = LAYER_FRONT
+}
+
+lmn_Emitter_Guided_Static_1 = lmn_Emitter_Guided_Static_0:new{ angle = angle_1 }
+lmn_Emitter_Guided_Static_2 = lmn_Emitter_Guided_Static_0:new{ angle = angle_2 }
+lmn_Emitter_Guided_Static_3 = lmn_Emitter_Guided_Static_0:new{ angle = angle_3 }
+
+lmn_Emitter_Guided_0 = lmn_Emitter_Guided_Static_0:new{
+	x = 0,
+	y = 10,
+	angle = angle_0,
+	variance = 5,
+	burst_count = 10,
+	lifespan = 1.8,
+}
+
+lmn_Emitter_Guided_1 = lmn_Emitter_Guided_0:new{ angle = angle_1 }
+lmn_Emitter_Guided_2 = lmn_Emitter_Guided_0:new{ angle = angle_2 }
+lmn_Emitter_Guided_3 = lmn_Emitter_Guided_0:new{ angle = angle_3 }

@@ -4,9 +4,7 @@ local worldConstants = LApi.library:fetch("worldConstants")
 local effectPreview = LApi.library:fetch("effectPreview")
 local virtualBoard = require(mod.scriptPath.."libs/virtualBoard")
 
-local this = {
-	attacks = {},
-}
+totalAttacksRemaining = {}
 
 lmn_Autocannon = Skill:new{
 	Self = "lmn_Autocannon",
@@ -119,7 +117,7 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 	local target = GetProjectileEnd(p1, p2)
 	
 	local pawn = Board:GetPawn(target)
-	local attacksLeft = this.attacks[id]
+	local attacksLeft = totalAttacksRemaining[id]
 	local attacks = 1
 	
 	----------------------
@@ -131,7 +129,7 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 	end
 	
 	attacks = math.min(attacksLeft, attacks)
-	this.attacks[id] = this.attacks[id] - attacks
+	totalAttacksRemaining[id] = totalAttacksRemaining[id] - attacks
 	
 	---------------------
 	-- damage resolution
@@ -156,7 +154,7 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 	-------------------
 	-- continue attack
 	-------------------
-	if this.attacks[id] > 0 then
+	if totalAttacksRemaining[id] > 0 then
 		effect:AddScript([[
 			local p1 = ]].. p1:GetString() ..[[;
 			local p2 = ]].. p2:GetString() ..[[;
@@ -171,7 +169,7 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 			effect:AddDelay(1.3)
 		end
 		
-		this.attacks[id] = nil
+		totalAttacksRemaining[id] = nil
 	end
 	
 	Board:AddEffect(effect)
@@ -187,7 +185,7 @@ function lmn_Autocannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
-	this.attacks[id] = self.Attacks
+	totalAttacksRemaining[id] = self.Attacks
 	
 	----------------
 	-- damage marks
@@ -332,22 +330,13 @@ lmn_Autocannon_Tip_B.GetSkillEffect = lmn_Autocannon_Tip.GetSkillEffect
 lmn_Autocannon_Tip_AB.GetSkillEffect = lmn_Autocannon_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_Autocannon")
+modApi:appendAsset("img/weapons/lmn_autocannon.png", mod.resourcePath .."img/weapons/autocannon.png")
 
-function this:init(mod)
-	
-	modApi:appendAsset("img/weapons/lmn_autocannon.png", mod.resourcePath .."img/weapons/autocannon.png")
-	
-	for i = 2, 4 do
-		modApi:appendAsset("img/combat/lmn_autocannon_preview_arrow_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_".. i ..".png")
-		modApi:appendAsset("img/combat/lmn_autocannon_preview_arrow_push_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_push_".. i ..".png")
-		modApi:appendAsset("img/combat/lmn_autocannon_preview_push_".. i ..".png", mod.resourcePath .."img/combat/preview_push_".. i ..".png")
-		Location["combat/lmn_autocannon_preview_arrow_".. i ..".png"] = Point(-16, 0)
-		Location["combat/lmn_autocannon_preview_arrow_push_".. i ..".png"] = Point(-16, -5)
-		Location["combat/lmn_autocannon_preview_push_".. i ..".png"] = Point(-16, -5)
-	end
+for i = 2, 4 do
+	modApi:appendAsset("img/combat/lmn_autocannon_preview_arrow_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_".. i ..".png")
+	modApi:appendAsset("img/combat/lmn_autocannon_preview_arrow_push_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_push_".. i ..".png")
+	modApi:appendAsset("img/combat/lmn_autocannon_preview_push_".. i ..".png", mod.resourcePath .."img/combat/preview_push_".. i ..".png")
+	Location["combat/lmn_autocannon_preview_arrow_".. i ..".png"] = Point(-16, 0)
+	Location["combat/lmn_autocannon_preview_arrow_push_".. i ..".png"] = Point(-16, -5)
+	Location["combat/lmn_autocannon_preview_push_".. i ..".png"] = Point(-16, -5)
 end
-
-function this:load()
-end
-
-return this

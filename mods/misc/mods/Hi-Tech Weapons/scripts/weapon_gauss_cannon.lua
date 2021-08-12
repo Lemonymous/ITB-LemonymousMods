@@ -5,9 +5,7 @@ local effectBurst = LApi.library:fetch("effectBurst")
 local effectPreview = LApi.library:fetch("effectPreview")
 local virtualBoard = require(mod.scriptPath.."libs/virtualBoard")
 
-local this = {
-	damage = {},
-}
+totalDamageRemaining = {}
 
 lmn_Gauss_Cannon = Skill:new{
 	Self = "lmn_Gauss_Cannon",
@@ -108,7 +106,7 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 	local target = GetProjectileEnd(p1, p2)
 	
 	local pawn = Board:GetPawn(target)
-	local damageLeft = this.damage[id]
+	local damageLeft = totalDamageRemaining[id]
 	local damage = 1
 	
 	----------------------
@@ -158,9 +156,9 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 	rail.sSound = "/impact/generic/explosion"
 	effect:AddDamage(rail)
 	
-	this.damage[id] = this.damage[id] - damage
+	totalDamageRemaining[id] = totalDamageRemaining[id] - damage
 	
-	if this.damage[id] > 0 then
+	if totalDamageRemaining[id] > 0 then
 		-------------------
 		-- continue attack
 		-------------------
@@ -173,7 +171,7 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 		--------
 		-- end
 		--------
-		this.damage[id] = nil
+		totalDamageRemaining[id] = nil
 	end
 	
 	Board:AddEffect(effect)
@@ -189,7 +187,7 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	local id = shooter:GetId()
 	local dir = GetDirection(p2 - p1)
 	local target = p1
-	this.damage[id] = self.Damage
+	totalDamageRemaining[id] = self.Damage
 	
 	ret:AddSound("/weapons/modified_cannons")
 	ret:AddSound("/weapons/burst_beam")
@@ -321,48 +319,39 @@ end
 lmn_Gauss_Cannon_Tip_A.GetSkillEffect = lmn_Gauss_Cannon_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_Gauss_Cannon")
+modApi:appendAsset("img/weapons/lmn_gauss_cannon.png", mod.resourcePath .."img/weapons/gauss_cannon.png")
 
-function this:init(mod)
-	
-	modApi:appendAsset("img/weapons/lmn_gauss_cannon.png", mod.resourcePath .."img/weapons/gauss_cannon.png")
-	
-	for i = 1, 6 do
-		modApi:appendAsset("img/combat/lmn_gauss_cannon_preview_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_".. i ..".png")
-		Location["combat/lmn_gauss_cannon_preview_".. i ..".png"] = Point(-16, 0)
-	end
-	
-	-- angles matching the board directions,
-	-- with variance going an equal amount to either side.
-	local angle_variance = 180
-	local angle_0 = 323 + angle_variance / 2
-	local angle_1 = 37 + angle_variance / 2
-	local angle_2 = 142 + angle_variance / 2
-	local angle_3 = 218 + angle_variance / 2
-	
-	lmn_Emitter_Railgun_0 = Emitter:new{
-		image = "effects/smoke/art_smoke.png",
-		max_alpha = 0.25,
-		x = 0,
-		y = 10,
-		angle = angle_0,
-		angle_variance = angle_variance,
-		speed = 0.18,
-		variance = 0,
-		variance_x = 8,
-		variance_y = 4,
-		rot_speed = 10,
-		burst_count = 20,
-		lifespan = 1.8,
-		gravity = false,
-		layer = LAYER_FRONT,
-	}
-	
-	lmn_Emitter_Railgun_1 = lmn_Emitter_Railgun_0:new{ angle = angle_1 }
-	lmn_Emitter_Railgun_2 = lmn_Emitter_Railgun_0:new{ angle = angle_2 }
-	lmn_Emitter_Railgun_3 = lmn_Emitter_Railgun_0:new{ angle = angle_3 }
+for i = 1, 6 do
+	modApi:appendAsset("img/combat/lmn_gauss_cannon_preview_".. i ..".png", mod.resourcePath .."img/combat/preview_arrow_".. i ..".png")
+	Location["combat/lmn_gauss_cannon_preview_".. i ..".png"] = Point(-16, 0)
 end
 
-function this:load()
-end
+-- angles matching the board directions,
+-- with variance going an equal amount to either side.
+local angle_variance = 180
+local angle_0 = 323 + angle_variance / 2
+local angle_1 = 37 + angle_variance / 2
+local angle_2 = 142 + angle_variance / 2
+local angle_3 = 218 + angle_variance / 2
 
-return this
+lmn_Emitter_Railgun_0 = Emitter:new{
+	image = "effects/smoke/art_smoke.png",
+	max_alpha = 0.25,
+	x = 0,
+	y = 10,
+	angle = angle_0,
+	angle_variance = angle_variance,
+	speed = 0.18,
+	variance = 0,
+	variance_x = 8,
+	variance_y = 4,
+	rot_speed = 10,
+	burst_count = 20,
+	lifespan = 1.8,
+	gravity = false,
+	layer = LAYER_FRONT,
+}
+
+lmn_Emitter_Railgun_1 = lmn_Emitter_Railgun_0:new{ angle = angle_1 }
+lmn_Emitter_Railgun_2 = lmn_Emitter_Railgun_0:new{ angle = angle_2 }
+lmn_Emitter_Railgun_3 = lmn_Emitter_Railgun_0:new{ angle = angle_3 }
