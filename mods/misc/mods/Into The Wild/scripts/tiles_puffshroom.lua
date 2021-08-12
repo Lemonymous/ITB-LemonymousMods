@@ -1,7 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local currentTileset = require(path .."scripts/currentTileset")
-local customAnim = require(path .."scripts/customAnim")
 
 local orig = TILE_TOOLTIPS.sand
 local sand

@@ -1,7 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local currentTileset = require(path .."currentTileset")
-local customAnim = require(path .."customAnim")
 
 local orig = TILE_TOOLTIPS.forest
 local orig_fire = TILE_TOOLTIPS.forest_fire
