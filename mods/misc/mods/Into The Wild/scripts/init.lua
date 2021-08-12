@@ -221,18 +221,6 @@ function mod:init()
 			recruit:Add()
 			weapons:Add()
 		end,
-		
-		-- Replace Island currently does not support a load function.
-		-- may add if it seems needed.
-		--load = function(self) end,
-		
-		-- unused unsupported function.
-		-- currentTileset.lua has hooks for when tileset is loaded instead, which makes more sense.
-		--startIsland = function(self) end,
-		
-		-- unused unsupported function.
-		-- currentTileset.lua has hooks for when tileset is unloaded instead, which makes more sense.
-		--leaveIsland = function(self) end
 	}
 	local personality = require(scriptPath .."personality")
 	
