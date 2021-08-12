@@ -2,7 +2,6 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
 local modUtils = require(path .."modApiExt/modApiExt")
-local isNeutral = require(path .."libs/isNeutral")
 local menu = require(path .."libs/menu")
 local hooks = require(path .."libs/hooks")
 local UiTimer = require(path .."ui/timer")
@@ -22,7 +21,7 @@ hooks:new("TimerEnded")
 local function endTurn()
 	for _, id in ipairs(extract_table(Board:GetPawns(TEAM_PLAYER))) do
 		local pawn = Board:GetPawn(id)
-		if not isNeutral(id) then
+		if not pawn:IsNeutral() then
 			pawn:SetActive(false)
 			pawn:ClearUndoMove()
 		end
