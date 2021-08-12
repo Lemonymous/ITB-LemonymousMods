@@ -1,7 +1,6 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local modUtils = require(path .."modApiExt/modApiExt")
 local menu = require(path .."libs/menu")
 local hooks = require(path .."libs/hooks")
 local UiTimer = require(path .."ui/timer")
@@ -84,8 +83,7 @@ function this:load()
 	missionTime = missionTime * 60
 	turnTime = turnTime * 60
 	
-	modUtils:addResetTurnHook(restore)
-	modUtils:addGameLoadedHook(restore)
+	modApi:addPostLoadGameHook(restore)
 	
 	modApi:addMissionNextPhaseCreatedHook(destroyUi)
 	modApi:addMissionEndHook(destroyUi)
