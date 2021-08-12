@@ -66,18 +66,6 @@ local function GetProjectileEnd(p1, p2)
 	return target
 end
 
-local function GetTileHealth(tile, isTipImage)
-	if
-		GetCurrentMission()			and
-		not IsTestMechScenario()	and
-		not isTipImage
-	then
-		return this.modApiExt.board:getTileHealth(tile)
-	end
-	
-	return 1
-end
-
 function lmn_Multi_Laser:GetTargetArea(p)
 	local ret = PointList()
 	
@@ -157,7 +145,7 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 			end
 			
 			if Board:GetTerrain(target) == TERRAIN_ICE then
-				local tileHealth = GetTileHealth(target, isTipImage)
+				local tileHealth = Board:GetHealth(target)
 				attacks = math.max(1, math.min(tileHealth, attacks))
 			else
 				if damage > 0 then
@@ -177,7 +165,7 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 		
 	else
 		local terrain = Board:GetTerrain(target)
-		local health = GetTileHealth(target, isTipImage)
+		local health = Board:GetHealth(target)
 		
 		if Board:IsFrozen(target) then
 			if terrain == TERRAIN_MOUNTAIN then
