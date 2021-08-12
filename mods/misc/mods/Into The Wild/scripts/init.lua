@@ -43,9 +43,10 @@ function mod:init()
 	local scriptPath = self.scriptPath
 	local resourcePath = self.resourcePath
 	
-	require(scriptPath .."enemies/init")
-	require(scriptPath .."missions/init")
-	require(scriptPath .."enemies/bosses/init")
+	require(scriptPath.."enemies/init")
+	require(scriptPath.."missions/init")
+	require(scriptPath.."enemies/bosses/init")
+	require(scriptPath.."deathPetals")
 	
 	local islandApi = require(scriptPath .."replaceIsland/api")
 	local recruit = require(scriptPath .."recruit")
