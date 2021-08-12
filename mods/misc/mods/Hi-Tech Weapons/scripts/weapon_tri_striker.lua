@@ -355,13 +355,9 @@ lmn_Emitter_Tri_Striker = Emitter_Missile:new{
 	max_particles = 128,
 }
 
+modApi:addWeaponDrop("lmn_Tri_Striker")
+
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
-		id = "lmn_Tri_Striker",
-		name = lmn_Tri_Striker.Name,
-		desc = lmn_Tri_Striker.Description,
-	})
-	
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_tri_striker.png", mod.resourcePath .."img/weapons/tri_striker.png")

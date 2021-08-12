@@ -387,13 +387,9 @@ lmn_Multi_Laser_Tip_A.GetSkillEffect = lmn_Multi_Laser_Tip.GetSkillEffect
 lmn_Multi_Laser_Tip_B.GetSkillEffect = lmn_Multi_Laser_Tip.GetSkillEffect
 lmn_Multi_Laser_Tip_AB.GetSkillEffect = lmn_Multi_Laser_Tip.GetSkillEffect
 
+modApi:addWeaponDrop("lmn_Multi_Laser")
+
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
-		id = "lmn_Multi_Laser",
-		name = lmn_Multi_Laser.Name,
-		desc = lmn_Multi_Laser.Description,
-	})
-	
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	

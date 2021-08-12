@@ -364,13 +364,9 @@ end
 
 lmn_Psionic_Transmitter_Tip_A.GetSkillEffect = lmn_Psionic_Transmitter_Tip.GetSkillEffect
 
+modApi:addWeaponDrop("lmn_Psionic_Transmitter")
+
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
-		id = "lmn_Psionic_Transmitter",
-		name = lmn_Psionic_Transmitter.Name,
-		desc = lmn_Psionic_Transmitter.Description,
-	})
-	
 	sdlext.addGameExitedHook(function()
 		self.weapons = {}
 		self.highlighted = nil

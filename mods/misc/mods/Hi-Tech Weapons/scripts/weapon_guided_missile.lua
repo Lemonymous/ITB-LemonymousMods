@@ -383,13 +383,9 @@ end
 
 lmn_Guided_Missile_Tip_A.GetSkillEffect = lmn_Guided_Missile_Tip.GetSkillEffect
 
+modApi:addWeaponDrop("lmn_Guided_Missile")
+
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
-		id = "lmn_Guided_Missile",
-		name = lmn_Guided_Missile.Name,
-		desc = lmn_Guided_Missile.Description,
-	})
-	
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_guided_missile.png", mod.resourcePath .."img/weapons/guided_missile.png")

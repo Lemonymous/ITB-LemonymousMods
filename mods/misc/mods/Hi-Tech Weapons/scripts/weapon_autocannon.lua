@@ -329,13 +329,9 @@ lmn_Autocannon_Tip_A.GetSkillEffect = lmn_Autocannon_Tip.GetSkillEffect
 lmn_Autocannon_Tip_B.GetSkillEffect = lmn_Autocannon_Tip.GetSkillEffect
 lmn_Autocannon_Tip_AB.GetSkillEffect = lmn_Autocannon_Tip.GetSkillEffect
 
+modApi:addWeaponDrop("lmn_Autocannon")
+
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
-		id = "lmn_Autocannon",
-		name = lmn_Autocannon.Name,
-		desc = lmn_Autocannon.Description,
-	})
-	
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	

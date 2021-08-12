@@ -318,13 +318,9 @@ end
 
 lmn_Gauss_Cannon_Tip_A.GetSkillEffect = lmn_Gauss_Cannon_Tip.GetSkillEffect
 
+modApi:addWeaponDrop("lmn_Gauss_Cannon")
+
 function this:init(mod)
-	require(mod.scriptPath .."shop"):addWeapon({
-		id = "lmn_Gauss_Cannon",
-		name = lmn_Gauss_Cannon.Name,
-		desc = lmn_Gauss_Cannon.Description,
-	})
-	
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	
 	modApi:appendAsset("img/weapons/lmn_gauss_cannon.png", mod.resourcePath .."img/weapons/gauss_cannon.png")

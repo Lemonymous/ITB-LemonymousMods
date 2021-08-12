@@ -15,7 +15,6 @@ function mod:init()
 	self.modApiExt:init()
 	
 	self.weaponMarks = require(self.scriptPath .."weaponMarks")
-	self.shop = require(self.scriptPath .."shop")
 	
 	self.weaponMarks:init(self)
 	
@@ -38,7 +37,6 @@ function mod:load(options, version)
 	self.modApiExt:load(self, options, version)
 	
 	self.weaponMarks:load(self.modApiExt)
-	self.shop:load(options)
 	
 	self.guided:load(options, self.modApiExt)
 	self.tri_striker:load(options, self.modApiExt)
