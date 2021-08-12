@@ -4,7 +4,6 @@ local path = mod.resourcePath
 local utils = require(path .."scripts/utils")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
 local pawnSpace = require(path .."scripts/pawnSpace")
-local achvApi = require(path .."scripts/achievements/api")
 
 WeakPawns.lmn_Springseed = true
 Spawner.max_pawns.lmn_Springseed = 3
@@ -187,7 +186,7 @@ function lmn_SpringseedAtk1:Achievement(p2)
 	m[id] = m[id] + 1
 	
 	if m[id] >= 3 then
-		achvApi:TriggerChievo("springseed")
+		modApi.achievements:trigger(mod.id, "springseed")
 	end
 end
 

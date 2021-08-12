@@ -4,7 +4,6 @@ local path = mod.resourcePath
 local utils = require(path .."scripts/utils")
 local tutorialTips = LApi.library:fetch("tutorialTips")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local achvApi = require(path .."scripts/achievements/api")
 
 local function isSunFlower(pawnType)
 	return
@@ -163,7 +162,7 @@ function lmn_SunflowerAtk1:AchievementCheck()
 	if not m or not Board then return end
 	
 	if m.lmn_achv_sunflower >= 2 then
-		achvApi:TriggerChievo("sunflower")
+		modApi.achievements:trigger(mod.id, "sunflower")
 	end
 end
 

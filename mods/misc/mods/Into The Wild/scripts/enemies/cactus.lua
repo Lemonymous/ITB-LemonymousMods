@@ -5,7 +5,6 @@ local utils = require(path .."scripts/utils")
 local worldConstants = LApi.library:fetch("worldConstants")
 local teamTurn = require(path .."scripts/teamTurn")
 local tutorialTips = LApi.library:fetch("tutorialTips")
-local achvApi = require(path .."scripts/achievements/api")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local cactuses = {"lmn_Cactus1", "lmn_Cactus2"}
 
@@ -554,7 +553,7 @@ tutorialTips:add{
 
 modApi.events.onMissionEnd:subscribe(function(mission)
 	if mission.lmn_achv_cactus then
-		achvApi:TriggerChievo("cactus")
+		modApi.achievements:trigger(mod.id, "cactus")
 	end
 end)
 

@@ -1,7 +1,7 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.resourcePath
 local utils = require(path .."scripts/utils")
-local achvApi = require(path .."scripts/achievements/api")
 local plant_leaders = {
 	"lmn_ChiliBoss",
 	"lmn_ChomperBoss",
@@ -183,7 +183,7 @@ end
 function lmn_ChiliAtk1:Achievement(p2)
 	local pawn = Board:GetPawn(p2)
 	if pawn and not pawn:IsFire() and list_contains(plant_leaders, pawn:GetType()) then
-		achvApi:TriggerChievo("chili")
+		modApi.achievements:trigger(mod.id, "chili")
 	end
 end
 

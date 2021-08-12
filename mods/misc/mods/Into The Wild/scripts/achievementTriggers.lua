@@ -1,13 +1,13 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local switch = LApi.library:fetch("switch")
-local achvApi = require(path .."achievements/api")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local utils = require(path .."utils")
 local secret = require(path .."secret")
 
-function lmn_JungleIsland_Chievo(id)
-	achvApi:TriggerChievo(id)
+function lmn_JungleIsland_Chievo(achievementId)
+	modApi.achievements:trigger(mod.id, achievementId)
 end
 
 local function onModsLoaded()
@@ -61,29 +61,31 @@ local function onModsLoaded()
 	
 	local leaders = switch{
 		["lmn_ChiliBoss"] = function()
-			achvApi:TriggerChievo("leaders", { chili = true } )
+			modApi.achievements:addProgress(mod.id, "leaders", { chili = true } )
 		end,
 		["lmn_ChomperBoss"] = function()
-			achvApi:TriggerChievo("leaders", { chomper = true } )
+			modApi.achievements:addProgress(mod.id, "leaders", { chomper = true } )
 		end,
 		["lmn_SunflowerBoss"] = function()
-			achvApi:TriggerChievo("leaders", { sunflower = true } )
+			modApi.achievements:addProgress(mod.id, "leaders", { sunflower = true } )
 		end,
 		["lmn_SpringseedBoss"] = function()
-			achvApi:TriggerChievo("leaders", { springseed = true } )
+			modApi.achievements:addProgress(mod.id, "leaders", { springseed = true } )
 		end,
 		["lmn_SequoiaBoss"] = function()
-			achvApi:TriggerChievo("leaders", { sequoia = true } )
+			modApi.achievements:addProgress(mod.id, "leaders", { sequoia = true } )
 		end,
 		default = function() end
 	}
 	
 	-- leaders
 	modApiExt:addPawnKilledHook(function(mission, pawn)
-		if achvApi:GetChievoStatus("leaders") then return end
-		
+		if modApi.achievements:isComplete(mod.id, "leaders") then
+			return
+		end
+
 		leaders:case(pawn:GetType())
-		if achvApi:IsChievoProgress("leaders",
+		if modApi.achievements:isProgress(mod.id, "leaders",
 			{
 				chili = true,
 				chomper = true,
@@ -92,7 +94,7 @@ local function onModsLoaded()
 				sequoia = true,
 			})
 		then
-			achvApi:TriggerChievo("leaders", { reward = true } )
+			modApi.achievements:addProgress(mod.id, "leaders", { reward = true } )
 			modApi.toasts:add(secret:getToast())
 		end
 	end)

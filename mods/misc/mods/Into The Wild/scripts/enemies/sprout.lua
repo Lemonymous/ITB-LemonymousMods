@@ -1,8 +1,8 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.resourcePath
 local utils = require(path .."scripts/utils")
 local trait = LApi.library:fetch("trait")
-local achvApi = require(path .."scripts/achievements/api")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local tutorialTips = LApi.library:fetch("tutorialTips")
 local sprouts = {"lmn_Sprout1", "lmn_Sprout2", "lmn_SproutEv", "lmn_SproutBud1", "lmn_SproutBud2"}
@@ -373,7 +373,7 @@ local hook_registered
 local function onModsLoaded()
 	modApiExt:addPawnKilledHook(function(mission, pawn)
 		if list_contains(sprouts, pawn:GetType()) then
-			achvApi:TriggerChievo("sprout", {progress = 1})
+			modApi.achievements:addProgress(mod.id, "sprout", {progress = 1})
 		end
 	end)
 	

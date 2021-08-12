@@ -227,7 +227,6 @@ function mod:init()
 	
 	LApi.library:new("tutorialTips")
 	require(scriptPath .."weaponPreview/api")
-	require(scriptPath .."achievements/init")
 	require(scriptPath .."achievements")
 	require(scriptPath .."achievementTriggers")
 	require(scriptPath .."side_objectives")
@@ -236,7 +235,6 @@ function mod:init()
 	require(scriptPath .."tiles_emitters")
 	require(scriptPath .."damageNumbers/damageNumbers")
 	require(scriptPath .."spaceDamageObjects")
-	local achvApi = require(scriptPath .."/achievements/api")
 end
 
 function mod:load(options, version)
@@ -245,7 +243,8 @@ function mod:load(options, version)
 	require(scriptPath .."selected"):load()
 	require(scriptPath .."teamTurn"):load()
 	require(scriptPath .."weaponPreview/api"):load()
-	if require(scriptPath .."achievements/api"):GetChievoStatus("leaders") then
+
+	if modApi.achievements:isComplete(self.id, "leaders") then
 		require(scriptPath.."secret"):addSquad()
 	end
 end
