@@ -1,6 +1,6 @@
 
-local this = {}
-local path = mod_loader.mods[modApi.currentMod].scriptPath .."enemies/"
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath .."enemies/"
 
 local enemies = {
 	"sprout",
@@ -16,17 +16,6 @@ local enemies = {
 	"chili",
 }
 
-function this:init(mod)
-	for _, name in ipairs(enemies) do
-		self[name] = require(path .. name)
-		self[name]:init(mod)
-	end
+for i, name in ipairs(enemies) do
+	enemies[i] = require(path..name)
 end
-
-function this:load(mod, options, version)
-	for _, name in ipairs(enemies) do
-		self[name]:load(mod, options, version)
-	end
-end
-
-return this

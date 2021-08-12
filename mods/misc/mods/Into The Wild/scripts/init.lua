@@ -46,7 +46,7 @@ function mod:init()
 	local scriptPath = self.scriptPath
 	local resourcePath = self.resourcePath
 	
-	require(scriptPath .."enemies/init"):init(self)
+	require(scriptPath .."enemies/init")
 	
 	self.missions = require(scriptPath .."missions/init")
 	self.missions:init(self)
@@ -272,7 +272,6 @@ end
 
 function mod:load(options, version)
 	local scriptPath = self.scriptPath
-	require(scriptPath .."enemies/init"):load(self, options, version)
 	self.missions:load(self, options, version)
 	
 	require(scriptPath .."selected"):load()
