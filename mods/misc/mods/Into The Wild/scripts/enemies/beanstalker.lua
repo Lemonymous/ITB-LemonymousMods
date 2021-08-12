@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local pushArrows = require(path .."scripts/pushArrows")
+local pushArrows = require(path .."scripts/libs/pushArrows")
 
 WeakPawns.lmn_Beanstalker = false
 Spawner.max_pawns.lmn_Beanstalker = 1
