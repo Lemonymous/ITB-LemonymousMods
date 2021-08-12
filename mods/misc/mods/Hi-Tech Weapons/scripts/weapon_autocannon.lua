@@ -333,7 +333,6 @@ function this:init(mod)
 		desc = lmn_Autocannon.Description,
 	})
 	
-	self.armorDetection = require(mod.scriptPath .."armorDetection")
 	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.effectPreview = LApi.library:fetch("effectPreview")

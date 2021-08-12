@@ -141,7 +141,7 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 			
 			if pawn:IsAcid() then
 				health = math.ceil(health / 2)
-			elseif this.armorDetection.IsArmor(pawn) then
+			elseif pawn:IsArmor() then
 				damage = damage - 1
 			end
 			
@@ -391,7 +391,6 @@ function this:init(mod)
 		desc = lmn_Multi_Laser.Description,
 	})
 	
-	self.armorDetection = require(mod.scriptPath .."armorDetection")
 	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")

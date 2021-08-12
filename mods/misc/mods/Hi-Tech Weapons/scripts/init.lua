@@ -14,7 +14,6 @@ function mod:init()
 	self.modApiExt = require(self.scriptPath .."modApiExt/modApiExt")
 	self.modApiExt:init()
 	
-	self.armorDetection = require(self.scriptPath .."armorDetection")
 	self.weaponMarks = require(self.scriptPath .."weaponMarks")
 	self.shop = require(self.scriptPath .."shop")
 	

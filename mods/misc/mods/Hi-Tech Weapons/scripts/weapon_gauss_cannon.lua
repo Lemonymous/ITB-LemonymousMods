@@ -124,7 +124,7 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 				damage = 1
 			elseif pawn:IsAcid() then
 				damage = math.ceil(damage / 2)
-			elseif this.armorDetection.IsArmor(pawn) then
+			elseif pawn:IsArmor() then
 				damage = math.min(damageLeft, damage + 1)
 			end
 		else
@@ -321,7 +321,6 @@ function this:init(mod)
 		desc = lmn_Gauss_Cannon.Description,
 	})
 	
-	self.armorDetection = require(mod.scriptPath .."armorDetection")
 	self.worldConstants = require(mod.scriptPath .."worldConstants")
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	self.effectBurst = require(mod.scriptPath .."effectBurst")
