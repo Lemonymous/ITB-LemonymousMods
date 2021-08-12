@@ -1,5 +1,7 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
 local effectBurst = LApi.library:fetch("effectBurst")
+local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
 
 local this = {}
 
@@ -35,7 +37,7 @@ function lmn_Guided_Missile:GetTargetArea(p1, _, isWeaponMark)
 	
 	-- darken shooter's tile to indicate it is not a valid target.
 	if not isWeaponMark then
-		local marker = this.weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Guided_Missile")
+		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Guided_Missile")
 		marker:MarkSpaceImage(
 			p1,
 			"combat/lmn_square.png",
@@ -160,7 +162,7 @@ function lmn_Guided_Missile:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	end
 	
 	if not isTipImage then
-		local marker = this.weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Guided_Missile")
+		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Guided_Missile")
 		marker:MarkSpaceImage(
 			p1,
 			"combat/lmn_square.png",
@@ -386,7 +388,6 @@ lmn_Guided_Missile_Tip_A.GetSkillEffect = lmn_Guided_Missile_Tip.GetSkillEffect
 modApi:addWeaponDrop("lmn_Guided_Missile")
 
 function this:init(mod)
-	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_guided_missile.png", mod.resourcePath .."img/weapons/guided_missile.png")
 	modApi:appendAsset("img/effects/lmn_shot_guided_missile_R.png", mod.resourcePath .."img/effects/shot_guided_missile_R.png")

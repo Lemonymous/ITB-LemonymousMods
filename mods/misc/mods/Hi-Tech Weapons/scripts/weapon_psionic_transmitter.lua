@@ -1,7 +1,9 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local effectBurst = LApi.library:fetch("effectBurst")
 local effectPreview = LApi.library:fetch("effectPreview")
+local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
 
 local this = {burrowers = {}}
 
@@ -35,7 +37,7 @@ function lmn_Psionic_Transmitter:GetTargetArea(p1, _, isWeaponMark)
 	
 	if not isWeaponMark then
 		self.Targets = {}
-		marker = this.weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Psionic_Transmitter")
+		marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Psionic_Transmitter")
 	end
 	
 	for dir = DIR_START, DIR_END do
@@ -156,7 +158,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	-- marks
 	---------
 	if not isTipImage then
-		local marker = this.weaponMarks:new(shooterId, "lmn_Psionic_Transmitter")
+		local marker = weaponMarks:new(shooterId, "lmn_Psionic_Transmitter")
 		
 		-- mark tiles our target can reach.
 		for _, p in ipairs(reachable) do
@@ -373,8 +375,6 @@ function this:init(mod)
 		self.highlighted = nil
 		self.selected = nil
 	end)
-	
-	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_psionic_transmitter.png", mod.resourcePath.. "img/weapons/psionic_transmitter.png")
 	

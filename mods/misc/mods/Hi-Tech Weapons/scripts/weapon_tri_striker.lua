@@ -1,6 +1,8 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectBurst = LApi.library:fetch("effectBurst")
+local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
 
 local this = {}
 
@@ -34,7 +36,7 @@ function lmn_Tri_Striker:GetTargetArea(p1, _, isWeaponMark)
 	ret:push_back(p1) -- add shooter's tile in order for GetSkillEffect to trigger on it.
 	
 	if not isWeaponMark then
-		local marker = this.weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Tri_Striker")
+		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Tri_Striker")
 		local tiles = {p1}
 		
 		for dir = DIR_START, DIR_END do
@@ -221,7 +223,7 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		FilterPath(self.Path, function(p) return p:Manhattan(p1) > 1 end)
 		
 		-- mark tiles within range 1 of shooter.
-		local marker = this.weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Tri_Striker")
+		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Tri_Striker")
 		local tiles = {p1}
 		
 		for dir = DIR_START, DIR_END do
@@ -358,7 +360,6 @@ lmn_Emitter_Tri_Striker = Emitter_Missile:new{
 modApi:addWeaponDrop("lmn_Tri_Striker")
 
 function this:init(mod)
-	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_tri_striker.png", mod.resourcePath .."img/weapons/tri_striker.png")
 	modApi:appendAsset("img/effects/shotup_lmn_tri_strike_missile.png", mod.resourcePath .."img/effects/shotup_tri_strike_missile.png")

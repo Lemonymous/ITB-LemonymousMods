@@ -1,6 +1,8 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectPreview = LApi.library:fetch("effectPreview")
+local virtualBoard = require(mod.scriptPath.."libs/virtualBoard")
 
 local this = {
 	attacks = {},
@@ -266,7 +268,7 @@ function lmn_Multi_Laser:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			effectPreview:addDamage(ret, mark)
 		end
 	else
-		local vBoard = this.virtualBoard.new()
+		local vBoard = virtualBoard.new()
 		local target = p1
 		for i = 1, self.Attacks do
 			
@@ -378,8 +380,6 @@ lmn_Multi_Laser_Tip_AB.GetSkillEffect = lmn_Multi_Laser_Tip.GetSkillEffect
 modApi:addWeaponDrop("lmn_Multi_Laser")
 
 function this:init(mod)
-	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
-	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_multi_laser.png", mod.resourcePath .."img/weapons/multi_laser.png")
 	modApi:appendAsset("img/effects/lmn_multi_las_1_R.png", mod.resourcePath .."img/effects/laser_01_R.png")

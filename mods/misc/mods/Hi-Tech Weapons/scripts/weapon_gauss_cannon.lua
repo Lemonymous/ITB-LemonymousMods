@@ -1,7 +1,9 @@
 
+local mod = mod_loader.mods[modApi.currentMod]
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectBurst = LApi.library:fetch("effectBurst")
 local effectPreview = LApi.library:fetch("effectPreview")
+local virtualBoard = require(mod.scriptPath.."libs/virtualBoard")
 
 local this = {
 	damage = {},
@@ -213,7 +215,7 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			effectPreview:addDamage(ret, mark)
 		end
 	else
-		local vBoard = this.virtualBoard.new()
+		local vBoard = virtualBoard.new()
 		local remaining = self.Damage
 		while remaining > 0 do
 			local damage = 1
@@ -321,7 +323,6 @@ lmn_Gauss_Cannon_Tip_A.GetSkillEffect = lmn_Gauss_Cannon_Tip.GetSkillEffect
 modApi:addWeaponDrop("lmn_Gauss_Cannon")
 
 function this:init(mod)
-	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
 	
 	modApi:appendAsset("img/weapons/lmn_gauss_cannon.png", mod.resourcePath .."img/weapons/gauss_cannon.png")
 	

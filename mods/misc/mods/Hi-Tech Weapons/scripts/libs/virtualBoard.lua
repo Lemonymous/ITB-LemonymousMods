@@ -251,7 +251,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
-local weaponMarks = require(scriptPath .."weaponMarks")
+local weaponMarks = require(scriptPath .."libs/weaponMarks")
 
 local this = {
 	id = mod.id .."_virtualBoard",
