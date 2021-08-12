@@ -158,10 +158,9 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local modUtils = require(path .."weaponPreview/lib/getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local isTipImage = require(path .."weaponPreview/lib/isTipImage")
 local selected = require(path .."weaponPreview/lib/selected")
-local highlighted = require(path .."weaponPreview/lib/highlighted")
 local spaceEmitter = require(path .."weaponPreview/lib/spaceEmitter")
 
 local this = {}
@@ -452,13 +451,12 @@ function this:load()
 	loaded = true
 	
 	selected:load()
-	highlighted:load()
 	
 	modApi:addModsLoadedHook(function() loaded = nil end)
 	modApi:addMissionStartHook(clearMarks)
 	modApi:addTestMechEnteredHook(clearMarks)
 	modApi:addPreLoadGameHook(clearMarks)
-	modUtils():addPawnDeselectedHook(clearMarks)
+	modApiExt:addPawnDeselectedHook(clearMarks)
 	
 	modApi:addMissionUpdateHook(function()
 		
@@ -479,7 +477,7 @@ function this:load()
 			for _, mark in ipairs(marker) do
 				ignoreCall = true
 				
-				if markType == 'area' or list_contains(extract_table(_G[marker.weapon.root]:GetTargetArea(selected:GetSpace())), highlighted:Get()) then
+				if markType == 'area' or list_contains(extract_table(_G[marker.weapon.root]:GetTargetArea(selected:GetSpace())), Board:GetHighlighted()) then
 					if mark.fn then
 						local duration = mark.duration and mark.duration * 60 or INT_MAX - t
 						if t <= t1 and t1 <= t + duration then
