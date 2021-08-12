@@ -1,7 +1,7 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local attachment = require(path .."scripts/missions/assetAttachment")
-local customEmitter = require(path .."scripts/customEmitter")
+local customEmitter = require(path .."scripts/libs/customEmitter")
 local prefix, suffix = "lmn_", ""
 
 -- template

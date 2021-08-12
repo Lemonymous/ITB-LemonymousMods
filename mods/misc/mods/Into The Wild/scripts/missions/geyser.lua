@@ -6,7 +6,7 @@ local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_d
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
 local missionTemplates = require(path .."scripts/missions/missionTemplates")
-local customEmitter = require(path .."scripts/customEmitter")
+local customEmitter = require(path .."scripts/libs/customEmitter")
 local worldConstants = LApi.library:fetch("worldConstants")
 local utils = require(path.. "scripts/utils")
 
