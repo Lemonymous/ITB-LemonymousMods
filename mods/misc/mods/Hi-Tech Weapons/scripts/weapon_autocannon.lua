@@ -1,5 +1,6 @@
 
 local worldConstants = LApi.library:fetch("worldConstants")
+local effectPreview = LApi.library:fetch("effectPreview")
 
 local this = {
 	attacks = {},
@@ -217,7 +218,7 @@ function lmn_Autocannon:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 				mark.sImageMark = mark.sImageMark .. damage ..".png"
 			end
 			
-			this.effectPreview:addDamage(ret, mark)
+			effectPreview:addDamage(ret, mark)
 		end
 	else
 		local vBoard = this.virtualBoard.new()
@@ -336,7 +337,6 @@ function this:init(mod)
 	})
 	
 	self.virtualBoard = require(mod.scriptPath .."virtualBoard")
-	self.effectPreview = LApi.library:fetch("effectPreview")
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
 	
 	modApi:appendAsset("img/weapons/lmn_autocannon.png", mod.resourcePath .."img/weapons/autocannon.png")

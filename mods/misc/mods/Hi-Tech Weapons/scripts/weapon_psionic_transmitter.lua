@@ -1,5 +1,6 @@
 
 local effectBurst = LApi.library:fetch("effectBurst")
+local effectPreview = LApi.library:fetch("effectPreview")
 
 local this = {burrowers = {}}
 
@@ -230,7 +231,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	d.bHide = true
 	ret:AddDamage(d)
 	
-	this.effectPreview:addHiddenLeap(ret, t1, t1, NO_DELAY)
+	effectPreview:addHiddenLeap(ret, t1, t1, NO_DELAY)
 	ret:AddSound(tData.SoundLocation .."hurt")
 	
 	local delay = 0
@@ -321,7 +322,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		]])
 		
 		-- preview movement.
-		this.effectPreview:addMove(ret, target, p2)
+		effectPreview:addMove(ret, target, p2)
 		
 	elseif target:IsTeleporter() then
 		ret:AddTeleport(p1, p2, FULL_DELAY)
@@ -377,7 +378,6 @@ function this:init(mod)
 	end)
 	
 	self.weaponMarks = require(mod.scriptPath .."weaponMarks")
-	self.effectPreview = LApi.library:fetch("effectPreview")
 	
 	modApi:appendAsset("img/weapons/lmn_psionic_transmitter.png", mod.resourcePath.. "img/weapons/psionic_transmitter.png")
 	
