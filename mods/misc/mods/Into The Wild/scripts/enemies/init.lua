@@ -14,9 +14,6 @@ local enemies = {
 	"beanstalker",
 	"infuser",
 	"chili",
-	--"iceflower",
-	--"deadWood",
-	--"shambler",
 }
 
 function this:init(mod)

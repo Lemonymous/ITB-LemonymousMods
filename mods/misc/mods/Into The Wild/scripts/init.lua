@@ -11,12 +11,11 @@ local mod = {
 mod.enemies = {
 	Leaders = { },
 	Core = { "lmn_Chomper", "lmn_Sprout", "lmn_Sunflower", "lmn_Springseed", "lmn_Puffer" },
-	Unique = { "lmn_Bud", "lmn_Cactus", "lmn_Infuser", "lmn_Beanstalker", "lmn_Chili"},--, "lmn_Deadwood", },-- "lmn_Shambler" }, -- cut
+	Unique = { "lmn_Bud", "lmn_Cactus", "lmn_Infuser", "lmn_Beanstalker", "lmn_Chili"},
 	Boss = {
 		"Mission_lmn_SunflowerBoss",
 		"Mission_lmn_SpringseedBoss",
 		"Mission_lmn_ChomperBoss",
-		--"Mission_lmn_BudBoss", -- cut
 		"Mission_lmn_SequoiaBoss",
 		"Mission_lmn_ChiliBoss"
 	}
@@ -151,7 +150,6 @@ function mod:init()
 			"Mission_lmn_Greenhouse",
 		},
 		Missions_Low = {
-		--	"Mission_Survive",
 			"Mission_lmn_Wind",
 			"Mission_lmn_Geyser",
 			"Mission_lmn_FlashFlood",
@@ -160,7 +158,6 @@ function mod:init()
 			"Mission_lmn_Bugs",
 			"Mission_lmn_Meadow",
 			"Mission_lmn_Flooded",
-			--"Mission_lmn_Iceflower",
 		},
 		
 		Color = GL_Color(57,87,38),

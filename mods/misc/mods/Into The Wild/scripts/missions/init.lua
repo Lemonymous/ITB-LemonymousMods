@@ -56,9 +56,6 @@ local missions = {
 	"runway",
 	"hotel",
 	"agroforest",
-	--"iceflower",	-- cut. Hard to preview correctly. Freeze does not work well with Sunflower's attack. A new frost unit would be better.
-	--"overgrowth",	-- cut. completely unfun.
-	-- "lavariver", -- cut. Not sure how to make it fun.
 }
 
 function this:init(mod)

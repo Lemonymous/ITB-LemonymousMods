@@ -8,7 +8,6 @@ local bosses = {
 	"springseed",
 	"chili",
 	"sequoia",
-	--"shambler",
 }
 
 for i = 0, 10 do
