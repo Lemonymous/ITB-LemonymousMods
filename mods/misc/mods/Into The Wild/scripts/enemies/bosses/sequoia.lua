@@ -3,7 +3,6 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local astar = LApi.library:fetch("astar")
 local pushArrows = require(path .."scripts/pushArrows")
-local this = {}
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 WeakPawns.lmn_Gnarl = false
@@ -628,10 +627,7 @@ for dir = DIR_START, DIR_END do
 	end
 end
 
-function this:init(mod)
-end
-
-function this:load(mod, options, version)
+local function onModsLoaded()
 	modApiExt:addPawnKilledHook(function(_, pawn)
 		if pawn:GetType() ~= "lmn_SequoiaBoss" then return end
 		
@@ -641,4 +637,4 @@ function this:load(mod, options, version)
 	end)
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)

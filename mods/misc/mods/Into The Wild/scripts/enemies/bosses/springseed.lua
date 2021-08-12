@@ -4,7 +4,6 @@ local utils = require(path .."scripts/utils")
 local pathfinder = require(path .."scripts/springseed_pathing")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
 local pawnSpace = require(path .."scripts/pawnSpace")
-local this = {}
 
 Mission_lmn_SpringseedBoss = Mission_Boss:new{
 	BossPawn = "lmn_SpringseedBoss",
@@ -272,11 +271,3 @@ a.lmn_SpringseedBa = a.lmn_SpringseedB:new{Image = imagePath .."lmn_springseedBa
 a.lmn_SpringseedBe = a.BaseEmerge:new{Image = imagePath .."lmn_springseedB_emerge.png", PosX = -23, PosY = -7, Height = 1}
 a.lmn_SpringseedBd = a.lmn_SpringseedB:new{Image = imagePath .."lmn_springseedB_death.png", Loop = false, NumFrames = 10, Time = .14}
 a.lmn_SpringseedBw = a.lmn_SpringseedB:new{Image = imagePath .."lmn_springseedBw.png", PosX = -22, PosY = 8}
-
-function this:init(mod)
-end
-
-function this:load(mod, options, version)
-end
-
-return this

@@ -1,7 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local this = {}
 
 Mission_lmn_ChiliBoss = Mission_Boss:new{
 	BossPawn = "lmn_ChiliBoss",
@@ -59,11 +58,3 @@ a.lmn_ChiliBa = base:new{Image = imagePath .."lmn_chiliBa.png", NumFrames = 4}
 a.lmn_ChiliBe = baseEmerge
 a.lmn_ChiliBd = base:new{Image = imagePath .."lmn_chiliB_death.png", PosX = -23, PosY = -11, Loop = false, NumFrames = 10, Time = .14}
 a.lmn_ChiliBw = base:new{Image = imagePath .."lmn_chiliBw.png", PosY = 12}
-
-function this:init(mod)
-end
-
-function this:load(mod, options, version)
-end
-
-return this

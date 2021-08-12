@@ -1,7 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local this = {}
 
 Mission_lmn_SunflowerBoss = Mission_Boss:new{
 	BossPawn = "lmn_SunflowerBoss",
@@ -66,11 +65,3 @@ a.lmn_SunflowerBa = a.lmn_SunflowerB:new{Image = imagePath .."lmn_sunflowerBa.pn
 a.lmn_SunflowerBe = a.BaseEmerge:new{Image = imagePath .."lmn_sunflowerB_emerge.png", PosX = -23, PosY = -9, NumFrames = 10, Height = 1}
 a.lmn_SunflowerBd = a.lmn_SunflowerB:new{Image = imagePath .."lmn_sunflowerB_death.png", NumFrames = 10, Loop = false, Time = .14}
 a.lmn_SunflowerBw = a.lmn_SunflowerB:new{Image = imagePath .."lmn_sunflowerBw.png", PosY = 1}
-
-function this:init(mod)
-end
-
-function this:load(mod, options, version)
-end
-
-return this

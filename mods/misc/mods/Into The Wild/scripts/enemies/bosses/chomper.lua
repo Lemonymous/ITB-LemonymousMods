@@ -1,7 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
-local this = {}
 
 Mission_lmn_ChomperBoss = Mission_Boss:new{
 	BossPawn = "lmn_ChomperBoss",
@@ -61,11 +60,3 @@ a.lmn_ChomperBa = a.lmn_ChomperB:new{Image = imagePath .."lmn_chomperBa.png", Nu
 a.lmn_ChomperBe = a.BaseEmerge:new{Image = imagePath .."lmn_chomperB_emerge.png", PosX = -23, PosY = -9, NumFrames = 13, Height = 1}
 a.lmn_ChomperBd = a.lmn_ChomperB:new{Image = imagePath .."lmn_chomperB_death.png", PosX = -30, PosY = -18, NumFrames = 10, Loop = false, Time = .14}
 a.lmn_ChomperBw = a.lmn_ChomperB:new{Image = imagePath .."lmn_chomperBw.png", PosY = -3}
-
-function this:init(mod)
-end
-
-function this:load(mod, options, version)
-end
-
-return this
