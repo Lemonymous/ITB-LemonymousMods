@@ -1,6 +1,8 @@
 
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
 
-local this = {id = "Mission_lmn_Runway"}
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/utils")
 local switch = LApi.library:fetch("switch")
@@ -362,10 +364,6 @@ function lmn_RunwayPlaneAtk_Tip:GetSkillEffect(p1, p2, parentSkill)
 	return lmn_RunwayPlaneAtk.GetSkillEffect(self, p1, p2, parentSkill, true)
 end
 
-function this:init(mod)
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Runway", dialogTable)
 end
-
-function this:load(mod, options, version)
-end
-
-return this

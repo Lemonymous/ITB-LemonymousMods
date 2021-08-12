@@ -1,7 +1,11 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local utils = require(path .."utils")
-local this = {id = "Mission_lmn_Meadow"}
 
 Mission_lmn_Meadow = Mission_Infinite:new{
 	Name = "Flower Field",
@@ -145,20 +149,17 @@ function Mission_lmn_Meadow.NextPawn(self, pawn_tables, name_only)
 	return Mission.NextPawn(self, self.pawn_table, name_only)
 end
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tiles_grass/lmn_ground_meadow.png", mod.resourcePath .."img/tileset_plant/ground_meadow.png")
-	
-	for i = 0, 5 do
-		modApi:addMap(mod.resourcePath .."maps/lmn_meadow".. i ..".map")
-	end
-	
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_meadow.png", mod.resourcePath .."img/combat/icon_meadow.png")
-	Location["combat/tile_icon/lmn_tile_meadow.png"] = Point(-27,2)
-	Global_Texts["TipTitle_".."Env_lmn_Meadow"] = Env_lmn_Meadow.Name
-	Global_Texts["TipText_".."Env_lmn_Meadow"] = Env_lmn_Meadow.Text
+modApi:appendAsset("img/combat/tiles_grass/lmn_ground_meadow.png", mod.resourcePath .."img/tileset_plant/ground_meadow.png")
+
+for i = 0, 5 do
+	modApi:addMap(mod.resourcePath .."maps/lmn_meadow".. i ..".map")
 end
 
-function this:load(mod, options, version)
-end
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_meadow.png", mod.resourcePath .."img/combat/icon_meadow.png")
+Location["combat/tile_icon/lmn_tile_meadow.png"] = Point(-27,2)
+Global_Texts["TipTitle_".."Env_lmn_Meadow"] = Env_lmn_Meadow.Name
+Global_Texts["TipText_".."Env_lmn_Meadow"] = Env_lmn_Meadow.Text
 
-return this
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Meadow", dialogTable)
+end

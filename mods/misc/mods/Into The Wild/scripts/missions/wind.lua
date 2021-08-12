@@ -1,6 +1,10 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local this = {id = "Mission_lmn_Wind"}
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local missionTemplates = require(path .."missions/missionTemplates")
 
 Mission_lmn_Wind = Mission_Infinite:new{
@@ -120,35 +124,31 @@ Emitter_lmn_Mission_Wind = Emitter:new{
 	layer = LAYER_BACK
 }
 
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_wind.png", mod.resourcePath .."img/combat/icon_wind.png")
+Location["combat/tile_icon/lmn_tile_wind.png"] = Point(-27,2)
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_wind.png", mod.resourcePath .."img/combat/icon_wind.png")
-	Location["combat/tile_icon/lmn_tile_wind.png"] = Point(-27,2)
-	
-	for i = 0, 5 do
-		modApi:addMap(mod.resourcePath .."maps/lmn_wind".. i ..".map")
+for i = 0, 5 do
+	modApi:addMap(mod.resourcePath .."maps/lmn_wind".. i ..".map")
+end
+
+TILE_TOOLTIPS.lmn_windstorm = {Env_lmn_Wind.Name, Env_lmn_Wind.Text}
+Global_Texts["TipTitle_Env_lmn_Wind"] = Env_lmn_Wind.Name
+Global_Texts["TipText_Env_lmn_Wind"] = Env_lmn_Wind.Text
+
+modApi.events.onPostLoadGame:subscribe(function()
+	if GetCurrentMission() then
+		modApi:runLater(function(mission)
+			if not mission then
+				LOG("ERROR: mission not found. Not applying wind. This message should be impossible to get.")
+				return
+			end
+			if mission.ID == this.id then
+				addWind()
+			end
+		end)
 	end
-	
-	TILE_TOOLTIPS.lmn_windstorm = {Env_lmn_Wind.Name, Env_lmn_Wind.Text}
-	Global_Texts["TipTitle_".."Env_lmn_Wind"] = Env_lmn_Wind.Name
-	Global_Texts["TipText_".."Env_lmn_Wind"] = Env_lmn_Wind.Text
+end)
+
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Wind", dialogTable)
 end
-
-function this:load(mod, options, version)
-
-	modApi:addPostLoadGameHook(function()
-		if GetCurrentMission() then
-			modApi:runLater(function(mission)
-				if not mission then
-					LOG("ERROR: mission not found. Not applying wind. This message should be impossible to get.")
-					return
-				end
-				if mission.ID == this.id then
-					addWind()
-				end
-			end)
-		end
-	end)
-end
-
-return this

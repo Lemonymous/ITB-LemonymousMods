@@ -1,6 +1,10 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
-local this = {id = "Mission_lmn_Geyser"}
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.resourcePath
 local missionTemplates = require(path .."scripts/missions/missionTemplates")
 local customEmitter = require(path .."scripts/customEmitter")
 local worldConstants = LApi.library:fetch("worldConstants")
@@ -284,22 +288,18 @@ function Env_lmn_Geyser:Plan()
 	return ret
 end
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tiles_grass/lmn_ground_geyser.png", mod.resourcePath .."img/tileset_plant/ground_geyser.png")
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_geyser.png", mod.resourcePath .."img/combat/icon_geyser.png")
-	Location["combat/tile_icon/lmn_tile_geyser.png"] = Point(-27,2)
-	
-	TILE_TOOLTIPS.lmn_geyser = {"Geyser", "Geyser is about to erupt, launching any unit there to a vacant tile and turning it to water."}
-	Global_Texts["TipTitle_".."Env_lmn_Geyser"] = Env_lmn_Geyser.Name
-	Global_Texts["TipText_".."Env_lmn_Geyser"] = Env_lmn_Geyser.Text
-	
-	for i = 0, 10 do
-		modApi:addMap(mod.resourcePath .."maps/lmn_geyser".. i ..".map")
-	end
+modApi:appendAsset("img/combat/tiles_grass/lmn_ground_geyser.png", mod.resourcePath .."img/tileset_plant/ground_geyser.png")
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_geyser.png", mod.resourcePath .."img/combat/icon_geyser.png")
+Location["combat/tile_icon/lmn_tile_geyser.png"] = Point(-27,2)
+
+TILE_TOOLTIPS.lmn_geyser = {"Geyser", "Geyser is about to erupt, launching any unit there to a vacant tile and turning it to water."}
+Global_Texts["TipTitle_Env_lmn_Geyser"] = Env_lmn_Geyser.Name
+Global_Texts["TipText_Env_lmn_Geyser"] = Env_lmn_Geyser.Text
+
+for i = 0, 10 do
+	modApi:addMap(mod.resourcePath .."maps/lmn_geyser".. i ..".map")
 end
 
-function this:load(mod, options, version)
-
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Geyser", dialogTable)
 end
-
-return this

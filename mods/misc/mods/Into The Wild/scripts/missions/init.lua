@@ -1,45 +1,5 @@
 
-local this = {}
-local scriptPath = mod_loader.mods[modApi.currentMod].scriptPath
-local path = scriptPath .."missions/"
-local personality = require(scriptPath .."personality")
-
-local function file_exists(name)
-	local f = io.open(name, "r")
-	if f then io.close(f) return true else return false end
-end
-
-local function loadDialog(file)
-	local name = file:sub(1, -5)
-	
-	if file_exists(file) then
-	--	LOG("loading dialog from '".. file .."'")
-		local dialog = require(name)
-		
-		for person, t in pairs(dialog) do
-	--		LOG("adding ".. person)
-			personality.AddDialog(Personality[person], t, false)
-		end
-	else
-	--	LOG("unable to find dialog file '".. file .."'")
-	end
-end
--------------------------------
-
-local function loadMissionDialog(missionId, file)
-	local name = file:sub(1, -5)
-	
-	if file_exists(file) then
-	--	LOG("loading dialog from '".. file .."'")
-		local dialog = require(name)
-		
-		for person, t in pairs(dialog) do
-			personality.AddMissionDialog(Personality[person], missionId, t)
-		end
-	else
-	--	LOG("unable to find dialog file '".. file .."'")
-	end
-end
+local path = GetParentPath(...)
 
 local missions = {
 	"convoy",
@@ -58,26 +18,21 @@ local missions = {
 	"agroforest",
 }
 
-function this:init(mod)
-	require(path .."bonusSpecimen")
-	
-	for _, mission in ipairs(missions) do
-		self[mission] = require(path .. mission)
-		self[mission]:init(mod)
-	end
+for _, mission in ipairs(missions) do
+	require(path..mission)
 end
 
-function this:load(mod, options, version)
-	require(path .."voice_units"):load()
-	require(path .."voice_structures"):load()
-	loadMissionDialog("Mission_lmn_Specimen", path .. "bonusSpecimen_dialog.lua")
-	loadDialog(path .. "extra_dialog.lua")
-	
-	for _, mission in ipairs(missions) do
-		self[mission]:load(mod, options, version)
-		
-		loadMissionDialog(self[mission].id, path .. mission .."_dialog.lua")
-	end
+require(path.."voice_units")
+require(path.."voice_structures")
+require(path.."bonusSpecimen")
+
+local bonusSpecimen = require(path.."bonusSpecimen_dialog")
+local extraDialog = require(path.."extra_dialog")
+
+for personalityId, dialogTable in pairs(bonusSpecimen) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Specimen", dialogTable)
 end
 
-return this
+for personalityId, dialogTable in pairs(extraDialog) do
+	Personality[personalityId]:AddDialogTable(dialogTable)
+end

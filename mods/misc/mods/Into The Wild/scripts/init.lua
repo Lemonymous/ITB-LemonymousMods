@@ -34,10 +34,7 @@ function mod:metadata()
 	-- unless the game already has the pilot.
 	require(self.scriptPath .."recruit")
 	
-	-- crude way to get rid of errors regarding CEO
-	-- when mod is disabled on a profile that had Meridia enabled before.
-	local personality = require(self.scriptPath .."personality")
-	Personality["CEO_lmn_jungle"] = personality:new{Label = "Meridia CEO", Name = "Amelie Lacroix"}
+	Personality["CEO_lmn_jungle"] = CreatePilotPersonality("Meridia CEO", "Amelie Lacroix")
 end
 
 function mod:init()
@@ -47,10 +44,7 @@ function mod:init()
 	local resourcePath = self.resourcePath
 	
 	require(scriptPath .."enemies/init")
-	
-	self.missions = require(scriptPath .."missions/init")
-	self.missions:init(self)
-	
+	require(scriptPath .."missions/init")
 	require(scriptPath .."enemies/bosses/init")
 	
 	local islandApi = require(scriptPath .."replaceIsland/api")
@@ -222,16 +216,10 @@ function mod:init()
 			weapons:Add()
 		end,
 	}
-	local personality = require(scriptPath .."personality")
 	
-	Personality[corp.CEO_Personality] = personality:new{Label = "Meridia CEO", Name = corp.CEO_Name}
-	Personality[corp.CEO_Personality]:AddDialog(require(scriptPath .."ceo_dialog"))
-	Personality[corp.CEO_Personality]:AddDialog(require(scriptPath .."ceo_dialog_missions"))
-	
-	Personality["CEO_Grass"].AddMissionDialog = personality.AddMissionDialog
-	Personality["CEO_Sand"].AddMissionDialog = personality.AddMissionDialog
-	Personality["CEO_Snow"].AddMissionDialog = personality.AddMissionDialog
-	Personality["CEO_Acid"].AddMissionDialog = personality.AddMissionDialog
+	local personality_ceo = Personality[corp.CEO_Personality]
+	personality_ceo:AddDialogTable(require(scriptPath .."ceo_dialog"))
+	personality_ceo:AddDialogTable(require(scriptPath .."ceo_dialog_missions"))
 	
 	islandApi:AddTileset(tileset)
 	islandApi:AddCorp(corp)
@@ -260,7 +248,6 @@ end
 
 function mod:load(options, version)
 	local scriptPath = self.scriptPath
-	self.missions:load(self, options, version)
 	
 	require(scriptPath .."selected"):load()
 	require(scriptPath .."teamTurn"):load()

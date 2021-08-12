@@ -1,6 +1,10 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local this = {id = "Mission_lmn_Bugs"}
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local missionTemplates = require(path .."missions/missionTemplates")
 
 Mission_lmn_Bugs = Mission_Infinite:new{
@@ -45,14 +49,11 @@ function Mission_lmn_Bugs.NextPawn(self, pawn_tables, name_only)
 	return Mission.NextPawn(self, pawn_tables, name_only)
 end
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_bugs.png", mod.resourcePath .."img/combat/icon_bugs.png")
-	Location["combat/tile_icon/lmn_tile_bugs.png"] = Point(-27,2)
-	Global_Texts["TipTitle_".."Env_lmn_Bugs"] = Env_lmn_Bugs.Name
-	Global_Texts["TipText_".."Env_lmn_Bugs"] = Env_lmn_Bugs.Text
-end
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_bugs.png", mod.resourcePath .."img/combat/icon_bugs.png")
+Location["combat/tile_icon/lmn_tile_bugs.png"] = Point(-27,2)
+Global_Texts["TipTitle_Env_lmn_Bugs"] = Env_lmn_Bugs.Name
+Global_Texts["TipText_Env_lmn_Bugs"] = Env_lmn_Bugs.Text
 
-function this:load(mod, options, version)
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Bugs", dialogTable)
 end
-
-return this

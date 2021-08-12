@@ -1,10 +1,14 @@
 
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
 -- local o = Objective(text,rep,potential)
 -- o.category = 0/1/2 -- REP/POWER/CORE (?)
 -- o.Failed -- function
 
-local this = {id = "Mission_lmn_Convoy"}
-local path = mod_loader.mods[modApi.currentMod].scriptPath
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local utils = require(path .."utils")
 local switch = LApi.library:fetch("switch")
 
@@ -193,24 +197,20 @@ function lmn_ConvoyTruckAtk:GetSkillEffect(p1, p2)
 	return ret
 end
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tiles_grass/lmn_ground_trail.png", mod.resourcePath .."img/tileset_plant/ground_trail.png")
-	modApi:appendAsset("img/units/mission/lmn_convoy_truck.png", mod.resourcePath .."img/units/mission/truck.png")
-	modApi:appendAsset("img/units/mission/lmn_convoy_trucka.png", mod.resourcePath .."img/units/mission/trucka.png")
-	modApi:appendAsset("img/units/mission/lmn_convoy_truckd.png", mod.resourcePath .."img/units/mission/truckd.png")
-	
-	local a = ANIMS
-	a.lmn_ConvoyTruck = a.BaseUnit:new{Image = "units/mission/lmn_convoy_truck.png", PosX = -13, PosY = 9}
-	a.lmn_ConvoyTrucka = a.lmn_ConvoyTruck:new{Image = "units/mission/lmn_convoy_trucka.png", NumFrames = 2, Time = .25}
-	a.lmn_ConvoyTruckd = a.BaseUnit:new{Image = "units/mission/lmn_convoy_truckd.png", PosX = -22, PosY = 1, NumFrames = 11, Time = .14, Loop = false}
-	
-	for i = 0, 5 do
-		modApi:addMap(mod.resourcePath .."maps/lmn_convoy".. i ..".map")
-	end
+modApi:appendAsset("img/combat/tiles_grass/lmn_ground_trail.png", mod.resourcePath .."img/tileset_plant/ground_trail.png")
+modApi:appendAsset("img/units/mission/lmn_convoy_truck.png", mod.resourcePath .."img/units/mission/truck.png")
+modApi:appendAsset("img/units/mission/lmn_convoy_trucka.png", mod.resourcePath .."img/units/mission/trucka.png")
+modApi:appendAsset("img/units/mission/lmn_convoy_truckd.png", mod.resourcePath .."img/units/mission/truckd.png")
+
+local a = ANIMS
+a.lmn_ConvoyTruck = a.BaseUnit:new{Image = "units/mission/lmn_convoy_truck.png", PosX = -13, PosY = 9}
+a.lmn_ConvoyTrucka = a.lmn_ConvoyTruck:new{Image = "units/mission/lmn_convoy_trucka.png", NumFrames = 2, Time = .25}
+a.lmn_ConvoyTruckd = a.BaseUnit:new{Image = "units/mission/lmn_convoy_truckd.png", PosX = -22, PosY = 1, NumFrames = 11, Time = .14, Loop = false}
+
+for i = 0, 5 do
+	modApi:addMap(mod.resourcePath .."maps/lmn_convoy".. i ..".map")
 end
 
-function this:load(mod, options, version)
-
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Convoy", dialogTable)
 end
-
-return this

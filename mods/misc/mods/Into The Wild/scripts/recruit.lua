@@ -1,14 +1,15 @@
 
 local path = mod_loader.mods[modApi.currentMod].resourcePath
-local personality = require(path .."scripts/personality")
 local dialog = require(path .."scripts/recruit_dialog")
 
 modApi:appendAsset("img/portraits/npcs/lmn_jungle1.png", path .."img/portraits/npcs/jungle1.png")
 modApi:appendAsset("img/portraits/npcs/lmn_jungle1_2.png", path .."img/portraits/npcs/jungle1_2.png")
 modApi:appendAsset("img/portraits/npcs/lmn_jungle1_blink.png", path .."img/portraits/npcs/jungle1_blink.png")
 
-Personality["lmn_Meridia_Recruit"] = personality:new{Label = "Meridia Pilot"}
-Personality["lmn_Meridia_Recruit"]:AddDialog(dialog)
+local personality = CreatePilotPersonality("Meridia Pilot")
+personality:AddDialogTable(dialog)
+
+Personality["lmn_Meridia_Recruit"] = personality
 
 CreatePilot{
 	Id = "Pilot_lmn_Meridia",

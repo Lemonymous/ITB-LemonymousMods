@@ -2,7 +2,6 @@
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local utils = require(path .."utils")
-local this = {}
 
 local missions = {
 	"Mission_lmn_Geothermal_Plant",
@@ -17,7 +16,7 @@ function lmn_Jungle_Structure_Voice(id)
 	Board:AddEffect(fx)
 end
 
-function this:load()
+local function onModsLoaded()
 	modApiExt:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
 		if not mission then return end
 		if not list_contains(missions, mission.ID) then return end
@@ -49,7 +48,6 @@ function this:load()
 		if skillEffect.effect:size() > 0 then skillEffect:AddScript(script) end
 		if skillEffect.q_effect:size() > 0 then skillEffect:AddQueuedScript(script) end
 	end)
-	
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)

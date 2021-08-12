@@ -1,6 +1,10 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local this = {id = "Mission_lmn_Plants"}
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local missionTemplates = require(path .."missions/missionTemplates")
 local corpMissions = require(path .."corpMissions")
 
@@ -70,14 +74,12 @@ function Mission_lmn_Plants.NextPawn(self, pawn_tables, name_only)
 	return Mission.NextPawn(self, pawn_tables, name_only)
 end
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_plants.png", mod.resourcePath .."img/combat/icon_plants.png")
-	Location["combat/tile_icon/lmn_tile_plants.png"] = Point(-27,2)
-	Global_Texts["TipTitle_".."Env_lmn_Plants"] = Env_lmn_Plants.Name
-	Global_Texts["TipText_".."Env_lmn_Plants"] = Env_lmn_Plants.Text
-end
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_plants.png", mod.resourcePath .."img/combat/icon_plants.png")
+Location["combat/tile_icon/lmn_tile_plants.png"] = Point(-27,2)
+Global_Texts["TipTitle_Env_lmn_Plants"] = Env_lmn_Plants.Name
+Global_Texts["TipText_Env_lmn_Plants"] = Env_lmn_Plants.Text
 
-function this:load(mod, options, version)
+local function onModsLoaded()
 	local corps = {
 		"Corp_Default",
 		"Corp_Grass",
@@ -96,4 +98,8 @@ function this:load(mod, options, version)
 	end
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)
+
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Plants", dialogTable)
+end

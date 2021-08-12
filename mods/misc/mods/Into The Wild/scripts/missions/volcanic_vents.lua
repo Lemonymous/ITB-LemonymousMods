@@ -1,6 +1,10 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local this = {id = "Mission_lmn_Volcanic_Vents"}
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local missionTemplates = require(path .."missions/missionTemplates")
 
 Mission_lmn_Volcanic_Vents = Mission_Infinite:new{
@@ -97,42 +101,38 @@ function Env_lmn_Volcanic_Vents:Plan()
 	return ret
 end
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tiles_grass/lmn_ground_volcanic_vent.png", mod.resourcePath .."img/tileset_plant/ground_volcanic_vent.png")
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_volcanic_vent.png", mod.resourcePath .."img/combat/icon_volcanic_vent.png")
-	modApi:appendAsset("img/effects/lmn_volcanic_eruption.png", mod.resourcePath .."img/effects/volcanic_eruption.png")
-	Location["combat/tile_icon/lmn_tile_volcanic_vent.png"] = Point(-27,2)
-	
-	TILE_TOOLTIPS.lmn_volcanic_vent = {"Volcanic Vent", "Volcanic Vent is about to erupt here, killing any unit."}
-	Global_Texts["TipTitle_".."Env_lmn_Volcanic_Vents"] = Env_lmn_Volcanic_Vents.Name
-	Global_Texts["TipText_".."Env_lmn_Volcanic_Vents"] = Env_lmn_Volcanic_Vents.Text
-	
-	for i = 0, 11 do
-		modApi:addMap(mod.resourcePath .."maps/lmn_vent".. i ..".map")
-	end
-	
-	lmn_Emitter_Volcanic_Vent = Emitter:new{
-		image = "effects/smoke/fireball_smoke.png",
-		max_alpha = 0.2,
-		x = 0, y = 20, variance = 8,
-		angle = 240, angle_variance = 50,
-		burst_count = 50, speed = 1.25, lifespan = 1.0, birth_rate = 1, timer = 3,
-		max_particles = 64,
-		gravity = false,
-		layer = LAYER_FRONT
-	}
-	
-	ANIMS.lmn_volcanic_eruption = ANIMS.Animation:new{
-		Image = "effects/lmn_volcanic_eruption.png",
-		NumFrames = 9,
-		Time = 0.07,
-		PosX = -6,
-		PosY = -70
-	}
+modApi:appendAsset("img/combat/tiles_grass/lmn_ground_volcanic_vent.png", mod.resourcePath .."img/tileset_plant/ground_volcanic_vent.png")
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_volcanic_vent.png", mod.resourcePath .."img/combat/icon_volcanic_vent.png")
+modApi:appendAsset("img/effects/lmn_volcanic_eruption.png", mod.resourcePath .."img/effects/volcanic_eruption.png")
+Location["combat/tile_icon/lmn_tile_volcanic_vent.png"] = Point(-27,2)
+
+TILE_TOOLTIPS.lmn_volcanic_vent = {"Volcanic Vent", "Volcanic Vent is about to erupt here, killing any unit."}
+Global_Texts["TipTitle_".."Env_lmn_Volcanic_Vents"] = Env_lmn_Volcanic_Vents.Name
+Global_Texts["TipText_".."Env_lmn_Volcanic_Vents"] = Env_lmn_Volcanic_Vents.Text
+
+for i = 0, 11 do
+	modApi:addMap(mod.resourcePath .."maps/lmn_vent".. i ..".map")
 end
 
-function this:load(mod, options, version)
+lmn_Emitter_Volcanic_Vent = Emitter:new{
+	image = "effects/smoke/fireball_smoke.png",
+	max_alpha = 0.2,
+	x = 0, y = 20, variance = 8,
+	angle = 240, angle_variance = 50,
+	burst_count = 50, speed = 1.25, lifespan = 1.0, birth_rate = 1, timer = 3,
+	max_particles = 64,
+	gravity = false,
+	layer = LAYER_FRONT
+}
 
+ANIMS.lmn_volcanic_eruption = ANIMS.Animation:new{
+	Image = "effects/lmn_volcanic_eruption.png",
+	NumFrames = 9,
+	Time = 0.07,
+	PosX = -6,
+	PosY = -70
+}
+
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Volcanic_Vents", dialogTable)
 end
-
-return this

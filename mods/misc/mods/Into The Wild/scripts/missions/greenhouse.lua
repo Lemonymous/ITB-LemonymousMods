@@ -1,5 +1,8 @@
 
-local this = {id = "Mission_lmn_Greenhouse"}
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local switch = LApi.library:fetch("switch")
 local prefix, suffix = "lmn_", ""
@@ -64,13 +67,9 @@ function Mission_lmn_Greenhouse:GetCompletedObjectives()
 	return objAfterMission:case(countAlive(self.Criticals))
 end
 
-function this:init(mod)
-	TILE_TOOLTIPS[asset .."_on"] = {"Greenhouse", "Your bonus objective is to defend this structure."}
-	TILE_TOOLTIPS[asset .."_broken"] = {"Greenhouse", "Your bonus objective was to defend this structure."}
+TILE_TOOLTIPS[asset .."_on"] = {"Greenhouse", "Your bonus objective is to defend this structure."}
+TILE_TOOLTIPS[asset .."_broken"] = {"Greenhouse", "Your bonus objective was to defend this structure."}
+
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Greenhouse", dialogTable)
 end
-
-function this:load(mod, options, version)
-
-end
-
-return this

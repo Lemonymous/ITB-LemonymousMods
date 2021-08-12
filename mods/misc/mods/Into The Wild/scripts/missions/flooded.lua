@@ -1,7 +1,10 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local this = {id = "Mission_lmn_Flooded"}
-local missionTemplates = require(path .."missions/missionTemplates")
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local missionTemplates = require(mod.scriptPath.."missions/missionTemplates")
 
 Mission_lmn_Flooded = Mission_Infinite:new{
 	Name = "Flooded",
@@ -16,14 +19,10 @@ function Mission_lmn_Flooded:StartMission()
 	Board:SetWeather(6, 0, Point(0,0), Point(size.x, size.y), 0)
 end
 
-
-function this:init(mod)
-	for i = 0, 5 do
-		modApi:addMap(mod.resourcePath .."maps/lmn_flooded".. i ..".map")
-	end
+for i = 0, 5 do
+	modApi:addMap(mod.resourcePath.."maps/lmn_flooded"..i..".map")
 end
 
-function this:load(mod, options, version)
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_Flooded", dialogTable)
 end
-
-return this

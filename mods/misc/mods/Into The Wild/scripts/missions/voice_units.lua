@@ -1,13 +1,11 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local this = {}
 
 local pawns = {
 	lmn_ConvoyTruck = "Mission_lmn_Convoy_Destroyed",
 }
 
-function this:load()
+local function onModsLoaded()
 	modApiExt:addPawnKilledHook(function(mission, pawn)
 		local pawnType = pawn:GetType()
 		local voice = pawns[pawnType]
@@ -19,4 +17,4 @@ function this:load()
 	end)
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)

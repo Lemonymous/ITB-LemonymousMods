@@ -1,9 +1,13 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
+local filepath = select(1, ...)
+local filepath_dialog = filepath.."_dialog"
+local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
+
+local mod = mod_loader.mods[modApi.currentMod]
+local path = mod.scriptPath
 local missionTemplates = require(path .."missions/missionTemplates")
 local utils = require(path .."utils")
 local astar = LApi.library:fetch("astar")
-local this = {id = "Mission_lmn_FlashFlood"}
 
 Mission_lmn_FlashFlood = Mission_Infinite:new{
 	Name = "Flash Flood",
@@ -210,24 +214,20 @@ function Env_Belt:CheckBelts(...)
 	old(self, ...)
 end
 
-function this:init(mod)
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_grass.png", mod.resourcePath .."img/combat/icon_grass.png")
-	modApi:appendAsset("img/combat/tile_icon/lmn_tile_flood.png", mod.resourcePath .."img/combat/icon_flood.png")
-	Location["combat/tile_icon/lmn_tile_grass.png"] = Point(-27,2)
-	Location["combat/tile_icon/lmn_tile_flood.png"] = Point(-27,2)
-	
-	TILE_TOOLTIPS.lmn_flashflood_submerge = {"Flood", "The tile here will turn into Water."}
-	TILE_TOOLTIPS.lmn_flashflood_ground = {"Ground", "The tile here will turn into regular Ground."}
-	Global_Texts["TipTitle_".."Env_lmn_FlashFlood"] = Env_lmn_FlashFlood.Name
-	Global_Texts["TipText_".."Env_lmn_FlashFlood"] = Env_lmn_FlashFlood.Text
-	
-	for i = 0, 4 do
-		modApi:addMap(mod.resourcePath .."maps/lmn_flashflood".. i ..".map")
-	end
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_grass.png", mod.resourcePath .."img/combat/icon_grass.png")
+modApi:appendAsset("img/combat/tile_icon/lmn_tile_flood.png", mod.resourcePath .."img/combat/icon_flood.png")
+Location["combat/tile_icon/lmn_tile_grass.png"] = Point(-27,2)
+Location["combat/tile_icon/lmn_tile_flood.png"] = Point(-27,2)
+
+TILE_TOOLTIPS.lmn_flashflood_submerge = {"Flood", "The tile here will turn into Water."}
+TILE_TOOLTIPS.lmn_flashflood_ground = {"Ground", "The tile here will turn into regular Ground."}
+Global_Texts["TipTitle_Env_lmn_FlashFlood"] = Env_lmn_FlashFlood.Name
+Global_Texts["TipText_Env_lmn_FlashFlood"] = Env_lmn_FlashFlood.Text
+
+for i = 0, 4 do
+	modApi:addMap(mod.resourcePath .."maps/lmn_flashflood".. i ..".map")
 end
 
-function this:load(mod, options, version)
-	
+for personalityId, dialogTable in pairs(dialog) do
+	Personality[personalityId]:AddMissionDialogTable("Mission_lmn_FlashFlood", dialogTable)
 end
-
-return this
