@@ -235,15 +235,7 @@ function mod:init()
 	require(scriptPath .."tiles_emitters")
 	require(scriptPath .."damageNumbers/damageNumbers")
 	require(scriptPath .."spaceDamageObjects")
-	
-	local convert = require(scriptPath .."convert")
-	
 	local achvApi = require(scriptPath .."/achievements/api")
-	
-	function ACV()
-		achvApi:TriggerChievo("cactus", false)
-		achvApi:TriggerChievo("cactus", true)
-	end
 end
 
 function mod:load(options, version)
