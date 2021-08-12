@@ -246,7 +246,7 @@ function mod:load(options, version)
 	require(scriptPath .."teamTurn"):load()
 	require(scriptPath .."weaponPreview/api"):load()
 	if require(scriptPath .."achievements/api"):GetChievoStatus("leaders") then
-		require(scriptPath .."garble"):load()
+		require(scriptPath.."secret"):addSquad()
 	end
 end
 

@@ -4,7 +4,7 @@ local switch = LApi.library:fetch("switch")
 local achvApi = require(path .."achievements/api")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local utils = require(path .."utils")
-local garble = require(path .."garble")
+local secret = require(path .."secret")
 
 function lmn_JungleIsland_Chievo(id)
 	achvApi:TriggerChievo(id)
@@ -93,7 +93,7 @@ local function onModsLoaded()
 			})
 		then
 			achvApi:TriggerChievo("leaders", { reward = true } )
-			achvApi:ToastUnlock(garble:get())
+			modApi.toasts:add(secret:getToast())
 		end
 	end)
 end
