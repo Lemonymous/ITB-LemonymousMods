@@ -21,6 +21,20 @@ local function endTurn()
 		if not pawn:IsNeutral() then
 			pawn:SetActive(false)
 			pawn:ClearUndoMove()
+			-- TODO: If the player has a unit selected
+			-- when the turn ends, they will still be
+			-- able to move it. Moving it will make undo
+			-- move available. Undoing the move will
+			-- make it active again, allowing the player
+			-- to move and shoot with it.
+
+			-- A hack exists, where the unit is given a
+			-- weapon temporarily, which when fired will
+			-- end the unit's movement.
+
+			-- Such a hack, requires a function to remove
+			-- the weapon again, which in turn requires
+			-- cutils to alter memory.
 		end
 	end
 end
