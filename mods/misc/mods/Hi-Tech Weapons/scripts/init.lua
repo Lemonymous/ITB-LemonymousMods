@@ -11,10 +11,6 @@ local mod = {
 function mod:init()
 	assert(LApi, string.format("Mod %s with id '%s' requires 'LApi' in order to function properly", self.name, self.id))
 	
-	self.weaponMarks = require(self.scriptPath .."libs/weaponMarks")
-	
-	self.weaponMarks:init(self)
-	
 	self.guided = require(self.scriptPath .."weapon_guided_missile")
 	self.tri_striker = require(self.scriptPath .."weapon_tri_striker")
 	self.autocannon = require(self.scriptPath .."weapon_autocannon")
@@ -31,8 +27,6 @@ function mod:init()
 end
 
 function mod:load(options, version)
-	self.weaponMarks:load()
-	
 	self.guided:load()
 	self.tri_striker:load()
 	self.autocannon:load()

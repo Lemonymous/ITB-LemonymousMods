@@ -272,104 +272,105 @@ function marker:MarkFlashing(tile, bool, sticky)
 	table.insert(self.flashing, {point = tile, bool = bool, sticky = sticky})
 end
 
-sdlext.addGameExitedHook(function()
+modApi.events.onGameExited:subscribe(function()
 	this.markers = {}
 	this.highlighted = nil
 end)
 
-function this:init() end
-function this:load()
-	self.highlighted = nil
+modApi.events.onMissionUpdate:subscribe(function()
+	local rem = {}
 	
-	modApi:addMissionUpdateHook(function()
-		local rem = {}
-		
-		for pawnId, marker in pairs(self.markers) do
-			local pawn = Board:GetPawn(pawnId)
-			if not pawn or not IsWeaponArmed(pawnId, marker.skill) then
-				table.insert(rem, pawnId)
-			else
-				local highlighted = true
+	for pawnId, marker in pairs(this.markers) do
+		local pawn = Board:GetPawn(pawnId)
+		if not pawn or not IsWeaponArmed(pawnId, marker.skill) then
+			table.insert(rem, pawnId)
+		else
+			local highlighted = true
+			
+			if not IsGamepad() then
+				local targetArea = extract_table(_G[marker.skill]:GetTargetArea(pawn:GetSpace(), nil, true))
 				
-				if not IsGamepad() then
-					local targetArea = extract_table(_G[marker.skill]:GetTargetArea(pawn:GetSpace(), nil, true))
-					
-					if not list_contains(targetArea, self.highlighted) then
-						highlighted = false
+				if not list_contains(targetArea, this.highlighted) then
+					highlighted = false
+				end
+			end
+			
+			if
+				Game:GetTeamTurn() == TEAM_PLAYER	and
+				Board:GetBusyState() == 0
+			then
+				for _, mark in pairs(marker.flashing) do
+					if highlighted or mark.sticky then
+						Board:MarkFlashing(mark.point, mark.bool)
 					end
 				end
 				
-				if
-					Game:GetTeamTurn() == TEAM_PLAYER	and
-					Board:GetBusyState() == 0
-				then
-					for _, mark in pairs(marker.flashing) do
-						if highlighted or mark.sticky then
-							Board:MarkFlashing(mark.point, mark.bool)
-						end
+				for _, mark in pairs(marker.simpleColor) do
+					if highlighted or mark.sticky then
+						Board:MarkSpaceSimpleColor(mark.point, mark.color)
 					end
-					
-					for _, mark in pairs(marker.simpleColor) do
-						if highlighted or mark.sticky then
-							Board:MarkSpaceSimpleColor(mark.point, mark.color)
-						end
+				end
+				
+				for _, mark in pairs(marker.color) do
+					if highlighted or mark.sticky then
+						Board:MarkSpaceColor(mark.point, mark.color)
 					end
-					
-					for _, mark in pairs(marker.color) do
-						if highlighted or mark.sticky then
-							Board:MarkSpaceColor(mark.point, mark.color)
-						end
+				end
+				
+				for _, mark in pairs(marker.desc) do
+					if highlighted or mark.sticky then
+						Board:MarkSpaceDesc(mark.point, mark.desc, mark.bool)
 					end
-					
-					for _, mark in pairs(marker.desc) do
-						if highlighted or mark.sticky then
-							Board:MarkSpaceDesc(mark.point, mark.desc, mark.bool)
-						end
+				end
+				
+				for _, mark in pairs(marker.image) do
+					if highlighted or mark.sticky then
+						Board:MarkSpaceImage(mark.point, mark.path, mark.color)
 					end
-					
-					for _, mark in pairs(marker.image) do
-						if highlighted or mark.sticky then
-							Board:MarkSpaceImage(mark.point, mark.path, mark.color)
+				end
+				
+				for _, mark in pairs(marker.damage) do
+					if highlighted or mark.sticky then
+						
+						local d = SpaceDamage()
+						for i, v in pairs(mark) do
+							d[i] = v 
 						end
-					end
-					
-					for _, mark in pairs(marker.damage) do
-						if highlighted or mark.sticky then
-							
-							local d = SpaceDamage()
-							for i, v in pairs(mark) do
-								d[i] = v 
-							end
-							
-							Board:MarkSpaceDamage(d)
-						end
+						
+						Board:MarkSpaceDamage(d)
 					end
 				end
 			end
 		end
-		
-		for _, id in ipairs(rem) do
-			self.markers[id] = nil
-		end
-	end)
+	end
+	
+	for _, id in ipairs(rem) do
+		this.markers[id] = nil
+	end
+end)
+
+modApi.events.onMissionEnd:subscribe(function()
+	this.markers = {}
+	this.highlighted = nil
+end)
+
+modApi.events.onTestMechExited:subscribe(function()
+	this.markers = {}
+	this.highlighted = nil
+end)
+
+local function onModsLoaded()
+	this.highlighted = nil
 	
 	modApiExt:addTileHighlightedHook(function(_, tile)
-		self.highlighted = tile
+		this.highlighted = tile
 	end)
 	
 	modApiExt:addTileUnhighlightedHook(function()
-		self.highlighted = nil
-	end)
-	
-	modApi:addTestMechExitedHook(function()
-		self.markers = {}
-		self.highlighted = nil
-	end)
-	
-	modApi:addMissionEndHook(function()
-		self.markers = {}
-		self.highlighted = nil
+		this.highlighted = nil
 	end)
 end
+
+modApi.events.onModsLoaded:subscribe(onModsLoaded)
 
 return this
