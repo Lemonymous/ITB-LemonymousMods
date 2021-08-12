@@ -6,7 +6,7 @@ local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_d
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
 local missionTemplates = require(path .."missions/missionTemplates")
-local corpMissions = require(path .."corpMissions")
+local corpMissions = require(path .."libs/corpMissions")
 
 local enemies = {
 	Core = { "lmn_Chomper", "lmn_Sprout", "lmn_Sunflower", "lmn_Springseed", "lmn_Puffer" },
