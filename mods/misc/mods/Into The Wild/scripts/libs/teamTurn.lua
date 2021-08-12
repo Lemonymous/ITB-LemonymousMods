@@ -1,23 +1,22 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local this = {}
+local teamTurn = {}
 
-function this.IsVekTurn()
+function teamTurn:isVekTurn()
 	local mission = GetCurrentMission()
 	if not mission then return nil end
 	
 	return (mission.lmn_VekTurnCount or 0) == Game:GetTurnCount()
 end
 
-function this.IsVekMovePhase()
+function teamTurn:isVekMovePhase()
 	local mission = GetCurrentMission()
 	if not mission then return nil end
 	
 	return (mission.lmn_VekMovePhase or -1) == Game:GetTurnCount()
 end
 
-function this.IsPlayerTurn()
+function teamTurn:isPlayerTurn()
 	local mission = GetCurrentMission()
 	if not mission then return nil end
 
@@ -33,10 +32,12 @@ function Mission:ApplyEnvironmentEffect(...)
 	return ret
 end
 
-function this:load()
+local function onModsLoaded()
 	modApiExt:addVekMoveStartHook(function(mission)
 		mission.lmn_VekMovePhase = Game:GetTurnCount()
 	end)
 end
 
-return this
+modApi.events.onModsLoaded:subscribe(onModsLoaded)
+
+return teamTurn

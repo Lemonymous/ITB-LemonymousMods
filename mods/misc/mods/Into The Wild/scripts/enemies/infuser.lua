@@ -294,7 +294,7 @@ modApi.events.onNextTurn:subscribe(function(mission)
 	mission.lmn_infusedPawns = mission.lmn_infusedPawns or {}
 	
 	local rem = {}
-	local isVekTurn = teamTurn.IsVekTurn()
+	local isVekTurn = teamTurn:isVekTurn()
 	local turnCount = Game:GetTurnCount()
 	
 	for pawnId, evolveTurn in pairs(mission.lmn_infusedPawns) do
