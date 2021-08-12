@@ -1,6 +1,4 @@
 
-local modApiExt
-local spawner
 
 local oldOrderMods = mod_loader.orderMods
 function mod_loader.orderMods(self, options, savedOrder)
@@ -13,18 +11,10 @@ function mod_loader.orderMods(self, options, savedOrder)
 end
 
 local function init(self)
-	local extDir = self.scriptPath .."modApiExt/"
-	modApiExt = require(extDir .."modApiExt")
-	modApiExt:init(extDir)
-	
 	spawner = require(self.scriptPath.."spawner")
-	spawner.init(self)
 end
 
 local function load(self, options, version)
-	modApiExt:load(self, options, version)
-	
-	spawner.load(modApiExt)
 end
 
 return {

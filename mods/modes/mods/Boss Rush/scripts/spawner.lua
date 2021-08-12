@@ -1,4 +1,6 @@
 
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+
 -- mission with 5 turns has enemy spawn on turn 0, 1, 2, 3.
 
 --[[
@@ -104,11 +106,7 @@ local function onPawnTracked(mission, pawn)
 	end
 end
 
-local function init(mod)
-	
-end
-
-local function load(_modApiExt)
+local function onModsLoaded()
 	--[[
 		set the maximum number of extra leaders we
 		can spawn per 4 turns on the final missions,
@@ -143,10 +141,7 @@ local function load(_modApiExt)
 	SectorSpawners[DIFF_VERY_HARD][1].num_leaders = 0
 	SectorSpawners[DIFF_IMPOSSIBLE][1].num_leaders = 0
 	
-	_modApiExt:addPawnTrackedHook(onPawnTracked)
+	modApiExt:addPawnTrackedHook(onPawnTracked)
 end
 
-return{
-	init = init,
-	load = load,
-}
+modApi.events.onModsLoaded:subscribe(onModsLoaded)
