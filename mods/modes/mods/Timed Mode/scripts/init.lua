@@ -45,7 +45,6 @@ function mod:metadata()
 end
 
 local components = {
-	"modApiExt/modApiExt",
 	"libs/menu",
 	"timeAttack",
 }
