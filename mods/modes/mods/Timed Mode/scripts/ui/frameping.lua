@@ -1,6 +1,5 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local clip = require(path .."libs/clip")
 local utils = require(path .."libs/utils")
 local Ui2 = require(path .."ui/Ui2")
 local DecoSet = require(path .."ui/deco/decoSet")
@@ -52,7 +51,7 @@ function this:update(screen)
 end
 
 function this:draw(screen)
-	clip(Ui2, self, screen)
+	sdlext.occlude_draw(Ui2, self, screen, sdlext.CurrentWindowRect)
 end
 
 return this

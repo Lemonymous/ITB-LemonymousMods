@@ -1,6 +1,5 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local clip = require(path .."libs/clip")
 local UiCover = require(path .."ui/cover")
 local Ui2 = require(path .."ui/Ui2")
 local UiFrameping = require(path .."ui/frameping")
@@ -112,7 +111,7 @@ end
 function this:draw(screen)
 	self.visible = self.initialized and not sdlext.isConsoleOpen()
 	
-	clip(Ui2, self, screen)
+	sdlext.occlude_draw(Ui2, self, screen, sdlext.CurrentWindowRect)
 end
 
 return this
