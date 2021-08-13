@@ -1,4 +1,6 @@
 
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+
 local this = {
 	desc = "Adds the Leaper Leader",
 	sMission = "Mission_LeaperBoss",
@@ -163,7 +165,7 @@ function this:init(mod)
 	end)
 end
 
-function this:load(modApiExt)
+function this:load()
 	modApi:addMissionStartHook(function() this.lastSelected = nil end)
 	modApi:addMissionNextPhaseCreatedHook(function() this.lastSelected = nil end)
 	modApiExt:addPawnSelectedHook(function(mission, pawn) self.lastSelected = pawn end)

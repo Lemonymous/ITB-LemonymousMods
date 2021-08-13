@@ -135,7 +135,7 @@ function this:init(mod)
 	modApi:appendAsset("img/effects/shot_fireflyB_R.png", mod.resourcePath .."img/effects/shot_fireflyB_R.png")
 end
 
-function this:load(modApiExt)
+function this:load()
 	self.boss:ResetSpawnsWhenKilled(self)
 	self.boss:SetSpawnsForDifficulty(
 		self,

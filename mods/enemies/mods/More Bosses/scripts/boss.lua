@@ -1,6 +1,6 @@
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
-local getModUtils = require(path .."getModUtils")
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local this = {
 	bosses = {}
 }
@@ -30,10 +30,8 @@ end
 function this:ResetSpawnsWhenKilled(boss)
 	assert(type(boss.sMission) == 'string')
 	assert(_G[boss.sMission])
-	assert(modApiExt_internal)
 	
-	local modUtils = getModUtils()
-	modUtils:addPawnKilledHook(function(mission, pawn)
+	modApiExt:addPawnKilledHook(function(mission, pawn)
 		if
 			mission.ID ~= boss.sMission    or
 			pawn:GetId() ~= mission.BossID

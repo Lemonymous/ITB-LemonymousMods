@@ -1,4 +1,6 @@
 
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+
 local this = {
 	desc = "Adds the Digger Leader",
 	sMission = "Mission_DiggerBoss",
@@ -268,7 +270,7 @@ function lmn_DiggerAtkB:GetSkillEffect(p1, p2)
 						
 					--	run the following code for every tile
 					--	before charge destination has been reached.
-					elseif this.modApiExt.vector:length(curr - p1) < this.modApiExt.vector:length(targets[dir].point - p1) then
+					elseif modApiExt.vector:length(curr - p1) < modApiExt.vector:length(targets[dir].point - p1) then
 						ret:AddQueuedScript("Board:AddBurst(Point(".. curr.x ..", ".. curr.y .."), 'Emitter_Burst_$tile' , ".. dir ..")")
 						ret:AddQueuedScript("Board:Bounce(Point(".. curr.x ..", ".. curr.y .."), -3)")
 					end
@@ -404,9 +406,7 @@ function this:init(mod)
 	end)
 end
 
-function this:load(modApiExt)
-	self.modApiExt = modApiExt
-	
+function this:load()
 	modApiExt:addTileHighlightedHook(function(_, tile) self.highlighted = tile end)
 	modApiExt:addTileUnhighlightedHook(function() self.highlighted = nil end)
 	

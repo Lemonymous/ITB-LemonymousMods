@@ -1,4 +1,6 @@
 
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+
 local this = {
 	desc = "Adds the Burrower Leader",
 	retaliatory,
@@ -82,8 +84,8 @@ function this:init(mod)
 	end)
 end
 
-function this:load(modApiExt)
-	self.retaliatory:load(modApiExt)
+function this:load()
+	self.retaliatory:load()
 	self.retaliatory:AddPawnType(_G[self.sMission].BossPawn)
 	
 	modApiExt:addGameLoadedHook(UpdateBurrow)

@@ -1,4 +1,6 @@
 
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+
 local this = {
 	desc = "Adds the Scarab Leader",
 	sMission = "Mission_ScarabBoss",
@@ -247,7 +249,7 @@ function this:init(mod)
 	modApi:appendAsset("img/weapons/enemy_scarabB.png", mod.resourcePath .."img/weapons/enemy_scarabB.png")
 end
 
-function this:load(modApiExt)
+function this:load()
 	
 	modApiExt:addPawnUntrackedHook(function(mission, pawn)
 		if

@@ -1,7 +1,7 @@
---using modApiExt
+
+local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 local this = {
-	modApiExt,
 	pawnTypes = {}
 }
 Location["combat/icons/icon_aggro.png"] = Point(0,8)
@@ -187,8 +187,7 @@ function this:init(mod)
 	end)
 end
 
-function this:load(modApiExt)
-	self.modApiExt = modApiExt
+function this:load()
 	modApiExt:addSkillBuildHook(onSkillEffect)
 	modApiExt:addPawnTrackedHook(onPawnPositionChanged)
 	modApiExt:addPawnPositionChangedHook(onPawnPositionChanged)

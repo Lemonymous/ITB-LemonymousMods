@@ -38,9 +38,6 @@ local function final(options)
 end
 
 function mod:init()
-	self.modApiExt = require(self.scriptPath .."modApiExt/modApiExt")
-	self.modApiExt:init()
-	
 	self.crab =			require(self.scriptPath.. "missions/bosses/crab")
 	self.scarab =		require(self.scriptPath.. "missions/bosses/scarab")
 	self.leaper =		require(self.scriptPath.. "missions/bosses/leaper")
@@ -62,15 +59,13 @@ function mod:init()
 end
 
 function mod:load(options, version)
-	self.modApiExt:load(self, options, version)
-	
 	self.crab:load()
 	self.centipede:load()
 	self.blobber:load()
-	self.scarab:load(self.modApiExt)
-	self.leaper:load(self.modApiExt)
-	self.digger:load(self.modApiExt)
-	self.burrower:load(self.modApiExt)
+	self.scarab:load()
+	self.leaper:load()
+	self.digger:load()
+	self.burrower:load()
 	
 	--leaper.smokeCancel(options["option_smoked_leaper"].enabled)
 	
