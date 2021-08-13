@@ -41,8 +41,6 @@ function mod:init()
 	self.modApiExt = require(self.scriptPath .."modApiExt/modApiExt")
 	self.modApiExt:init()
 	
-	lmn_MB_CUtils = require(self.scriptPath .."libs/CUtils")
-	
 	self.crab =			require(self.scriptPath.. "missions/bosses/crab")
 	self.scarab =		require(self.scriptPath.. "missions/bosses/scarab")
 	self.leaper =		require(self.scriptPath.. "missions/bosses/leaper")

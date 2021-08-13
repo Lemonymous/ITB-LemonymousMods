@@ -177,7 +177,7 @@ function this:load(modApiExt)
 		mission[self.leapers][id].iconLoc = Point(-1, -1)
 		mission[self.leapers][id].loc = pawn:GetSpace()
 		mission[self.leapers][id].curHealth = pawn:GetHealth()
-		mission[self.leapers][id].maxHealth = lmn_MB_CUtils.GetMaxHealth(pawn)
+		mission[self.leapers][id].maxHealth = pawn:GetMaxHealth()
 		
 		local hasSeenTip = modApi:readProfileData("lmn_Evasive")
 		if not hasSeenTip then
@@ -211,7 +211,7 @@ function this:load(modApiExt)
 					leaper.AttackCanceled = true
 				end
 				
-				if	lmn_MB_CUtils.GetMaxHealth(pawn) == leaper.maxHealth	and
+				if	pawn:GetMaxHealth() == leaper.maxHealth		and
 					pawn:GetHealth() < leaper.curHealth			and
 					pawn:GetHealth() > 0						and
 					Board:GetBusyState() ~= 6					then
@@ -256,7 +256,7 @@ function this:load(modApiExt)
 				
 				leaper.loc = curr
 				leaper.curHealth = pawn:GetHealth()
-				leaper.maxHealth = lmn_MB_CUtils.GetMaxHealth(pawn)
+				leaper.maxHealth = pawn:GetMaxHealth()
 				
 				-- update evasive icon location.
 				if curr ~= leaper.iconLoc then
