@@ -2,7 +2,6 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
-local shop = LApi.library:fetch("shop")
 
 lmn_StackerMech = Pawn:new{
 	Name = "Stacker Mech",
@@ -330,10 +329,7 @@ lmn_LiftAtk_Tip_A.GetSkillEffect = lmn_LiftAtk_Tip.GetSkillEffect
 lmn_LiftAtk_Tip_B.GetSkillEffect = lmn_LiftAtk_Tip.GetSkillEffect
 lmn_LiftAtk_Tip_AB.GetSkillEffect = lmn_LiftAtk_Tip.GetSkillEffect
 
-shop:addWeapon({
-	id = "lmn_LiftAtk",
-	desc = "Adds Fork Lift to the store."
-})
+modApi:addWeaponDrop("lmn_LiftAtk")
 
 modApi:appendAsset("img/units/player/lmn_mech_stacker.png", resourcePath.. "img/units/player/stacker.png")
 modApi:appendAsset("img/units/player/lmn_mech_stacker_a.png", resourcePath.. "img/units/player/stacker_a.png")

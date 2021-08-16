@@ -4,7 +4,6 @@ local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectPreview = LApi.library:fetch("effectPreview")
-local shop = LApi.library:fetch("shop")
 
 lmn_DozerMech = Pawn:new{
 	Name = "Dozer Mech",
@@ -653,11 +652,7 @@ modApi.events.onModLoaded:subscribe(function(id)
 	end
 end)
 
-shop:addWeapon({
-	id = "lmn_DozerAtk",
-	name = lmn_DozerAtk.Name,
-	desc = "Adds Dozer Blades to the store."
-})
+modApi:addWeaponDrop("lmn_DozerAtk")
 
 modApi:appendAsset("img/units/player/lmn_mech_dozer.png", resourcePath.. "img/units/player/dozer.png")
 modApi:appendAsset("img/units/player/lmn_mech_dozer_a.png", resourcePath.. "img/units/player/dozer_a.png")

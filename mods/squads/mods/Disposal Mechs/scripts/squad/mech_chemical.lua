@@ -2,7 +2,6 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
-local shop = LApi.library:fetch("shop")
 
 lmn_ChemMech = Pawn:new{
 	Name = "Dissolver Mech",
@@ -138,10 +137,7 @@ end
 
 lmn_ChemicalAtk_Tip_B.GetSkillEffect = lmn_ChemicalAtk_Tip.GetSkillEffect
 
-shop:addWeapon({
-	id = "lmn_ChemicalAtk",
-	desc = "Adds Acid Jet to the store."
-})
+modApi:addWeaponDrop("lmn_ChemicalAtk")
 
 modApi:appendAsset("img/units/player/lmn_mech_dissolver.png", resourcePath.. "img/units/player/dissolver.png")
 modApi:appendAsset("img/units/player/lmn_mech_dissolver_a.png", resourcePath.. "img/units/player/dissolver_a.png")
