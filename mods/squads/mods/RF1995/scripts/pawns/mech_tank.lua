@@ -4,7 +4,6 @@ local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
-local shop = require(scriptPath .."libs/shop")
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
@@ -340,7 +339,7 @@ lmn_Tank_Cannon_Tip_B.GetSkillEffect = lmn_Tank_Cannon_Tip.GetSkillEffect
 lmn_Tank_Cannon_Tip_AB.GetSkillEffect = lmn_Tank_Cannon_Tip.GetSkillEffect
 
 
-shop:addWeapon{ id = "lmn_Tank_Cannon", desc = "Adds Snubnose Cannon to the store." }
+modApi:addWeaponDrop("lmn_Tank_Cannon")
 nonMassiveDeployWarning:AddPawn("lmn_TankMech")
 
 local function init() end

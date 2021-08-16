@@ -4,7 +4,6 @@ local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local shop = require(scriptPath .."libs/shop")
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
@@ -530,7 +529,7 @@ lmn_Minelayer_Launcher_Tip_A.GetSkillEffect = lmn_Minelayer_Launcher_Tip.GetSkil
 lmn_Minelayer_Launcher_Tip_B.GetSkillEffect = lmn_Minelayer_Launcher_Tip.GetSkillEffect
 lmn_Minelayer_Launcher_Tip_AB.GetSkillEffect = lmn_Minelayer_Launcher_Tip.GetSkillEffect
 
-shop:addWeapon{ id = "lmn_Minelayer_Launcher", desc = "Adds MR Launcher to the store." }
+modApi:addWeaponDrop("lmn_Minelayer_Launcher")
 
 local function init() end
 local function load() end

@@ -8,7 +8,6 @@ local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectBurst = LApi.library:fetch("effectBurst")
 local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
-local shop = require(scriptPath .."libs/shop")
 
 modApi:appendAsset("img/units/player/lmn_mech_helicopter.png", resourcePath .."img/units/player/helicopter.png")
 modApi:appendAsset("img/units/player/lmn_mech_helicopter_a.png", resourcePath .."img/units/player/helicopter_a.png")
@@ -180,7 +179,7 @@ lmn_Helicopter_Rocket_Tip_B.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillE
 lmn_Helicopter_Rocket_Tip_AB.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect
 
 nonMassiveDeployWarning:AddPawn("lmn_HelicopterMech")
-shop:addWeapon{ id = "lmn_Helicopter_Rocket", desc = "Adds Leto Rockets to the store." }
+modApi:addWeaponDrop("lmn_Helicopter_Rocket")
 
 local function init() end
 local function load() end

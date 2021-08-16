@@ -9,7 +9,6 @@ local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local shop = require(scriptPath .."libs/shop")
 
 modApi:appendAsset("img/weapons/lmn_minelayer_mine.png", resourcePath .."img/weapons/mine.png")
 modApi:appendAsset("img/combat/lmn_minelayer_mine_small.png", resourcePath .."img/combat/mine_small.png")
@@ -152,7 +151,7 @@ damage.sAnimation = "ExploAir1"
 
 lmn_Minelayer_Item_Mine_Tip_Explode.Damage = damage
 
-shop:addWeapon{ id = "lmn_Minelayer_Mine", desc = "Adds Proximity Mines to the store." }
+modApi:addWeaponDrop("lmn_Minelayer_Mine")
 
 track_items:addItemRemovedHook(function(mission, loc, removed_item)
 	if removed_item == "lmn_Minelayer_Item_Mine"  then
