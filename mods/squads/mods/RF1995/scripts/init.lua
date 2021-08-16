@@ -11,7 +11,6 @@ local mod =  {
 local scripts = {
 	"libs/hooks",
 	"libs/nonMassiveDeployWarning",
-	"libs/shop",
 	"libs/track_items",
 	"libs/track_undo_move",
 	"libs/virtualBoard",
