@@ -1,7 +1,6 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
-local shop = LApi.library:fetch("shop")
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 lmn_SmokeMech = Pawn:new{
@@ -428,10 +427,7 @@ modApi.events.onMissionUpdate:subscribe(function()
 	end
 end)
 
-shop:addWeapon({
-	id = "lmn_SmokeLauncher",
-	desc = "Adds Smoke Launcher to the store."
-})
+modApi:addWeaponDrop("lmn_SmokeLauncher")
 
 Personality["CEO_Sand"]["MissionFinal_Pylons_Replace"] = {"Sending down power pylons. Keep them operational, we don't have many more."}
 Personality["CEO_Sand"]["MissionFinal_Pylon_Smoked_First"] = {"Sending down a replacement pylon. Keep this one intact."}

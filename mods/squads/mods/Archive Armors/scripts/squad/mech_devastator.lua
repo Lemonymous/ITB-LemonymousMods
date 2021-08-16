@@ -1,7 +1,6 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
-local shop = LApi.library:fetch("shop")
 
 lmn_DevastatorMech = Pawn:new{
 	Name = "Devastator Mech",
@@ -137,10 +136,7 @@ lmn_DevastatorCannon_A = lmn_DevastatorCannon:new{
 	Damage = 5,
 }
 
-shop:addWeapon({
-	id = "lmn_DevastatorCannon",
-	desc = "Adds Devastator to the store."
-})
+modApi:addWeaponDrop("lmn_DevastatorCannon")
 
 modApi:appendAsset("img/units/player/lmn_mech_devastator.png", resourcePath .."img/units/player/devastator.png")
 modApi:appendAsset("img/units/player/lmn_mech_devastator_a.png", resourcePath .."img/units/player/devastator_a.png")

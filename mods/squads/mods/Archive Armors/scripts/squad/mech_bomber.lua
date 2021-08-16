@@ -1,7 +1,6 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
-local shop = LApi.library:fetch("shop")
 
 lmn_BomberMech = Pawn:new{
 	Name = "Bomber Mech",
@@ -242,10 +241,7 @@ lmn_Bombrun_Tip_A.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 lmn_Bombrun_Tip_B.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 lmn_Bombrun_Tip_AB.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 
-shop:addWeapon({
-	id = "lmn_Bombrun",
-	desc = "Adds Bomb Run to the store."
-})
+modApi:addWeaponDrop("lmn_Bombrun")
 
 modApi:appendAsset("img/units/player/lmn_mech_bomber.png", resourcePath .."img/units/player/bomber.png")
 modApi:appendAsset("img/units/player/lmn_mech_bomber_a.png", resourcePath .."img/units/player/bomber_a.png")
