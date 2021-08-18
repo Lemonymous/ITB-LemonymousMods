@@ -53,7 +53,7 @@ function lmn_Engi_Repair:RepairTrain(p2)
 end
 
 function lmn_Engi_Repair:GetSkillEffect(p1, p2)
-	local ret = Skill_Repair_Orig.GetSkillEffect(self, p1, p2)
+	local ret = Skill_Repair_Orig.GetSkillEffect(self, p1, p2, Skill_Repair_Orig)
 	local pawn = Board:GetPawn(p2)
 	local id = pawn:GetId()
 	local mission = GetCurrentMission()
