@@ -227,7 +227,7 @@ modApi.events.onModsInitialized:subscribe(onModsInitialized)
 if Traits == nil or modApi:isVersion(VERSION, Traits.version) then
 	Traits = Traits or {}
 	Traits.version = VERSION
-	Traits.queued = {}
+	Traits.queued = Traits.queued or {}
 
 	function Traits:add(trait)
 		table.insert(self.queued, trait)
