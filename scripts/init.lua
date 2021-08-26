@@ -10,6 +10,7 @@ local mod =  {
 }
 
 function mod:metadata()
+--[[
 	modApi:addGenerationOption(
 		"cutils_debug",
 		"cutils Debug Methods",
@@ -29,6 +30,7 @@ function mod:metadata()
 		"\n\nWarning: Very LOG heavy. Only use to debug cutils related crashes",
 		{ enabled == false }
 	)
+--]]
 end
 
 function mod:init(options)
