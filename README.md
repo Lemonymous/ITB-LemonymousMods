@@ -6,7 +6,7 @@
  Click the zip file to download.
  Unzip the folder and drop it into your game's mods folder.
 
- Correct folder structure should look like this: `../Into the Breach/mods/ITB-LemonymousMods`
+ Correct folder structure should look like this: `../Into the Breach/mods/LemonymousMods`
 
  You can rename the folder if you want.
 
