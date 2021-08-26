@@ -36,7 +36,7 @@
 
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
-local VERSION = "2.0.0"
+local VERSION = "2.0.1"
 
 local function onModsInitialized()
 	if VERSION < Traits.version then
