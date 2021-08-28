@@ -170,6 +170,24 @@
 ]]---------------------------------------------------------------------------
 
 
+if Assert.TypeGLColor == nil then
+	local function traceback()
+		return Assert.Traceback and debug.traceback("\n", 3) or ""
+	end
+
+	function Assert.TypeGLColor(arg, msg)
+		msg = (msg and msg .. ": ") or ""
+		msg = msg .. string.format("Expected GL_Color, but was %s%s", tostring(type(arg)), traceback())
+		assert(
+			type(arg) == "userdata" and
+			type(arg.r) == "number" and
+			type(arg.g) == "number" and
+			type(arg.b) == "number" and
+			type(arg.a) == "number", msg
+		)
+	end
+end
+
 local mod = mod_loader.mods[modApi.currentMod]
 
 local this = {}
@@ -197,13 +215,11 @@ end
 
 function this:AddDamage(d, duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(d) == 'userdata' or type(d) == 'table')
-	assert(type(d.loc) == 'userdata')
-	assert(type(d.loc.x) == 'number')
-	assert(type(d.loc.y) == 'number')
-	assert(duration == nil or type(duration) == 'number')
-	
+
+	Assert.Equals({'userdata', 'table'}, type(d), "Argument #1")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #2")
+	Assert.TypePoint(d.loc, "Argument #1 - Field 'loc'")
+
 	table.insert(marks, {
 		fn = 'MarkSpaceDamage',
 		data = {shallow_copy(d)},
@@ -213,18 +229,12 @@ end
 
 function this:AddImage(p, path, gl_color, duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(p) == 'userdata')
-	assert(type(p.x) == 'number')
-	assert(type(p.y) == 'number')
-	assert(type(path) == 'string')
-	assert(type(gl_color) == 'userdata')
-	assert(type(gl_color.r) == 'number')
-	assert(type(gl_color.g) == 'number')
-	assert(type(gl_color.b) == 'number')
-	assert(type(gl_color.a) == 'number')
-	assert(duration == nil or type(duration) == 'number')
-	
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals('string', type(path), "Argument #2")
+	Assert.TypeGLColor(gl_color, "Argument #3")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #4")
+
 	table.insert(marks, {
 		fn = 'MarkSpaceImage',
 		data = {p, path, gl_color},
@@ -234,15 +244,14 @@ end
 
 function this:AddDesc(p, desc, flag, duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(p) == 'userdata')
-	assert(type(p.x) == 'number')
-	assert(type(p.y) == 'number')
-	assert(type(desc) == 'string')
-	assert(duration == nil or type(duration) == 'number')
-	
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals('string', type(desc), "Argument #2")
+	Assert.Equals({'nil', 'boolean'}, type(flag), "Argument #3")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #4")
+
 	flag = flag ~= false
-	
+
 	table.insert(marks, {
 		fn = 'MarkSpaceDesc',
 		data = {p, desc, flag},
@@ -252,17 +261,11 @@ end
 
 function this:AddColor(p, gl_color, duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(p) == 'userdata')
-	assert(type(p.x) == 'number')
-	assert(type(p.y) == 'number')
-	assert(type(gl_color) == 'userdata')
-	assert(type(gl_color.r) == 'number')
-	assert(type(gl_color.g) == 'number')
-	assert(type(gl_color.b) == 'number')
-	assert(type(gl_color.a) == 'number')
-	assert(duration == nil or type(duration) == 'number')
-	
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.TypeGLColor(gl_color, "Argument #2")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
+
 	table.insert(marks, {
 		fn = 'MarkSpaceColor',
 		data = {p, gl_color},
@@ -272,17 +275,11 @@ end
 
 function this:AddSimpleColor(p, gl_color, duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(p) == 'userdata')
-	assert(type(p.x) == 'number')
-	assert(type(p.y) == 'number')
-	assert(type(gl_color) == 'userdata')
-	assert(type(gl_color.r) == 'number')
-	assert(type(gl_color.g) == 'number')
-	assert(type(gl_color.b) == 'number')
-	assert(type(gl_color.a) == 'number')
-	assert(duration == nil or type(duration) == 'number')
-	
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.TypeGLColor(gl_color, "Argument #2")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
+
 	table.insert(marks, {
 		fn = 'MarkSpaceSimpleColor',
 		data = {p, gl_color},
@@ -292,14 +289,13 @@ end
 
 function this:AddFlashing(p, flag, duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(p) == 'userdata')
-	assert(type(p.x) == 'number')
-	assert(type(p.y) == 'number')
-	assert(duration == nil or type(duration) == 'number')
-	
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals({'nil', 'boolean'}, type(flag), "Argument #2")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
+
 	flag = flag ~= false
-	
+
 	table.insert(marks, {
 		fn = 'MarkFlashing',
 		data = {p, flag},
@@ -309,13 +305,11 @@ end
 
 function this:AddAnimation(p, anim)
 	if isMarkUnavailable() then return end
-	
-	assert(type(p) == 'userdata')
-	assert(type(p.x) == 'number')
-	assert(type(p.y) == 'number')
-	assert(type(anim) == 'string')
-	assert(a[anim])
-	
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals('string', type(anim), "Argument #2")
+	Assert.NotEquals('nil', type(a[anim]), "Argument #2")
+
 	table.insert(marks, {
 		fn = 'AddAnimation',
 		anim = anim,
@@ -326,16 +320,14 @@ end
 
 function this:AddEmitter(p, emitter, duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(p) == 'userdata')
-	assert(type(p.x) == 'number')
-	assert(type(p.y) == 'number')
-	assert(type(emitter) == 'string')
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals('string', type(emitter), "Argument #2")
+	Assert.NotEquals('nil', type(_G[emitter]), "Argument #2")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
+
 	local base = _G[emitter]
-	
-	assert(base)
-	assert(duration == nil or type(duration) == 'number')
-	
+
 	if not _G[emitter .. mod.id] then
 		_G[emitter .. mod.id] = base:new{
 			timer = .017,
@@ -343,7 +335,7 @@ function this:AddEmitter(p, emitter, duration)
 			burst_count = base.burst_count
 		}
 	end
-	
+
 	table.insert(marks, {
 		fn = 'DamageSpace',
 		emitter = emitter,
@@ -354,8 +346,9 @@ end
 
 function this:AddDelay(duration)
 	if isMarkUnavailable() then return end
-	
-	assert(type(duration) == 'number')
+
+	Assert.Equals('number', type(duration), "Argument #1")
+
 	duration = duration * 60 -- fps
 
 	table.insert(marks, {
