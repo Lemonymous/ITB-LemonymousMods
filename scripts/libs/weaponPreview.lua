@@ -372,7 +372,7 @@ function this:SetLooping(flag)
 	marks.loop = flag
 end
 
-local function init()
+local function onModsInitialized()
 	-- inject code into all GetTargetArea and GetSkillEffect functions
 	for skillId, skill in pairs(_G) do
 		if type(skill) == 'table' then
@@ -434,17 +434,6 @@ local function init()
 			end
 		end
 	end
-end
-
--- TODO: use the modsInitialzied hook instead?
--- Would require a newer mod loader.
-
--- init after all mods have been initialized.
-local modApiFinalize = modApi.finalize
-function modApi.finalize(...)
-	init()
-	
-	modApiFinalize(...)
 end
 
 local function createAnim(anim)
@@ -567,6 +556,7 @@ local function onMissionUpdate()
 	nextFrame()
 end
 
+modApi.events.onModsInitialized:subscribe(onModsInitialized)
 modApi.events.onMissionStart:subscribe(clearMarks)
 modApi.events.onTestMechEntered:subscribe(clearMarks)
 modApi.events.onPreLoadGame:subscribe(clearMarks)
