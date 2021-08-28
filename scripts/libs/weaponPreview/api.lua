@@ -171,14 +171,8 @@
 
 
 local mod = mod_loader.mods[modApi.currentMod]
-local path = mod.scriptPath
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local isTipImage = require(path .."weaponPreview/lib/isTipImage")
-local selected = require(path .."weaponPreview/lib/selected")
-local spaceEmitter = require(path .."weaponPreview/lib/spaceEmitter")
 
 local this = {}
-local loaded
 local marker = {area = {weapon = {start = 0}}, effect = {weapon = {start = 0}}}
 local marks = marker.area
 local frame = -1
@@ -187,9 +181,14 @@ local ignoreCall
 local taggedSkills = {}
 local doMarkTile = {}
 
+local function spaceEmitter(loc, emitter)
+	local fx = SkillEffect()
+	fx:AddEmitter(loc, emitter)
+	return fx.effect:index(1)
+end
 
 local function isMarkIgnored()
-	return ignoreCall or isTipImage() or not selected:Get()
+	return ignoreCall or Board:IsTipImage() or not Board:GetSelectedPawn()
 end
 
 local function isMarkUnavailable()
@@ -400,7 +399,7 @@ local function init()
 						taggedSkills[id] = true
 						
 						marks = marker[markType]
-						local selected = selected:Get()
+						local selected = Board:GetSelectedPawn()
 						
 						if not isMarkIgnored() and selected:GetSpace() == p then
 							local armedId = selected:GetArmedWeaponId()
@@ -482,104 +481,96 @@ function this:ClearMarks()
 	clearMarks()
 end
 
-function this:load()
-	if loaded then return end
-	loaded = true
+local function onMissionUpdate()
+	local selected = Board:GetSelectedPawn()
 	
-	selected:load()
-	
-	modApi:addModsLoadedHook(function() loaded = nil end)
-	modApi:addMissionStartHook(clearMarks)
-	modApi:addTestMechEnteredHook(clearMarks)
-	modApi:addPreLoadGameHook(clearMarks)
-	modUtils:addPawnDeselectedHook(clearMarks)
-	
-	modApi:addMissionUpdateHook(function()
-		
-		local selected = selected:Get()
-		
-		if not selected or selected:GetArmedWeaponId() == -1 then
-			clearMarks()
-			nextFrame()
-			
-			return
-		end
-		
-		for _, markType in ipairs{'area', 'effect'} do
-			
-			local marker = marker[markType]
-			marker.loop = marker.loop ~= false
-			
-			local t = 0
-			local t1 = frame - marker.weapon.start -- time since start
-			if marker.loop then
-				t1 = marker.length and frame % marker.length or 0
-			end
-			
-			for _, mark in ipairs(marker) do
-				ignoreCall = true
-				
-				local doMark
-				
-				if markType == 'area' then
-					doMark = true
-				elseif markType == 'effect' then
-					local selectedTile = selected:GetSpace()
-					local cursorTile = Board:GetHighlighted()
-					local markId = marker.weapon.root .."_p".. p2idx(selectedTile)
-					
-					doMark = doMarkTile[markId]
-					
-					-- we have not cached this yet
-					if doMark == nil then
-						-- default to false, and change to true if we find a match.
-						doMark = false
-						
-						if cursorTile then
-							local targetArea = _G[marker.weapon.root]:GetTargetArea(selectedTile)
-							
-							-- let's see if it is faster not to extract the table.
-							for i = 1, targetArea:size() do
-								if cursorTile == targetArea:index(i) then
-									
-									doMark = true
-									break
-								end
-							end
-						end
-					end
-					
-					-- cache result.
-					doMarkTile[markId] = doMark
-				end
-				
-				if doMark then
-					if mark.fn then
-						local duration = mark.duration and mark.duration * 60 or INT_MAX - t
-						if t <= t1 and t1 <= t + duration then
-							if mark.anim then
-								createAnim(mark.anim)
-								
-								local start = marker.loop and frame or t1
-								local f = 1 + math.floor((start % duration) * a[mark.anim].NumFrames / duration)
-								mark.data[2] = mark.anim .. mod.id .. f
-							end
-							
-							if not mark.emitter or (t1 - t) % 5 < 1 then
-								Board[mark.fn](Board, unpack(mark.data))
-							end
-						end
-					end
-					
-					t = t + (mark.delay or 0)
-				end
-				
-				ignoreCall = nil
-			end
-		end
-		
+	if not selected or selected:GetArmedWeaponId() == -1 then
+		clearMarks()
 		nextFrame()
-	end)
+		
+		return
+	end
+	
+	for _, markType in ipairs{'area', 'effect'} do
+		
+		local marker = marker[markType]
+		marker.loop = marker.loop ~= false
+		
+		local t = 0
+		local t1 = frame - marker.weapon.start -- time since start
+		if marker.loop then
+			t1 = marker.length and frame % marker.length or 0
+		end
+		
+		for _, mark in ipairs(marker) do
+			ignoreCall = true
+			
+			local doMark
+			
+			if markType == 'area' then
+				doMark = true
+			elseif markType == 'effect' then
+				local selectedTile = selected:GetSpace()
+				local cursorTile = Board:GetHighlighted()
+				local markId = marker.weapon.root .."_p".. p2idx(selectedTile)
+				
+				doMark = doMarkTile[markId]
+				
+				-- we have not cached this yet
+				if doMark == nil then
+					-- default to false, and change to true if we find a match.
+					doMark = false
+					
+					if cursorTile then
+						local targetArea = _G[marker.weapon.root]:GetTargetArea(selectedTile)
+						
+						-- let's see if it is faster not to extract the table.
+						for i = 1, targetArea:size() do
+							if cursorTile == targetArea:index(i) then
+								
+								doMark = true
+								break
+							end
+						end
+					end
+				end
+				
+				-- cache result.
+				doMarkTile[markId] = doMark
+			end
+			
+			if doMark then
+				if mark.fn then
+					local duration = mark.duration and mark.duration * 60 or INT_MAX - t
+					if t <= t1 and t1 <= t + duration then
+						if mark.anim then
+							createAnim(mark.anim)
+							
+							local start = marker.loop and frame or t1
+							local f = 1 + math.floor((start % duration) * a[mark.anim].NumFrames / duration)
+							mark.data[2] = mark.anim .. mod.id .. f
+						end
+						
+						if not mark.emitter or (t1 - t) % 5 < 1 then
+							Board[mark.fn](Board, unpack(mark.data))
+						end
+					end
+				end
+				
+				t = t + (mark.delay or 0)
+			end
+			
+			ignoreCall = nil
+		end
+	end
+	
+	nextFrame()
 end
+
+modApi.events.onMissionStart:subscribe(clearMarks)
+modApi.events.onTestMechEntered:subscribe(clearMarks)
+modApi.events.onPreLoadGame:subscribe(clearMarks)
+modApi.events.onPawnDeselected:subscribe(clearMarks)
+modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 
 return this
