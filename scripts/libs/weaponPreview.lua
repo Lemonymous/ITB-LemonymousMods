@@ -188,7 +188,7 @@ if Assert.TypeGLColor == nil then
 	end
 end
 
-local mod = mod_loader.mods[modApi.currentMod]
+local PREFIX = "_frame%s_"
 
 local this = {}
 local marker = {area = {weapon = {start = 0}}, effect = {weapon = {start = 0}}}
@@ -327,9 +327,10 @@ function this:AddEmitter(p, emitter, duration)
 	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
 
 	local base = _G[emitter]
+	local prefix = string.format(PREFIX, 1)
 
-	if not _G[emitter .. mod.id] then
-		_G[emitter .. mod.id] = base:new{
+	if not _G[prefix..emitter] then
+		_G[prefix..emitter] = base:new{
 			timer = .017,
 			birth_rate = base.birth_rate,
 			burst_count = base.burst_count
@@ -339,7 +340,7 @@ function this:AddEmitter(p, emitter, duration)
 	table.insert(marks, {
 		fn = 'DamageSpace',
 		emitter = emitter,
-		data = {spaceEmitter(p, emitter .. mod.id)},
+		data = {spaceEmitter(p, prefix..emitter)},
 		duration = duration
 	})
 end
@@ -431,15 +432,17 @@ end
 
 local function createAnim(anim)
 	local base = a[anim]
+	local prefix = string.format(PREFIX, 1)
 	-- create animations if they don't exist.
-	if not a[anim .. mod.id .."1"] then
+	if not a[prefix..anim] then
 		-- TODO? make work with Frames and Lengths.
 		assert(base.Frames == nil, "Weapon Preview library does not support animations with .Frames")
 		assert(base.Lengths == nil, "Weapon Preview library does not support animations with .Lengths")
 		
 		-- chop up animation to single frame units.
 		for i = 1, base.NumFrames do
-			a[anim .. mod.id .. i] = base:new{
+			local prefix = string.format(PREFIX, i)
+			a[prefix..anim] = base:new{
 				Frames = {i-1},
 				Loop = false,
 				Time = 0
@@ -530,7 +533,8 @@ local function onMissionUpdate()
 							
 							local start = marker.loop and frame or t1
 							local f = 1 + math.floor((start % duration) * a[mark.anim].NumFrames / duration)
-							mark.data[2] = mark.anim .. mod.id .. f
+							local prefix = string.format(PREFIX, f)
+							mark.data[2] = prefix..mark.anim
 						end
 						
 						if not mark.emitter or (t1 - t) % 5 < 1 then
