@@ -223,10 +223,15 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		ret:AddScript(string.format([[
 			local p2, damage, id = %s, %s, %s
 			local spaceDamage = SpaceDamage(p2, damage);
+			if Board:GetTerrain(p2) == TERRAIN_WATER then
 				Board:DamageSpace(spaceDamage);
 			else
-				local modApiExt = modApiExt_internal:getMostRecent()
-				modApiExt.pawn:safeDamage(Board:GetPawn(id), spaceDamage);
+				local fx = SkillEffect();
+				fx:AddSafeDamage(spaceDamage);
+				for i = 1, fx.effect:size() do
+					local d = fx.effect:index(i);
+					Board:DamageSpace(d);
+				end
 			end
 		]], p2:GetString(), damage, id))
 		
