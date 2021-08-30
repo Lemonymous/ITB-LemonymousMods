@@ -130,7 +130,7 @@ function lmn_KnightBotAtk1:GetSkillEffect(p1, p2)
 		worldConstants:queuedResetSpeed(ret)
 		
 		local distance = p1:Manhattan(target)
-		ret:AddQueuedDelay(distance * 0.07 * worldConstants.GetDefaultSpeed() / newSpeed - 0.1)
+		ret:AddQueuedDelay(distance * 0.07 * worldConstants:getDefaultSpeed() / newSpeed - 0.1)
 		
 		if doDamage then
 			local d = SpaceDamage(target + vec)
