@@ -356,7 +356,6 @@ function mod:load(options, version)
 		"enemy/knightbot",
 		"doubleSpawn",
 		"secret",
-		"weaponPreview/api",
 	} do
 		require(self.scriptPath .. name):load()
 	end

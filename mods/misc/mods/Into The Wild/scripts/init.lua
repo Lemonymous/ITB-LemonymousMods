@@ -227,7 +227,6 @@ function mod:init()
 	islandApi:AddIsland(island)
 	
 	LApi.library:new("tutorialTips")
-	require(scriptPath .."weaponPreview/api")
 	require(scriptPath .."achievements")
 	require(scriptPath .."achievementTriggers")
 	require(scriptPath .."side_objectives")
@@ -241,7 +240,6 @@ function mod:load(options, version)
 	local scriptPath = self.scriptPath
 	
 	require(scriptPath .."selected"):load()
-	require(scriptPath .."weaponPreview/api"):load()
 
 	if modApi.achievements:isComplete(self.id, "leaders") then
 		require(scriptPath.."secret"):addSquad()
