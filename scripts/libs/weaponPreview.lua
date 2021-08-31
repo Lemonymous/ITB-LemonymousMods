@@ -1,173 +1,40 @@
 
------------------------------------------------------------------------------
--- Weapon Preview v2.2.prelim2* - code library
---[[-------------------------------------------------------------------------
-	* paths modified for current mod
-	
-	API for
-	 - enhancing preview of weapons/move/repair skills with
-		- damage marks
-		- colored tiles
-		- tile descriptions
-		- tile images
-		- animations
-		- emitters
-	
-	
-	 library dependencies:
-	=======================
-	modApiExt - manual init/load
-	
-	
-	 request api:
-	==============
-	local path = mod_loader.mods[modApi.currentMod].scriptPath
-	local previewer = require(path .."weaponPreview/api")
-	
-	library must be requested at init at least once and it will automatically initialize.
-	
-	
-	 load library: (required)
-	===============
-	require(self.scriptPath .."weaponPreview/api"):load()
-	
-	place in load function in init.lua
-	
-	
-	-----------------
-	   Method List
-	-----------------
-	all methods except 'load' are meant to be used in either GetTargetArea or GetSkillEffect, whichever makes the most sense.
-	GetTargetArea can display marks as soon as a weapon is selected.
-	GetSkillEffect can display marks only after a tile is highlighted, and should be used if mark is dependent of target location.
-	
-	
-	previewer:load()
-	================
-	loads library. (required)
-	
-	
-	previewer:AddDelay(duration)
-	============================
-	adds a delay before next preview;
-	essentially animating the preview data, and looping it.
-	
-	field    | type  | description
-	---------+-------+------------------
-	duration | float | delay in seconds
-	---------+-------+------------------
-	
-	
-	previewer:SetLooping(flag)
-	==========================
-	previews loop by default.
-	if looping is set to false, preview data will be displayed
-	until there are no more calls to AddDelay.
-	after the last AddDelay, any preview data added after it will display continuously.
-	
-	field | type    | description
-	------+---------+-----------------------------
-	flag  | boolean | sets looping if true or nil
-	------+---------+-----------------------------
-	
-	
-	previewer:AddDamage(damage)
-	===========================
-	marks the board with a SpaceDamage object.
-	
-	field  | type        | description
-	-------+-------------+-------------------
-	damage | SpaceDamage | object to preview
-	-------+-------------+-------------------
-	
-	
-	previewer:AddColor(tile, gl_color)
-	==================================
-	colors a tile. different color marks can combine to show both.
-	
-	field    | type     | description
-	---------+----------+-------------
-	tile     | Point    | location
-	gl_color | GL_Color | tile color
-	---------+----------+-------------
-	
-	
-	previewer:AddSimpleColor(tile, gl_color)
-	========================================
-	colors a tile. simple color does not combine colors with other color marks.
-	
-	field    | type     | description
-	---------+----------+-------------
-	tile     | Point    | location
-	gl_color | GL_Color | tile color
-	---------+----------+-------------
-	
-	
-	previewer:AddImage(tile, imagePath, gl_color)
-	=============================================
-	adds an image to a tile.
-	
-	field     | type     | description
-	----------+----------+--------------------
-	tile      | Point    | location
-	imagePath | string   | file path to image
-	gl_color  | GL_Color | image color
-	----------+----------+--------------------
-	
-	
-	previewer:AddDesc(tile, desc, flag)
-	===================================
-	adds a description to a tile.
-	
-	field | type    | description
-	------+---------+------------------
-	tile  | Point   | location
-	desc  | string  | tile description
-	flag  | boolean | ?
-	------+---------+------------------
-	
-	
-	previewer:AddFlashing(tile, flag)
-	=================================
-	causes a building to flash.
-	
-	field | type    | description
-	------+---------+-------------
-	tile  | Point   | location
-	flag  | boolean | ?
-	------+---------+-------------
-	
-	
-	previewer:AddAnimation(tile, anim)
-	==================================
-	plays an animation at a tile.
-	
-	field | type    | description
-	------+---------+-----------------
-	tile  | Point   | location
-	anim  | string  | id of animation
-	------+---------+-----------------
-	
-	
-	previewer:AddEmitter(tile, emitter)
-	===================================
-	plays an animation at a tile.
-	
-	field   | type    | description
-	--------+---------+---------------
-	tile    | Point   | location
-	emitter | string  | id of emitter
-	--------+---------+---------------
-	
-	
-	previewer:ClearMarks()
-	======================
-	not intended for normal use,
-	but it can be used to clear
-	all currently added marks if needed.
-	
-	
-]]---------------------------------------------------------------------------
+----------------------------------------------------------------------
+-- Weapon Preview v3.0.0 - code library
+-- https://github.com/Lemonymous/ITB-LemonymousMods/wiki/weaponPreview
+--
+-- by Lemonymous
+----------------------------------------------------------------------
+--  A library for
+--   - enhancing preview of weapons/move/repair skills with
+--      - damage marks
+--      - colored tiles
+--      - tile descriptions
+--      - tile images
+--      - animations
+--      - emitters
+--
+--  methods:
+--      :AddDamage(spaceDamage, duration)
+--      :AddImage(point, path, gl_color, duration)
+--      :AddDesc(point, desc, flag, duration)
+--      :AddColor(point, gl_color, duration)
+--      :AddSimpleColor(point, gl_color, duration)
+--      :AddFlashing(point, flag, duration)
+--      :AddAnimation(point, animation, delay)
+--      :AddEmitter(point, emitter, duration)
+--      :AddDelay(duration)
+--      :SetLooping(flag)
+--      :ClearMarks()
+--      :ResetTimer()
+--
+--  All methods are meant to be used in either GetTargetArea or
+--  GetSkillEffect, whichever makes the most sense.
+--  GetTargetArea can display marks as soon as a weapon is selected.
+--  GetSkillEffect can display marks only after a tile is highlighted,
+--  and should be used if mark is dependent of target location.
+--
+----------------------------------------------------------------------
 
 
 if Assert.TypeGLColor == nil then
@@ -188,16 +55,20 @@ if Assert.TypeGLColor == nil then
 	end
 end
 
-local PREFIX = "_frame%s_"
+local VERSION = "3.0.0"
+local PREFIX = "_weapon_preview_%s_"
 
-local this = {}
-local marker = {area = {weapon = {start = 0}}, effect = {weapon = {start = 0}}}
-local marks = marker.area
-local frame = -1
-local a = ANIMS
-local ignoreCall
-local taggedSkills = {}
-local doMarkTile = {}
+local STATE_NONE = 0
+local STATE_SKILL_EFFECT = 1
+local STATE_TARGET_AREA = 2
+
+local oldGetTargetAreas = {}
+local oldGetSkillEffects = {}
+local globalCounter = 0
+local prevArmedWeaponId
+local previewTargetArea = PointList()
+local previewState = STATE_NONE
+local previewMarks = {}
 
 local function spaceEmitter(loc, emitter)
 	local fx = SkillEffect()
@@ -205,45 +76,86 @@ local function spaceEmitter(loc, emitter)
 	return fx.effect:index(1)
 end
 
-local function isMarkIgnored()
-	return ignoreCall or Board:IsTipImage() or not Board:GetSelectedPawn()
+local function createAnim(anim)
+	local base = ANIMS[anim]
+	local prefix = string.format(PREFIX, 1)
+
+	-- chop up animation to single frame units.
+	if not ANIMS[prefix..anim] then
+		local frames = base.Frames
+		local lengths = base.Lengths
+
+		if not frames then
+			frames = {}
+			for i = 1, base.NumFrames do
+				frames[i] = i - 1
+			end
+		end
+
+		if not lengths then
+			lengths = {}
+			for i = 1, #frames do
+				lengths[i] = base.Time
+			end
+		end
+
+		for i, frame in ipairs(frames) do
+			local prefix = string.format(PREFIX, i)
+			ANIMS[prefix..anim] = base:new{
+				__NumFrames = #frames,
+				__Lengths = lengths,
+				Frames = { frame },
+				Lengths = nil,
+				Loop = false,
+				Time = 0,
+			}
+		end
+	end
 end
 
-local function isMarkUnavailable()
-	return marks == nil or isMarkIgnored() or frame ~= marks.weapon.start
+local function sum(t)
+	local result = 0
+	for i = 1, #t do
+		result = result + t[i]
+	end
+	return result
 end
 
-function this:AddDamage(d, duration)
-	if isMarkUnavailable() then return end
+local function isPreviewerUnavailable()
+	return previewState == STATE_NONE or Board:IsTipImage()
+end
+
+local function addDamage(self, d, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.Equals({'userdata', 'table'}, type(d), "Argument #1")
 	Assert.Equals({'nil', 'number'}, type(duration), "Argument #2")
 	Assert.TypePoint(d.loc, "Argument #1 - Field 'loc'")
 
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		fn = 'MarkSpaceDamage',
 		data = {shallow_copy(d)},
 		duration = duration
 	})
 end
 
-function this:AddImage(p, path, gl_color, duration)
-	if isMarkUnavailable() then return end
+local function addImage(self, p, path, gl_color, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.TypePoint(p, "Argument #1")
 	Assert.Equals('string', type(path), "Argument #2")
 	Assert.TypeGLColor(gl_color, "Argument #3")
 	Assert.Equals({'nil', 'number'}, type(duration), "Argument #4")
 
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		fn = 'MarkSpaceImage',
 		data = {p, path, gl_color},
 		duration = duration
 	})
 end
 
-function this:AddDesc(p, desc, flag, duration)
-	if isMarkUnavailable() then return end
+local function addDesc(self, p, desc, flag, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.TypePoint(p, "Argument #1")
 	Assert.Equals('string', type(desc), "Argument #2")
@@ -252,43 +164,43 @@ function this:AddDesc(p, desc, flag, duration)
 
 	flag = flag ~= false
 
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		fn = 'MarkSpaceDesc',
 		data = {p, desc, flag},
 		duration = duration
 	})
 end
 
-function this:AddColor(p, gl_color, duration)
-	if isMarkUnavailable() then return end
+local function addColor(self, p, gl_color, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.TypePoint(p, "Argument #1")
 	Assert.TypeGLColor(gl_color, "Argument #2")
 	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
 
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		fn = 'MarkSpaceColor',
 		data = {p, gl_color},
 		duration = duration
 	})
 end
 
-function this:AddSimpleColor(p, gl_color, duration)
-	if isMarkUnavailable() then return end
+local function addSimpleColor(self, p, gl_color, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.TypePoint(p, "Argument #1")
 	Assert.TypeGLColor(gl_color, "Argument #2")
 	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
 
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		fn = 'MarkSpaceSimpleColor',
 		data = {p, gl_color},
 		duration = duration
 	})
 end
 
-function this:AddFlashing(p, flag, duration)
-	if isMarkUnavailable() then return end
+local function addFlashing(self, p, flag, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.TypePoint(p, "Argument #1")
 	Assert.Equals({'nil', 'boolean'}, type(flag), "Argument #2")
@@ -296,30 +208,44 @@ function this:AddFlashing(p, flag, duration)
 
 	flag = flag ~= false
 
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		fn = 'MarkFlashing',
 		data = {p, flag},
 		duration = duration
 	})
 end
 
-function this:AddAnimation(p, anim)
-	if isMarkUnavailable() then return end
+local function addAnimation(self, p, anim, delay)
+	if isPreviewerUnavailable() then return end
 
 	Assert.TypePoint(p, "Argument #1")
 	Assert.Equals('string', type(anim), "Argument #2")
-	Assert.NotEquals('nil', type(a[anim]), "Argument #2")
+	Assert.NotEquals('nil', type(ANIMS[anim]), "Argument #2")
 
-	table.insert(marks, {
+	createAnim(anim)
+
+	local base = ANIMS[anim]
+	local prefix = string.format(PREFIX, 1)
+	local duration = sum(ANIMS[prefix..anim].__Lengths)
+
+	if delay == ANIM_DELAY then
+		delay = duration
+	else
+		delay = nil
+	end
+
+	table.insert(previewMarks[previewState], {
 		fn = 'AddAnimation',
 		anim = anim,
 		data = {p, anim, ANIM_NO_DELAY},
-		duration = a[anim].Time * a[anim].NumFrames
+		duration = duration,
+		delay = delay,
+		loop = base.Loop
 	})
 end
 
-function this:AddEmitter(p, emitter, duration)
-	if isMarkUnavailable() then return end
+local function addEmitter(self, p, emitter, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.TypePoint(p, "Argument #1")
 	Assert.Equals('string', type(emitter), "Argument #2")
@@ -331,13 +257,12 @@ function this:AddEmitter(p, emitter, duration)
 
 	if not _G[prefix..emitter] then
 		_G[prefix..emitter] = base:new{
-			timer = .017,
-			birth_rate = base.birth_rate,
-			burst_count = base.burst_count
+			birth_rate = base.birth_rate / 4,
+			burst_count = base.burst_count / 4
 		}
 	end
 
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		fn = 'DamageSpace',
 		emitter = emitter,
 		data = {spaceEmitter(p, prefix..emitter)},
@@ -345,219 +270,270 @@ function this:AddEmitter(p, emitter, duration)
 	})
 end
 
-function this:AddDelay(duration)
-	if isMarkUnavailable() then return end
+local function addDelay(self, duration)
+	if isPreviewerUnavailable() then return end
 
 	Assert.Equals('number', type(duration), "Argument #1")
 
-	duration = duration * 60 -- fps
-
-	table.insert(marks, {
+	table.insert(previewMarks[previewState], {
 		delay = duration
 	})
-	
-	marks.length = marks.length or 0
-	marks.length = marks.length + duration
 end
 
-function this:SetLooping(flag)
-	if isMarkUnavailable() then return end
-	
-	marks.loop = flag
-end
+local function setLooping(self, flag)
+	if isPreviewerUnavailable() then return end
 
-local function onModsInitialized()
-	-- inject code into all GetTargetArea and GetSkillEffect functions
-	for skillId, skill in pairs(_G) do
-		if type(skill) == 'table' then
-			
-			local function addFunc(funcName, markType)
-				local function addWeapon(root)
-					
-					-- reset weapon if at root and time mismatch.
-					if (not root or list_contains(root, skillId)) and marks.weapon.start ~= frame then
-						marker[markType] = {weapon = {root = skillId, start = frame}}
-					end
-					
-					-- only add weapon if the root skill matches armed weapon id.
-					if (not root or list_contains(root, marks.weapon.root)) and marker[markType].weapon.start == frame then
-						table.insert(marker[markType].weapon, skillId)
-					end
-				end
-				
-				local old = skill[funcName]
-				skill[funcName] = function(self, p, ...)
-					local id = funcName .. markType
-					
-					if not taggedSkills[id] then
-						taggedSkills[id] = true
-						
-						marks = marker[markType]
-						local selected = Board:GetSelectedPawn()
-						
-						if not isMarkIgnored() and selected:GetSpace() == p then
-							local armedId = selected:GetArmedWeaponId()
-							
-							if armedId == 0 then
-								addWeapon{'Move'}
-							elseif armedId == 50 then
-								-- not sure if Skill_Repair_A is ever called.
-								addWeapon{'Skill_Repair', 'Skill_Repair_A', 'Skill_Repair_Power', 'Skill_Repair_Punch'}
-							else
-								addWeapon()
-							end
-							
-							marks = marker[markType]
-						end
-					end
-					
-					local result = old(self, p, ...)
-					
-					marks = nil
-					
-					return result
-				end
-			end
-			
-			if type(skill.GetTargetArea) == 'function' then
-				addFunc('GetTargetArea', 'area')
-			end
-			
-			if type(skill.GetSkillEffect) == 'function' then
-				addFunc('GetSkillEffect', 'effect')
-			end
-		end
+	if flag == nil then
+		flag = true
 	end
+
+	previewMarks[previewState].loop = flag
 end
 
-local function createAnim(anim)
-	local base = a[anim]
-	local prefix = string.format(PREFIX, 1)
-	-- create animations if they don't exist.
-	if not a[prefix..anim] then
-		-- TODO? make work with Frames and Lengths.
-		assert(base.Frames == nil, "Weapon Preview library does not support animations with .Frames")
-		assert(base.Lengths == nil, "Weapon Preview library does not support animations with .Lengths")
-		
-		-- chop up animation to single frame units.
-		for i = 1, base.NumFrames do
-			local prefix = string.format(PREFIX, i)
-			a[prefix..anim] = base:new{
-				Frames = {i-1},
-				Loop = false,
-				Time = 0
-			}
-		end
-	end
+local function clearTargetAreaMarks()
+	previewMarks[STATE_TARGET_AREA] = {}
+end
+
+local function clearSkillEffectMarks()
+	previewMarks[STATE_SKILL_EFFECT] = {}
 end
 
 local function clearMarks()
-	marker.area = {weapon = {start = 0}}
-	marker.effect = {weapon = {start = 0}}
+	clearTargetAreaMarks()
+	clearSkillEffectMarks()
 end
 
-local function nextFrame()
-	frame = frame + 1
-	doMarkTile = {}
-	taggedSkills = {}
+local function resetTimer()
+	globalCounter = 0
 end
 
-function this:ClearMarks()
-	clearMarks()
+local function getTargetArea(self, p1, ...)
+	if previewState ~= STATE_NONE or Board:IsTipImage() then
+		return oldGetTargetAreas[self.__Id](self, p1, ...)
+	end
+
+	local skillId = self.__Id
+	local armedWeapon = Pawn and Pawn:GetArmedWeapon() or nil
+
+	if armedWeapon == skillId then
+		clearTargetAreaMarks()
+		previewState = STATE_TARGET_AREA
+	end
+
+	local result = oldGetTargetAreas[skillId](self, p1, ...)
+
+	if armedWeapon == skillId then
+		previewTargetArea = result
+		previewState = STATE_NONE
+	end
+
+	return result
+end
+
+local function getSkillEffect(self, p1, p2, ...)
+	if previewState ~= STATE_NONE or Board:IsTipImage() then
+		return oldGetSkillEffects[self.__Id](self, p1, p2, ...)
+	end
+
+	local skillId = self.__Id
+	local armedWeapon = Pawn and Pawn:GetArmedWeapon() or nil
+
+	if armedWeapon == skillId then
+		clearSkillEffectMarks()
+		previewState = STATE_SKILL_EFFECT
+	end
+
+	local result = oldGetSkillEffects[skillId](self, p1, p2, ...)
+
+	if armedWeapon == skillId then
+		previewState = STATE_NONE
+	end
+
+	return result
+end
+
+local function overrideAllSkillMethods()
+	local skills = {}
+	for skillId, skill in pairs(_G) do
+		if type(skill) == 'table' then
+			skills[skillId] = skill
+		end
+	end
+
+	for skillId, skill in pairs(skills) do
+		if type(skill.GetTargetArea) == 'function' then
+			oldGetTargetAreas[skillId] = skill.GetTargetArea
+			skill.__Id = skillId
+		end
+		if type(skill.GetSkillEffect) == 'function' then
+			oldGetSkillEffects[skillId] = skill.GetSkillEffect
+			skill.__Id = skillId
+		end
+	end
+
+	for skillId, _ in pairs(oldGetTargetAreas) do
+		_G[skillId].GetTargetArea = getTargetArea
+	end
+
+	for skillId, _ in pairs(oldGetSkillEffects) do
+		_G[skillId].GetSkillEffect = getSkillEffect
+	end
+end
+
+local function pointListContains(pointList, obj)
+	for i = 1, pointList:size() do
+		if obj == pointList:index(i) then
+			return true
+		end
+	end
+
+	return false
+end
+
+local function getPreviewLength(previewState)
+	local marks = previewMarks[previewState]
+	local delay = 0
+	local length = 0
+
+	for _, mark in ipairs(marks) do
+		if mark.duration then
+			length = math.max(length, delay + mark.duration)
+		end
+
+		if mark.delay then
+			delay = delay + mark.delay
+			length = math.max(length, delay)
+		end
+	end
+
+	return length * 60
+end
+
+local function getAnimFrame(mark, timeStart, timeCurr)
+	local prefix = string.format(PREFIX, 1)
+	local base = ANIMS[prefix..mark.anim]
+	local lengths = base.__Lengths
+	local duration = mark.duration * 60
+
+	if mark.loop then
+		timeCurr = timeStart + (timeCurr - timeStart) % duration
+	end
+
+	local time = timeStart
+	for i = 1, base.__NumFrames do
+		time = time + lengths[i] * 60
+		if time > timeCurr or i == base.__NumFrames then
+			local prefix = string.format(PREFIX, i)
+			return prefix..mark.anim
+		end
+	end
+end
+
+local function markSpaces(previewState)
+	local marks = previewMarks[previewState]
+	local previewCounter = 0
+	local time = globalCounter
+	local looping = marks.loop
+
+	if looping ~= false then
+		local length = getPreviewLength(previewState)
+		if length > 0 then
+			time = time % length
+		else
+			time = 0
+		end
+	end
+
+	for _, mark in ipairs(marks) do
+		if mark.fn then
+			local duration = INT_MAX
+
+			if mark.duration then
+				duration = mark.duration * 60
+			end
+
+			if mark.fn == "AddAnimation" then
+				mark.data[2] = getAnimFrame(mark, previewCounter, time)
+			end
+
+			if mark.loop or previewCounter <= time and time <= previewCounter + duration then
+				Board[mark.fn](Board, unpack(mark.data))
+			end
+		end
+
+		previewCounter = previewCounter + (mark.delay or 0) * 60
+	end
 end
 
 local function onMissionUpdate()
 	local selected = Board:GetSelectedPawn()
-	
-	if not selected or selected:GetArmedWeaponId() == -1 then
-		clearMarks()
-		nextFrame()
-		
+
+	if not selected then
+		prevArmedWeaponId = -1
 		return
 	end
-	
-	for _, markType in ipairs{'area', 'effect'} do
-		
-		local marker = marker[markType]
-		marker.loop = marker.loop ~= false
-		
-		local t = 0
-		local t1 = frame - marker.weapon.start -- time since start
-		if marker.loop then
-			t1 = marker.length and frame % marker.length or 0
-		end
-		
-		for _, mark in ipairs(marker) do
-			ignoreCall = true
-			
-			local doMark
-			
-			if markType == 'area' then
-				doMark = true
-			elseif markType == 'effect' then
-				local selectedTile = selected:GetSpace()
-				local cursorTile = Board:GetHighlighted()
-				local markId = marker.weapon.root .."_p".. p2idx(selectedTile)
-				
-				doMark = doMarkTile[markId]
-				
-				-- we have not cached this yet
-				if doMark == nil then
-					-- default to false, and change to true if we find a match.
-					doMark = false
-					
-					if cursorTile then
-						local targetArea = _G[marker.weapon.root]:GetTargetArea(selectedTile)
-						
-						-- let's see if it is faster not to extract the table.
-						for i = 1, targetArea:size() do
-							if cursorTile == targetArea:index(i) then
-								
-								doMark = true
-								break
-							end
-						end
-					end
-				end
-				
-				-- cache result.
-				doMarkTile[markId] = doMark
-			end
-			
-			if doMark then
-				if mark.fn then
-					local duration = mark.duration and mark.duration * 60 or INT_MAX - t
-					if t <= t1 and t1 <= t + duration then
-						if mark.anim then
-							createAnim(mark.anim)
-							
-							local start = marker.loop and frame or t1
-							local f = 1 + math.floor((start % duration) * a[mark.anim].NumFrames / duration)
-							local prefix = string.format(PREFIX, f)
-							mark.data[2] = prefix..mark.anim
-						end
-						
-						if not mark.emitter or (t1 - t) % 5 < 1 then
-							Board[mark.fn](Board, unpack(mark.data))
-						end
-					end
-				end
-				
-				t = t + (mark.delay or 0)
-			end
-			
-			ignoreCall = nil
-		end
+
+	local armedWeaponId = selected:GetArmedWeaponId()
+
+	if armedWeaponId == prevArmedWeaponId then
+		globalCounter = globalCounter + 1
+	else
+		globalCounter = 0
 	end
-	
-	nextFrame()
+
+	prevArmedWeaponId = armedWeaponId
+
+	if armedWeaponId == -1 then
+		return
+	end
+
+	markSpaces(STATE_TARGET_AREA)
+
+	local highlighted = Board:GetHighlighted()
+	if not pointListContains(previewTargetArea, highlighted) then
+		return
+	end
+
+	markSpaces(STATE_SKILL_EFFECT)
+end
+
+local function onModsInitialized()
+	if VERSION < WeaponPreview.version then
+		return
+	end
+
+	if WeaponPreview.initialized then
+		return
+	end
+
+	WeaponPreview:finalizeInit()
+	WeaponPreview.initialized = true
 end
 
 modApi.events.onModsInitialized:subscribe(onModsInitialized)
-modApi.events.onMissionStart:subscribe(clearMarks)
-modApi.events.onTestMechEntered:subscribe(clearMarks)
-modApi.events.onPreLoadGame:subscribe(clearMarks)
-modApi.events.onPawnDeselected:subscribe(clearMarks)
-modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 
-return this
+if WeaponPreview == nil or not modApi:isVersion(VERSION, WeaponPreview.version) then
+	WeaponPreview = WeaponPreview or {}
+	WeaponPreview.version = VERSION
+
+	function WeaponPreview:finalizeInit()
+		overrideAllSkillMethods()
+
+		WeaponPreview.AddDamage = addDamage
+		WeaponPreview.AddImage = addImage
+		WeaponPreview.AddDesc = addDesc
+		WeaponPreview.AddColor = addColor
+		WeaponPreview.AddSimpleColor = addSimpleColor
+		WeaponPreview.AddFlashing = addFlashing
+		WeaponPreview.AddAnimation = addAnimation
+		WeaponPreview.AddEmitter = addEmitter
+		WeaponPreview.AddDelay = addDelay
+		WeaponPreview.SetLooping = setLooping
+		WeaponPreview.ClearMarks = clearMarks
+		WeaponPreview.ResetTimer = resetTimer
+
+		modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
+	end
+end
+
+return WeaponPreview
