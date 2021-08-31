@@ -2,7 +2,7 @@
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/libs/utils")
 local astar = LApi.library:fetch("astar")
-local weaponPreview = require(path .."scripts/weaponPreview/api")
+local weaponPreview = LApi.library:fetch("weaponPreview")
 
 modApi:appendAsset("img/weapons/lmn_flood_generator.png", path .."img/weapons/flood_generator.png")
 
@@ -80,12 +80,11 @@ function lmn_Flood_Generator:GetSkillEffect(p1, p2)
 		end
 	end
 	
+	weaponPreview:SetLooping(true)
 	for i, p in ipairs(locs) do
-		weaponPreview:SetLooping(false)
-		weaponPreview:AddImage(p, Env_lmn_FlashFlood.CombatIcon, GL_Color(255,226,88,0.75))
+		weaponPreview:AddImage(p, Env_lmn_FlashFlood.CombatIcon, GL_Color(255,226,88,0.50))
 		
 		if i < #locs then
-			weaponPreview:AddDelay(0.02)
 			ret:AddSound("/props/tide_flood")
 		else
 			ret:AddSound("/props/tide_flood_last")
@@ -103,6 +102,12 @@ function lmn_Flood_Generator:GetSkillEffect(p1, p2)
 		ret:AddBounce(p, -1)
 		ret:AddDelay(0.08)
 	end
+
+	for i, p in ipairs(locs) do
+		weaponPreview:AddImage(p, Env_lmn_FlashFlood.CombatIcon, GL_Color(88,226,255,0.75), 0.70)
+		weaponPreview:AddDelay(0.07)
+	end
+	weaponPreview:AddDelay(0.3)
 	
 	return ret
 end
