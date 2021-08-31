@@ -15,18 +15,18 @@
 --      - emitters
 --
 --  methods:
---      :AddDamage(spaceDamage, duration)
---      :AddImage(point, path, gl_color, duration)
---      :AddDesc(point, desc, flag, duration)
---      :AddColor(point, gl_color, duration)
---      :AddSimpleColor(point, gl_color, duration)
---      :AddFlashing(point, flag, duration)
 --      :AddAnimation(point, animation, delay)
---      :AddEmitter(point, emitter, duration)
+--      :AddColor(point, gl_color, duration)
+--      :AddDamage(spaceDamage, duration)
 --      :AddDelay(duration)
---      :SetLooping(flag)
+--      :AddDesc(point, desc, flag, duration)
+--      :AddEmitter(point, emitter, duration)
+--      :AddFlashing(point, flag, duration)
+--      :AddImage(point, path, gl_color, duration)
+--      :AddSimpleColor(point, gl_color, duration)
 --      :ClearMarks()
 --      :ResetTimer()
+--      :SetLooping(flag)
 --
 --  All methods are meant to be used in either GetTargetArea or
 --  GetSkillEffect, whichever makes the most sense.
@@ -125,96 +125,6 @@ local function isPreviewerUnavailable()
 	return previewState == STATE_NONE or Board:IsTipImage()
 end
 
-local function addDamage(self, d, duration)
-	if isPreviewerUnavailable() then return end
-
-	Assert.Equals({'userdata', 'table'}, type(d), "Argument #1")
-	Assert.Equals({'nil', 'number'}, type(duration), "Argument #2")
-	Assert.TypePoint(d.loc, "Argument #1 - Field 'loc'")
-
-	table.insert(previewMarks[previewState], {
-		fn = 'MarkSpaceDamage',
-		data = {shallow_copy(d)},
-		duration = duration
-	})
-end
-
-local function addImage(self, p, path, gl_color, duration)
-	if isPreviewerUnavailable() then return end
-
-	Assert.TypePoint(p, "Argument #1")
-	Assert.Equals('string', type(path), "Argument #2")
-	Assert.TypeGLColor(gl_color, "Argument #3")
-	Assert.Equals({'nil', 'number'}, type(duration), "Argument #4")
-
-	table.insert(previewMarks[previewState], {
-		fn = 'MarkSpaceImage',
-		data = {p, path, gl_color},
-		duration = duration
-	})
-end
-
-local function addDesc(self, p, desc, flag, duration)
-	if isPreviewerUnavailable() then return end
-
-	Assert.TypePoint(p, "Argument #1")
-	Assert.Equals('string', type(desc), "Argument #2")
-	Assert.Equals({'nil', 'boolean'}, type(flag), "Argument #3")
-	Assert.Equals({'nil', 'number'}, type(duration), "Argument #4")
-
-	flag = flag ~= false
-
-	table.insert(previewMarks[previewState], {
-		fn = 'MarkSpaceDesc',
-		data = {p, desc, flag},
-		duration = duration
-	})
-end
-
-local function addColor(self, p, gl_color, duration)
-	if isPreviewerUnavailable() then return end
-
-	Assert.TypePoint(p, "Argument #1")
-	Assert.TypeGLColor(gl_color, "Argument #2")
-	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
-
-	table.insert(previewMarks[previewState], {
-		fn = 'MarkSpaceColor',
-		data = {p, gl_color},
-		duration = duration
-	})
-end
-
-local function addSimpleColor(self, p, gl_color, duration)
-	if isPreviewerUnavailable() then return end
-
-	Assert.TypePoint(p, "Argument #1")
-	Assert.TypeGLColor(gl_color, "Argument #2")
-	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
-
-	table.insert(previewMarks[previewState], {
-		fn = 'MarkSpaceSimpleColor',
-		data = {p, gl_color},
-		duration = duration
-	})
-end
-
-local function addFlashing(self, p, flag, duration)
-	if isPreviewerUnavailable() then return end
-
-	Assert.TypePoint(p, "Argument #1")
-	Assert.Equals({'nil', 'boolean'}, type(flag), "Argument #2")
-	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
-
-	flag = flag ~= false
-
-	table.insert(previewMarks[previewState], {
-		fn = 'MarkFlashing',
-		data = {p, flag},
-		duration = duration
-	})
-end
-
 local function addAnimation(self, p, anim, delay)
 	if isPreviewerUnavailable() then return end
 
@@ -244,6 +154,61 @@ local function addAnimation(self, p, anim, delay)
 	})
 end
 
+local function addColor(self, p, gl_color, duration)
+	if isPreviewerUnavailable() then return end
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.TypeGLColor(gl_color, "Argument #2")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
+
+	table.insert(previewMarks[previewState], {
+		fn = 'MarkSpaceColor',
+		data = {p, gl_color},
+		duration = duration
+	})
+end
+
+local function addDamage(self, d, duration)
+	if isPreviewerUnavailable() then return end
+
+	Assert.Equals({'userdata', 'table'}, type(d), "Argument #1")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #2")
+	Assert.TypePoint(d.loc, "Argument #1 - Field 'loc'")
+
+	table.insert(previewMarks[previewState], {
+		fn = 'MarkSpaceDamage',
+		data = {shallow_copy(d)},
+		duration = duration
+	})
+end
+
+local function addDelay(self, duration)
+	if isPreviewerUnavailable() then return end
+
+	Assert.Equals('number', type(duration), "Argument #1")
+
+	table.insert(previewMarks[previewState], {
+		delay = duration
+	})
+end
+
+local function addDesc(self, p, desc, flag, duration)
+	if isPreviewerUnavailable() then return end
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals('string', type(desc), "Argument #2")
+	Assert.Equals({'nil', 'boolean'}, type(flag), "Argument #3")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #4")
+
+	flag = flag ~= false
+
+	table.insert(previewMarks[previewState], {
+		fn = 'MarkSpaceDesc',
+		data = {p, desc, flag},
+		duration = duration
+	})
+end
+
 local function addEmitter(self, p, emitter, duration)
 	if isPreviewerUnavailable() then return end
 
@@ -270,24 +235,49 @@ local function addEmitter(self, p, emitter, duration)
 	})
 end
 
-local function addDelay(self, duration)
+local function addFlashing(self, p, flag, duration)
 	if isPreviewerUnavailable() then return end
 
-	Assert.Equals('number', type(duration), "Argument #1")
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals({'nil', 'boolean'}, type(flag), "Argument #2")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
+
+	flag = flag ~= false
 
 	table.insert(previewMarks[previewState], {
-		delay = duration
+		fn = 'MarkFlashing',
+		data = {p, flag},
+		duration = duration
 	})
 end
 
-local function setLooping(self, flag)
+local function addImage(self, p, path, gl_color, duration)
 	if isPreviewerUnavailable() then return end
 
-	if flag == nil then
-		flag = true
-	end
+	Assert.TypePoint(p, "Argument #1")
+	Assert.Equals('string', type(path), "Argument #2")
+	Assert.TypeGLColor(gl_color, "Argument #3")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #4")
 
-	previewMarks[previewState].loop = flag
+	table.insert(previewMarks[previewState], {
+		fn = 'MarkSpaceImage',
+		data = {p, path, gl_color},
+		duration = duration
+	})
+end
+
+local function addSimpleColor(self, p, gl_color, duration)
+	if isPreviewerUnavailable() then return end
+
+	Assert.TypePoint(p, "Argument #1")
+	Assert.TypeGLColor(gl_color, "Argument #2")
+	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
+
+	table.insert(previewMarks[previewState], {
+		fn = 'MarkSpaceSimpleColor',
+		data = {p, gl_color},
+		duration = duration
+	})
 end
 
 local function clearTargetAreaMarks()
@@ -305,6 +295,16 @@ end
 
 local function resetTimer()
 	globalCounter = 0
+end
+
+local function setLooping(self, flag)
+	if isPreviewerUnavailable() then return end
+
+	if flag == nil then
+		flag = true
+	end
+
+	previewMarks[previewState].loop = flag
 end
 
 local function getTargetArea(self, p1, ...)
@@ -519,18 +519,18 @@ if WeaponPreview == nil or not modApi:isVersion(VERSION, WeaponPreview.version) 
 	function WeaponPreview:finalizeInit()
 		overrideAllSkillMethods()
 
-		WeaponPreview.AddDamage = addDamage
-		WeaponPreview.AddImage = addImage
-		WeaponPreview.AddDesc = addDesc
-		WeaponPreview.AddColor = addColor
-		WeaponPreview.AddSimpleColor = addSimpleColor
-		WeaponPreview.AddFlashing = addFlashing
 		WeaponPreview.AddAnimation = addAnimation
-		WeaponPreview.AddEmitter = addEmitter
+		WeaponPreview.AddColor = addColor
+		WeaponPreview.AddDamage = addDamage
 		WeaponPreview.AddDelay = addDelay
-		WeaponPreview.SetLooping = setLooping
+		WeaponPreview.AddDesc = addDesc
+		WeaponPreview.AddEmitter = addEmitter
+		WeaponPreview.AddFlashing = addFlashing
+		WeaponPreview.AddImage = addImage
+		WeaponPreview.AddSimpleColor = addSimpleColor
 		WeaponPreview.ClearMarks = clearMarks
 		WeaponPreview.ResetTimer = resetTimer
+		WeaponPreview.SetLooping = setLooping
 
 		modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 	end
