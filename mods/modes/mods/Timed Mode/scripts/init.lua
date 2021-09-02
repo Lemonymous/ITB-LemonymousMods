@@ -4,6 +4,7 @@ local mod = {
 	name = "Timed Mode",
 	description = "Adds a turn timer to missions",
 	version = "0.1.1",
+	enabled = false,
 	modApiVersion = "2.3.5",
 	icon = "mod_icon.png",
 	requirements = {},

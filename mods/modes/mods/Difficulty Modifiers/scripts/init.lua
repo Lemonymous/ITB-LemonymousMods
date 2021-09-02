@@ -3,6 +3,7 @@ local mod = {
 	id = "lmn_difficulty Modifiers",
 	name = "Difficulty Modifiers",
 	version = "1.0.4",
+	enabled = false,
 	icon = "img/mod_icon.png",
 	requirements = {"lmn_more_bosses"},
 }

@@ -4,6 +4,7 @@ local mod = {
 	name = "More Bosses",
 	description = "Adds up to 7 bosses.",
 	version = "1.4.4",
+	enabled = false,
 	modApiVersion = "2.3.0",
 	icon = "img/mod_icon.png",
 	requirements = {},
