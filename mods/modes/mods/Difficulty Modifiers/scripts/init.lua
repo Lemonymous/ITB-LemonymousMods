@@ -3,18 +3,9 @@ local mod = {
 	id = "lmn_difficulty Modifiers",
 	name = "Difficulty Modifiers",
 	version = "1.0.4",
+	icon = "img/mod_icon.png",
 	requirements = {"lmn_more_bosses"},
 }
-
-local oldOrderMods = mod_loader.orderMods
-function mod_loader.orderMods(self, options, savedOrder)
-	local ret = oldOrderMods(self, options, savedOrder)
-	
-	local mod = mod_loader.mods[mod.id]
-	mod.icon = mod.resourcePath .."img/mod_icon.png"
-	
-	return ret
-end
 
 function mod:init()
 	modApi:addGenerationOption("option_mod_spawn_start", "Starting spawns", "Modify missions' starting enemy count.", {values = {-1,0,1,2,3}, value = 0})
