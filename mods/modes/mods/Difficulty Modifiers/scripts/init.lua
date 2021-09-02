@@ -7,7 +7,7 @@ local mod = {
 	requirements = {"lmn_more_bosses"},
 }
 
-function mod:init()
+function mod:metadata()
 	modApi:addGenerationOption("option_mod_spawn_start", "Starting spawns", "Modify missions' starting enemy count.", {values = {-1,0,1,2,3}, value = 0})
 	modApi:addGenerationOption("option_mod_spawn_per_turn", "Spawns per turn", "Modify spawn count per turn.", {values = {-1,0,1,2,3}, value = 0})
 	modApi:addGenerationOption("option_mod_spawn_max", "Max Vek on board", "Modify max simultaneous enemy count.", {values = {-1,0,1,2,3}, value = 0})
@@ -18,7 +18,9 @@ function mod:init()
 	modApi:addGenerationOption("option_delay_web", "Delay Web", "Scorpions, Leapers and Spiders won't web the turn they emerge from the ground", {enabled = false})
 	modApi:addGenerationOption("option_logging_spice", "Logging (spice)", "Spice roll logs in the console.",{enabled = false})
 	modApi:addGenerationOption("option_logging_boss", "Logging (boss)", "Boss roll logs in the console.",{enabled = false})
-	
+end
+
+function mod:init()
 	require(self.scriptPath .."spiderBoss")
 	
 	self.spawner = require(self.scriptPath .."spawners")
