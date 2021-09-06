@@ -65,6 +65,8 @@ local STATE_QUEUED_SKILL = 3
 local WEAPON_UNARMED = -1
 local NULL_PAWN = -1
 
+local getTargetAreaCallers = {}
+local getSkillEffectCallers = {}
 local oldGetTargetAreas = {}
 local oldGetSkillEffects = {}
 local globalCounter = 0
@@ -318,12 +320,13 @@ local function setLooping(self, flag)
 end
 
 local function getTargetArea(self, p1, ...)
+	local skillId = getTargetAreaCallers[#getTargetAreaCallers]
+
 	if previewState ~= STATE_NONE or Board:IsTipImage() then
-		return oldGetTargetAreas[self.__Id](self, p1, ...)
+		return oldGetTargetAreas[skillId](self, p1, ...)
 	end
 
 	local pawn = Board:GetPawn(p1)
-	local skillId = self.__Id
 	local armedWeapon = nil
 
 	if pawn then
@@ -346,12 +349,13 @@ local function getTargetArea(self, p1, ...)
 end
 
 local function getSkillEffect(self, p1, p2, ...)
+	local skillId = getSkillEffectCallers[#getSkillEffectCallers]
+
 	if previewState ~= STATE_NONE or Board:IsTipImage() then
-		return oldGetSkillEffects[self.__Id](self, p1, p2, ...)
+		return oldGetSkillEffects[skillId](self, p1, p2, ...)
 	end
 
 	local pawn = Board:GetPawn(p1)
-	local skillId = self.__Id
 	local armedWeapon = nil
 	local queuedWeapon = nil
 
@@ -403,11 +407,31 @@ local function overrideAllSkillMethods()
 	end
 
 	for skillId, _ in pairs(oldGetTargetAreas) do
-		_G[skillId].GetTargetArea = getTargetArea
+		local skill = _G[skillId]
+
+		function skill.GetTargetArea(...)
+			getTargetAreaCallers[#getTargetAreaCallers + 1] = skillId
+
+			local result = getTargetArea(...)
+
+			getTargetAreaCallers[#getTargetAreaCallers] = nil
+
+			return result
+		end
 	end
 
 	for skillId, _ in pairs(oldGetSkillEffects) do
-		_G[skillId].GetSkillEffect = getSkillEffect
+		local skill = _G[skillId]
+
+		function skill.GetSkillEffect(...)
+			getSkillEffectCallers[#getSkillEffectCallers + 1] = skillId
+
+			local result = getSkillEffect(...)
+
+			getSkillEffectCallers[#getSkillEffectCallers] = nil
+
+			return result
+		end
 	end
 end
 
