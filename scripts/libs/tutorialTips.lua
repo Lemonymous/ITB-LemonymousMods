@@ -19,7 +19,7 @@ local function cacheCurrentProfileData()
 		function(obj)
 			obj.tutorialTips = obj.tutorialTips or {}
 			obj.tutorialTips[mod.id] = obj.tutorialTips[mod.id] or {}
-			cachedTips = obj.tutorialTips
+			cachedTips = obj.tutorialTips[mod.id]
 		end
 	)
 end
@@ -30,7 +30,7 @@ local function writeData(id, obj)
 		modApi:getCurrentProfilePath().."modcontent.lua",
 		function(readObj)
 			readObj.tutorialTips[mod.id][id] = obj
-			cachedTips = readObj.tutorialTips
+			cachedTips = readObj.tutorialTips[mod.id]
 		end
 	)
 end
@@ -40,13 +40,13 @@ local function readData(id)
 	local result = nil
 
 	if cachedTips then
-		result = cachedTips[mod.id][id]
+		result = cachedTips[id]
 	else
 		sdlext.config(
 			modApi:getCurrentProfilePath().."modcontent.lua",
 			function(readObj)
-				cachedTips = readObj.tutorialTips
-				result = cachedTips[mod.id][id]
+				cachedTips = readObj.tutorialTips[mod.id]
+				result = cachedTips[id]
 			end
 		)
 	end
@@ -60,7 +60,7 @@ function tips:resetAll()
 		function(obj)
 			obj.tutorialTips = obj.tutorialTips or {}
 			obj.tutorialTips[mod.id] = {}
-			cachedTips = obj.tutorialTips
+			cachedTips = obj.tutorialTips[mod.id]
 		end
 	)
 end
