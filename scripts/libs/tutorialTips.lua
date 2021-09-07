@@ -90,6 +90,10 @@ function tips:trigger(id, loc)
 	end
 end
 
+function tips:getCachedProfileData()
+	return cachedTips
+end
+
 -- backwards compatibility
 tips.ResetAll = tips.resetAll
 tips.Reset = tips.reset
