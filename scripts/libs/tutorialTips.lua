@@ -84,6 +84,10 @@ function tips:trigger(id, loc)
 	Assert.Equals('string', type(id), "Argument #1")
 	Assert.TypePoint(loc, "Argument #2")
 
+	if sdlext.isMapEditor() then
+		return
+	end
+
 	if not readData(id) then
 		Game:AddTip(mod.id .. id, loc)
 		writeData(id, true)
