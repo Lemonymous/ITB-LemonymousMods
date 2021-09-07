@@ -43,6 +43,8 @@ function mod:init()
 	local scriptPath = self.scriptPath
 	local resourcePath = self.resourcePath
 	
+	LApi.library:new("tutorialTips")
+	
 	require(scriptPath.."enemies/init")
 	require(scriptPath.."missions/init")
 	require(scriptPath.."enemies/bosses/init")
@@ -226,7 +228,6 @@ function mod:init()
 	islandApi:AddCorp(corp)
 	islandApi:AddIsland(island)
 	
-	LApi.library:new("tutorialTips")
 	require(scriptPath .."achievements")
 	require(scriptPath .."achievementTriggers")
 	require(scriptPath .."side_objectives")
