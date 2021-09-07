@@ -13,19 +13,21 @@ local mod = mod_loader.mods[modApi.currentMod]
 local tips = {}
 local cachedTips
 
-sdlext.config(
-	modApi:getCurrentModcontentPath(),
-	function(obj)
-		obj.tutorialTips = obj.tutorialTips or {}
-		obj.tutorialTips[mod.id] = obj.tutorialTips[mod.id] or {}
-		cachedTips = obj.tutorialTips
-	end
-)
+local function cacheCurrentProfileData()
+	sdlext.config(
+		modApi:getCurrentProfilePath().."modcontent.lua",
+		function(obj)
+			obj.tutorialTips = obj.tutorialTips or {}
+			obj.tutorialTips[mod.id] = obj.tutorialTips[mod.id] or {}
+			cachedTips = obj.tutorialTips
+		end
+	)
+end
 
 -- writes tutorial tips data.
 local function writeData(id, obj)
 	sdlext.config(
-		modApi:getCurrentModcontentPath(),
+		modApi:getCurrentProfilePath().."modcontent.lua",
 		function(readObj)
 			readObj.tutorialTips[mod.id][id] = obj
 			cachedTips = readObj.tutorialTips
@@ -41,7 +43,7 @@ local function readData(id)
 		result = cachedTips[mod.id][id]
 	else
 		sdlext.config(
-			modApi:getCurrentModcontentPath(),
+			modApi:getCurrentProfilePath().."modcontent.lua",
 			function(readObj)
 				cachedTips = readObj.tutorialTips
 				result = cachedTips[mod.id][id]
@@ -54,7 +56,7 @@ end
 
 function tips:resetAll()
 	sdlext.config(
-		modApi:getCurrentModcontentPath(),
+		modApi:getCurrentProfilePath().."modcontent.lua",
 		function(obj)
 			obj.tutorialTips = obj.tutorialTips or {}
 			obj.tutorialTips[mod.id] = {}
@@ -93,5 +95,11 @@ tips.ResetAll = tips.resetAll
 tips.Reset = tips.reset
 tips.Add = tips.add
 tips.Trigger = tips.trigger
+
+if modApi:isProfilePath() then
+	cacheCurrentProfileData()
+end
+
+modApi.events.onProfileChanged:subscribe(cacheCurrentProfileData)
 
 return tips
