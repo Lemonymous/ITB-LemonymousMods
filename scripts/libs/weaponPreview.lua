@@ -625,6 +625,8 @@ if WeaponPreview == nil or not modApi:isVersion(VERSION, WeaponPreview.version) 
 		WeaponPreview.ResetTimer = resetTimer
 		WeaponPreview.SetLooping = setLooping
 
+		clearMarks()
+
 		modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 	end
 end
