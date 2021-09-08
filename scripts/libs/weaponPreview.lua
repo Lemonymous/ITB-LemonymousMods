@@ -582,7 +582,10 @@ local function onMissionUpdate()
 
 		prevHighlightedPawnId = highlightedPawnId
 
-		markSpaces(queuedPreviewMarks[highlightedPawnId])
+		local queuedMarks = queuedPreviewMarks[highlightedPawnId]
+		if queuedMarks then
+			markSpaces(queuedMarks)
+		end
 	else
 		prevHighlightedPawnId = NULL_PAWN
 	end
