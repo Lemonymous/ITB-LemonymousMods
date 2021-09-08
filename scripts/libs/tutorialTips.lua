@@ -14,6 +14,10 @@ local tips = {}
 local cachedTips
 
 local function cacheCurrentProfileData()
+	if not modApi:isProfilePath() then
+		return
+	end
+
 	sdlext.config(
 		modApi:getCurrentProfilePath().."modcontent.lua",
 		function(obj)
