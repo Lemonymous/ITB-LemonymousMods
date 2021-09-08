@@ -4,7 +4,7 @@ local mod = {
 	name = "Into The Wild",
 	version = "1.2.1",
 	modApiVersion = "2.3.0",
-	icon = "img/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {}
 }
 

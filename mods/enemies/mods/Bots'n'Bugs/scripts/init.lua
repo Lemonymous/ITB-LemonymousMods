@@ -5,7 +5,7 @@ local mod = {
 	description = "Adds 9 enemies, 6 bosses and 5 unlockable Techno-Vek.",
 	version = "2.1.0",
 	modApiVersion = "2.4.0",
-	icon = "img/icons/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {}
 }
 

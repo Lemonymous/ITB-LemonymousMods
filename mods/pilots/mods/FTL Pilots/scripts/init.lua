@@ -5,7 +5,7 @@ local mod = {
 	version = "0.1.3",
 	requirements = {},
 	modApiVersion = "2.3.0",
-	icon = "img/mod_icon.png"
+	icon = "img/icon.png"
 }
 
 function mod:metadata()

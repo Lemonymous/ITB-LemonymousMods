@@ -4,7 +4,7 @@ local mod = {
 	name = "Dune Striders",
 	version = "0.0.1",
 	modApiVersion = "2.6.0",
-	icon = "img/icons/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {}
 }
 

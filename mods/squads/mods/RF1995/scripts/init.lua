@@ -4,7 +4,7 @@ local mod =  {
 	name = "RF1995",
 	version = "1.4.0",
 	modApiVersion = "2.3.0",
-	icon = "img/icons/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {}
 }
 
@@ -68,7 +68,7 @@ function mod:load(options, version)
 		"How this squad got mixed up in the earth-saving business is unknown. "
 		.. "Now where do the Vek hide their flag?"
 		.. "\n\n(4th mech available in Custom and Random squads)",
-		self.resourcePath .. "img/icons/squad_icon.png"
+		self.resourcePath .. "img/icon.png"
 	)
 	
 	-- add a 4th member of our squad.
