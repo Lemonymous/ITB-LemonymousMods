@@ -57,6 +57,8 @@ end
 
 local VERSION = "3.0.0"
 local PREFIX = "_weapon_preview_%s_"
+local PREFIX_ANIM = string.format(PREFIX, "1")
+local PREFIX_EMITTER = string.format(PREFIX, "emitter")
 
 local STATE_NONE = 0
 local STATE_SKILL_EFFECT = 1
@@ -85,10 +87,9 @@ end
 
 local function createAnim(anim)
 	local base = ANIMS[anim]
-	local prefix = string.format(PREFIX, 1)
 
 	-- chop up animation to single frame units.
-	if not ANIMS[prefix..anim] then
+	if not ANIMS[PREFIX_ANIM..anim] then
 		local frames = base.Frames
 		local lengths = base.Lengths
 
@@ -142,8 +143,7 @@ local function addAnimation(self, p, anim, delay)
 	createAnim(anim)
 
 	local base = ANIMS[anim]
-	local prefix = string.format(PREFIX, 1)
-	local duration = sum(ANIMS[prefix..anim].__Lengths)
+	local duration = sum(ANIMS[PREFIX_ANIM..anim].__Lengths)
 
 	if delay == ANIM_DELAY then
 		delay = duration
@@ -225,10 +225,9 @@ local function addEmitter(self, p, emitter, duration)
 	Assert.Equals({'nil', 'number'}, type(duration), "Argument #3")
 
 	local base = _G[emitter]
-	local prefix = string.format(PREFIX, 1)
 
-	if not _G[prefix..emitter] then
-		_G[prefix..emitter] = base:new{
+	if not _G[PREFIX_EMITTER..emitter] then
+		_G[PREFIX_EMITTER..emitter] = base:new{
 			birth_rate = base.birth_rate / 4,
 			burst_count = base.burst_count / 4
 		}
@@ -237,7 +236,7 @@ local function addEmitter(self, p, emitter, duration)
 	table.insert(previewMarks[previewState], {
 		fn = 'DamageSpace',
 		emitter = emitter,
-		data = {spaceEmitter(p, prefix..emitter)},
+		data = {spaceEmitter(p, PREFIX_EMITTER..emitter)},
 		duration = duration
 	})
 end
@@ -464,8 +463,7 @@ local function getPreviewLength(marks)
 end
 
 local function getAnimFrame(mark, timeStart, timeCurr)
-	local prefix = string.format(PREFIX, 1)
-	local base = ANIMS[prefix..mark.anim]
+	local base = ANIMS[PREFIX_ANIM..mark.anim]
 	local lengths = base.__Lengths
 	local duration = mark.duration * 60
 
