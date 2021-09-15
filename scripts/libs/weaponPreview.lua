@@ -235,8 +235,9 @@ local function addEmitter(self, p, emitter, duration)
 
 	table.insert(previewMarks[previewState], {
 		fn = 'DamageSpace',
+		loc = p,
 		emitter = emitter,
-		data = {spaceEmitter(p, PREFIX_EMITTER..emitter)},
+		data = {},
 		duration = duration
 	})
 end
@@ -505,6 +506,9 @@ local function markSpaces(marks)
 
 			if mark.fn == "AddAnimation" then
 				mark.data[2] = getAnimFrame(mark, previewCounter, time)
+
+			elseif mark.fn == "DamageSpace" then
+				mark.data[1] = spaceEmitter(mark.loc, PREFIX_EMITTER..mark.emitter)
 			end
 
 			if mark.loop or previewCounter <= time and time <= previewCounter + duration then
