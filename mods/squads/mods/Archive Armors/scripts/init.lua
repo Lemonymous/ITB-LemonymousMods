@@ -4,7 +4,7 @@ local mod = {
 	name = "Archive Armors",
 	version = "1.3.2",
 	modApiVersion = "2.3.0",
-	icon = "img/icons/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {}
 }
 

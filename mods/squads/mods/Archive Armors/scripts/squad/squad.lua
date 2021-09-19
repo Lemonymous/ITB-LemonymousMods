@@ -14,6 +14,6 @@ modApi.events.onModLoaded:subscribe(function(id)
 		},
 		"Archive Armors",
 		"Archive designed this squad for engagements so dire, collateral damage was deemed unavoidable.",
-		mod.resourcePath .."img/icons/squad_icon.png"
+		mod.resourcePath .."img/icon.png"
 	)
 end)

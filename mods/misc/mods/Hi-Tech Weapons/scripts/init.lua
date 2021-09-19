@@ -4,7 +4,7 @@ local mod = {
 	name = "Hi-Tech Weapons",
 	version = "1.1.0",
 	modApiVersion = "2.3.0",
-	icon = "img/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {},
 }
 

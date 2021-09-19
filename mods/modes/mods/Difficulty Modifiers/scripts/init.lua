@@ -4,7 +4,7 @@ local mod = {
 	name = "Difficulty Modifiers",
 	version = "1.0.4",
 	enabled = false,
-	icon = "img/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {"lmn_more_bosses"},
 }
 

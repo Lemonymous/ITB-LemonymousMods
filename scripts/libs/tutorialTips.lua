@@ -1,6 +1,6 @@
 
 ---------------------------------------------------------------------
--- Tutorial Tips v1.3 - code library
+-- Tutorial Tips v1.4 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------------------------
@@ -14,6 +14,10 @@ local tips = {}
 local cachedTips
 
 local function cacheCurrentProfileData()
+	if not modApi:isProfilePath() then
+		return
+	end
+
 	sdlext.config(
 		modApi:getCurrentProfilePath().."modcontent.lua",
 		function(obj)
@@ -104,10 +108,7 @@ tips.Reset = tips.reset
 tips.Add = tips.add
 tips.Trigger = tips.trigger
 
-if modApi:isProfilePath() then
-	cacheCurrentProfileData()
-end
-
+cacheCurrentProfileData()
 modApi.events.onProfileChanged:subscribe(cacheCurrentProfileData)
 
 return tips

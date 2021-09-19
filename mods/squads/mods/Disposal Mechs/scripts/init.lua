@@ -4,7 +4,7 @@ local mod = {
 	name = "Disposal Mechs",
 	version = "1.2.0",
 	modApiVersion = "2.3.0",
-	icon = "img/icons/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = {}
 }
 

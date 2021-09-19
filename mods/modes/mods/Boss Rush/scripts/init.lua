@@ -6,7 +6,7 @@ local mod = {
 	version = "1.1.0",
 	enabled = false,
 	modApiVersion = "2.6.0",
-	icon = "img/mod_icon.png",
+	icon = "img/icon.png",
 	requirements = { "lmn_more_bosses" },
 }
 

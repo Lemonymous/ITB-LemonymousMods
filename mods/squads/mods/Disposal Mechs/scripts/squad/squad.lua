@@ -14,6 +14,6 @@ modApi.events.onModLoaded:subscribe(function(id)
 		},
 		"Disposal Mechs",
 		"Originally made by Detritus as waste disposal mechs. Now repurposed to fight the Vek.",
-		mod.resourcePath .. "img/icons/squad_icon.png"
+		mod.resourcePath .. "img/icon.png"
 	)
 end)

@@ -14,6 +14,6 @@ modApi.events.onModLoaded:subscribe(function(id)
 		},
 		"Dune Striders",
 		"These Mechs uses speed and cunning to outmaneuver their enemies.",
-		mod.resourcePath .. "img/icons/squad_icon.png"
+		mod.resourcePath .. "img/icon.png"
 	)
 end)
