@@ -490,7 +490,7 @@ local function getSkillEffect(self, p1, p2, ...)
 			result = oldGetSkillEffects[skillId](self, p1, p2, ...)
 			previewState = STATE_NONE
 
-		elseif skillId == pawn:GetQueuedWeapon() then
+		elseif pawn and skillId == pawn:GetQueuedWeapon() then
 			previewState = STATE_QUEUED_SKILL
 			previewMarks[previewState] = {}
 
