@@ -1,6 +1,6 @@
 
 ----------------------------------------------------------------------
--- Weapon Preview v3.0.0 - code library
+-- Weapon Preview v3.1.0 - code library
 -- https://github.com/Lemonymous/ITB-LemonymousMods/wiki/weaponPreview
 --
 -- by Lemonymous
@@ -14,6 +14,12 @@
 --      - animations
 --      - emitters
 --
+--  The following methods are meant to be used in either GetTargetArea
+--  or GetSkillEffect, whichever makes the most sense.
+--  GetTargetArea can display marks as soon as a weapon is selected.
+--  GetSkillEffect can display marks only after a tile is highlighted,
+--  and should be used if mark is dependent of target location.
+--
 --  methods:
 --      :AddAnimation(point, animation, delay)
 --      :AddColor(point, gl_color, duration)
@@ -25,14 +31,36 @@
 --      :AddImage(point, path, gl_color, duration)
 --      :AddSimpleColor(point, gl_color, duration)
 --      :ClearMarks()
---      :ResetTimer()
 --      :SetLooping(flag)
 --
---  All methods are meant to be used in either GetTargetArea or
---  GetSkillEffect, whichever makes the most sense.
---  GetTargetArea can display marks as soon as a weapon is selected.
---  GetSkillEffect can display marks only after a tile is highlighted,
---  and should be used if mark is dependent of target location.
+--  The following methods can be used at any time to gain information
+--  about what is being currently previewed.
+--
+--      :GetQueuedSkillEffectMarker()
+--      :GetSkillEffectMarker()
+--      :GetTargetAreaMarker()
+--      :IsQueuedSkillEffectMarker()
+--      :IsSkillEffectMarker()
+--      :IsTargetAreaMarker()
+--
+--  The following methods will reset the animation timer for the various
+--  markers.
+--
+--      :ResetQueuedSkillEffectTimer()
+--      :ResetSkillEffectTimer()
+--      :ResetTargetAreaTimer()
+--
+--  The following events can be subscribed to in order to be informed
+--  when the preview state changes. Note that these events will be
+--  dispatched for all weapons, even if they have no custom preview
+--  marks added with this library.
+--
+--      :events.onTargetAreaShown()
+--      :events.onTargetAreaHidden()
+--      :events.onSkillEffectShown()
+--      :events.onSkillEffectHidden()
+--      :events.onQueuedSkillEffectShown()
+--      :events.onQueuedSkillEffectHidden()
 --
 ----------------------------------------------------------------------
 
