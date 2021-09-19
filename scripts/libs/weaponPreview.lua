@@ -104,7 +104,7 @@ function Marker:clear()
 	self.ticker = 0
 end
 
-function Marker:set(other)
+function Marker:copy(other)
 	if other then
 		self.pawnId = other.pawnId
 		self.weapon = other.weapon
@@ -452,7 +452,7 @@ local function getTargetArea(self, p1, ...)
 			previewState = STATE_TARGET_AREA
 			previewMarks[previewState] = {}
 
-			targetMarker:set(actingMarker)
+			targetMarker:copy(actingMarker)
 			events.onTargetAreaShown:dispatch(targetMarker:unpack())
 
 			result = oldGetTargetAreas[skillId](self, p1, ...)
@@ -483,7 +483,7 @@ local function getSkillEffect(self, p1, p2, ...)
 			previewMarks[previewState] = {}
 
 			if effectMarker:isInActive() then
-				effectMarker:set(actingMarker)
+				effectMarker:copy(actingMarker)
 				events.onSkillEffectShown:dispatch(effectMarker:unpack())
 			end
 
@@ -630,7 +630,7 @@ local function onMissionUpdate()
 			queuedMarker:clear()
 		end
 
-		queuedMarker:set(actingMarker)
+		queuedMarker:copy(actingMarker)
 
 		if queuedMarker:isActive() then
 			events.onQueuedSkillEffectShown:dispatch(queuedMarker:unpack())
