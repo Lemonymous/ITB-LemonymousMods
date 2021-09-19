@@ -55,7 +55,7 @@ if Assert.TypeGLColor == nil then
 	end
 end
 
-local VERSION = "3.0.0"
+local VERSION = "3.1.0"
 local PREFIX = "_weapon_preview_%s_"
 local PREFIX_ANIM = string.format(PREFIX, "1")
 local PREFIX_EMITTER = string.format(PREFIX, "emitter")
@@ -64,20 +64,101 @@ local STATE_NONE = 0
 local STATE_SKILL_EFFECT = 1
 local STATE_TARGET_AREA = 2
 local STATE_QUEUED_SKILL = 3
-local WEAPON_UNARMED = -1
-local NULL_PAWN = -1
+
+local NULL_PAWNID = -1
+local NULL_WEAPON = ""
+local NULL_WEAPID = -1
+
+Preview = Class.new()
+local selfMetatable = setmetatable({}, Preview)
+selfMetatable.__index = Preview
+selfMetatable.__call = function()
+	error("attempted to call an instance\n", 2)
+end
+selfMetatable.__eq = function(a, b)
+	return
+		a.pawnId == b.pawnId and
+		a.weapon == b.weapon and
+		a.weapId == b.weapId
+end
+
+local Preview_mt = getmetatable(Preview)
+function Preview_mt:__call(...)
+	local newInstance = setmetatable({}, selfMetatable)
+	newInstance:new(...)
+	return newInstance
+end
+
+function Preview:new()
+	self:clear()
+end
+
+function Preview:unpack()
+	return self.pawnId, self.weapon, self.weapId
+end
+
+function Preview:clear()
+	self.pawnId = NULL_PAWNID
+	self.weapon = NULL_WEAPON
+	self.weapId = NULL_WEAPID
+	self.ticker = 0
+end
+
+function Preview:set(other)
+	if other then
+		self.pawnId = other.pawnId
+		self.weapon = other.weapon
+		self.weapId = other.weapId
+	else
+		self:clear()
+	end
+end
+
+function Preview:setArmed(pawn)
+	if pawn then
+		self.pawnId = pawn:GetId()
+		self.weapon = pawn:GetArmedWeapon()
+		self.weapId = pawn:GetArmedWeaponId()
+	else
+		self:clear()
+	end
+end
+
+function Preview:setQueued(pawn)
+	if pawn then
+		self.pawnId = pawn:GetId()
+		self.weapon = pawn:GetQueuedWeapon()
+		self.weapId = pawn:GetQueuedWeaponId()
+	else
+		self:clear()
+	end
+end
+
+function Preview:isActive()
+	return self.weapId > NULL_WEAPID
+end
+
+function Preview:isInActive()
+	return not self:isActive()
+end
+
+local chosenPreview
+local targetPreview
+local effectPreview
+local queuedPreview
 
 local getTargetAreaCallers = {}
 local getSkillEffectCallers = {}
 local oldGetTargetAreas = {}
 local oldGetSkillEffects = {}
-local globalCounter = 0
-local prevArmedWeaponId = WEAPON_UNARMED
-local prevHighlightedPawnId = NULL_PAWN
+local armedTargetAreaTimer = 0
+local armedSkillEffectTimer = 0
+local queuedSkillEffectTimer = 0
 local previewTargetArea = PointList()
 local previewState = STATE_NONE
 local previewMarks = {}
 local queuedPreviewMarks = {}
+local events = {}
 
 local function spaceEmitter(loc, emitter)
 	local fx = SkillEffect()
@@ -127,6 +208,16 @@ local function sum(t)
 		result = result + t[i]
 	end
 	return result
+end
+
+local function pointListContains(pointList, obj)
+	for i = 1, pointList:size() do
+		if obj == pointList:index(i) then
+			return true
+		end
+	end
+
+	return false
 end
 
 local function isPreviewerUnavailable()
@@ -287,26 +378,14 @@ local function addSimpleColor(self, p, gl_color, duration)
 	})
 end
 
-local function clearTargetAreaMarks()
-	previewMarks[STATE_TARGET_AREA] = {}
-end
-
-local function clearSkillEffectMarks()
-	previewMarks[STATE_SKILL_EFFECT] = {}
-end
-
-local function clearQueuedSkillMarks()
-	previewMarks[STATE_QUEUED_SKILL] = {}
-end
-
-local function clearMarks()
-	clearTargetAreaMarks()
-	clearSkillEffectMarks()
-	clearQueuedSkillMarks()
-end
-
-local function resetTimer()
-	globalCounter = 0
+local function clearMarks(state)
+	if state then
+		previewMarks[state] = {}
+	else
+		clearMarks(STATE_TARGET_AREA)
+		clearMarks(STATE_SKILL_EFFECT)
+		clearMarks(STATE_QUEUED_SKILL)
+	end
 end
 
 local function setLooping(self, flag)
@@ -319,72 +398,252 @@ local function setLooping(self, flag)
 	previewMarks[previewState].loop = flag
 end
 
+local function resetTargetTimer()
+	targetPreview.ticker = 0
+end
+
+local function resetEffectTimer()
+	effectPreview.ticker = 0
+end
+
+local function resetQueuedTimer()
+	queuedPreview.ticker = 0
+end
+
+local function isTargetMarker()
+	return targetPreview:isActive()
+end
+
+local function isEffectMarker()
+	return effectPreview:isActive()
+end
+
+local function isQueuedMarker()
+	return queuedPreview:isActive()
+end
+
+local function getTargetMarker()
+	return targetPreview:unpack()
+end
+
+local function getEffectMarker()
+	return effectPreview:unpack()
+end
+
+local function getQueuedMarker()
+	return queuedPreview:unpack()
+end
+
 local function getTargetArea(self, p1, ...)
 	local skillId = getTargetAreaCallers[#getTargetAreaCallers]
-
-	if previewState ~= STATE_NONE or Board:IsTipImage() then
-		return oldGetTargetAreas[skillId](self, p1, ...)
-	end
-
 	local pawn = Board:GetPawn(p1)
-	local armedWeapon = nil
+	local result = nil
 
-	if pawn then
-		armedWeapon = pawn:GetArmedWeapon()
+	if previewState == STATE_NONE and not Board:IsTipImage() then
+
+		chosenPreview:setArmed(pawn)
+
+		if skillId == chosenPreview.weapon and chosenPreview ~= targetPreview then
+			if targetPreview:isActive() then
+				events.onTargetAreaHidden:dispatch(targetPreview:unpack())
+				targetPreview:clear()
+			end
+
+			previewState = STATE_TARGET_AREA
+			previewMarks[previewState] = {}
+
+			targetPreview:set(chosenPreview)
+			events.onTargetAreaShown:dispatch(targetPreview:unpack())
+
+			result = oldGetTargetAreas[skillId](self, p1, ...)
+			previewTargetArea = result
+			previewState = STATE_NONE
+		end
 	end
 
-	if armedWeapon == skillId then
-		clearTargetAreaMarks()
-		previewState = STATE_TARGET_AREA
-	end
-
-	local result = oldGetTargetAreas[skillId](self, p1, ...)
-
-	if armedWeapon == skillId then
-		previewTargetArea = result
-		previewState = STATE_NONE
-	end
-
-	return result
+	return result or oldGetTargetAreas[skillId](self, p1, ...)
 end
 
 local function getSkillEffect(self, p1, p2, ...)
 	local skillId = getSkillEffectCallers[#getSkillEffectCallers]
-
-	if previewState ~= STATE_NONE or Board:IsTipImage() then
-		return oldGetSkillEffects[skillId](self, p1, p2, ...)
-	end
-
 	local pawn = Board:GetPawn(p1)
-	local armedWeapon = nil
-	local queuedWeapon = nil
+	local result = nil
 
-	if pawn then
-		queuedWeapon = pawn:GetQueuedWeapon()
-		armedWeapon = pawn:GetArmedWeapon()
+	if previewState == STATE_NONE and not Board:IsTipImage() then
+
+		chosenPreview:setArmed(pawn)
+
+		if skillId == chosenPreview.weapon then
+			if effectPreview ~= chosenPreview and effectPreview:isActive() then
+				events.onSkillEffectHidden:dispatch(effectPreview:unpack())
+				effectPreview:clear()
+			end
+
+			previewState = STATE_SKILL_EFFECT
+			previewMarks[previewState] = {}
+
+			if effectPreview:isInActive() then
+				effectPreview:set(chosenPreview)
+				events.onSkillEffectShown:dispatch(effectPreview:unpack())
+			end
+
+			result = oldGetSkillEffects[skillId](self, p1, p2, ...)
+			previewState = STATE_NONE
+
+		elseif skillId == pawn:GetQueuedWeapon() then
+			previewState = STATE_QUEUED_SKILL
+			previewMarks[previewState] = {}
+
+			result = oldGetSkillEffects[skillId](self, p1, p2, ...)
+			queuedPreviewMarks[pawn:GetId()] = previewMarks[previewState]
+			previewState = STATE_NONE
+		end
 	end
 
-	if armedWeapon == skillId then
-		clearSkillEffectMarks()
-		previewState = STATE_SKILL_EFFECT
+	return result or oldGetSkillEffects[skillId](self, p1, p2, ...)
+end
 
-	elseif queuedWeapon == skillId then
-		clearQueuedSkillMarks()
-		previewState = STATE_QUEUED_SKILL
+local function getPreviewLength(marks)
+	local delay = 0
+	local length = 0
+
+	for _, mark in ipairs(marks) do
+		if mark.duration then
+			length = math.max(length, delay + mark.duration)
+		end
+
+		if mark.delay then
+			delay = delay + mark.delay
+			length = math.max(length, delay)
+		end
 	end
 
-	local result = oldGetSkillEffects[skillId](self, p1, p2, ...)
+	return length * 60
+end
 
-	if armedWeapon == skillId then
-		previewState = STATE_NONE
+local function getAnimFrame(mark, frameStart, frameCurr)
+	local base = ANIMS[PREFIX_ANIM..mark.anim]
+	local lengths = base.__Lengths
+	local duration = mark.duration * 60
 
-	elseif queuedWeapon == skillId then
-		queuedPreviewMarks[pawn:GetId()] = previewMarks[previewState]
-
-		previewState = STATE_NONE
+	if mark.loop then
+		frameCurr = frameStart + (frameCurr - frameStart) % duration
 	end
 
-	return result
+	local frame = frameStart
+	for i = 1, base.__NumFrames do
+		frame = frame + lengths[i] * 60
+		if frame > frameCurr or i == base.__NumFrames then
+			local prefix = string.format(PREFIX, i)
+			return prefix..mark.anim
+		end
+	end
+end
+
+local function markSpaces(marks, frameCurr)
+	local frame = 0
+	local looping = marks.loop
+
+	if looping ~= false then
+		local length = getPreviewLength(marks)
+		if length > 0 then
+			frameCurr = frameCurr % length
+		else
+			frameCurr = 0
+		end
+	end
+
+	for _, mark in ipairs(marks) do
+		if mark.fn then
+			local duration = INT_MAX
+
+			if mark.duration then
+				duration = mark.duration * 60
+			end
+
+			if mark.fn == "AddAnimation" then
+				mark.data[2] = getAnimFrame(mark, frame, frameCurr)
+
+			elseif mark.fn == "DamageSpace" then
+				mark.data[1] = spaceEmitter(mark.loc, PREFIX_EMITTER..mark.emitter)
+			end
+
+			if mark.loop or frame <= frameCurr and frameCurr <= frame + duration then
+				Board[mark.fn](Board, unpack(mark.data))
+			end
+		end
+
+		frame = frame + (mark.delay or 0) * 60
+	end
+end
+
+local function onMissionUpdate()
+
+	-- clear preview entries for removed units
+	for pawnId, _ in pairs(queuedPreviewMarks) do
+		if Board:GetPawn(pawnId) == nil then
+			queuedPreviewMarks[pawnId] = nil
+		end
+	end
+
+	local selected = Board:GetSelectedPawn()
+	local highlighted = Board:GetHighlighted()
+	local highlightedPawn = Board:GetPawn(highlighted)
+	local boardIsBusy = Board:IsBusy()
+
+	chosenPreview:setArmed(selected)
+
+	if targetPreview:isActive() and chosenPreview:isInActive() then
+		events.onTargetAreaHidden:dispatch(targetPreview:unpack())
+		targetPreview:clear()
+	end
+
+	if effectPreview:isActive() and chosenPreview:isInActive() then
+		events.onSkillEffectHidden:dispatch(effectPreview:unpack())
+		effectPreview:clear()
+	end
+
+	if targetPreview:isActive() then
+		markSpaces(previewMarks[STATE_TARGET_AREA], targetPreview.ticker)
+		targetPreview.ticker = targetPreview.ticker + 1
+	end
+
+	if effectPreview:isActive() then
+		if not boardIsBusy and pointListContains(previewTargetArea, highlighted) then
+			markSpaces(previewMarks[STATE_SKILL_EFFECT], effectPreview.ticker)
+			effectPreview.ticker = effectPreview.ticker + 1
+		else
+			events.onSkillEffectHidden:dispatch(effectPreview:unpack())
+			effectPreview:clear()
+		end
+	end
+
+	if chosenPreview.weapId <= 0 then
+		chosenPreview:setQueued(highlightedPawn)
+	else
+		chosenPreview:clear()
+	end
+
+	if queuedPreview ~= chosenPreview then
+		if queuedPreview:isActive() then
+			events.onQueuedSkillEffectHidden:dispatch(queuedPreview:unpack())
+			queuedPreview:clear()
+		end
+
+		queuedPreview:set(chosenPreview)
+
+		if queuedPreview:isActive() then
+			events.onQueuedSkillEffectShown:dispatch(queuedPreview:unpack())
+		end
+	end
+
+	if queuedPreview:isActive() then
+		local queuedMarks = queuedPreviewMarks[queuedPreview.pawnId]
+		if queuedMarks then
+			markSpaces(queuedMarks, queuedPreview.ticker)
+			queuedPreview.ticker = queuedPreview.ticker + 1
+		end
+	end
 end
 
 local function overrideAllSkillMethods()
@@ -435,164 +694,20 @@ local function overrideAllSkillMethods()
 	end
 end
 
-local function pointListContains(pointList, obj)
-	for i = 1, pointList:size() do
-		if obj == pointList:index(i) then
-			return true
-		end
-	end
+local function initGlobals()
+	clearMarks()
 
-	return false
-end
+	chosenPreview = Preview()
+	targetPreview = Preview()
+	effectPreview = Preview()
+	queuedPreview = Preview()
 
-local function getPreviewLength(marks)
-	local delay = 0
-	local length = 0
-
-	for _, mark in ipairs(marks) do
-		if mark.duration then
-			length = math.max(length, delay + mark.duration)
-		end
-
-		if mark.delay then
-			delay = delay + mark.delay
-			length = math.max(length, delay)
-		end
-	end
-
-	return length * 60
-end
-
-local function getAnimFrame(mark, timeStart, timeCurr)
-	local base = ANIMS[PREFIX_ANIM..mark.anim]
-	local lengths = base.__Lengths
-	local duration = mark.duration * 60
-
-	if mark.loop then
-		timeCurr = timeStart + (timeCurr - timeStart) % duration
-	end
-
-	local time = timeStart
-	for i = 1, base.__NumFrames do
-		time = time + lengths[i] * 60
-		if time > timeCurr or i == base.__NumFrames then
-			local prefix = string.format(PREFIX, i)
-			return prefix..mark.anim
-		end
-	end
-end
-
-local function markSpaces(marks)
-	local previewCounter = 0
-	local time = globalCounter
-	local looping = marks.loop
-
-	if looping ~= false then
-		local length = getPreviewLength(marks)
-		if length > 0 then
-			time = time % length
-		else
-			time = 0
-		end
-	end
-
-	for _, mark in ipairs(marks) do
-		if mark.fn then
-			local duration = INT_MAX
-
-			if mark.duration then
-				duration = mark.duration * 60
-			end
-
-			if mark.fn == "AddAnimation" then
-				mark.data[2] = getAnimFrame(mark, previewCounter, time)
-
-			elseif mark.fn == "DamageSpace" then
-				mark.data[1] = spaceEmitter(mark.loc, PREFIX_EMITTER..mark.emitter)
-			end
-
-			if mark.loop or previewCounter <= time and time <= previewCounter + duration then
-				Board[mark.fn](Board, unpack(mark.data))
-			end
-		end
-
-		previewCounter = previewCounter + (mark.delay or 0) * 60
-	end
-end
-
-local function onMissionUpdate()
-	if Board:GetBusyState() ~= 0 then
-		prevArmedWeaponId = WEAPON_UNARMED
-		return
-	end
-
-	-- empty queuedPreviewMarks over time
-	while true do
-		local pawnId = next(queuedPreviewMarks)
-
-		if pawnId == nil or Board:GetPawn(pawnId) then
-			break
-		end
-
-		queuedPreviewMarks[pawnId] = nil
-	end
-
-	local selected = Board:GetSelectedPawn()
-	local highlighted = Board:GetHighlighted()
-	local highlightedPawn = Board:GetPawn(highlighted)
-	local highlightedPawnId = NULL_PAWN
-	local hideQueuedPreviews = false
-	local armedWeaponId = WEAPON_UNARMED
-	local queuedWeaponId = WEAPON_UNARMED
-
-	if selected then
-		armedWeaponId = selected:GetArmedWeaponId()
-		hideQueuedPreviews = armedWeaponId > 0
-	end
-
-	if highlightedPawn then
-		highlightedPawnId = highlightedPawn:GetId()
-		queuedWeaponId = highlightedPawn:GetQueuedWeaponId()
-
-		if queuedWeaponId == WEAPON_UNARMED then
-			queuedPreviewMarks[highlightedPawnId] = nil
-		end
-	end
-
-	if armedWeaponId ~= WEAPON_UNARMED then
-
-		if armedWeaponId ~= prevArmedWeaponId then
-			globalCounter = 0
-		end
-
-		prevArmedWeaponId = armedWeaponId
-
-		markSpaces(previewMarks[STATE_TARGET_AREA])
-
-		if pointListContains(previewTargetArea, highlighted) then
-			markSpaces(previewMarks[STATE_SKILL_EFFECT])
-		end
-	else
-		prevArmedWeaponId = WEAPON_UNARMED
-	end
-
-	if queuedWeaponId ~= WEAPON_UNARMED and not hideQueuedPreviews then
-
-		if highlightedPawnId ~= prevHighlightedPawnId then
-			globalCounter = 0
-		end
-
-		prevHighlightedPawnId = highlightedPawnId
-
-		local queuedMarks = queuedPreviewMarks[highlightedPawnId]
-		if queuedMarks then
-			markSpaces(queuedMarks)
-		end
-	else
-		prevHighlightedPawnId = NULL_PAWN
-	end
-
-	globalCounter = globalCounter + 1
+	events.onTargetAreaShown = Event()
+	events.onTargetAreaHidden = Event()
+	events.onSkillEffectShown = Event()
+	events.onSkillEffectHidden = Event()
+	events.onQueuedSkillEffectShown = Event()
+	events.onQueuedSkillEffectHidden = Event()
 end
 
 local function onModsInitialized()
@@ -616,6 +731,7 @@ if WeaponPreview == nil or not modApi:isVersion(VERSION, WeaponPreview.version) 
 
 	function WeaponPreview:finalizeInit()
 		overrideAllSkillMethods()
+		initGlobals()
 
 		WeaponPreview.AddAnimation = addAnimation
 		WeaponPreview.AddColor = addColor
@@ -627,10 +743,18 @@ if WeaponPreview == nil or not modApi:isVersion(VERSION, WeaponPreview.version) 
 		WeaponPreview.AddImage = addImage
 		WeaponPreview.AddSimpleColor = addSimpleColor
 		WeaponPreview.ClearMarks = clearMarks
-		WeaponPreview.ResetTimer = resetTimer
+		WeaponPreview.GetQueuedSkillEffectMarker = getQueuedMarker
+		WeaponPreview.GetSkillEffectMarker = getEffectMarker
+		WeaponPreview.GetTargetAreaMarker = getTargetMarker
+		WeaponPreview.IsQueuedSkillEffectMarker = isQueuedMarker
+		WeaponPreview.IsSkillEffectMarker = isEffectMarker
+		WeaponPreview.IsTargetAreaMarker = isTargetMarker
+		WeaponPreview.ResetQueuedSkillEffectTimer = resetQueuedTimer
+		WeaponPreview.ResetSkillEffectTimer = resetEffectTimer
+		WeaponPreview.ResetTargetAreaTimer = resetTargetTimer
 		WeaponPreview.SetLooping = setLooping
 
-		clearMarks()
+		WeaponPreview.events = events
 
 		modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 	end
