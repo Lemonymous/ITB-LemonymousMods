@@ -6,8 +6,6 @@ require(mod.scriptPath.."anims")
 modApi:appendAsset("img/weapons/enemy_crabB.png", mod.resourcePath.."img/weapons/enemy_crabB.png")
 modApi:appendAsset("img/effects/shotup_crabB.png", mod.resourcePath.."img/effects/shotup_crabB.png")
 
-ANIMS.crabw = ANIMS.BaseUnit:new{ Image = "units/aliens/crab_Bw.png", PosX = -18, PosY = 9 }
-
 -- prune maps which has 3 or more consequtive
 -- columns with a building in it
 local function isValidMap(map)

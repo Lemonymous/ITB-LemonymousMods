@@ -43,7 +43,7 @@ ANIMS.crabB = ANIMS.crab:new{ Image = imagePath.."crabB.png" }
 ANIMS.crabBa = ANIMS.craba:new{ Image = imagePath.."crabBa.png" }
 ANIMS.crabBe = ANIMS.crabe:new{}
 ANIMS.crabBd = ANIMS.crabd:new{}
-ANIMS.crabBw = ANIMS.crabw:new{}
+ANIMS.crabBw = ANIMS.crabw:new{ Height = 1 }
 
 ANIMS.diggerB = ANIMS.digger:new{ Image = imagePath.."diggerB.png" }
 ANIMS.diggerBa = ANIMS.diggera:new{ Image = imagePath.."diggerBa.png" }
