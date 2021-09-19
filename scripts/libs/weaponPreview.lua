@@ -69,9 +69,9 @@ local NULL_PAWNID = -1
 local NULL_WEAPON = ""
 local NULL_WEAPID = -1
 
-Preview = Class.new()
-local selfMetatable = setmetatable({}, Preview)
-selfMetatable.__index = Preview
+local Marker = Class.new()
+local selfMetatable = setmetatable({}, Marker)
+selfMetatable.__index = Marker
 selfMetatable.__call = function()
 	error("attempted to call an instance\n", 2)
 end
@@ -82,29 +82,29 @@ selfMetatable.__eq = function(a, b)
 		a.weapId == b.weapId
 end
 
-local Preview_mt = getmetatable(Preview)
-function Preview_mt:__call(...)
+local Marker_mt = getmetatable(Marker)
+function Marker_mt:__call(...)
 	local newInstance = setmetatable({}, selfMetatable)
 	newInstance:new(...)
 	return newInstance
 end
 
-function Preview:new()
+function Marker:new()
 	self:clear()
 end
 
-function Preview:unpack()
+function Marker:unpack()
 	return self.pawnId, self.weapon, self.weapId
 end
 
-function Preview:clear()
+function Marker:clear()
 	self.pawnId = NULL_PAWNID
 	self.weapon = NULL_WEAPON
 	self.weapId = NULL_WEAPID
 	self.ticker = 0
 end
 
-function Preview:set(other)
+function Marker:set(other)
 	if other then
 		self.pawnId = other.pawnId
 		self.weapon = other.weapon
@@ -114,7 +114,7 @@ function Preview:set(other)
 	end
 end
 
-function Preview:setArmed(pawn)
+function Marker:setArmed(pawn)
 	if pawn then
 		self.pawnId = pawn:GetId()
 		self.weapon = pawn:GetArmedWeapon()
@@ -124,7 +124,7 @@ function Preview:setArmed(pawn)
 	end
 end
 
-function Preview:setQueued(pawn)
+function Marker:setQueued(pawn)
 	if pawn then
 		self.pawnId = pawn:GetId()
 		self.weapon = pawn:GetQueuedWeapon()
@@ -134,18 +134,18 @@ function Preview:setQueued(pawn)
 	end
 end
 
-function Preview:isActive()
+function Marker:isActive()
 	return self.weapId > NULL_WEAPID
 end
 
-function Preview:isInActive()
+function Marker:isInActive()
 	return not self:isActive()
 end
 
-local chosenPreview
-local targetPreview
-local effectPreview
-local queuedPreview
+local actingMarker
+local targetMarker
+local effectMarker
+local queuedMarker
 
 local getTargetAreaCallers = {}
 local getSkillEffectCallers = {}
@@ -399,39 +399,39 @@ local function setLooping(self, flag)
 end
 
 local function resetTargetTimer()
-	targetPreview.ticker = 0
+	targetMarker.ticker = 0
 end
 
 local function resetEffectTimer()
-	effectPreview.ticker = 0
+	effectMarker.ticker = 0
 end
 
 local function resetQueuedTimer()
-	queuedPreview.ticker = 0
+	queuedMarker.ticker = 0
 end
 
 local function isTargetMarker()
-	return targetPreview:isActive()
+	return targetMarker:isActive()
 end
 
 local function isEffectMarker()
-	return effectPreview:isActive()
+	return effectMarker:isActive()
 end
 
 local function isQueuedMarker()
-	return queuedPreview:isActive()
+	return queuedMarker:isActive()
 end
 
 local function getTargetMarker()
-	return targetPreview:unpack()
+	return targetMarker:unpack()
 end
 
 local function getEffectMarker()
-	return effectPreview:unpack()
+	return effectMarker:unpack()
 end
 
 local function getQueuedMarker()
-	return queuedPreview:unpack()
+	return queuedMarker:unpack()
 end
 
 local function getTargetArea(self, p1, ...)
@@ -441,19 +441,19 @@ local function getTargetArea(self, p1, ...)
 
 	if previewState == STATE_NONE and not Board:IsTipImage() then
 
-		chosenPreview:setArmed(pawn)
+		actingMarker:setArmed(pawn)
 
-		if skillId == chosenPreview.weapon and chosenPreview ~= targetPreview then
-			if targetPreview:isActive() then
-				events.onTargetAreaHidden:dispatch(targetPreview:unpack())
-				targetPreview:clear()
+		if skillId == actingMarker.weapon and actingMarker ~= targetMarker then
+			if targetMarker:isActive() then
+				events.onTargetAreaHidden:dispatch(targetMarker:unpack())
+				targetMarker:clear()
 			end
 
 			previewState = STATE_TARGET_AREA
 			previewMarks[previewState] = {}
 
-			targetPreview:set(chosenPreview)
-			events.onTargetAreaShown:dispatch(targetPreview:unpack())
+			targetMarker:set(actingMarker)
+			events.onTargetAreaShown:dispatch(targetMarker:unpack())
 
 			result = oldGetTargetAreas[skillId](self, p1, ...)
 			previewTargetArea = result
@@ -471,20 +471,20 @@ local function getSkillEffect(self, p1, p2, ...)
 
 	if previewState == STATE_NONE and not Board:IsTipImage() then
 
-		chosenPreview:setArmed(pawn)
+		actingMarker:setArmed(pawn)
 
-		if skillId == chosenPreview.weapon then
-			if effectPreview ~= chosenPreview and effectPreview:isActive() then
-				events.onSkillEffectHidden:dispatch(effectPreview:unpack())
-				effectPreview:clear()
+		if skillId == actingMarker.weapon then
+			if effectMarker ~= actingMarker and effectMarker:isActive() then
+				events.onSkillEffectHidden:dispatch(effectMarker:unpack())
+				effectMarker:clear()
 			end
 
 			previewState = STATE_SKILL_EFFECT
 			previewMarks[previewState] = {}
 
-			if effectPreview:isInActive() then
-				effectPreview:set(chosenPreview)
-				events.onSkillEffectShown:dispatch(effectPreview:unpack())
+			if effectMarker:isInActive() then
+				effectMarker:set(actingMarker)
+				events.onSkillEffectShown:dispatch(effectMarker:unpack())
 			end
 
 			result = oldGetSkillEffects[skillId](self, p1, p2, ...)
@@ -591,57 +591,57 @@ local function onMissionUpdate()
 	local highlightedPawn = Board:GetPawn(highlighted)
 	local boardIsBusy = Board:IsBusy()
 
-	chosenPreview:setArmed(selected)
+	actingMarker:setArmed(selected)
 
-	if targetPreview:isActive() and chosenPreview:isInActive() then
-		events.onTargetAreaHidden:dispatch(targetPreview:unpack())
-		targetPreview:clear()
+	if targetMarker:isActive() and actingMarker:isInActive() then
+		events.onTargetAreaHidden:dispatch(targetMarker:unpack())
+		targetMarker:clear()
 	end
 
-	if effectPreview:isActive() and chosenPreview:isInActive() then
-		events.onSkillEffectHidden:dispatch(effectPreview:unpack())
-		effectPreview:clear()
+	if effectMarker:isActive() and actingMarker:isInActive() then
+		events.onSkillEffectHidden:dispatch(effectMarker:unpack())
+		effectMarker:clear()
 	end
 
-	if targetPreview:isActive() then
-		markSpaces(previewMarks[STATE_TARGET_AREA], targetPreview.ticker)
-		targetPreview.ticker = targetPreview.ticker + 1
+	if targetMarker:isActive() then
+		markSpaces(previewMarks[STATE_TARGET_AREA], targetMarker.ticker)
+		targetMarker.ticker = targetMarker.ticker + 1
 	end
 
-	if effectPreview:isActive() then
+	if effectMarker:isActive() then
 		if not boardIsBusy and pointListContains(previewTargetArea, highlighted) then
-			markSpaces(previewMarks[STATE_SKILL_EFFECT], effectPreview.ticker)
-			effectPreview.ticker = effectPreview.ticker + 1
+			markSpaces(previewMarks[STATE_SKILL_EFFECT], effectMarker.ticker)
+			effectMarker.ticker = effectMarker.ticker + 1
 		else
-			events.onSkillEffectHidden:dispatch(effectPreview:unpack())
-			effectPreview:clear()
+			events.onSkillEffectHidden:dispatch(effectMarker:unpack())
+			effectMarker:clear()
 		end
 	end
 
-	if chosenPreview.weapId <= 0 then
-		chosenPreview:setQueued(highlightedPawn)
+	if actingMarker.weapId <= 0 then
+		actingMarker:setQueued(highlightedPawn)
 	else
-		chosenPreview:clear()
+		actingMarker:clear()
 	end
 
-	if queuedPreview ~= chosenPreview then
-		if queuedPreview:isActive() then
-			events.onQueuedSkillEffectHidden:dispatch(queuedPreview:unpack())
-			queuedPreview:clear()
+	if queuedMarker ~= actingMarker then
+		if queuedMarker:isActive() then
+			events.onQueuedSkillEffectHidden:dispatch(queuedMarker:unpack())
+			queuedMarker:clear()
 		end
 
-		queuedPreview:set(chosenPreview)
+		queuedMarker:set(actingMarker)
 
-		if queuedPreview:isActive() then
-			events.onQueuedSkillEffectShown:dispatch(queuedPreview:unpack())
+		if queuedMarker:isActive() then
+			events.onQueuedSkillEffectShown:dispatch(queuedMarker:unpack())
 		end
 	end
 
-	if queuedPreview:isActive() then
-		local queuedMarks = queuedPreviewMarks[queuedPreview.pawnId]
+	if queuedMarker:isActive() then
+		local queuedMarks = queuedPreviewMarks[queuedMarker.pawnId]
 		if queuedMarks then
-			markSpaces(queuedMarks, queuedPreview.ticker)
-			queuedPreview.ticker = queuedPreview.ticker + 1
+			markSpaces(queuedMarks, queuedMarker.ticker)
+			queuedMarker.ticker = queuedMarker.ticker + 1
 		end
 	end
 end
@@ -697,10 +697,10 @@ end
 local function initGlobals()
 	clearMarks()
 
-	chosenPreview = Preview()
-	targetPreview = Preview()
-	effectPreview = Preview()
-	queuedPreview = Preview()
+	actingMarker = Marker()
+	targetMarker = Marker()
+	effectMarker = Marker()
+	queuedMarker = Marker()
 
 	events.onTargetAreaShown = Event()
 	events.onTargetAreaHidden = Event()
