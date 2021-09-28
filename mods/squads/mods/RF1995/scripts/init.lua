@@ -62,7 +62,8 @@ function mod:load(options, version)
 			"RF1995",
 			list[1],
 			list[2],
-			list[3]
+			list[3],
+			id = "RF1995"
 		},
 		"RF1995",
 		"How this squad got mixed up in the earth-saving business is unknown. "
