@@ -26,7 +26,7 @@
 			)
 		end)
 
-		weaponArmed.events.onWeaponUnrmed:subscribe(function(skill, pawnId)
+		weaponArmed.events.onWeaponUnarmed:subscribe(function(skill, pawnId)
 			-- A weapon can be unarmed from exiting to main menu,
 			-- so pawn might not exist.
 			local pawn = Game and Game:GetPawn(pawnId) or nil
