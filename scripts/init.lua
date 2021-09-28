@@ -2,7 +2,7 @@
 local mod =  {
 	id = "lmn_mods",
 	name = "Lemonymous' Mods",
-	version = "0.3.2",
+	version = "0.3.3",
 	modApiVersion = "2.6.0",
 	icon = "scripts/icon.png",
 	description = "A Collection of mods made by Lemonymous",
