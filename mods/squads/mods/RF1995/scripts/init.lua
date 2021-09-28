@@ -36,6 +36,26 @@ function mod:init()
 			comp:init()
 		end
 	end
+
+	local mechs = {
+		"lmn_JeepMech",
+		"lmn_HelicopterMech",
+		"lmn_TankMech",
+		"lmn_MinelayerMech"
+	}
+
+	modApi.events.onPostStartGame:subscribe(function()
+		matches = 0
+		for _, mech in ipairs(GAME.additionalSquadData.mechs) do
+			if list_contains(mechs, mech) then
+				matches = matches + 1
+			end
+		end
+
+		if matches == 3 then
+			GAME.additionalSquadData.squad = "RF1995"
+		end
+	end)
 end
 
 function mod:load(options, version)
