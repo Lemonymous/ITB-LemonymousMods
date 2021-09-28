@@ -2,7 +2,7 @@
 local mod =  {
 	id = "lmn_RF1995",
 	name = "RF1995",
-	version = "1.4.0",
+	version = "1.4.1",
 	modApiVersion = "2.3.0",
 	icon = "img/icon.png",
 	requirements = {}
