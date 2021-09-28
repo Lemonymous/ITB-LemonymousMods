@@ -54,19 +54,20 @@ end
 local function load(self, options)
 	for _, boss in ipairs(bosses) do
 		local missionId = string.format("Mission_%sBoss", boss)
+		local bossId = string.format("%sBoss", boss)
 		local mission = _G[missionId]
 
 		if mission and options[boss].enabled then
 			add_element(missionId, Corp_Default.Bosses)
 
 			if options.final.enabled then
-				add_element(boss, Mission_Final.BossList)
-				add_element(boss, Mission_Final_Cave.BossList)
+				add_element(bossId, Mission_Final.BossList)
+				add_element(bossId, Mission_Final_Cave.BossList)
 			end
 		else
 			remove_element(missionId, Corp_Default.Bosses)
-			remove_element(boss, Mission_Final.BossList)
-			remove_element(boss, Mission_Final_Cave.BossList)
+			remove_element(bossId, Mission_Final.BossList)
+			remove_element(bossId, Mission_Final_Cave.BossList)
 		end
 	end
 end
