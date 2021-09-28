@@ -77,6 +77,8 @@ modApi.events.onFrameDrawStart:subscribe(function()
 		if selectedPawnIdCurrent then
 			armedWeaponCurrent = Board:GetPawn(selectedPawnIdCurrent):GetArmedWeapon()
 			armedWeaponCurrent = armedWeaponCurrent and _G[armedWeaponCurrent] or nil
+		else
+			armedWeaponCurrent = nil
 		end
 	else
 		selectedPawnIdCurrent = nil
