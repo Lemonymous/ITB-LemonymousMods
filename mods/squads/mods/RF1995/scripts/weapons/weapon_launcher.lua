@@ -94,8 +94,10 @@ function lmn_Minelayer_Launcher.UpdateArtilleryHeight()
 
 	if hoveredTile then
 		local pawn = Board:GetSelectedPawn()
-		local distance = pawn:GetSpace():Manhattan(hoveredTile)
-		Values.y_velocity = GetYVelocity(distance)
+		if pawn then
+			local distance = pawn:GetSpace():Manhattan(hoveredTile)
+			Values.y_velocity = GetYVelocity(distance)
+		end
 	end
 end
 
