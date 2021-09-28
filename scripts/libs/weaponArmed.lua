@@ -1,7 +1,7 @@
 
 --[[
 
-	Weapon Armed v2.0 - code library by Lemonymous
+	Weapon Armed v2.1 - code library by Lemonymous
 
 
 	events:
