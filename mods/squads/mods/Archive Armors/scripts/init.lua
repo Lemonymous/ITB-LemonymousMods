@@ -2,8 +2,8 @@
 local mod = {
 	id = "lmn_archive_armors",
 	name = "Archive Armors",
-	version = "1.3.2",
-	modApiVersion = "2.3.0",
+	version = "1.4.0",
+	modApiVersion = "2.6.0",
 	icon = "img/icon.png",
 	requirements = {}
 }
