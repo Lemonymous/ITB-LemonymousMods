@@ -66,7 +66,7 @@
 	LOG(myswitch(1, "argument1", "argument2"))
 
 
-	-- Fetching a case with array syntax.
+	-- Execute a case with array syntax.
 	-- This is equivalent to using 'case',
 	-- except this method does _not_ support
 	-- additional arguments like the two
