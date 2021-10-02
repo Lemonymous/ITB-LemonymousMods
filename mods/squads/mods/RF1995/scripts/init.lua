@@ -13,7 +13,7 @@ local scripts = {
 	"achievements",
 	"palette",
 	"weapons/",
-	"pawns/",
+	"squad/",
 }
 
 function mod:init()
