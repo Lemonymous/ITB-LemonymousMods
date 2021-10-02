@@ -12,7 +12,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a battle with 14 tiles covered in smoke.\n\n"..
+		tooltip = "End a battle with 14 tiles covered in smoke\n\n"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
 			"Hard: $gold",
@@ -29,7 +29,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a game with only AI pilots.\n\n"..
+		tooltip = "Beat the game with only AI pilots\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
@@ -47,7 +47,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a game with less than 20 kills during your turns.\n\n"..
+		tooltip = "Beat the game having killed fewer than 20 enemies during your turns\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..

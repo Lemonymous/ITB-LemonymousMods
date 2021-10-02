@@ -13,7 +13,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Move allied mechs with attacks 10 times in a single mission.\n\n"..
+		tooltip = "Move allied mechs with attacks 10 times in a single battle\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
@@ -31,7 +31,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Kill 10 enemies inflicted with A.C.I.D. in a single mission. (7 on Easy)\n\n"..
+		tooltip = "Kill 10 enemies inflicted with A.C.I.D. in a single battle (7 on Easy)\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
@@ -49,7 +49,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a game with at least 250 kills. (200 on Easy)\n\n"..
+		tooltip = "Beat the game with at least 250 kills (200 on Easy)\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..

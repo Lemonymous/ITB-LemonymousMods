@@ -12,7 +12,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a battle with half of all buildings in ruins.\n\n"..
+		tooltip = "End a battle with half of all buildings in ruins\n\n"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
 			"Hard: $gold",
@@ -29,7 +29,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a game without losing any grid.\n\n"..
+		tooltip = "Beat the game without taking Building Damage\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
@@ -47,7 +47,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a game with default un-upgraded weapons.\n\n"..
+		tooltip = "Beat the game with default un-upgraded weapons\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..

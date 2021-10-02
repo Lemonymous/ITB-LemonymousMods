@@ -12,7 +12,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Kill 4 units with one attack.\n\n"..
+		tooltip = "Kill 4 enemies with a single attack\n\n"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
 			"Hard: $gold",
@@ -29,7 +29,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a game where no mechs were damaged.\n\n"..
+		tooltip = "Beat the game without taking any Mech damage\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
@@ -47,7 +47,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Win a game without losing a single objective.\n\n"..
+		tooltip = "Beat the game without failing an objective\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
