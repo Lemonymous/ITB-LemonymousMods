@@ -2,8 +2,8 @@
 local mod = {
 	id = "lmn_disposal_mechs",
 	name = "Disposal Mechs",
-	version = "1.2.0",
-	modApiVersion = "2.3.0",
+	version = "1.3.0",
+	modApiVersion = "2.6.0",
 	icon = "img/icon.png",
 	requirements = {}
 }
