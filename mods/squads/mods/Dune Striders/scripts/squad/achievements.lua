@@ -115,7 +115,7 @@ local COMPLETE = 1
 local INCOMPLETE = 0
 
 -- dust
-local SMOKE_TILES = 2
+local SMOKE_TILES = 14
 
 local getTooltip = achievements.dust.getTooltip
 achievements.dust.getTooltip = function(self)
