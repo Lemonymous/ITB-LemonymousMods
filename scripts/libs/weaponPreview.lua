@@ -1,6 +1,6 @@
 
 ----------------------------------------------------------------------
--- Weapon Preview v3.1.0 - code library
+-- Weapon Preview v3.1.1 - code library
 -- https://github.com/Lemonymous/ITB-LemonymousMods/wiki/weaponPreview
 --
 -- by Lemonymous
