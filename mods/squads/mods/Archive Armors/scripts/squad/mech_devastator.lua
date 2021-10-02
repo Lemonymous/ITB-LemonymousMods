@@ -1,6 +1,10 @@
 
+local path = GetParentPath(...)
+require(path.."palette")
+
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
 lmn_DevastatorMech = Pawn:new{
 	Name = "Devastator Mech",
@@ -8,7 +12,7 @@ lmn_DevastatorMech = Pawn:new{
 	Health = 4,
 	MoveSpeed = 2,
 	Image = "lmn_MechDevastator",
-	ImageOffset = 0,
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_DevastatorCannon" },
 	SoundLocation = "/mech/brute/tank/",
 	DefaultTeam = TEAM_PLAYER,

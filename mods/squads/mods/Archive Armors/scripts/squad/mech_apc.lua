@@ -1,6 +1,10 @@
 
+local path = GetParentPath(...)
+require(path.."palette")
+
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
 lmn_SmokeMech = Pawn:new{
@@ -9,7 +13,7 @@ lmn_SmokeMech = Pawn:new{
 	Health = 3,
 	MoveSpeed = 4,
 	Image = "lmn_MechApc",
-	ImageOffset = 0,
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_SmokeLauncher" },
 	SoundLocation = "/mech/brute/tank/",
 	DefaultTeam = TEAM_PLAYER,

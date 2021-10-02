@@ -1,6 +1,10 @@
 
+local path = GetParentPath(...)
+require(path.."palette")
+
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
+local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
 lmn_BomberMech = Pawn:new{
 	Name = "Bomber Mech",
@@ -8,7 +12,7 @@ lmn_BomberMech = Pawn:new{
 	Health = 2,
 	MoveSpeed = 3,
 	Image = "lmn_MechBomber",
-	ImageOffset = 0,
+	ImageOffset = imageOffset,
 	SkillList = { "lmn_Bombrun" },
 	SoundLocation = "/mech/flying/jet_mech/",
 	DefaultTeam = TEAM_PLAYER,
