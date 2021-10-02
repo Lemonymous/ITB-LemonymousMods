@@ -464,10 +464,10 @@ end
 
 local function getTargetArea(self, p1, ...)
 	local skillId = getTargetAreaCallers[#getTargetAreaCallers]
-	local pawn = Board:GetPawn(p1)
+	local pawn = p1 and Board:GetPawn(p1) or Pawn
 	local result = nil
 
-	if previewState == STATE_NONE and not Board:IsTipImage() then
+	if pawn and previewState == STATE_NONE and not Board:IsTipImage() then
 
 		actingMarker:setArmed(pawn)
 
@@ -494,10 +494,10 @@ end
 
 local function getSkillEffect(self, p1, p2, ...)
 	local skillId = getSkillEffectCallers[#getSkillEffectCallers]
-	local pawn = Board:GetPawn(p1)
+	local pawn = p1 and Board:GetPawn(p1) or Pawn
 	local result = nil
 
-	if previewState == STATE_NONE and not Board:IsTipImage() then
+	if pawn and previewState == STATE_NONE and not Board:IsTipImage() then
 
 		actingMarker:setArmed(pawn)
 
