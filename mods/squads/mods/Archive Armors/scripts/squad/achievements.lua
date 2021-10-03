@@ -29,7 +29,7 @@ local achievements = {
 			normal = 0,
 			hard = 0,
 		},
-		tooltip = "Beat the game without taking Building Damage\n\n"..
+		tooltip = "Beat the game without losing any Grid Power\n\n"..
 			"$status"..
 			"Easy: $bronze\n"..
 			"Normal: $silver\n"..
