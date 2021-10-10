@@ -11,13 +11,17 @@ local icon_loc = Point(-10,8)
 Location["combat/icons/lmn_ds_icon_sand_glow.png"] = Point(-13,12)
 Location["combat/icons/lmn_ds_icon_smoke_glow.png"] = icon_loc
 Location["combat/icons/lmn_ds_icon_smoke_immune_glow.png"] = icon_loc
-
-
 local function isEnemy(tile1, tile2)
-	local pawn1 = Board:GetPawn(tile1)
-	local pawn2 = Board:GetPawn(tile2)
-	if not pawn1 or not pawn2 then return false end
-	
+	local invalidCheck = false
+		or tile1 == nil
+		or tile2 == nil
+		or Board:IsPawnSpace(tile1) == false
+		or Board:IsPawnSpace(tile2) == false
+
+	if invalidCheck then
+		return false
+	end
+
 	local team1 = Board:GetPawnTeam(tile1)
 	local team2 = Board:GetPawnTeam(tile2)
 	
