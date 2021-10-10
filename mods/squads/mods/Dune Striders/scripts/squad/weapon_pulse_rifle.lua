@@ -14,15 +14,16 @@ lmn_ds_PulseRifle = Skill:new{
 	Description = "Teleport, and fire a damaging and pushing projectile back in the direction you came from.",
 	Icon = "weapons/lmn_ds_pulse_rifle.png",
 	Class = "Prime",
-	PowerCost = 1,
+	PowerCost = 2,
 	Range = INT_MAX,
 	Damage = 1,
+	DirectFire = false,
 	LeaveSmoke = false,
 	CanFireFromSmoke = true,
 	CanFireFromWater = true,
 	Upgrades = 2,
-	UpgradeList = { "Leave Smoke", "+2 Damage" },
-	UpgradeCost = { 1, 3 },
+	UpgradeList = { "Direct Fire", "+2 Damage" },
+	UpgradeCost = { 1, 4 },
 	TipImage = {
 		Unit = Point(2,3),
 		Mountain = Point(2,2),
@@ -33,38 +34,66 @@ lmn_ds_PulseRifle = Skill:new{
 
 
 lmn_ds_PulseRifle_A = lmn_ds_PulseRifle:new{
-	UpgradeDescription = "Create Smoke and extinguish Fire at origin before teleporting.",
-	LeaveSmoke = true
+	UpgradeDescription = "Can fire directly at targets in line of sight.",
+	DirectFire = true,
 }
 
 lmn_ds_PulseRifle_B = lmn_ds_PulseRifle:new{
-	UpgradeDescription = "Increases damage by 2.",
-	Damage = 3
+	UpgradeDescription = "Increases damage by 1.",
+	Damage = 3,
 }
 
 lmn_ds_PulseRifle_AB = lmn_ds_PulseRifle:new{
-	LeaveSmoke = true,
-	Damage = 3
+	DirectFire = true,
+	Damage = 3,
 }
 
 function lmn_ds_PulseRifle:GetTargetArea(point)
 	local ret = PointList()
 	
 	for dir = DIR_START, DIR_END do
-		for k = 1, self.Range do
-			local curr = point + DIR_VECTORS[dir] * k
+		local lineOfSightIsBroken = false
+
+		for dist = 1, self.Range do
+			local curr = point + DIR_VECTORS[dir] * dist
 			
 			if not Board:IsValid(curr) then
 				break
 			end
-			
-			if
-				not Board:IsBlocked(curr, Pawn:GetPathProf())                            and
-				(not utils.IsTerrainWaterLogging(curr, Pawn) or self.CanFireFromWater)   and
-				not Board:IsItem(curr)                                                   and
-				(not Board:IsSmoke(curr) or self.CanFireFromSmoke)
-			then
+
+			local teleportInvalidatedBySmoke = true
+				and self.CanFireFromSmoke == false
+				and Board:IsSmoke(curr)
+
+			local teleportInvalidatedByWater = true
+				and self.CanFireFromWater == false
+				and Board:GetTerrain(point) == TERRAIN_WATER
+				and Pawn:IsFlying() == false
+
+			local teleportBlocked = false
+				or Board:IsBlocked(curr, Pawn:GetPathProf())
+				or Board:IsItem(curr)
+
+			local targetInLineOfSight = true
+				and self.DirectFire
+				and	lineOfSightIsBroken == false
+				and Board:IsBlocked(curr, PATH_PROJECTILE)
+
+			local validTeleportLocation = true
+				and teleportInvalidatedBySmoke == false
+				and teleportInvalidatedByWater == false
+				and teleportBlocked == false
+
+			local validTarget = false
+				or validTeleportLocation
+				or targetInLineOfSight
+
+			if validTarget then
 				ret:push_back(curr)
+			end
+
+			if targetInLineOfSight then
+				lineOfSightIsBroken = true
 			end
 		end
 	end
@@ -73,21 +102,34 @@ function lmn_ds_PulseRifle:GetTargetArea(point)
 end
 
 function lmn_ds_PulseRifle:GetSkillEffect(p1, p2)
-	local ret = lmn_ds_Teleport.GetSkillEffect(self, p1, p2, lmn_ds_Teleport)
-	local dir = GetDirection(p1 - p2)
-	local target = p1
-	
-	for k = 1, self.Range do
-		local curr = p2 + DIR_VECTORS[dir] * k
-		
-		if Board:IsValid(curr) then
-			target = curr
-		else
-			break
-		end
-		
-		if target ~= p1 and Board:IsBlocked(target, PATH_PROJECTILE) then
-			break
+	local isDirectFire = Board:IsBlocked(p2, PATH_PROJECTILE)
+	local origin
+	local target
+	local dir
+
+	if isDirectFire then
+		ret = SkillEffect()
+		origin = p1
+		target = p2
+		dir = GetDirection(target - origin)
+	else
+		ret = lmn_ds_Teleport.GetSkillEffect(self, p1, p2, lmn_ds_Teleport)
+		origin = p2
+		target = p1
+		dir = GetDirection(target - origin)
+
+		for dist = 1, self.Range do
+			local curr = origin + DIR_VECTORS[dir] * dist
+
+			if Board:IsValid(curr) then
+				target = curr
+			else
+				break
+			end
+
+			if target ~= p1 and Board:IsBlocked(target, PATH_PROJECTILE) then
+				break
+			end
 		end
 	end
 	
@@ -105,7 +147,7 @@ function lmn_ds_PulseRifle:GetSkillEffect(p1, p2)
 		end
 		
 		worldConstants:setLaserDuration(ret, laserDuration + 0.05)
-		ret:AddProjectile(p2, SpaceDamage(target), "effects/lmn_ds_laser", NO_DELAY)
+		ret:AddProjectile(origin, SpaceDamage(target), "effects/lmn_ds_laser", NO_DELAY)
 		worldConstants:resetLaserDuration(ret)
 		ret:AddDelay(laserDuration)
 	end
@@ -120,7 +162,7 @@ function lmn_ds_PulseRifle:GetSkillEffect(p1, p2)
 
 	local velocity = 1.8
 	worldConstants:setSpeed(ret, velocity)
-	ret:AddProjectile(p2, projectile, "effects/lmn_ds_shot_plasma", NO_DELAY)
+	ret:AddProjectile(origin, projectile, "effects/lmn_ds_shot_plasma", NO_DELAY)
 	worldConstants:resetSpeed(ret)
 	
 	return ret
