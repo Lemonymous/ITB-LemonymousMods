@@ -74,6 +74,40 @@ modApi:appendAsset("img/effects/lmn_ds_shot_pistol_focus_R.png", path.."img/effe
 modApi:appendAsset("img/effects/lmn_ds_shot_pistol_focus_U.png", path.."img/effects/shot_pistol_focus_U.png")
 
 
+-- hauler hooks
+modApi:appendAsset("img/weapons/lmn_ds_hauler_hooks.png", path.."img/weapons/hauler_hooks.png")
+
+local angle_variance = 10
+local angle_0 = 323 + angle_variance / 2
+local angle_1 = 37 + angle_variance / 2
+local angle_2 = 142 + angle_variance / 2
+local angle_3 = 218 + angle_variance / 2
+
+lmn_ds_Emitter_Wind_0 = Emitter_Wind_0:new{
+	image = "combat/tiles_grass/particle.png",
+	x = 0,
+	y = 10,
+	variance_x = 40,
+	variance_y = 25,
+	burst_count = 20,
+	angle_variance = angle_variance,
+	lifespan = 0.5,
+	speed = 1,
+	angle = angle_0,
+}
+lmn_ds_Emitter_Wind_1 = lmn_ds_Emitter_Wind_0:new{ angle = angle_1, }
+lmn_ds_Emitter_Wind_2 = lmn_ds_Emitter_Wind_0:new{ angle = angle_2, }
+lmn_ds_Emitter_Wind_3 = lmn_ds_Emitter_Wind_0:new{ angle = angle_3, }
+
+lmn_ds_Emitter_Tempest_0 = lmn_ds_Emitter_Wind_0:new{
+	burst_count = 40,
+	speed = 1.5,
+}
+lmn_ds_Emitter_Tempest_1 = lmn_ds_Emitter_Tempest_0:new{ angle = angle_1, }
+lmn_ds_Emitter_Tempest_2 = lmn_ds_Emitter_Tempest_0:new{ angle = angle_2, }
+lmn_ds_Emitter_Tempest_3 = lmn_ds_Emitter_Tempest_0:new{ angle = angle_3, }
+
+
 -- plasma rifle
 modApi:appendAsset("img/weapons/lmn_ds_pulse_rifle.png", path.."img/weapons/pulse_rifle.png")
 modApi:appendAsset("img/effects/lmn_ds_shot_plasma_U.png", path.."img/effects/shot_plasma_U.png")

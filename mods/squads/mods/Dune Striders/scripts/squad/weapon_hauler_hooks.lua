@@ -7,7 +7,6 @@ local worldConstants = LApi.library:fetch("worldConstants")
 
 modApi:copyAsset("img/combat/icons/icon_postmove_glow.png", "img/combat/icons/lmn_ds_icon_bonus_move_glow.png")
 modApi:appendAsset("img/effects/lmn_ds_bonus_move.png", mod.resourcePath .."img/effects/bonus_move.png")
-modApi:appendAsset("img/weapons/lmn_ds_hauler_hooks.png", mod.resourcePath .."img/weapons/hauler_hooks.png")
 
 Location["combat/icons/lmn_ds_icon_bonus_move_glow.png"] = Point(-13,-2)
 
@@ -25,28 +24,6 @@ ANIMS.lmn_ds_bonus_move = ANIMS.Animation:new{
 	},
 	Sound = "enemy/shared/robot_power_on"
 }
-
-local angle_variance = 10
-local angle_0 = 323 + angle_variance / 2
-local angle_1 = 37 + angle_variance / 2
-local angle_2 = 142 + angle_variance / 2
-local angle_3 = 218 + angle_variance / 2
-
-lmn_ds_Emitter_Wind_0 = Emitter_Wind_0:new{
-	image = "combat/tiles_grass/particle.png",
-	x = 0,
-	y = 10,
-	variance_x = 40,
-	variance_y = 25,
-	burst_count = 20,
-	angle_variance = angle_variance,
-	lifespan = 0.5,
-	speed = 1,
-	angle = angle_0,
-}
-lmn_ds_Emitter_Wind_1 = lmn_ds_Emitter_Wind_0:new{ angle = angle_1, }
-lmn_ds_Emitter_Wind_2 = lmn_ds_Emitter_Wind_0:new{ angle = angle_2, }
-lmn_ds_Emitter_Wind_3 = lmn_ds_Emitter_Wind_0:new{ angle = angle_3, }
 
 lmn_ds_HaulerHooks = Skill:new{
 	Name = "Hauler Hooks",
