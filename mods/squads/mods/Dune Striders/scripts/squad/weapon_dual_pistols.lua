@@ -12,9 +12,6 @@ Location["combat/icons/lmn_ds_icon_sand_glow.png"] = Point(-13,12)
 Location["combat/icons/lmn_ds_icon_smoke_glow.png"] = icon_loc
 Location["combat/icons/lmn_ds_icon_smoke_immune_glow.png"] = icon_loc
 
-local function isRoadRunner(pawn)
-	return pawn:GetPathProf() % 16 == PATH_ROADRUNNER
-end
 
 local function isEnemy(tile1, tile2)
 	local pawn1 = Board:GetPawn(tile1)
