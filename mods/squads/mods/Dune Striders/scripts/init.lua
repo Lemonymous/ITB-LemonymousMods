@@ -9,7 +9,6 @@ local mod = {
 }
 
 local scripts = {
-	"palette.lua",
 	"libs/",
 	"squad/",
 }
