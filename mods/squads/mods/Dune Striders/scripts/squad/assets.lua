@@ -55,9 +55,13 @@ ANIMS.lmn_ds_Swoop_ns =            ANIMS.MechIcon:new{ Image = "units/player/lmn
 
 
 -- explosions
+modApi:appendAsset("img/effects/lmn_ds_explo_smoke.png", path.."img/effects/explo_smoke.png")
+modApi:appendAsset("img/effects/lmn_ds_explo_plasma.png", path.."img/effects/explo_plasma.png")
 modApi:appendAsset("img/effects/lmn_ds_explo_plasma_dual_U.png", path.."img/effects/explo_plasma_dual_U.png")
 modApi:appendAsset("img/effects/lmn_ds_explo_plasma_dual_R.png", path.."img/effects/explo_plasma_dual_R.png")
 
+ANIMS.lmn_ds_explo_smoke = ANIMS.ExploAir2:new{ Image = "effects/lmn_ds_explo_smoke.png" }
+ANIMS.lmn_ds_explo_plasma = ANIMS.ExploAir1:new{ Image = "effects/lmn_ds_explo_plasma.png" }
 ANIMS.lmn_ds_explo_plasma_dual_U = ANIMS.ExploAir1:new{ Image = "effects/lmn_ds_explo_plasma_dual_U.png", PosX = -17, PosY = -2 }
 ANIMS.lmn_ds_explo_plasma_dual_R = ANIMS.ExploAir1:new{ Image = "effects/lmn_ds_explo_plasma_dual_R.png", PosX = -17, PosY = -2 }
 
