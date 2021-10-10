@@ -3,10 +3,6 @@ local mod = mod_loader.mods[modApi.currentMod]
 local utils = require(mod.scriptPath .."libs/utils")
 local effectBurst = LApi.library:fetch("effectBurst")
 local worldConstants = LApi.library:fetch("worldConstants")
-modApi:copyAsset("img/combat/icons/icon_fire_immune_glow.png", "img/combat/icons/lmn_ds_icon_fire_immune_glow.png")
-
-Location["combat/icons/lmn_ds_icon_fire_immune_glow.png"] = Point(-10,8)
-
 local weaponPreview = LApi.library:fetch("weaponPreview")
 
 lmn_ds_PulseRifle = Skill:new{

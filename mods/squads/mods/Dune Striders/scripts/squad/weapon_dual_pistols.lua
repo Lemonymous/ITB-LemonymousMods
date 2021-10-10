@@ -4,14 +4,6 @@ local utils = require(mod.scriptPath .."libs/utils")
 local effectBurst = LApi.library:fetch("effectBurst")
 local trueMoveSpeed = LApi.library:fetch("trueMoveSpeed")
 
-modApi:copyAsset("img/combat/icons/icon_sand_glow.png", "img/combat/icons/lmn_ds_icon_sand_glow.png")
-modApi:copyAsset("img/combat/icons/icon_smoke_glow.png", "img/combat/icons/lmn_ds_icon_smoke_glow.png")
-modApi:copyAsset("img/combat/icons/icon_smoke_immune_glow.png", "img/combat/icons/lmn_ds_icon_smoke_immune_glow.png")
-
-local icon_loc = Point(-10,8)
-Location["combat/icons/lmn_ds_icon_sand_glow.png"] = Point(-13,12)
-Location["combat/icons/lmn_ds_icon_smoke_glow.png"] = icon_loc
-Location["combat/icons/lmn_ds_icon_smoke_immune_glow.png"] = icon_loc
 local function isEnemy(tile1, tile2)
 	local invalidCheck = false
 		or tile1 == nil

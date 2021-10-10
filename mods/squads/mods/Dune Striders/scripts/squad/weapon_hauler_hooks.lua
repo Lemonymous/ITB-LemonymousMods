@@ -5,26 +5,6 @@ local effectPreview = LApi.library:fetch("effectPreview")
 local effectBurst = LApi.library:fetch("effectBurst")
 local worldConstants = LApi.library:fetch("worldConstants")
 
-modApi:copyAsset("img/combat/icons/icon_postmove_glow.png", "img/combat/icons/lmn_ds_icon_bonus_move_glow.png")
-modApi:appendAsset("img/effects/lmn_ds_bonus_move.png", mod.resourcePath .."img/effects/bonus_move.png")
-
-Location["combat/icons/lmn_ds_icon_bonus_move_glow.png"] = Point(-13,-2)
-
-local t = .10
-local q = t/4
-ANIMS.lmn_ds_bonus_move = ANIMS.Animation:new{
-	Image = "effects/lmn_ds_bonus_move.png",
-	PosX = -9,
-	PosY = -15,
-	NumFrames = 13,
-	Lengths = {
-		t,t,t,t,t,
-		q,q,q,q,
-		q,q,q,q
-	},
-	Sound = "enemy/shared/robot_power_on"
-}
-
 lmn_ds_HaulerHooks = Skill:new{
 	Name = "Hauler Hooks",
 	Description = "Charge up to 4 tiles, and haul any units behind you along.",
