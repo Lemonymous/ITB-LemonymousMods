@@ -66,7 +66,7 @@ function lmn_ds_HaulerHooks:GetTargetArea(point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -170,9 +170,9 @@ function lmn_ds_HaulerHooks:GetSkillEffect(p1, p2)
 			effectBurst.Add(ret, curr + vec_forward, emitter_wind..dir_forward, DIR_NONE)
 		end
 	end
-	
+
 	-- weapon preview looks better if we end with the main charge
 	effectPreview:addCharge(ret, p1, p2, Pawn:GetPathProf())
-	
+
 	return ret
 end

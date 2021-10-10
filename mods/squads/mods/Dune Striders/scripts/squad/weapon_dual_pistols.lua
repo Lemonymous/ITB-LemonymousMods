@@ -17,7 +17,7 @@ local function isEnemy(tile1, tile2)
 
 	local team1 = Board:GetPawnTeam(tile1)
 	local team2 = Board:GetPawnTeam(tile2)
-	
+
 	return team1 ~= team2
 end
 
@@ -86,7 +86,7 @@ function lmn_ds_DualPistols:GetTargetArea(point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -107,7 +107,7 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 	if self.HoldFire then
 		first, last, step = last, first, -step
 	end
-	
+
 	-- find targets
 	for dist = first, last, step do
 		local curr = p1 + vec_forward * dist
@@ -144,7 +144,7 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	ret:AddSound("/mech/prime/punch_mech/move")
 	ret:AddDelay(0.2)
 	ret:AddSound("/enemy/shared/moved")
@@ -206,7 +206,7 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 				end
 			end
 		end
-		
+
 		ret:AddDelay(0.08)
 	end
 

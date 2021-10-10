@@ -28,7 +28,6 @@ lmn_ds_PulseRifle = Skill:new{
 	}
 }
 
-
 lmn_ds_PulseRifle_A = lmn_ds_PulseRifle:new{
 	UpgradeDescription = "Can fire directly at targets in line of sight.",
 	DirectFire = true,
@@ -46,7 +45,7 @@ lmn_ds_PulseRifle_AB = lmn_ds_PulseRifle:new{
 
 function lmn_ds_PulseRifle:GetTargetArea(point)
 	local ret = PointList()
-	
+
 	for dir = DIR_START, DIR_END do
 		local lineOfSightIsBroken = false
 
@@ -93,7 +92,7 @@ function lmn_ds_PulseRifle:GetTargetArea(point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -128,28 +127,28 @@ function lmn_ds_PulseRifle:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	local projectile = SpaceDamage(target, self.Damage, dir)
 	projectile.sSound = "/props/electric_smoke_damage"
 	projectile.sScript = string.format("Board:AddAnimation(%s, 'lmn_ds_explo_plasma', NO_DELAY)", target:GetString())
-	
+
 	ret:AddSound("/impact/generic/tractor_beam")
 	ret:AddDelay(0.1)
-	
+
 	local laserDuration = 0.05
 	for i = 1, 10 do
 		if i < 7 and i % 2 == 0 or i >= 7 then
 			ret:AddSound("/props/square_lightup")
 		end
-		
+
 		worldConstants:setLaserDuration(ret, laserDuration + 0.05)
 		ret:AddProjectile(origin, SpaceDamage(target), "effects/lmn_ds_laser", NO_DELAY)
 		worldConstants:resetLaserDuration(ret)
 		ret:AddDelay(laserDuration)
 	end
-	
+
 	ret:AddSound("/weapons/burst_beam")
-	
+
 	if target == p1 then
 		-- remove hp blinking if targeting its own location
 		-- by previewing the opposite damage
@@ -160,6 +159,6 @@ function lmn_ds_PulseRifle:GetSkillEffect(p1, p2)
 	worldConstants:setSpeed(ret, velocity)
 	ret:AddProjectile(origin, projectile, "effects/lmn_ds_shot_plasma", NO_DELAY)
 	worldConstants:resetSpeed(ret)
-	
+
 	return ret
 end
