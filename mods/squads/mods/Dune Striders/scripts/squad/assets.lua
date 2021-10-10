@@ -67,5 +67,8 @@ ANIMS.lmn_ds_explo_plasma_dual_R = ANIMS.ExploAir1:new{ Image = "effects/lmn_ds_
 
 
 -- dual pistols
+modApi:appendAsset("img/weapons/lmn_ds_dual_pistols.png", path.."img/weapons/dual_pistols.png")
+modApi:appendAsset("img/effects/lmn_ds_shot_pistol_R.png", path.."img/effects/shot_pistol_R.png")
+modApi:appendAsset("img/effects/lmn_ds_shot_pistol_U.png", path.."img/effects/shot_pistol_U.png")
 modApi:appendAsset("img/effects/lmn_ds_shot_pistol_focus_R.png", path.."img/effects/shot_pistol_focus_R.png")
 modApi:appendAsset("img/effects/lmn_ds_shot_pistol_focus_U.png", path.."img/effects/shot_pistol_focus_U.png")
