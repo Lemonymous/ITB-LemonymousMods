@@ -27,63 +27,62 @@ ANIMS.lmn_ds_bonus_move = ANIMS.Animation:new{
 
 lmn_ds_HaulerHooks = Skill:new{
 	Name = "Hauler Hooks",
-	Description = "Move in a line, and haul any units behind you along.",
+	Description = "Charge up to 4 tiles, and haul any units behind you along.",
 	Icon = "weapons/lmn_ds_hauler_hooks.png",
 	Class = "Science",
-	PowerCost = 2,
-	Range = INT_MAX,
-	Crash = false,
-	MoveSpeedAsRange = false,
-	MoveSpeedMinimum = nil,
-	RefreshMovement = false,
-	Upgrades = 1,
-	UpgradeList = { "Refresh Movement" },
-	UpgradeCost = { 2 },
+	PowerCost = 1,
+	MinMove = 1,
+	MaxMove = 4,
+	Velocity = 0.4,
+	Upgrades = 2,
+	UpgradeList = { "+1 Move", "+2 Move" },
+	UpgradeCost = { 1, 2 },
 	TipImage = {
-		Unit = Point(3,2),
-		Target = Point(3,1),
-		Second_Origin = Point(3,1),
-		Second_Target = Point(0,1),
-		Friendly1 = Point(3,3),
-		Enemy1 = Point(2,1),
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy1 = Point(2,3),
 	}
 }
 
 lmn_ds_HaulerHooks_A = lmn_ds_HaulerHooks:new{
-	UpgradeDescription = "Refresh movement on hauled units, if they have not attacked yet.",
-	RefreshMovement = true
+	UpgradeDescription = "Increase move distance by 1.",
+	MaxMove = 5,
+	Velocity = 0.5,
 }
 
-local function canRefreshMovement(pawn)
-	if utils.IsTipImage() then
-		return true
-	end
-	
-	return pawn:IsActive() and not pawn:IsMovementAvailable()
-end
+lmn_ds_HaulerHooks_B = lmn_ds_HaulerHooks:new{
+	UpgradeDescription = "Increase move distance by 2.",
+	MaxMove = 6,
+	Velocity = 0.6,
+}
+
+lmn_ds_HaulerHooks_AB = lmn_ds_HaulerHooks_A:new{
+	MaxMove = 7,
+	Velocity = 0.7,
+}
 
 function lmn_ds_HaulerHooks:GetTargetArea(point)
 	local ret = PointList()
 	local pathing = Pawn:GetPathProf()
-	local range = self.MoveSpeedAsRange and Pawn:GetMoveSpeed() or self.Range
-	
-	if self.MoveSpeedMinimum and range == 0 then
-		range = self.MoveSpeedMinimum
-	end
-	
+
 	for dir = DIR_START, DIR_END do
-		for k = 1, range do
-			local curr = point + DIR_VECTORS[dir] * k
-			
-			if not Board:IsValid(curr) then
+		for distance = 1, self.MaxMove do
+			local curr = point + DIR_VECTORS[dir] * distance
+
+			local isTraversableTile = true
+				and Board:IsValid(curr)
+				and utils.IsTilePassable(curr, Pawn)
+
+			if isTraversableTile == false then
 				break
 			end
-			
-			if not Board:IsBlocked(curr, pathing) then
+
+			local isValidEndTile = true
+				and distance >= self.MinMove
+				and Board:IsBlocked(curr, Pawn:GetPathProf()) == false
+
+			if isValidEndTile then
 				ret:push_back(curr)
-				
-			elseif not utils.IsTilePassable(curr, pathing) then
-				break
 			end
 		end
 	end
@@ -94,105 +93,101 @@ end
 function lmn_ds_HaulerHooks:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local distance = p1:Manhattan(p2)
-	local dir = GetDirection(p2 - p1)
-	local pawns = {}
-	local dests = {}
-	local currentPawn
-	
+	local dir_forward = GetDirection(p2 - p1)
+	local dir_back = (dir_forward+2)%4
+	local dir_right = (dir_forward+1)%4
+	local dir_left = (dir_forward-1)%4
+	local vec_forward = DIR_VECTORS[dir_forward]
+	local vec_right = DIR_VECTORS[dir_right]
+	local vec_left = DIR_VECTORS[dir_left]
+	local velocity = self.Velocity
+	local events = {}
+	local cargo = nil
+	local emitter_wind = "lmn_ds_Emitter_Wind_"
+
+	if self.Velocity >= 0.6 then
+		emitter_wind = "lmn_ds_Emitter_Tempest_"
+	end
+
 	-- create a list of pawns to haul: {pawn, from, to}
-	for k = -1, distance - 1 do
-		local curr = p1 + DIR_VECTORS[dir] * k
-		
-		if Board:IsValid(curr) then
-			local pawn = Board:GetPawn(curr)
-			
-			if curr ~= p1 and pawn then
-				if not pawn:IsGuarding() then
-					local team = pawn:GetTeam()
-					currentPawn = { pawn = pawn, team = team, from = curr }
-					pawns[k] = currentPawn
-				else
-					currentPawn = nil
-				end
-				
-			elseif currentPawn then
-				local terrain = Board:GetTerrain(curr)
-				
-				if utils.IsTerrainPathable(terrain, PATH_FLYER) then
-					currentPawn.to = curr
-					currentPawn.distance = k
-				end
-				
-				if not utils.IsTerrainPathable(terrain, currentPawn.pawn:GetPathProf()) then
-					currentPawn = nil
-				end
+	for dist = -1, distance - 1 do
+		local curr = p1 + vec_forward * dist
+		local pawn = Board:GetPawn(curr)
+		local terrain = Board:GetTerrain(curr)
+
+		local tileHasHaulablePawn = true
+			and curr ~= p1
+			and pawn ~= nil
+			and pawn:IsGuarding() == false
+
+		local tileIsBlocked = true
+			and curr ~= p1
+			and Board:IsBlocked(curr, PATH_PROJECTILE)
+
+		local cargoCanEnterTile = true
+			and cargo ~= nil
+			and tileIsBlocked == false
+
+		local terrainKillsCargo = true
+			and cargoCanEnterTile
+			and utils.IsTerrainPathable(terrain, cargo.pawn:GetPathProf()) == false
+
+		if cargoCanEnterTile then
+			cargo.to = curr
+
+			if terrainKillsCargo then
+				cargo = nil
 			end
+		else
+			cargo = nil
+		end
+
+		if tileHasHaulablePawn then
+			events[dist] = { pawn = pawn, from = curr }
+			cargo = events[dist]
 		end
 	end
-	
-	
-	local velocity = 0.4
-	
+
+
 	-- move pawns according to the list we made previously
-	for k = -2, distance - 1 do
-		local curr = p1 + DIR_VECTORS[dir] * k
-		
-		local draggedPawn = pawns[k]
-		local passedPawn = pawns[k+1]
-		
-		if passedPawn and passedPawn.to then
+	for dist = -1, distance do
+		local curr = p1 + vec_forward * dist
+		local draggedPawn = events[dist]
+		local nextPawn = events[dist+1]
+		local soundPawn = dist == -1 and draggedPawn or nextPawn
+		local chargeSelf = dist == -1
+		local createWindParticles = dist < distance - 1
+
+		local playGrappleSound = true
+			and soundPawn ~= nil
+			and soundPawn.to ~= nil
+
+		local chargeCargo = true
+			and draggedPawn ~= nil
+			and draggedPawn.to ~= nil
+
+		if playGrappleSound then
 			ret:AddSound("weapons/grapple")
 			ret:AddSound("impact/generic/grapple")
 		end
-		
-		if draggedPawn and draggedPawn.to then
-			
-			if self.RefreshMovement and canRefreshMovement(draggedPawn.pawn) then
-				if draggedPawn.team == TEAM_PLAYER then
-					local bonusMove = SpaceDamage(draggedPawn.to)
-					bonusMove.sImageMark = "combat/icons/lmn_ds_icon_bonus_move_glow.png"
-					ret:AddDamage(bonusMove)
-				end
-			end
-			
+
+		ret:AddDelay(0.08 * worldConstants:getDefaultSpeed() / velocity)
+
+		if chargeCargo then
 			worldConstants:setSpeed(ret, velocity)
 			ret:AddCharge(Board:GetPath(draggedPawn.from, draggedPawn.to, PATH_FLYER), NO_DELAY)
 			worldConstants:resetSpeed(ret)
-			
-			dests[draggedPawn.distance] = draggedPawn
 		end
-		
-		local arrivingPawn = dests[k]
-		
-		if arrivingPawn then
-			if self.Crash then
-				if k < distance - 1 and arrivingPawn.to then
-					ret:AddDamage(SpaceDamage(arrivingPawn.to, 0, dir))
-				end
-			end
-			
-			if self.RefreshMovement and canRefreshMovement(arrivingPawn.pawn) then
-				if arrivingPawn.team == TEAM_PLAYER then
-					ret:AddScript(string.format([[
-						local pawn = Board:GetPawn(%s);
-						local p = pawn:GetSpace();
-						pawn:SetMovementAvailable(true);
-						Board:Ping(p, GL_Color(100,255,100));
-						Board:AddAnimation(p, "lmn_ds_bonus_move", ANIM_DELAY);
-					]], arrivingPawn.pawn:GetId()))
-				end
-			end
-		end
-		
-		ret:AddDelay(0.08 * worldConstants:getDefaultSpeed() / velocity)
-		
-		if k == -2 then
+
+		if chargeSelf then
 			worldConstants:setSpeed(ret, velocity)
 			ret:AddSound("/enemy/shared/moved")
 			ret:AddCharge(Board:GetPath(p1, p2, Pawn:GetPathProf()), NO_DELAY)
 			worldConstants:resetSpeed(ret)
-		else
-			effectBurst.Add(ret, curr + DIR_VECTORS[dir], "lmn_ds_Emitter_Wind_".. dir, DIR_NONE)
+		end
+
+		if createWindParticles then
+			effectBurst.Add(ret, curr + vec_forward, emitter_wind..dir_forward, DIR_NONE)
 		end
 	end
 	
