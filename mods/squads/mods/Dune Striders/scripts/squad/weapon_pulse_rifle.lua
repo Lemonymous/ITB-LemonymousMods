@@ -7,6 +7,7 @@ modApi:copyAsset("img/combat/icons/icon_fire_immune_glow.png", "img/combat/icons
 
 Location["combat/icons/lmn_ds_icon_fire_immune_glow.png"] = Point(-10,8)
 
+local weaponPreview = LApi.library:fetch("weaponPreview")
 
 lmn_ds_PulseRifle = Skill:new{
 	Name = "Pulse Rifle",
@@ -111,6 +112,12 @@ function lmn_ds_PulseRifle:GetSkillEffect(p1, p2)
 	
 	ret:AddSound("/weapons/burst_beam")
 	
+	if target == p1 then
+		-- remove hp blinking if targeting its own location
+		-- by previewing the opposite damage
+		weaponPreview:AddDamage(SpaceDamage(p1, -self.Damage))
+	end
+
 	local velocity = 1.8
 	worldConstants:setSpeed(ret, velocity)
 	ret:AddProjectile(p2, projectile, "effects/lmn_ds_shot_plasma", NO_DELAY)
