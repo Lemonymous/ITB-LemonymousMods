@@ -167,19 +167,21 @@ end
 
 local impactSounds = {
 	IMPACT_MATERIAL_METAL = "impact/generic/metal",
-	IMPACT_MATERIAL_BLOB = "impact/generic/blob"
+	IMPACT_MATERIAL_BLOB = "impact/generic/blob",
+	default = "impact/generic/general",
 }
 
-function utils.GetGenericImpactSoundScript(p, defaultSound)
+function utils.GetImpactSound(p)
 	local pawn = Board:GetPawn(p)
-	local impactMaterial = pawn:GetImpactMaterial()
-	local impactSound = impactSounds[impactMaterial] or defaultSound
+	local impactMaterial
+	local impactSound
 	
-	if impactSound then
-		return string.format("Game:TriggerSound(%q)", impactSound)
+	if pawn then
+		impactMaterial = pawn:GetImpactMaterial()
+		impactSound = impactSounds[impactMaterial]
 	end
 	
-	return ""
+	return impactSound or impactSounds.default
 end
 
 return utils
