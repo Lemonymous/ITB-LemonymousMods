@@ -72,3 +72,28 @@ modApi:appendAsset("img/effects/lmn_ds_shot_pistol_R.png", path.."img/effects/sh
 modApi:appendAsset("img/effects/lmn_ds_shot_pistol_U.png", path.."img/effects/shot_pistol_U.png")
 modApi:appendAsset("img/effects/lmn_ds_shot_pistol_focus_R.png", path.."img/effects/shot_pistol_focus_R.png")
 modApi:appendAsset("img/effects/lmn_ds_shot_pistol_focus_U.png", path.."img/effects/shot_pistol_focus_U.png")
+
+
+-- plasma rifle
+modApi:appendAsset("img/weapons/lmn_ds_pulse_rifle.png", path.."img/weapons/pulse_rifle.png")
+modApi:appendAsset("img/effects/lmn_ds_shot_plasma_U.png", path.."img/effects/shot_plasma_U.png")
+modApi:appendAsset("img/effects/lmn_ds_shot_plasma_R.png", path.."img/effects/shot_plasma_R.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_start.png", path.."img/effects/laser_start.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_hit.png", path.."img/effects/laser_hit.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_R.png", path.."img/effects/laser_R.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_R1.png", path.."img/effects/laser_R1.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_R2.png", path.."img/effects/laser_R2.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_U.png", path.."img/effects/laser_U.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_U1.png", path.."img/effects/laser_U1.png")
+modApi:appendAsset("img/effects/lmn_ds_laser_U2.png", path.."img/effects/laser_U2.png")
+
+local laser_loc = Point(-12,3)
+Location["effects/lmn_ds_laser_U.png"] = laser_loc
+Location["effects/lmn_ds_laser_U1.png"] = laser_loc
+Location["effects/lmn_ds_laser_U2.png"] = laser_loc
+Location["effects/lmn_ds_laser_R.png"] = laser_loc
+Location["effects/lmn_ds_laser_R1.png"] = laser_loc
+Location["effects/lmn_ds_laser_R2.png"] = laser_loc
+Location["effects/lmn_ds_laser_hit.png"] = laser_loc
+Location["effects/lmn_ds_laser_start.png"] = laser_loc
+

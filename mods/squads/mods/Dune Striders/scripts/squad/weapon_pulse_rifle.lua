@@ -3,29 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local utils = require(mod.scriptPath .."libs/utils")
 local effectBurst = LApi.library:fetch("effectBurst")
 local worldConstants = LApi.library:fetch("worldConstants")
-
-modApi:appendAsset("img/effects/lmn_ds_laser_start.png", mod.resourcePath .."img/effects/laser_start.png")
-modApi:appendAsset("img/effects/lmn_ds_laser_hit.png", mod.resourcePath .."img/effects/laser_hit.png")
-modApi:appendAsset("img/effects/lmn_ds_laser_R.png", mod.resourcePath .."img/effects/laser_R.png")
-modApi:appendAsset("img/effects/lmn_ds_laser_R1.png", mod.resourcePath .."img/effects/laser_R1.png")
-modApi:appendAsset("img/effects/lmn_ds_laser_R2.png", mod.resourcePath .."img/effects/laser_R2.png")
-modApi:appendAsset("img/effects/lmn_ds_laser_U.png", mod.resourcePath .."img/effects/laser_U.png")
-modApi:appendAsset("img/effects/lmn_ds_laser_U1.png", mod.resourcePath .."img/effects/laser_U1.png")
-modApi:appendAsset("img/effects/lmn_ds_laser_U2.png", mod.resourcePath .."img/effects/laser_U2.png")
-modApi:appendAsset("img/effects/lmn_ds_shot_plasma_U.png", mod.resourcePath .."img/effects/shot_plasma_U.png")
-modApi:appendAsset("img/effects/lmn_ds_shot_plasma_R.png", mod.resourcePath .."img/effects/shot_plasma_R.png")
-modApi:appendAsset("img/weapons/lmn_ds_pulse_rifle.png", mod.resourcePath .."img/weapons/pulse_rifle.png")
 modApi:copyAsset("img/combat/icons/icon_fire_immune_glow.png", "img/combat/icons/lmn_ds_icon_fire_immune_glow.png")
-
-local laser_loc = Point(-12,3)
-Location["effects/lmn_ds_laser_U.png"] = laser_loc
-Location["effects/lmn_ds_laser_U1.png"] = laser_loc
-Location["effects/lmn_ds_laser_U2.png"] = laser_loc
-Location["effects/lmn_ds_laser_R.png"] = laser_loc
-Location["effects/lmn_ds_laser_R1.png"] = laser_loc
-Location["effects/lmn_ds_laser_R2.png"] = laser_loc
-Location["effects/lmn_ds_laser_hit.png"] = laser_loc
-Location["effects/lmn_ds_laser_start.png"] = laser_loc
 
 Location["combat/icons/lmn_ds_icon_fire_immune_glow.png"] = Point(-10,8)
 
