@@ -4,7 +4,14 @@ require(path.."palette")
 
 local mod = mod_loader.mods[modApi.currentMod]
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
+local trait = LApi.library:fetch("trait")
 
+trait:add{
+	pawnType = "lmn_ds_Commando",
+	icon = "img/combat/icons/icon_tele_B.png",
+	desc_title = "Teleporter",
+	desc_text = "Teleporting units can move over any terrain tile, but can still get waterlogged",
+}
 
 lmn_ds_Commando = Pawn:new{
 	Name = "Commando Mech",
