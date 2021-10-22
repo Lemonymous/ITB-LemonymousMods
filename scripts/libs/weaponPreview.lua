@@ -406,6 +406,19 @@ local function addSimpleColor(self, p, gl_color, duration)
 	})
 end
 
+local function addFunction(self, fn, duration, ...)
+	if isPreviewerUnavailable() then return end
+
+	Assert.Equals('function', type(fn), "Argument #1")
+
+	table.insert(previewMarks[previewState], {
+		script = true,
+		fn = fn,
+		data = {...},
+		duration = duration
+	})
+end
+
 local function clearMarks(state)
 	if state then
 		previewMarks[state] = {}
@@ -597,7 +610,11 @@ local function markSpaces(marks, frameCurr)
 			end
 
 			if mark.loop or frame <= frameCurr and frameCurr <= frame + duration then
-				Board[mark.fn](Board, unpack(mark.data))
+				if mark.script then
+					mark.fn(unpack(mark.data))
+				else
+					Board[mark.fn](Board, unpack(mark.data))
+				end
 			end
 		end
 
@@ -770,6 +787,7 @@ if WeaponPreview == nil or not modApi:isVersion(VERSION, WeaponPreview.version) 
 		WeaponPreview.AddFlashing = addFlashing
 		WeaponPreview.AddImage = addImage
 		WeaponPreview.AddSimpleColor = addSimpleColor
+		WeaponPreview.AddFunction = addFunction
 		WeaponPreview.ClearMarks = clearMarks
 		WeaponPreview.GetQueuedSkillEffectMarker = getQueuedMarker
 		WeaponPreview.GetSkillEffectMarker = getEffectMarker
