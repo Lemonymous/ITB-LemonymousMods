@@ -1,6 +1,7 @@
 
+local VERSION = "2.1.0"
 ---------------------------------------------------------------------
--- Trait v2.0.1 - code library
+-- Trait v2.1.0 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------------------------
@@ -36,7 +37,6 @@
 
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
-local VERSION = "2.0.1"
 local function isTraitId(id)
 	local prefix = id:sub(1,5)
 	local number = id:sub(6,-1)
@@ -241,7 +241,12 @@ end
 
 modApi.events.onModsInitialized:subscribe(onModsInitialized)
 
-if Traits == nil or modApi:isVersion(VERSION, Traits.version) then
+
+local isNewestVersion = false
+	or Traits == nil
+	or modApi:isVersion(VERSION, Traits.version) == false
+
+if isNewestVersion then
 	Traits = Traits or {}
 	Traits.version = VERSION
 	Traits.queued = Traits.queued or {}

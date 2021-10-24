@@ -1,6 +1,7 @@
 
+local VERSION = "3.1.2"
 ----------------------------------------------------------------------
--- Weapon Preview v3.1.1 - code library
+-- Weapon Preview v3.1.2 - code library
 -- https://github.com/Lemonymous/ITB-LemonymousMods/wiki/weaponPreview
 --
 -- by Lemonymous
@@ -83,7 +84,6 @@ if Assert.TypeGLColor == nil then
 	end
 end
 
-local VERSION = "3.1.0"
 local PREFIX = "_weapon_preview_%s_"
 local PREFIX_ANIM = string.format(PREFIX, "1")
 local PREFIX_EMITTER = string.format(PREFIX, "emitter")
@@ -770,7 +770,12 @@ end
 
 modApi.events.onModsInitialized:subscribe(onModsInitialized)
 
-if WeaponPreview == nil or not modApi:isVersion(VERSION, WeaponPreview.version) then
+
+local isNewestVersion = false
+	or WeaponPreview == nil
+	or modApi:isVersion(VERSION, WeaponPreview.version) == false
+
+if isNewestVersion then
 	WeaponPreview = WeaponPreview or {}
 	WeaponPreview.version = VERSION
 

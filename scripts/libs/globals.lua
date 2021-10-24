@@ -1,6 +1,7 @@
 
+local VERSION = "2.1.0"
 ---------------------------------------------------
--- Globals v2.0.0 - code library
+-- Globals v2.1.0 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------
@@ -20,9 +21,12 @@
 -- globals:rem(myGlobalIndex)
 ---------------------------------------------------
 
-local VERSION = "2.0.0"
 
-if globals == nil or modApi:isVersion(VERSION, globals.version) then
+local isNewestVersion = false
+	or globals == nil
+	or modApi:isVersion(VERSION, globals.version) == false
+
+if isNewestVersion then
 	globals = globals or {
 		last = 0, -- a rolling index given out when there are no unused indices left
 		free = {}, -- list of unused indices

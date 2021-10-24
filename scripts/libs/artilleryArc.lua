@@ -1,6 +1,7 @@
 
+local VERSION = "1.1.0"
 ---------------------------------------------------
--- Artillery Arc v1.0.0 - code library
+-- Artillery Arc v1.1.0 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------
@@ -28,8 +29,6 @@
 local weaponArmed = LApi.library:fetch("weaponArmed")
 local worldConstants = LApi.library:fetch("worldConstants")
 
-local VERSION = "1.0.0"
-
 local function onModsInitialized()
 	if VERSION < ArtilleryArc.version then
 		return
@@ -45,7 +44,12 @@ end
 
 modApi:addModsInitializedHook(onModsInitialized)
 
-if ArtilleryArc == nil or modApi:isVersion(VERSION, ArtilleryArc.version) then
+
+local isNewestVersion = false
+	or ArtilleryArc == nil
+	or modApi:isVersion(VERSION, ArtilleryArc.version) == false
+
+if isNewestVersion then
 	ArtilleryArc = ArtilleryArc or {}
 	ArtilleryArc.version = VERSION
 	
