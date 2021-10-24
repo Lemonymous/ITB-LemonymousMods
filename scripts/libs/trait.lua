@@ -37,7 +37,7 @@ local VERSION = "2.1.0"
 
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 
-local function isTraitId(id)
+local function isManagedTrait(id)
 	local prefix = id:sub(1,5)
 	local number = id:sub(6,-1)
 
@@ -98,8 +98,8 @@ local function updateLoc(loc)
 
 	local updateIcon = true
 		and traitIcon_old ~= traitIcon_new
-		and isTraitId(traitIcon_old)
-		or isTraitId(traitIcon_new)
+		and isManagedTrait(traitIcon_old)
+		or isManagedTrait(traitIcon_new)
 
 	if updateIcon then
 		Board:SetTerrainIcon(loc, traitIcon_new)
