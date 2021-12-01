@@ -28,7 +28,7 @@ lmn_Autocannon = Skill:new{
 		Target = Point(2,3),
 		CustomEnemy = "Scarab2",
 	},
-	lmn_CustomRarity = 4,
+	CustomRarity = 4,
 }
 
 -- custom GetProjectileEnd, for multishot purposes.

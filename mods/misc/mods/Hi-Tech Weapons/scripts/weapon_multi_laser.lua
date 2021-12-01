@@ -27,7 +27,7 @@ lmn_Multi_Laser = Skill:new{
 		Target = Point(2,3),
 		CustomEnemy = "Scarab1",
 	},
-	lmn_CustomRarity = 4,
+	CustomRarity = 4,
 }
 
 -- custom GetProjectileEnd, for multishot purposes.

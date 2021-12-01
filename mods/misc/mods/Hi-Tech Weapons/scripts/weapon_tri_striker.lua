@@ -28,7 +28,7 @@ lmn_Tri_Striker = Skill:new{
 		Enemy2 = Point(3,1),
 		Target = Point(2,1),
 	},
-	lmn_CustomRarity = 4,
+	CustomRarity = 4,
 }
 
 function lmn_Tri_Striker:GetTargetArea(p1, _, isWeaponMark)

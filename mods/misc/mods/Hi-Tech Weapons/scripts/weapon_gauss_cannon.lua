@@ -27,7 +27,7 @@ lmn_Gauss_Cannon = Skill:new{
 		Target = Point(2,3),
 		CustomEnemy = "Scorpion1",
 	},
-	lmn_CustomRarity = 4,
+	CustomRarity = 4,
 }
 
 local function HasCorpse(pawn)

@@ -28,7 +28,7 @@ lmn_Guided_Missile = Skill:new{
 		Enemy = Point(2,0),
 		Target = Point(2,0),
 	},
-	lmn_CustomRarity = 4,
+	CustomRarity = 4,
 }
 
 function lmn_Guided_Missile:GetTargetArea(p1, _, isWeaponMark)
