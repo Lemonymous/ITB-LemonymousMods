@@ -4,6 +4,6 @@
 [submodule "scripts/ITB-ModUtils"]
 	path = scripts/ITB-ModUtils
 	url = git@github.com:kartoFlane/ITB-ModUtils.git
-[submodule "scripts/ITB-Replace-Repair"]
-	path = scripts/ITB-Replace-Repair
+[submodule "scripts/ReplaceRepair"]
+	path = scripts/ReplaceRepair
 	url = git@github.com:Lemonymous/ITB-Replace-Repair.git
