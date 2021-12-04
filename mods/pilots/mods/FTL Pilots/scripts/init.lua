@@ -24,13 +24,9 @@ function mod:init()
 	require(self.scriptPath .."pilot_crystal")
 	require(self.scriptPath.."pilot_slug")
 	require(self.scriptPath.."pilot_engi")
-	--self.lanius = require(self.scriptPath .."pilot_lanius")
-	
-	--self.lanius:init(self)
 end
 
 function mod:load(options, version)
-	--self.lanius:load(self.modApiExt, options)
 end
 
 return mod
