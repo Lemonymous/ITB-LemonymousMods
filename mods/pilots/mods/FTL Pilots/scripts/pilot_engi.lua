@@ -1,6 +1,9 @@
 
+local mod = modApi:getCurrentMod()
+local scriptPath = mod.scriptPath
+local resourcePath = mod.resourcePath
+local pilotPath = "img/portraits/pilots/"
 local replaceRepair = LApi.library:fetch("replaceRepair/replaceRepair")
-local this = {}
 
 local pilot = {
 	Id = "Pilot_lmn_Engi",
@@ -70,25 +73,18 @@ function lmn_Engi_Repair:GetSkillEffect(p1, p2)
 	return ret
 end
 
-function this:init(mod)
-	CreatePilot(pilot)
-	
-	require(mod.scriptPath .."personality_engi")
-	
-	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Engi.png", mod.resourcePath .."img/portraits/pilots/pilot_engi.png")
-	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Engi_2.png", mod.resourcePath .."img/portraits/pilots/pilot_engi_2.png")
-	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Engi_blink.png", mod.resourcePath .."img/portraits/pilots/pilot_engi_blink.png")
-	
-	replaceRepair
-		:ForPilot(
-			"lmn_engi_repair",
-			"lmn_Engi_Repair",
-			lmn_Engi_Repair.Name,
-			"Repairs 2 damage.\nCan repair adjacent units."
-		)
-end
+CreatePilot(pilot)
 
-function this:load(modApiExt, options)
-end
+require(scriptPath .."personality_engi")
 
-return this
+modApi:appendAsset(pilotPath.."Pilot_lmn_Engi.png", resourcePath..pilotPath.."pilot_engi.png")
+modApi:appendAsset(pilotPath.."Pilot_lmn_Engi_2.png", resourcePath..pilotPath.."pilot_engi_2.png")
+modApi:appendAsset(pilotPath.."Pilot_lmn_Engi_blink.png", resourcePath..pilotPath.."pilot_engi_blink.png")
+
+replaceRepair:addSkill{
+	name = lmn_Engi_Repair.Name,
+	description = "Repairs 2 damage.\nCan repair adjacent units.",
+	weapon = "lmn_Engi_Repair",
+	pilotSkill = "lmn_engi_repair",
+	-- icon = "",
+}
