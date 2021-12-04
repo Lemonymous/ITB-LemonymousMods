@@ -22,16 +22,14 @@ function mod:init()
 	LApi.library:fetch("replaceRepair/replaceRepair")
 	
 	require(self.scriptPath .."pilot_crystal")
-	self.slug = require(self.scriptPath .."pilot_slug")
+	require(self.scriptPath.."pilot_slug")
 	require(self.scriptPath.."pilot_engi")
 	--self.lanius = require(self.scriptPath .."pilot_lanius")
 	
-	self.slug:init(self)
 	--self.lanius:init(self)
 end
 
 function mod:load(options, version)
-	self.slug:load(self.modApiExt, options)
 	--self.lanius:load(self.modApiExt, options)
 end
 
