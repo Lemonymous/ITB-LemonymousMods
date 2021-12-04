@@ -4,7 +4,6 @@ local scriptPath = mod.scriptPath
 local resourcePath = mod.resourcePath
 local pilotPath = "img/portraits/pilots/"
 local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
-local selected = require(scriptPath.."selected")
 local tileToScreen = require(scriptPath.."tileToScreen")
 local tooltip = require(scriptPath.."pilotSkill_tooltip")
 
@@ -26,7 +25,8 @@ local pilot = {
 }
 
 local function IsAbilityActive()
-	local pawn = selected:Get()
+	local pawn = Board and Board:GetSelectedPawn()
+
 	local isActive = true
 		and pawn ~= nil
 		and pawn:IsDead() == false
@@ -39,7 +39,6 @@ end
 CreatePilot(pilot)
 require(mod.scriptPath .."personality_slug")
 
-selected:init()
 tooltip.Add(
 	"lmn_slug_telepath",
 	PilotSkill("Telepathic", "Reveals emerging Vek.")
@@ -254,10 +253,5 @@ local function UpdateEmergingVek_GameDraw(mission)
 	end
 end
 
-local function load()
-	selected:load(modApiExt)
-end
-
 modApi.events.onFrameDrawn:subscribe(UpdateEmergingVek_CustomDraw)
 modApi.events.onMissionUpdate:subscribe(UpdateEmergingVek_GameDraw)
-modApi.events.onModsLoaded:subscribe(load)
