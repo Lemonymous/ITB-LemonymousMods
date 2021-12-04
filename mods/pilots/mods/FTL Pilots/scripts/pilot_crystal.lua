@@ -1,5 +1,9 @@
 
-local this = {}
+local mod = modApi:getCurrentMod()
+local scriptPath = mod.scriptPath
+local resourcePath = mod.resourcePath
+local pilotPath = "img/portraits/pilots/"
+local tooltip = require(scriptPath.."pilotSkill_tooltip")
 
 local pilot = {
 	Id = "Pilot_lmn_Crystal",
@@ -10,18 +14,16 @@ local pilot = {
 	Skill = "Freeze_Walk",
 }
 
-function this:init(mod)
-	CreatePilot(pilot)
-	
-	require(mod.scriptPath .."pilotSkill_tooltip").Add("Freeze_Walk", PilotSkill("Crystallize", "Stopping on any liquid tile crytallizes it, making it safe to stand on."))
-	
-	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Crystal.png", mod.resourcePath .."img/portraits/pilots/pilot_crystal.png")
-	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Crystal_2.png", mod.resourcePath .."img/portraits/pilots/pilot_crystal_2.png")
-	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Crystal_blink.png", mod.resourcePath .."img/portraits/pilots/pilot_crystal_blink.png")
-end
+CreatePilot(pilot)
 
-function this:load(modApiExt, options)
+tooltip.Add(
+	"Freeze_Walk",
+	PilotSkill(
+		"Crystallize",
+		"Stopping on any liquid tile crytallizes it, making it safe to stand on."
+	)
+)
 
-end
-
-return this
+modApi:appendAsset(pilotPath.."Pilot_lmn_Crystal.png", resourcePath..pilotPath.."pilot_crystal.png")
+modApi:appendAsset(pilotPath.."Pilot_lmn_Crystal_2.png", resourcePath..pilotPath.."pilot_crystal_2.png")
+modApi:appendAsset(pilotPath.."Pilot_lmn_Crystal_blink.png", resourcePath..pilotPath.."pilot_crystal_blink.png")

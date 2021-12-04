@@ -21,18 +21,16 @@ function mod:init()
 	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 	LApi.library:fetch("replaceRepair/replaceRepair")
 	
-	self.crystal = require(self.scriptPath .."pilot_crystal")
+	require(self.scriptPath .."pilot_crystal")
 	self.slug = require(self.scriptPath .."pilot_slug")
 	require(self.scriptPath.."pilot_engi")
 	--self.lanius = require(self.scriptPath .."pilot_lanius")
 	
-	self.crystal:init(self)
 	self.slug:init(self)
 	--self.lanius:init(self)
 end
 
 function mod:load(options, version)
-	self.crystal:load(self.modApiExt, options)
 	self.slug:load(self.modApiExt, options)
 	--self.lanius:load(self.modApiExt, options)
 end
