@@ -1,4 +1,5 @@
 
+local replaceRepair = LApi.library:fetch("replaceRepair/replaceRepair")
 local this = {}
 
 local pilot = {
@@ -17,12 +18,7 @@ lmn_Engi_Repair = Skill:new{
 	PathSize = 1,
 }
 
-modApi.events.onFtldatFinalized:subscribe(function()
-	-- make a copy of tipimage to not change replaceRepair.
-	local tipImage = shallow_copy(Skill_Repair_Orig.TipImage)
-	tipImage.Fire = Point(2,2) -- apply fire removed by replaceRepair.
-	lmn_Engi_Repair.TipImage = tipImage
-end)
+lmn_Engi_Repair.TipImage = shallow_copy(Skill_Repair.TipImage)
 
 function lmn_Engi_Repair:GetTargetArea(p)
 	local ret = PointList()
@@ -83,7 +79,7 @@ function this:init(mod)
 	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Engi_2.png", mod.resourcePath .."img/portraits/pilots/pilot_engi_2.png")
 	modApi:appendAsset("img/portraits/pilots/Pilot_lmn_Engi_blink.png", mod.resourcePath .."img/portraits/pilots/pilot_engi_blink.png")
 	
-	require(mod.scriptPath .."replaceRepair/replaceRepair")
+	replaceRepair
 		:ForPilot(
 			"lmn_engi_repair",
 			"lmn_Engi_Repair",

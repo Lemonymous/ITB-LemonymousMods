@@ -18,11 +18,8 @@ function mod:metadata()
 end
 
 function mod:init()
-	self.modApiExt = require(self.scriptPath .."modApiExt/modApiExt")
-	self.modApiExt:init()
-	
-	self.replaceRepair = require(self.scriptPath .."replaceRepair/replaceRepair")
-	self.replaceRepair:init(self, self.modApiExt)
+	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
+	LApi.library:fetch("replaceRepair/replaceRepair")
 	
 	self.crystal = require(self.scriptPath .."pilot_crystal")
 	self.slug = require(self.scriptPath .."pilot_slug")
@@ -36,9 +33,6 @@ function mod:init()
 end
 
 function mod:load(options, version)
-	self.modApiExt:load(self, options, version)
-	self.replaceRepair:load(self, options, version)
-	
 	self.crystal:load(self.modApiExt, options)
 	self.slug:load(self.modApiExt, options)
 	self.engi:load(self.modApiExt, options)
