@@ -8,11 +8,9 @@ local tileToScreen = require(scriptPath.."tileToScreen")
 local tooltip = require(scriptPath.."pilotSkill_tooltip")
 
 local ANIM_ID = mod.id.."_slug_"
-local SCALE = 2
+local ICON_HOVER_HEIGHT = 15
 local sdlUi = {}
-local deco = {}
 local spawnData = {}
-local time = 0
 local display = false
 
 local pilot = {
@@ -102,6 +100,66 @@ local TIERS = {
 	[TIER_BOSS] =       setupAnim("combat/icons/icon_boss_glow.png")
 }
 
+local SpawnDeco = Class.inherit(DecoSurfaceAligned)
+
+function SpawnDeco:new()
+	DecoSurfaceAligned.new(self)
+end
+
+function SpawnDeco:draw(screen, widget)
+	screen:clip(widget.cliprect)
+	screen:mask(sdlext.CurrentWindowRect)
+	DecoSurfaceAligned.draw(self, screen, widget)
+	screen:unmask(1)
+	screen:unclip()
+end
+
+local SpawnUi = Class.inherit(Ui)
+
+function SpawnUi:new()
+	Ui.new(self)
+
+	self.translucent = true
+	self.visible = false
+	self.cliprect = sdl.rect(0,0,0,0)
+
+	self.spawnDeco = SpawnDeco()
+	self:decorate{ self.spawnDeco }
+end
+
+function SpawnUi:setSpawnData(spawn)
+	local pawnData = _G[spawn.type]
+	local animData = ANIMS[pawnData.Image]
+	local scale = GetBoardScale()
+	local spawnScreenLoc = tileToScreen(spawn.location)
+
+	if animData then
+		local surface = sdlext.getSurface{
+			path = "img/"..animData.Image,
+			transformations = {
+				{ scale = scale }
+			}
+		}
+
+		local w = math.floor(surface:w() / animData.NumFrames)
+		local h = math.floor(surface:h() / animData.Height or 1)
+		local x = animData.PosX * scale
+		local y = (animData.PosY - ICON_HOVER_HEIGHT) * scale - h * pawnData.ImageOffset
+
+		self.spawnDeco.surface = surface
+		self.spawnLocation = spawn.location
+		self.cliprect.x = spawnScreenLoc.x + animData.PosX * scale
+		self.cliprect.y = spawnScreenLoc.y + (animData.PosY - 15) * scale
+		self.cliprect.w = w
+		self.cliprect.h = h
+		self.x = self.cliprect.x
+		self.y = self.cliprect.y - h * pawnData.ImageOffset
+		self.w = w
+		self.h = h
+		self.visible = true
+	end
+end
+
 local function UpdateEmergingVek_CustomDraw(screen)
 	local options = modApi:getModOptions(mod.id)
 	if options['color_emerging_vek'].enabled == false then
@@ -122,61 +180,22 @@ local function UpdateEmergingVek_CustomDraw(screen)
 		if not mission or not Board then return end
 		if not display then
 			display = true
-			spawnData = {}
 
 			for i, spawn in ipairs(mission.QueuedSpawns) do
-
-				sdlUi[i] = sdlUi[i] or Ui()
+				sdlUi[i] = sdlUi[i] or SpawnUi()
 					:addTo(sdlext.getUiRoot())
-				sdlUi[i].translucent = true
-				sdlUi[i].visible = false
-				
-				local spawn = shallow_copy(spawn)
-				local pawnData = _G[spawn.type]
-				local animData = ANIMS[pawnData.Image]
-				spawnData[i] = spawn
 
-				if animData then
-					if not deco[spawn.type] then
-						deco[spawn.type] = DecoSurface(sdl.scaled(SCALE, sdlext.surface("img/"..animData.Image)))
-						local deco = deco[spawn.type]
-						local surface = deco.surface
-
-						deco.draw = function(self, screen, widget)
-							widget:update()
-							screen:clip(widget.cliprect)
-							--self.color = sdl.rgba(255,255,255,100) -- TODO: figure out how to make surface transparent.
-							DecoSurface.draw(self, screen, widget)
-							screen:unclip()
-						end
-					end
-
-					local deco = deco[spawn.type]
-					local surface = deco.surface
-					local loc = tileToScreen(spawn.location)
-
-					sdlUi[i]:pospx(loc.x, loc.y)
-						:widthpx(surface:w())
-						:heightpx(surface:h())
-						:decorate({ deco })
-
-					sdlUi[i].update = function(self)
-						local w = math.floor(surface:w() / animData.NumFrames)
-						local h = math.floor(surface:h() / animData.Height or 1)
-
-						self.rect.x = self.rect.x + animData.PosX * SCALE
-						self.rect.y = self.rect.y - h * pawnData.ImageOffset + (animData.PosY - 15) * SCALE
-						self.cliprect = sdl.rect(self.rect.x, self.rect.y + h * pawnData.ImageOffset, w, h)
-						self.visible = not rect_intersects(self.cliprect, sdlext.CurrentWindowRect) -- TODO: this only detects a few clips. Good enough for now.
-					end
-				end
+				sdlUi[i]:setSpawnData(spawn)
 			end
 		end
 
-		for i, spawn in ipairs(spawnData) do
-			sdlUi[i]:update()
+		for i = 1, #sdlUi do
+			spawnUi = sdlUi[i]
+			if spawnUi.visible == false then
+				break
+			end
 
-			Board:AddBurst(spawn.location, "lmn_Emitter_slug_telepath", DIR_NONE)
+			Board:AddBurst(spawnUi.spawnLocation, "lmn_Emitter_slug_telepath", DIR_NONE)
 		end
 	end
 end
@@ -212,7 +231,7 @@ local function UpdateEmergingVek_GameDraw(mission)
 						Loop = false,
 						NumFrames = 1,
 
-						PosY = animData.PosY - 15,
+						PosY = animData.PosY - ICON_HOVER_HEIGHT,
 						Layer = LAYER_FRONT,
 						Time = 0, -- displays animation for one frame.
 						Sound = "",
