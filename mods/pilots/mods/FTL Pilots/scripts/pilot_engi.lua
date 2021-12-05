@@ -8,7 +8,7 @@ local replaceRepair = LApi.library:fetch("replaceRepair/replaceRepair")
 local pilot = {
 	Id = "Pilot_lmn_Engi",
 	Personality = "lmn_Engi",
-	Name = "Virus", --tmp?
+	Name = "Virus",
 	Rarity = 1,
 	Voice = "/voice/gana",
 	Skill = "lmn_engi_repair",
@@ -26,26 +26,26 @@ lmn_Engi_Repair.TipImage = shallow_copy(Skill_Repair.TipImage)
 function lmn_Engi_Repair:GetTargetArea(p)
 	local ret = PointList()
 	ret:push_back(p)
-	
+
 	for dir = DIR_START, DIR_END do
 		local loc = p + DIR_VECTORS[dir]
 		if Board:IsValid(loc) and Board:GetPawnTeam(loc) == TEAM_PLAYER then
 			ret:push_back(loc)
 		end
 	end
-	
+
 	return ret
 end
 
 function lmn_Engi_Repair:RepairTrain(p2)
 	local mission = GetCurrentMission()
-	
+
 	local train = Board:GetPawn(mission.Train)
 	if train then
 		Board:RemovePawn(train)
 		train = PAWN_FACTORY:CreatePawn("Train_Pawn")
 		Board:AddPawn(train, mission.TrainLoc)
-		
+
 		mission.Train = train:GetId()
 		mission.TrainStopped = false
 	end
@@ -54,22 +54,24 @@ end
 function lmn_Engi_Repair:GetSkillEffect(p1, p2)
 	local ret = Skill_Repair_Orig.GetSkillEffect(self, p1, p2, Skill_Repair_Orig)
 	local pawn = Board:GetPawn(p2)
-	local id = pawn:GetId()
+	local pawnId = pawn:GetId()
 	local mission = GetCurrentMission()
-	
+
 	-- if not a mech, add repair_mech sound
-	if id > 2 then
+	if pawnId > 2 then
 		ret:AddSound("/ui/map/repair_mech")
 	end
-	
-	if
-		pawn				and
-		id == mission.Train	and
-		mission.TrainStopped
-	then
-		ret:AddScript("lmn_Engi_Repair:RepairTrain(".. p2:GetString() ..")")
+
+	local doRepair = true
+		and mission ~= nil
+		and pawn ~= nil
+		and pawnId == mission.Train
+		mission.TrainStopped == true
+
+	if doRepair then
+		ret:AddScript(string.format("lmn_Engi_Repair:RepairTrain(%s)", p2:GetString()))
 	end
-	
+
 	return ret
 end
 
