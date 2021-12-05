@@ -4,8 +4,8 @@ local scriptPath = mod.scriptPath
 local resourcePath = mod.resourcePath
 local pilotPath = "img/portraits/pilots/"
 local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
-local tileToScreen = require(scriptPath.."tileToScreen")
-local tooltip = require(scriptPath.."pilotSkill_tooltip")
+local tileToScreen = require(scriptPath.."libs/tileToScreen")
+local tooltip = require(scriptPath.."libs/pilotSkill_tooltip")
 
 local ANIM_ID = mod.id.."_slug_"
 local ICON_HOVER_HEIGHT = 15

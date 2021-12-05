@@ -3,7 +3,7 @@ local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
 local resourcePath = mod.resourcePath
 local pilotPath = "img/portraits/pilots/"
-local tooltip = require(scriptPath.."pilotSkill_tooltip")
+local tooltip = require(scriptPath.."libs/pilotSkill_tooltip")
 
 local pilot = {
 	Id = "Pilot_lmn_Crystal",
