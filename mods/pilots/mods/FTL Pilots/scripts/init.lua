@@ -3,8 +3,7 @@ local mod = {
 	id = "lmn_flt_pilots",
 	name = "FTL Pilots",
 	version = "0.1.3",
-	requirements = {},
-	modApiVersion = "2.3.0",
+	modApiVersion = "2.6.4",
 	icon = "img/icon.png"
 }
 
@@ -19,8 +18,8 @@ end
 
 function mod:init()
 	LApi.library:fetch("replaceRepair/replaceRepair")
-	
-	require(self.scriptPath .."pilot_crystal")
+
+	require(self.scriptPath.."pilot_crystal")
 	require(self.scriptPath.."pilot_slug")
 	require(self.scriptPath.."pilot_engi")
 end
