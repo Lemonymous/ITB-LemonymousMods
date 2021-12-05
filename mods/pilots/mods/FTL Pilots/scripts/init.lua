@@ -18,7 +18,6 @@ function mod:metadata()
 end
 
 function mod:init()
-	self.modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 	LApi.library:fetch("replaceRepair/replaceRepair")
 	
 	require(self.scriptPath .."pilot_crystal")

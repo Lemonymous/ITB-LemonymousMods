@@ -3,7 +3,6 @@ local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
 local resourcePath = mod.resourcePath
 local pilotPath = "img/portraits/pilots/"
-local modApiExt = LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt")
 local tileToScreen = require(scriptPath.."libs/tileToScreen")
 local tooltip = require(scriptPath.."libs/pilotSkill_tooltip")
 
