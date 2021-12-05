@@ -66,7 +66,7 @@ function lmn_Engi_Repair:GetSkillEffect(p1, p2)
 		and mission ~= nil
 		and pawn ~= nil
 		and pawnId == mission.Train
-		mission.TrainStopped == true
+		and mission.TrainStopped == true
 
 	if doRepair then
 		ret:AddScript(string.format("lmn_Engi_Repair:RepairTrain(%s)", p2:GetString()))
