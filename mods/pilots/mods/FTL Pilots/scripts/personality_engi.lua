@@ -1,7 +1,11 @@
 -- Adds a personality without the use of a csv file.
 
 -- Unique identifier for personality.
-local personality = "lmn_Engi"
+local personality_id = "lmn_Engi"
+local personality = CreatePilotPersonality(personality_id)
+local dialogTable = {}
+
+Personality[personality_id] = personality
 
 -- Table of responses to various triggers.
 local tbl = {
@@ -173,26 +177,10 @@ for i, v in pairs(tbl) do
 		text = text:gsub('.', enc)
 	end
 	text = text:gsub('_', ' ')
+	text = text:sub(1,1):upper()..text:sub(2,-1):lower()
 	table.insert(v, text)
 end
 
--- inner workings. no need to modify.
-local PilotPersonality = {Label = "Engi"}
-
-function PilotPersonality:GetPilotDialog(event)
-	if self[event] ~= nil then 
-		if type(self[event]) == "table" then
-			return random_element(self[event])
-		end
-		
-		return self[event]
-	end
-	
-	LOG("No pilot dialog found for "..event.." event in "..self.Label)
-	return ""
-end
-
-Personality[personality] = PilotPersonality
 for trigger, texts in pairs(tbl) do
 	if
 		type(texts) == 'string' and
@@ -200,7 +188,9 @@ for trigger, texts in pairs(tbl) do
 	then
 		texts = {texts}
 	end
-	
+
 	assert(type(texts) == 'table')
-	Personality[personality][trigger] = texts
+	dialogTable[trigger] = texts
 end
+
+personality:AddDialogTable(dialogTable)

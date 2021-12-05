@@ -1,10 +1,14 @@
 -- Adds a personality without the use of a csv file.
 
 -- Unique identifier for personality.
-local personality = "lmn_Slug"
+local personality_id = "lmn_Slug"
+local personality = CreatePilotPersonality(personality_id)
+local dialogTable = {}
+
+Personality[personality_id] = personality
 
 -- Table of responses to various triggers.
-local tbl = {
+local dialogTable = {
 	-- Game States
 	Gamestart = {"o_O","O_o","O_O","o_o"},
 	FTL_Found = {"?_?","O_o"},
@@ -129,31 +133,4 @@ local tbl = {
 	Mission_Belt_Mech = {},]]
 }
 
--- inner workings. no need to modify.
-local PilotPersonality = {Label = "Slug"}
-
-function PilotPersonality:GetPilotDialog(event)
-	if self[event] ~= nil then
-		if type(self[event]) == "table" then
-			return random_element(self[event])
-		end
-		
-		return self[event]
-	end
-	
-	LOG("No pilot dialog found for "..event.." event in "..self.Label)
-	return ""
-end
-
-Personality[personality] = PilotPersonality
-for trigger, texts in pairs(tbl) do
-	if
-		type(texts) == 'string' and
-		type(texts) ~= 'table'
-	then
-		texts = {texts}
-	end
-	
-	assert(type(texts) == 'table')
-	Personality[personality][trigger] = texts
-end
+personality:AddDialogTable(dialogTable)
