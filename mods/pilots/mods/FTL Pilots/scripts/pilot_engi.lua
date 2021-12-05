@@ -86,5 +86,6 @@ replaceRepair:addSkill{
 	description = "Repairs 2 damage.\nCan repair adjacent units.",
 	weapon = "lmn_Engi_Repair",
 	pilotSkill = "lmn_engi_repair",
-	-- icon = "",
+	icon = "img/weapons/repair.png",
+	iconFrozen = "img/weapons/repair_frozen.png",
 }
