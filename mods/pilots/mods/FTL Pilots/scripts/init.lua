@@ -2,7 +2,7 @@
 local mod = {
 	id = "lmn_flt_pilots",
 	name = "FTL Pilots",
-	version = "0.1.3",
+	version = "1.0.0",
 	modApiVersion = "2.6.4",
 	icon = "img/icon.png"
 }
