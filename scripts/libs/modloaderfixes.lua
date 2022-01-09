@@ -22,7 +22,7 @@ local function override_Mission_ApplyEnvironmentEffect()
 		if not self.LiveEnvironment.eventDispatched then
 			self.LiveEnvironment.eventDispatched = true
 
-			modApi.events.onPreEnvironment:dispatch()
+			modApi.events.onPreEnvironment:dispatch(self)
 		end
 
 		local result = false
@@ -33,7 +33,7 @@ local function override_Mission_ApplyEnvironmentEffect()
 		if not result then
 			self.LiveEnvironment.eventDispatched = nil
 
-			modApi.events.onPostEnvironment:dispatch()
+			modApi.events.onPostEnvironment:dispatch(self)
 		end
 
 		return result
