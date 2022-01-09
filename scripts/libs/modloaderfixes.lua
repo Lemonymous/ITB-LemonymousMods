@@ -1,7 +1,7 @@
 
-local VERSION = "1.0.0"
+local VERSION = "1.0.1"
 ---------------------------------------------------
--- mod loader fixes v1.0.0
+-- mod loader fixes v1.0.1
 --
 -- by Lemonymous
 ---------------------------------------------------
