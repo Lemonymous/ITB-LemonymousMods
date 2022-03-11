@@ -40,7 +40,7 @@ local achievements = {
 
 	objective = modApi.achievements:add{
 		id = "objective",
-		name = "Eye on the Price",
+		name = "Eye on the Prize",
 		objective = {
 			complete = true,
 			easy = 0,
