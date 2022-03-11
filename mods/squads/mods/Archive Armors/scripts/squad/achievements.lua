@@ -228,11 +228,14 @@ modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad
 	end
 
 	local objective = difficultyIndices[difficulty] or difficultyIndices.default
+	local chievo = achievements.surgical
+	local progress = shallow_copy(chievo:getProgress())
 
-	if achievements.surgical:getProgress()[objective] < islandsSecured then
-		achievements.surgical:addProgress{ [objective] = islandsSecured }
-		achievements.surgical:addProgress{ complete = false }
-		achievements.surgical:addProgress{ complete = true }
+	if progress[objective] < islandsSecured then
+		progress.complete = true
+		progress[objective] = islandsSecured
+		chievo:addProgress{ complete = false }
+		chievo:setProgress(progress)
 	end
 end)
 
@@ -307,10 +310,13 @@ modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad
 	end
 
 	local objective = difficultyIndices[difficulty] or difficultyIndices.default
+	local chievo = achievements.scrappy
+	local progress = shallow_copy(chievo:getProgress())
 
-	if achievements.scrappy:getProgress()[objective] < islandsSecured then
-		achievements.scrappy:addProgress{ [objective] = islandsSecured }
-		achievements.scrappy:addProgress{ complete = false }
-		achievements.scrappy:addProgress{ complete = true }
+	if progress[objective] < islandsSecured then
+		progress.complete = true
+		progress[objective] = islandsSecured
+		chievo:addProgress{ complete = false }
+		chievo:setProgress(progress)
 	end
 end)

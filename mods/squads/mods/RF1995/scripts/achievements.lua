@@ -237,11 +237,14 @@ modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad
 	end
 
 	local objective = difficultyIndices[difficulty] or difficultyIndices.default
+	local chievo = achievements.untouchable
+	local progress = shallow_copy(chievo:getProgress())
 
-	if achievements.untouchable:getProgress()[objective] < islandsSecured then
-		achievements.untouchable:addProgress{ [objective] = islandsSecured }
-		achievements.untouchable:addProgress{ complete = false }
-		achievements.untouchable:addProgress{ complete = true }
+	if progress[objective] < islandsSecured then
+		progress.complete = true
+		progress[objective] = islandsSecured
+		chievo:addProgress{ complete = false }
+		chievo:setProgress(progress)
 	end
 end)
 
@@ -324,10 +327,13 @@ modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad
 	end
 
 	local objective = difficultyIndices[difficulty] or difficultyIndices.default
+	local chievo = achievements.objective
+	local progress = shallow_copy(chievo:getProgress())
 
-	if achievements.objective:getProgress()[objective] < islandsSecured then
-		achievements.objective:addProgress{ [objective] = islandsSecured }
-		achievements.objective:addProgress{ complete = false }
-		achievements.objective:addProgress{ complete = true }
+	if progress[objective] < islandsSecured then
+		progress.complete = true
+		progress[objective] = islandsSecured
+		chievo:addProgress{ complete = false }
+		chievo:setProgress(progress)
 	end
 end)

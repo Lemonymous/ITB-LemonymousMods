@@ -370,10 +370,13 @@ modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad
 	end
 
 	local objective = difficultyIndices[difficulty]
+	local chievo = achievements.cleaner
+	local progress = shallow_copy(chievo:getProgress())
 
-	if achievements.cleaner:getProgress()[objective] < islandsSecured then
-		achievements.cleaner:addProgress{ [objective] = islandsSecured }
-		achievements.cleaner:addProgress{ complete = false }
-		achievements.cleaner:addProgress{ complete = true }
+	if progress[objective] < islandsSecured then
+		progress.complete = true
+		progress[objective] = islandsSecured
+		chievo:addProgress{ complete = false }
+		chievo:setProgress(progress)
 	end
 end)
