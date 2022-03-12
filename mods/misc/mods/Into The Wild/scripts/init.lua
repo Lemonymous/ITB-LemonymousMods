@@ -57,8 +57,6 @@ end
 function mod:load(options, version)
 	local scriptPath = self.scriptPath
 
-	require(scriptPath .."selected"):load()
-
 	if modApi.achievements:isComplete(self.id, "leaders") then
 		require(scriptPath.."secret"):addSquad()
 	end
