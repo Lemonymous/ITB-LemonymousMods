@@ -197,7 +197,6 @@ function lmn_ConvoyTruckAtk:GetSkillEffect(p1, p2)
 	return ret
 end
 
-modApi:appendAsset("img/combat/tiles_grass/lmn_ground_trail.png", mod.resourcePath .."img/tileset_plant/ground_trail.png")
 modApi:appendAsset("img/units/mission/lmn_convoy_truck.png", mod.resourcePath .."img/units/mission/truck.png")
 modApi:appendAsset("img/units/mission/lmn_convoy_trucka.png", mod.resourcePath .."img/units/mission/trucka.png")
 modApi:appendAsset("img/units/mission/lmn_convoy_truckd.png", mod.resourcePath .."img/units/mission/truckd.png")

@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"This region experiences heavy rainfall, and is often partly submerged. Let's hope the Vek have as much difficulty manoeuvring as your Mechs.",
 			"This region is the home of researchers with no way of defending themselves. Please save them Commander!",

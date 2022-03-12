@@ -101,7 +101,6 @@ function Env_lmn_Volcanic_Vents:Plan()
 	return ret
 end
 
-modApi:appendAsset("img/combat/tiles_grass/lmn_ground_volcanic_vent.png", mod.resourcePath .."img/tileset_plant/ground_volcanic_vent.png")
 modApi:appendAsset("img/combat/tile_icon/lmn_tile_volcanic_vent.png", mod.resourcePath .."img/combat/icon_volcanic_vent.png")
 modApi:appendAsset("img/effects/lmn_volcanic_eruption.png", mod.resourcePath .."img/effects/volcanic_eruption.png")
 Location["combat/tile_icon/lmn_tile_volcanic_vent.png"] = Point(-27,2)

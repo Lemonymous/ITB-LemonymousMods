@@ -149,8 +149,6 @@ function Mission_lmn_Meadow.NextPawn(self, pawn_tables, name_only)
 	return Mission.NextPawn(self, self.pawn_table, name_only)
 end
 
-modApi:appendAsset("img/combat/tiles_grass/lmn_ground_meadow.png", mod.resourcePath .."img/tileset_plant/ground_meadow.png")
-
 for i = 0, 5 do
 	modApi:addMap(mod.resourcePath .."maps/lmn_meadow".. i ..".map")
 end

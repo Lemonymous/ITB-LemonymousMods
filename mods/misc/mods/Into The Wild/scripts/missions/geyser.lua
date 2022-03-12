@@ -288,7 +288,6 @@ function Env_lmn_Geyser:Plan()
 	return ret
 end
 
-modApi:appendAsset("img/combat/tiles_grass/lmn_ground_geyser.png", mod.resourcePath .."img/tileset_plant/ground_geyser.png")
 modApi:appendAsset("img/combat/tile_icon/lmn_tile_geyser.png", mod.resourcePath .."img/combat/icon_geyser.png")
 Location["combat/tile_icon/lmn_tile_geyser.png"] = Point(-27,2)
 

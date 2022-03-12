@@ -1,6 +1,6 @@
 return {
 	-- Meridia CEO
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Mission_lmn_Convoy_Destroyed = {
 			"Oh non, that poor driver...",
 			"Mon dieu... the driver's bravery will be remembered.",
@@ -331,7 +331,7 @@ return {
 	},
 	
 	-- Meridia generic
-	lmn_Meridia_Recruit = {
+	Meridia = {
 		Mission_lmn_Convoy_Destroyed = {
 			"Dammit! Those supplies were important..",
 			"Our line won't fare well down a truck.",

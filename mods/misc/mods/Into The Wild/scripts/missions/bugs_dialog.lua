@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = 
+	CEO_Meridia = 
 	{
 		Briefing = {
 			"We've had reports of giant bugs appearing in this region. I hope you have more experience with this threat than we do.",

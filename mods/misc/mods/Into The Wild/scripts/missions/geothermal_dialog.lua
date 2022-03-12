@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"We rely on Geothermal heat for our power production in this region. Could the Vek have been drawn to the region by their activity?",
 			"Geothermal Plants produce the power necessary for our infrastructure. Please Commander, stop the Vek from turning off the lights.",

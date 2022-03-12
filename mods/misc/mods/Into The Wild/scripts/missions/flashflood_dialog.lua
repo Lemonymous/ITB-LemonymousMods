@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"The Vek do not seem deterred by the floods in this area. Use their lack of fear against them.",
 			"This region is frequently flooded. Our facilities are reinforced to withstand it, but we need your help against the Vek.",
