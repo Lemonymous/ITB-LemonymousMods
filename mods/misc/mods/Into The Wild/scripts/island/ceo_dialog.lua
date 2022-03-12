@@ -1,7 +1,7 @@
 
 -- Table of responses to various events.
 return {
-	["Script ID"] = "CEO_lmn_jungle", -- don't think this is needed, but included for completeness.
+	["Script ID"] = "CEO_Meridia", -- don't think this is needed, but included for completeness.
 	Welcome_Message = {
 		"Welcome to Meridia. The climate here is not hospitable, but it provides unique opportunities to learn about phenomena not found elsewhere.",
 		"You arrived at an opportune time commander! We are mostly scientists here, and lack the firepower required to stop the Vek threat.",
