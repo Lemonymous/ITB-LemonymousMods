@@ -3,6 +3,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/libs/utils")
 
 Mission_lmn_ChomperBoss = Mission_Boss:new{
+	Name = "Chomper Leader",
 	BossPawn = "lmn_ChomperBoss",
 	MapTags = {"lmn_jungle_leader"},
 	SpawnStartMod = -1,

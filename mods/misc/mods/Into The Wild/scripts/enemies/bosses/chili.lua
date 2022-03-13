@@ -3,6 +3,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/libs/utils")
 
 Mission_lmn_ChiliBoss = Mission_Boss:new{
+	Name = "Chili Leader",
 	BossPawn = "lmn_ChiliBoss",
 	MapTags = {"lmn_jungle_leader"},
 	SpawnStartMod = -1,

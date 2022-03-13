@@ -3,6 +3,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local utils = require(path .."scripts/libs/utils")
 
 Mission_lmn_SunflowerBoss = Mission_Boss:new{
+	Name = "Sunflower Leader",
 	BossPawn = "lmn_SunflowerBoss",
 	MapTags = {"lmn_jungle_leader"},
 	SpawnStartMod = -1,

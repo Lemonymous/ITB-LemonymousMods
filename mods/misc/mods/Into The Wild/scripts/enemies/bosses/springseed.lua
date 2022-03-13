@@ -6,6 +6,7 @@ local artiArrows = require(path .."scripts/artiArrows/artiArrows")
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
 
 Mission_lmn_SpringseedBoss = Mission_Boss:new{
+	Name = "Springseed Leader",
 	BossPawn = "lmn_SpringseedBoss",
 	MapTags = {"lmn_jungle_leader"},
 	SpawnStartMod = 0,

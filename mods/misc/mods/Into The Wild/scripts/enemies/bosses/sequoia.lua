@@ -17,6 +17,7 @@ local function isSequoia(pawn)
 end
 
 Mission_lmn_SequoiaBoss = Mission_Boss:new{
+	Name = "Sequoia",
 	BossPawn = "lmn_SequoiaBoss",
 	BossText = "Destroy the Sequoia",
 	MapTags = { "lmn_sequoia" },
