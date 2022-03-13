@@ -13,6 +13,9 @@ tileset:setEnvironmentChance{
 	[TERRAIN_ICE] = 0,
 }
 
+-- add dust emitters
+tileset:setEmitters(Emitter_tiles_snow, Emitter_Burst_tiles_snow)
+
 -- set custom tooltip text for various tile types
 tileset:setTileTooltip{
 	tile = "sand",

@@ -50,7 +50,6 @@ function mod:init()
 	require(scriptPath .."achievements")
 	require(scriptPath .."achievementTriggers")
 	require(scriptPath .."side_objectives")
-	require(scriptPath .."tiles_emitters")
 	require(scriptPath .."damageNumbers/damageNumbers")
 end
 
