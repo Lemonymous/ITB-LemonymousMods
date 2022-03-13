@@ -3,6 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 require(mod.scriptPath.."anims")
 
 Mission_BurrowerBoss = Mission_Boss:new{
+	Name = "Burrower Leader",
 	BossPawn = "BurrowerBoss",
 	BossText = "Destroy the Burrower Leader",
 	GlobalSpawnMod = -1,

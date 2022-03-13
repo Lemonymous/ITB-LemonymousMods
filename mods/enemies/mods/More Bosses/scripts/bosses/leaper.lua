@@ -5,6 +5,7 @@ require(mod.scriptPath.."anims")
 modApi:appendAsset("img/weapons/enemy_leaperB.png", mod.resourcePath.."img/weapons/enemy_leaperB.png")
 
 Mission_LeaperBoss = Mission_Boss:new{
+	Name = "Leaper Leader",
 	BossPawn = "LeaperBoss",
 	BossText = "Destroy the Leaper Leader",
 	GlobalSpawnMod = -1,
