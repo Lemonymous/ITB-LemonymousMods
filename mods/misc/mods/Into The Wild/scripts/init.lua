@@ -17,7 +17,7 @@ ExclusiveElements["lmn_Infuser"] = "lmn_Beanstalker"		-- both support.
 
 function mod:init()
 	if not easyEdit.enabled then
-		return
+		Assert.Error("Easy Edit is disabled. Make sure it is enabled in [Mod Content] > [Configure EasyEdit] and restart the game.")
 	end
 
 	if not LApi then
