@@ -13,6 +13,10 @@ local scripts = {
 }
 
 function mod:init()
+	if not LApi then
+		Assert.Error("LApi not found")
+	end
+
 	LApi.scripts:init(self.scriptPath, scripts)
 end
 

@@ -11,6 +11,10 @@ local mod = {
 }
 
 function mod:init()
+	if not LApi then
+		Assert.Error("LApi not found")
+	end
+
 	require(self.scriptPath.."spawner")
 end
 

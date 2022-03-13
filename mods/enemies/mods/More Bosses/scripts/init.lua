@@ -14,6 +14,10 @@ function mod:metadata()
 end
 
 function mod:init(options)
+	if not LApi then
+		Assert.Error("LApi not found")
+	end
+
 	LApi.scripts:init(self.scriptPath, "bosses/")
 end
 

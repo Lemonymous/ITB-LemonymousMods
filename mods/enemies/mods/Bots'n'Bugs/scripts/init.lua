@@ -80,7 +80,9 @@ function mod:init()
 		return
 	end
 
-	assert(LApi, string.format("Mod %s with id '%s' requires 'LApi' in order to function properly", self.name, self.id))
+	if not LApi then
+		Assert.Error("LApi not found")
+	end
 
 	LApi.library:new("tutorialTips")
 	

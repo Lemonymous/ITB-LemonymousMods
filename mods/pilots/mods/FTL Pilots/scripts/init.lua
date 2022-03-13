@@ -17,6 +17,10 @@ function mod:metadata()
 end
 
 function mod:init()
+	if not LApi then
+		Assert.Error("LApi not found")
+	end
+
 	LApi.library:fetch("replaceRepair/replaceRepair")
 
 	require(self.scriptPath.."pilot_crystal")
