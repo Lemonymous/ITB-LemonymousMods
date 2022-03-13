@@ -1,5 +1,6 @@
 
 Mission_SwarmerBoss = Mission_Boss:new{
+	Name = "Swarmer Leader",
 	BossPawn = "lmn_SwarmerBoss",
 	SpawnStartMod = -2,
 	BossText = "Destroy the Swarmer Leaders",
@@ -7,6 +8,7 @@ Mission_SwarmerBoss = Mission_Boss:new{
 }
 
 Mission_RoachBoss = Mission_Boss:new{
+	Name = "Roach Leader",
 	islandLock = 3,
 	BossPawn = "lmn_RoachBoss",
 	SpawnStartMod = -1,
@@ -14,6 +16,7 @@ Mission_RoachBoss = Mission_Boss:new{
 }
 
 Mission_SpitterBoss = Mission_Boss:new{
+	Name = "Spitter Leader",
 	islandLock = 3,
 	BossPawn = "lmn_SpitterBoss",
 	SpawnStartMod = -1,
@@ -21,6 +24,7 @@ Mission_SpitterBoss = Mission_Boss:new{
 }
 
 Mission_WyrmBoss = Mission_Boss:new{
+	Name = "Wyrm Leader",
 	islandLock = 3,
 	BossPawn = "lmn_WyrmBoss",
 	SpawnStartMod = -1,
@@ -28,6 +32,7 @@ Mission_WyrmBoss = Mission_Boss:new{
 }
 
 Mission_CrusherBoss = Mission_Boss:new{
+	Name = "Crusher Leader",
 	islandLock = 3,
 	BossPawn = "lmn_CrusherBoss",
 	SpawnStartMod = -1,
@@ -35,6 +40,7 @@ Mission_CrusherBoss = Mission_Boss:new{
 }
 
 Mission_FloaterBoss = Mission_Boss:new{
+	Name = "Floater Leader",
 	islandLock = 3,
 	BossPawn = "lmn_FloaterBoss",
 	SpawnStartMod = -1,
