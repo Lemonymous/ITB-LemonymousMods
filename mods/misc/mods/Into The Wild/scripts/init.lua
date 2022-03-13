@@ -49,7 +49,7 @@ function mod:init()
 
 	require(scriptPath .."achievements")
 	require(scriptPath .."achievementTriggers")
-	require(scriptPath .."side_objectives")
+	require(scriptPath .."structure_emitter")
 	require(scriptPath .."damageNumbers/damageNumbers")
 end
 
