@@ -1,5 +1,5 @@
 
--- simple system to attack emitters or other init code to assets.
+-- simple system to attach emitters or other init code to assets.
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local switch = LApi.library:fetch("switch")
 
@@ -14,9 +14,9 @@ function this:Add(attachment)
 	assert(type(attachment.id) == 'string')
 	local id = attachment.id
 	
-	self.start[id] = attachment.OnStart or nil
-	self.update[id] = attachment.OnUpdate or nil
-	self.load[id] = attachment.OnLoad or nil
+	self.start[id] = attachment.OnStart
+	self.update[id] = attachment.OnUpdate
+	self.load[id] = attachment.OnLoad
 end
 
 local function run(mission, name)
