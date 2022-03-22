@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"The environmental hazards on our island were bad enough to maintain supply routes. Now we have to worry about the Vek as well.",
 			"A critical convoy carrying medical supplies was ambushed between waypoints. Please, give them some support!",

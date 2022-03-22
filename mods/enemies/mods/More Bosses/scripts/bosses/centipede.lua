@@ -26,6 +26,7 @@ local function isValidMap(map)
 end
 
 Mission_CentipedeBoss = Mission_Boss:new{
+	Name = "Centipede Leader",
 	BossPawn = "CentipedeBoss",
 	BossText = "Destroy the Centipede Leader",
 	GlobalSpawnMod = -1,

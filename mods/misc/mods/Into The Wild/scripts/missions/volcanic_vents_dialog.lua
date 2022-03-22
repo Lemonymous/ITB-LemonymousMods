@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"This region is infamous for its hyperactive volcanic vents. Geoscan readings will warn you about imminent eruptions in time, so position your mechs carefully.",
 			"Our researchers are studying the volcanic activity in this region. Vek do not appear to avoid the vents, so you may be able to use them to your advantage.",

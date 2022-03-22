@@ -8,7 +8,6 @@ local utils = require(path .."scripts/libs/utils")
 local switch = LApi.library:fetch("switch")
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
 local worldConstants = LApi.library:fetch("worldConstants")
-modApi:appendAsset("img/combat/tiles_grass/lmn_ground_runway.png", path .."img/tileset_plant/ground_runway.png")
 
 for i = 0, 5 do
 	modApi:addMap(path .."maps/lmn_runway".. i ..".map")

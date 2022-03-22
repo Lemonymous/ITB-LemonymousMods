@@ -17,6 +17,7 @@ trait:add{
 }
 
 Mission_BlobberBoss = Mission_Boss:new{
+	Name = "Blobber Leader",
 	BossPawn = "BlobberBoss",
 	BossText = "Destroy the Blobber Leader",
 	GlobalSpawnMod = -2,

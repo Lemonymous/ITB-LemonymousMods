@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"I have an unusual request to make. We would like to study the Vek, and ask you to contain three living specimens for us.", 
 			"Live study or vivisection of the Vek would teach us a great deal about how to combat them ourselves. Please, capture some.",

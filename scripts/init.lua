@@ -1,8 +1,16 @@
 
+-- initialize easyEdit
+local function scriptPath()
+	return debug.getinfo(2, "S").source:sub(2):match("(.*[/\\])")
+end
+require(scriptPath().."easyEdit/easyEdit")
+
+
+-- initialize modpack
 local mod =  {
 	id = "lmn_mods",
 	name = "Lemonymous' Mods",
-	version = "0.5.0",
+	version = "0.6.0",
 	modApiVersion = "2.6.4",
 	icon = "scripts/icon.png",
 	description = "A Collection of mods made by Lemonymous",

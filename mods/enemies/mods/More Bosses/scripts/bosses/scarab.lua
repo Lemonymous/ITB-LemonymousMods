@@ -6,6 +6,7 @@ modApi:appendAsset("img/effects/shotup_antB.png", mod.resourcePath.."img/effects
 modApi:appendAsset("img/weapons/enemy_scarabB.png", mod.resourcePath.."img/weapons/enemy_scarabB.png")
 
 Mission_ScarabBoss = Mission_Boss:new{
+	Name = "Scarab Leader",
 	BossPawn = "ScarabBoss",
 	BossText = "Destroy the Scarab Leader",
 	GlobalSpawnMod = -1,

@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"This region has seen a high abundance of Vek masquerading as the immediate flora. Don't let them fool you.",
 			"The area is under attack by... flowers. Despite their appearance, they're dangerous. Be careful.",

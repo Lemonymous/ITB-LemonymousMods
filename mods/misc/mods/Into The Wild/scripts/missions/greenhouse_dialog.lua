@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"We use Greenhouses both for food and for studying the unusual plantlife in this region. Their safety is paramount!",
 			"The Greenhouses yield bountiful harvest, functioning as our primary food production facilities. Their safety is paramount for our survival.",

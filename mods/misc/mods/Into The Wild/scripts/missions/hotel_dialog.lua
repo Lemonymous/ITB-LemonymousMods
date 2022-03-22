@@ -1,6 +1,6 @@
 
 return {
-    CEO_lmn_jungle = {
+    CEO_Meridia = {
         Briefing = {
             "Meridia's hotels are environmentally friendly, but even so I can't help but find them somewhat... excessive.",
             "A state of the art, green facility. Please, protect it.",

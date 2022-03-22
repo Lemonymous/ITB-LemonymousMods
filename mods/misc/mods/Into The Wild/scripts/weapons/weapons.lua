@@ -32,25 +32,16 @@ require(path .."weapons/confusion_strike")
 require(path .."weapons/deflector_ray")
 require(path .."weapons/flood_generator")
 
-local oldInitializeDecks = initializeDecks
-function initializeDecks(...)
-	oldInitializeDecks(...)
-	
-	for _, weapon in ipairs(this.weapons or {}) do
-		table.insert(GAME.WeaponDeck, weapon)
-	end
-end
+local weapons = {
+	"lmn_Spore_Cannon",
+	"lmn_Iron_Jaws",
+	"lmn_DeploySkill_Copter",
+	"lmn_Bioscanner",
+	"lmn_Confusion_Strike",
+	"lmn_Deflector_Ray",
+	"lmn_Flood_Generator",
+}
 
-function this:Add()
-	this.weapons = {
-		"lmn_Spore_Cannon",
-		"lmn_Iron_Jaws",
-		"lmn_DeploySkill_Copter",
-		"lmn_Bioscanner",
-		"lmn_Confusion_Strike",
-		"lmn_Deflector_Ray",
-		"lmn_Flood_Generator",
-	}
+for _, weapon in ipairs(weapons) do
+	modApi:addWeaponDrop(weapon, true)
 end
-
-return this

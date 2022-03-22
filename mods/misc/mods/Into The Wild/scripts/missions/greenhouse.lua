@@ -5,8 +5,7 @@ local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_d
 
 local path = mod_loader.mods[modApi.currentMod].scriptPath
 local switch = LApi.library:fetch("switch")
-local prefix, suffix = "lmn_", ""
-local asset = prefix .."greenhouse".. suffix
+local asset = "greenhouse"
 
 -- returns number of buildings alive
 -- in a list of building locations.

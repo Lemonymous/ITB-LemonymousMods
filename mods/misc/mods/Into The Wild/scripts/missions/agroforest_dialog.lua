@@ -1,6 +1,6 @@
 
 return {
-    CEO_lmn_jungle = {
+    CEO_Meridia = {
         Briefing = {
             "We are attempting to integrate forests into our crops to maintain our island's wonderful biodiversity - please protect the Agroforest!",
             "Do you see how the trees blend smoothly into the farmland? Keep it safe, #squad.",

@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = {
+	CEO_Meridia = {
 		Briefing = {
 			"With difficult access to many regions, we rely on planes to make up the difference. Protect them as they take off.",
 			"We use planes for many tasks not suited for ground vehicles. Please make sure they make it off the ground.",

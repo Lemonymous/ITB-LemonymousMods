@@ -3,6 +3,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 require(mod.scriptPath.."anims")
 
 Mission_DiggerBoss = Mission_Boss:new{
+	Name = "Digger Leader",
 	BossPawn = "DiggerBoss",
 	BossText = "Destroy the Digger Leader",
 	GlobalSpawnMod = -1,

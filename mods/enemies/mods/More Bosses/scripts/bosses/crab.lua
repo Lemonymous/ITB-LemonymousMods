@@ -35,6 +35,7 @@ local function isValidMap(map)
 end
 
 Mission_CrabBoss = Mission_Boss:new{
+	Name = "Crab Leader",
 	BossPawn = "CrabBoss",
 	BossText = "Destroy the Crab Leader",
 	GlobalSpawnMod = -1,

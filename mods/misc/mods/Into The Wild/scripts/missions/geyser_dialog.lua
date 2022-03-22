@@ -1,6 +1,6 @@
 
 return {
-	CEO_lmn_jungle = 
+	CEO_Meridia = 
 	{
 		Briefing = {
 			"The Geysers in the region are powerful enough to launch even the heaviest industrial machinery into the air. Watch your step around them.",

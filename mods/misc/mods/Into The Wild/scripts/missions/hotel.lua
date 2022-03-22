@@ -6,8 +6,7 @@ local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_d
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 local switch = LApi.library:fetch("switch")
 local missionTemplates = require(path .."scripts/missions/missionTemplates")
-local prefix, suffix = "lmn_", ""
-local asset = prefix .."hotel".. suffix
+local asset = "hotel"
 
 for i = 0, 8 do
 	modApi:addMap(path .."maps/lmn_hotel".. i ..".map")
