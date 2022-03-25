@@ -290,11 +290,13 @@ modApi.events.onFrameDrawn:subscribe(function()
 
 	for pawnId = 0, 2 do
 		local mech = Game:GetPawn(pawnId)
-		local weapons = mech:GetPoweredWeapons()
+		if mech then
+			local weapons = mech:GetPoweredWeapons()
 
-		for _, weaponId in pairs(weapons) do
-			if not list_contains(defaultWeapons, weaponId) then
-				gameData().scrappyFailed = true
+			for _, weaponId in pairs(weapons) do
+				if not list_contains(defaultWeapons, weaponId) then
+					gameData().scrappyFailed = true
+				end
 			end
 		end
 	end
