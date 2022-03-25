@@ -216,7 +216,7 @@ end
 
 local function getDeployed(self)
 	local mission = GetCurrentMission()
-	if mission == nil then return nil end
+	if mission == nil then return {} end
 
 	local deployment = getMissionData(mission)
 	local deployed = {}
@@ -232,7 +232,7 @@ end
 
 local function getRemaining(self)
 	local mission = GetCurrentMission()
-	if mission == nil then return nil end
+	if mission == nil then return {} end
 
 	local deployment = getMissionData(mission)
 	local remaining = {}
