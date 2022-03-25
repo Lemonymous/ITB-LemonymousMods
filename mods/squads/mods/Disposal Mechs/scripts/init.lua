@@ -2,8 +2,8 @@
 local mod = {
 	id = "lmn_disposal_mechs",
 	name = "Disposal Mechs",
-	version = "1.3.0",
-	modApiVersion = "2.6.0",
+	version = "1.4.0",
+	modApiVersion = "2.6.4",
 	icon = "img/icon.png",
 	requirements = {}
 }
@@ -17,6 +17,10 @@ function mod:metadata()
 end
 
 function mod:init()
+	if not easyEdit.enabled then
+		Assert.Error("Easy Edit is disabled. Make sure it is enabled in [Mod Content] > [Configure EasyEdit] and restart the game.")
+	end
+
 	if not LApi then
 		Assert.Error("LApi not found")
 	end
