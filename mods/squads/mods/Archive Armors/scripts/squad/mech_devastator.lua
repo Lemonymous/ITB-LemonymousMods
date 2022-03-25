@@ -3,7 +3,6 @@ local path = GetParentPath(...)
 require(path.."palette")
 
 local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
 lmn_DevastatorMech = Pawn:new{
@@ -11,7 +10,7 @@ lmn_DevastatorMech = Pawn:new{
 	Class = "Brute",
 	Health = 4,
 	MoveSpeed = 2,
-	Image = "lmn_MechDevastator",
+	Image = "aa_devastator",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_DevastatorCannon" },
 	SoundLocation = "/mech/brute/tank/",
@@ -24,10 +23,10 @@ AddPawnName("lmn_DevastatorMech")
 lmn_DevastatorCannon = Skill:new{
 	Name = "Devastator",
 	Class = "Brute",
-	Icon = "weapons/lmn_devastaor.png",
+	Icon = "weapons/aa_devastaor.png",
 	Description = "Devastating projectile damaging its target and 3 adjacent tiles.\nPushes outer tiles and the shooter.",
 	sExplosion = "ExploAir2",
-	sProjectileEffect = "effects/lmn_shot_devastator",
+	sProjectileEffect = "effects/aa_shot_devastator",
 	sLaunchSound = "/weapons/wide_shot",
 	sImpactSound = "/impact/generic/explosion_large",
 	Range = INT_MAX,
@@ -141,23 +140,3 @@ lmn_DevastatorCannon_A = lmn_DevastatorCannon:new{
 }
 
 modApi:addWeaponDrop("lmn_DevastatorCannon")
-
-modApi:appendAsset("img/units/player/lmn_mech_devastator.png", resourcePath .."img/units/player/devastator.png")
-modApi:appendAsset("img/units/player/lmn_mech_devastator_a.png", resourcePath .."img/units/player/devastator_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_devastator_broken.png", resourcePath .."img/units/player/devastator_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_devastator_w.png", resourcePath .."img/units/player/devastator_w.png")
-modApi:appendAsset("img/units/player/lmn_mech_devastator_w_broken.png", resourcePath .."img/units/player/devastator_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_devastator_ns.png", resourcePath .."img/units/player/devastator_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_devastator_h.png", resourcePath .."img/units/player/devastator_h.png")
-
-modApi:appendAsset("img/weapons/lmn_devastaor.png", resourcePath .."img/weapons/devastaor.png")
-modApi:appendAsset("img/effects/lmn_shot_devastator_U.png", resourcePath .."img/effects/shot_devastator_U.png")
-modApi:appendAsset("img/effects/lmn_shot_devastator_R.png", resourcePath .."img/effects/shot_devastator_R.png")
-
-setfenv(1, ANIMS)
-lmn_MechDevastator =			MechUnit:new{ Image = "units/player/lmn_mech_devastator.png", PosX = -16, PosY = 1 }
-lmn_MechDevastatora =			lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_a.png", NumFrames = 4 }
-lmn_MechDevastator_broken =		lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_broken.png", }
-lmn_MechDevastatorw =			lmn_MechDevastator:new{ Image = "units/player/lmn_mech_devastator_w.png", PosY = 9 }
-lmn_MechDevastatorw_broken =	lmn_MechDevastatorw:new{ Image = "units/player/lmn_mech_devastator_w_broken.png" }
-lmn_MechDevastator_ns =			MechIcon:new{ Image = "units/player/lmn_mech_devastator_ns.png" }

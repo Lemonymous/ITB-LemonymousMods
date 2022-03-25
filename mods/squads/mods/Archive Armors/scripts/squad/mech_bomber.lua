@@ -3,7 +3,6 @@ local path = GetParentPath(...)
 require(path.."palette")
 
 local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
 lmn_BomberMech = Pawn:new{
@@ -11,7 +10,7 @@ lmn_BomberMech = Pawn:new{
 	Class = "Brute",
 	Health = 2,
 	MoveSpeed = 3,
-	Image = "lmn_MechBomber",
+	Image = "aa_bomber",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_Bombrun" },
 	SoundLocation = "/mech/flying/jet_mech/",
@@ -25,7 +24,7 @@ AddPawnName("lmn_BomberMech")
 lmn_Bombrun = Skill:new{
 	Name = "Bomb Run",
 	Class = "Unique",
-	Icon = "weapons/lmn_bombrun.png",
+	Icon = "weapons/aa_bombrun.png",
 	Description = "Flyer Only Weapon\n\nFly in a line and bomb any 2 tiles in transit.",
 	AttackAnimation = "ExploArt2",
 	Bombs = 2,
@@ -140,7 +139,7 @@ function lmn_Bombrun:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		are from the origin point.
 	--]]
 	local t = 1
-	local bombTravelTime = math.ceil(ANIMS.lmn_bombdrop.Time * 125) -- 1 tick per .008 duration of animation
+	local bombTravelTime = math.ceil(ANIMS.aa_bombdrop.Time * 125) -- 1 tick per .008 duration of animation
 	while bombsLanded < self.Bombs do
 		ret:AddDelay(0.08)
 		
@@ -153,7 +152,7 @@ function lmn_Bombrun:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		--]]
 		if t >= bombStart and t <= bombEnd then
 			local damage = SpaceDamage(DIR_VECTORS[dir]*t + p1, 0)
-			damage.sAnimation = "lmn_bombdrop"
+			damage.sAnimation = "aa_bombdrop"
 			damage.sSound = "/weapons/raining_volley_tile"
 			ret:AddDamage(damage)
 			table.insert(bombsInTransit, t + bombTravelTime)
@@ -246,29 +245,3 @@ lmn_Bombrun_Tip_B.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 lmn_Bombrun_Tip_AB.GetSkillEffect = lmn_Bombrun_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_Bombrun")
-
-modApi:appendAsset("img/units/player/lmn_mech_bomber.png", resourcePath .."img/units/player/bomber.png")
-modApi:appendAsset("img/units/player/lmn_mech_bomber_a.png", resourcePath .."img/units/player/bomber_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_bomber_broken.png", resourcePath .."img/units/player/bomber_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_bomber_w_broken.png", resourcePath .."img/units/player/bomber_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_bomber_ns.png", resourcePath .."img/units/player/bomber_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_bomber_h.png", resourcePath .."img/units/player/bomber_h.png")
-
-modApi:appendAsset("img/weapons/lmn_bombrun.png", resourcePath .."img/weapons/bombrun.png")
-modApi:appendAsset("img/effects/lmn_explo_bomb.png", resourcePath .."img/effects/explo_bomb.png")
-
-setfenv(1, ANIMS)
-lmn_MechBomber =			MechUnit:new{ Image = "units/player/lmn_mech_bomber.png", PosX = -20, PosY = -10 }
-lmn_MechBombera =			lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_a.png", NumFrames = 4 }
-lmn_MechBomber_broken =		lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_broken.png", PosX = -21, PosY = 2 }
-lmn_MechBomberw =			lmn_MechBomber:new{ Image = "units/player/lmn_mech_bomber_w_broken.png",  PosX = -21, PosY = 9 }
-lmn_MechBomberw_broken =	lmn_MechBomberw:new{ Image = "units/player/lmn_mech_bomber_w_broken.png" }
-lmn_MechBomber_ns =			MechIcon:new{ Image = "units/player/lmn_mech_bomber_ns.png" }
-
-lmn_bombdrop = Animation:new{
-	Image = "effects/lmn_explo_bomb.png",
-	NumFrames = 10,
-	Time = 0.032, --multiple of 0.008
-	PosX = -18,
-	PosY = -12
-}

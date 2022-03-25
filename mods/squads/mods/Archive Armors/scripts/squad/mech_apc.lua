@@ -12,7 +12,7 @@ lmn_SmokeMech = Pawn:new{
 	Class = "Science",
 	Health = 3,
 	MoveSpeed = 4,
-	Image = "lmn_MechApc",
+	Image = "aa_apc",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_SmokeLauncher" },
 	SoundLocation = "/mech/brute/tank/",
@@ -26,7 +26,7 @@ AddPawnName("lmn_SmokeMech")
 lmn_SmokeLauncher = Skill:new{
 	Name = "Smoke Launcher",
 	Class = "Science",
-	Icon = "weapons/lmn_smoke_launcher.png",
+	Icon = "weapons/aa_smoke_launcher.png",
 	Description = "Covers one of the 8 surrounding tiles in smoke.\n\nEvacuates civilian buildings, and disconnects power pylons from the grid.",
 	Sound = "/general/combat/explode_small",
 	UpShot = "effects/shotup_smokeblast_missile.png",
@@ -248,10 +248,11 @@ function lmn_SmokeLauncher:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			not Board:IsUniqueBuilding(p2) and
 			Board:IsPowered(p2)
 		then
-			damage.sImageMark = "combat/icons/lmn_people.png"
+			damage.sImageMark = "combat/icons/aa_people.png"
 			evac = true
 		else
-			damage.sImageMark = "combat/icons/lmn_people_none.png"
+		LOG("people none")
+			damage.sImageMark = "combat/icons/aa_people_none.png"
 		end
 	end
 	
@@ -440,26 +441,3 @@ Personality["CEO_Sand"]["MissionFinal_Pylon_Smoked"] = {
 	"Sending another pylon. You need them to stay connected to the grid.",
 	"Disconnecting them does save our grid, but they're still expensive. Keep this one online."
 }
-
-modApi:appendAsset("img/units/player/lmn_mech_apc.png", resourcePath .."img/units/player/apc.png")
-modApi:appendAsset("img/units/player/lmn_mech_apc_a.png", resourcePath .."img/units/player/apc_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_apc_broken.png", resourcePath .."img/units/player/apc_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_apc_w.png", resourcePath .."img/units/player/apc_w.png")
-modApi:appendAsset("img/units/player/lmn_mech_apc_w_broken.png", resourcePath .."img/units/player/apc_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_apc_ns.png", resourcePath .."img/units/player/apc_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_apc_h.png", resourcePath .."img/units/player/apc_h.png")
-
-modApi:appendAsset("img/weapons/lmn_smoke_launcher.png", resourcePath .."img/weapons/smoke_launcher.png")
-
-modApi:copyAsset("img/combat/icons/people.png", "img/combat/icons/lmn_people.png")
-modApi:appendAsset("img/combat/icons/lmn_people_none.png", resourcePath .."img/combat/icons/people_none.png")
-Location["combat/icons/lmn_people.png"] = Point(-35,-17)
-Location["combat/icons/lmn_people_none.png"] = Point(-35,-17)
-
-setfenv(1, ANIMS)
-lmn_MechApc =			MechUnit:new{ Image = "units/player/lmn_mech_apc.png", PosX = -19, PosY = 3 }
-lmn_MechApca =			lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_a.png", NumFrames = 4 }
-lmn_MechApc_broken =	lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_broken.png", }
-lmn_MechApcw =			lmn_MechApc:new{ Image = "units/player/lmn_mech_apc_w.png", PosY = 13 }
-lmn_MechApcw_broken =	lmn_MechApcw:new{ Image = "units/player/lmn_mech_apc_w_broken.png" }
-lmn_MechApc_ns =		MechIcon:new{ Image = "units/player/lmn_mech_apc_ns.png" }
