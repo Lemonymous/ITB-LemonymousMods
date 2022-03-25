@@ -7,7 +7,6 @@ local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectBurst = LApi.library:fetch("effectBurst")
-local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 
 modApi:appendAsset("img/units/player/lmn_mech_helicopter.png", resourcePath .."img/units/player/helicopter.png")
 modApi:appendAsset("img/units/player/lmn_mech_helicopter_a.png", resourcePath .."img/units/player/helicopter_a.png")
@@ -178,7 +177,6 @@ lmn_Helicopter_Rocket_Tip_A.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillE
 lmn_Helicopter_Rocket_Tip_B.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect
 lmn_Helicopter_Rocket_Tip_AB.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect
 
-nonMassiveDeployWarning:AddPawn("lmn_HelicopterMech")
 modApi:addWeaponDrop("lmn_Helicopter_Rocket")
 
 local function init() end

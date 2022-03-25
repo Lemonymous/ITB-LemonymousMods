@@ -5,7 +5,6 @@ local scriptPath = mod.scriptPath
 
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 local weapon_launcher = require(scriptPath .."weapons/weapon_launcher")
 local weapon_minelayer = require(scriptPath .."weapons/weapon_minelayer")
 
@@ -39,7 +38,6 @@ lmn_MinelayerMech = Pawn:new{
 }
 AddPawnName("lmn_MinelayerMech")
 
-nonMassiveDeployWarning:AddPawn("lmn_MinelayerMech")
 weapon_launcher:load()
 weapon_minelayer:load()
 

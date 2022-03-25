@@ -5,7 +5,6 @@ local scriptPath = mod.scriptPath
 
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 local worldConstants = LApi.library:fetch("worldConstants")
 
 modApi:appendAsset("img/units/player/lmn_mech_jeep.png", resourcePath .."img/units/player/jeep.png")
@@ -123,7 +122,6 @@ lmn_Jeep_Grenade_AB = lmn_Jeep_Grenade:new{
 	Push = 1,
 }
 
-nonMassiveDeployWarning:AddPawn("lmn_JeepMech")
 modApi:addWeaponDrop("lmn_Jeep_Grenade")
 
 local function init() end

@@ -7,7 +7,6 @@ local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
-local nonMassiveDeployWarning = require(scriptPath .."libs/nonMassiveDeployWarning")
 
 modApi:appendAsset("img/units/player/lmn_mech_tank.png", resourcePath .."img/units/player/tank.png")
 modApi:appendAsset("img/units/player/lmn_mech_tank_a.png", resourcePath .."img/units/player/tank_a.png")
@@ -340,7 +339,6 @@ lmn_Tank_Cannon_Tip_AB.GetSkillEffect = lmn_Tank_Cannon_Tip.GetSkillEffect
 
 
 modApi:addWeaponDrop("lmn_Tank_Cannon")
-nonMassiveDeployWarning:AddPawn("lmn_TankMech")
 
 local function init() end
 local function load() end
