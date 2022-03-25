@@ -186,14 +186,14 @@ end
 
 local function isDeploymentPhase(self)
 	local mission = GetCurrentMission()
-	if mission == nil then return nil end
+	if mission == nil then return false end
 
 	return getMissionData(mission).in_progress
 end
 
 local function isLandingPhase(self)
 	local mission = GetCurrentMission()
-	if mission == nil then return nil end
+	if mission == nil then return false end
 
 	return getMissionData(mission).phase = PHASE_LANDING
 end
