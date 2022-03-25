@@ -22,16 +22,13 @@ end
 
 function mod:init(options)
 	require(self.scriptPath.."LApi/LApi")
-	LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt"):init()
-	LApi.library:fetch("modloaderfixes")
-	LApi.library:fetch("artilleryArc")
+	require(self.scriptPath.."ITB-ModUtils/modApiExt/modApiExt"):init()
+	require(self.scriptPath.."libs/modloaderfixes")
+	require(self.scriptPath.."libs/artilleryArc")
 end
 
 function mod:load(options, version)
-	LApi.library:fetch("ITB-ModUtils/modApiExt/modApiExt"):load(
-		options,
-		version
-	)
+	require(self.scriptPath.."ITB-ModUtils/modApiExt/modApiExt"):load(options, version)
 end
 
 return mod
