@@ -1,55 +1,254 @@
 
-local VERSION = "0.0.1"
-local STATE_READY = 0
-local STATE_LANDING = 1
+local VERSION = "1.0.0"
+local STATE_SELECTED = 0
+local STATE_REMAINING = 1
+local STATE_DEPLOYED = 2
+local STATE_LANDING = 3
+local STATE_LANDED = 4
+local PHASE_DEPLOYMENT = 0
+local PHASE_LANDING = 1
+local PHASE_LANDED = 2
+local OUT_OF_BOUNDS = Point(-1,-1)
+local EVENTS = {
+	"onDeploymentPhaseStart",
+	"onLandingPhaseStart",
+	"onDeploymentPhaseEnd",
+	"onPawnUnselected",
+	"onPawnSelected",
+	"onPawnDeployed",
+	"onPawnUndeployed",
+	"onPawnLanding",
+	"onPawnLanded",
+}
 
-local function getMissionData(mission)
-	if mission.deploymentState == nil then
-		mission.deploymentState = {}
+-- reusable tables
+local prev = {
+	[0] = {},
+	[1] = {},
+	[2] = {},
+}
+local mechs = {
+	[0] = {},
+	[1] = {},
+	[2] = {},
+}
+
+local function initEvents()
+	if DetectDeployment.events == nil then
+		DetectDeployment.events = {}
 	end
 
-	return mission.deploymentState
+	for _, eventId in ipairs(EVENTS) do
+		if DetectDeployment.events[eventId] == nil then
+			DetectDeployment.events[eventId] = Event()
+		end
+	end
 end
 
-local function startDeploymentListener(mission)
-	local deploymentState = getMissionData(mission)
-
-	deploymentState[0] = STATE_READY
-	deploymentState[1] = STATE_READY
-	deploymentState[2] = STATE_READY
+local function getMissionData(mission)
+	return mission.deployment or {}
 end
 
 local function updateDeploymentListener(mission)
-	local deploymentState = getMissionData(mission)
+	local deployment = getMissionData(mission)
 
-	if deploymentState == "done" then
+	if not deployment.in_progress then
 		return
 	end
 
-	for pawnId, state in pairs(deploymentState) do
-		local pawn = Board:GetPawn(pawnId)
+	if deployment.phase == PHASE_DEPLOYMENT then
+		local pwn0 = Board:GetPawn(0)
+		local pwn1 = Board:GetPawn(1)
+		local pwn2 = Board:GetPawn(2)
 
-		if state == STATE_READY then
-			if pawn:IsBusy() then
-				deploymentState[pawnId] = STATE_LANDING
-				DetectDeployment.events.onPawnDeployStart:dispatch(pawn)
-			end
+		local prev = prev
+		prev[0].state = deployment[0].state
+		prev[1].state = deployment[1].state
+		prev[2].state = deployment[2].state
+		prev[0].loc = deployment[0].loc
+		prev[1].loc = deployment[1].loc
+		prev[2].loc = deployment[2].loc
 
-		elseif state == STATE_LANDING then
-			if not pawn:IsBusy() then
-				deploymentState[pawnId] = nil
-				DetectDeployment.events.onPawnDeployEnd:dispatch(pawn)
+		local mechs = mechs
+		mechs[0].loc = pwn0:GetSpace()
+		mechs[1].loc = pwn1:GetSpace()
+		mechs[2].loc = pwn2:GetSpace()
+		mechs[0].isSelected = pwn0:IsSelected()
+		mechs[1].isSelected = pwn1:IsSelected()
+		mechs[2].isSelected = pwn2:IsSelected()
+
+		for pawnId = 0, 2 do
+			local mech = mechs[pawnId]
+			if mech.isSelected then
+				mech.state = STATE_SELECTED
+			elseif mech.loc == OUT_OF_BOUNDS then
+				mech.state = STATE_REMAINING
+			else
+				mech.state = STATE_DEPLOYED
 			end
+		end
+
+		local isNoneSelected = true
+			and mechs[0].state ~= STATE_SELECTED
+			and mechs[1].state ~= STATE_SELECTED
+			and mechs[2].state ~= STATE_SELECTED
+
+		if isNoneSelected then
+			for pawnId = 0, 2 do
+				local mech = mechs[pawnId]
+				if mech.state == STATE_REMAINING then
+					mech.state = STATE_SELECTED
+					break
+				end
+			end
+		end
+
+		for pawnId = 0, 2 do
+			local mech = mechs[pawnId]
+			local saved = deployment[pawnId]
+			saved.state = mech.state
+			saved.loc = mech.loc
+		end
+
+		for pawnId = 0, 2 do
+			local mech = mechs[pawnId]
+			local prev = prev[pawnId]
+			if mech.state ~= prev.state then
+				if prev.state == STATE_DEPLOYED then
+					DetectDeployment.events.onPawnUndeployed:dispatch(pawnId)
+				elseif prev.state == STATE_SELECTED then
+					DetectDeployment.events.onPawnUnselected:dispatch(pawnId)
+				end
+
+				if mech.state == STATE_DEPLOYED then
+					DetectDeployment.events.onPawnDeployed:dispatch(pawnId)
+				elseif mech.state == STATE_SELECTED then
+					DetectDeployment.events.onPawnSelected:dispatch(pawnId)
+				end
+			end
+		end
+
+		local isAllDeployed = true
+			and mechs[0].state == STATE_DEPLOYED
+			and mechs[1].state == STATE_DEPLOYED
+			and mechs[2].state == STATE_DEPLOYED
+			and pwn0:IsBusy()
+
+		if isAllDeployed then
+			deployment.phase = PHASE_LANDING
+			DetectDeployment.events.onLandingPhaseStart:dispatch()
 		end
 	end
 
-	if next(deploymentState) == nil then
-		deploymentState = "done"
+	if deployment.phase == PHASE_LANDING then
+		for pawnId = 0, 2 do
+			local mech = deployment[pawnId]
+			local pawn = Board:GetPawn(pawnId)
+
+			if mech.state == STATE_DEPLOYED then
+				if pawn:IsBusy() then
+					mech.state = STATE_LANDING
+					DetectDeployment.events.onPawnLanding:dispatch(pawnId)
+				end
+
+			elseif mech.state == STATE_LANDING then
+				if not pawn:IsBusy() then
+					mech.state = STATE_LANDED
+					DetectDeployment.events.onPawnLanded:dispatch(pawnId)
+				end
+			end
+		end
+
+		local isAllLanded = true
+			and deployment[0].state == STATE_LANDED
+			and deployment[1].state == STATE_LANDED
+			and deployment[2].state == STATE_LANDED
+
+		if isAllLanded then
+			deployment.in_progress = false
+			deployment.phase = PHASE_LANDED
+			DetectDeployment.events.onDeploymentPhaseEnd:dispatch()
+		end
 	end
 end
 
+local function startDeploymentListener(mission)
+	mission.deployment = {
+		in_progress = true,
+		phase = PHASE_DEPLOYMENT,
+		[0] = { state = STATE_REMAINING, loc = OUT_OF_BOUNDS },
+		[1] = { state = STATE_REMAINING, loc = OUT_OF_BOUNDS },
+		[2] = { state = STATE_REMAINING, loc = OUT_OF_BOUNDS },
+	}
+
+	DetectDeployment.events.onDeploymentPhaseStart:dispatch()
+end
+
+local function isDeploymentPhase(self)
+	local mission = GetCurrentMission()
+	if mission == nil then return nil end
+
+	return getMissionData(mission).in_progress
+end
+
+local function isLandingPhase(self)
+	local mission = GetCurrentMission()
+	if mission == nil then return nil end
+
+	return getMissionData(mission).phase = PHASE_LANDING
+end
+
+local function getSelected(self)
+	local mission = GetCurrentMission()
+	if mission == nil then return nil end
+
+	local deployment = getMissionData(mission)
+
+	for pawnId = 0, 2 do
+		local mech = deployment[pawnId]
+		if mech.state == STATE_SELECTED then
+			return pawnId
+		end
+	end
+
+	return nil
+end
+
+local function getDeployed(self)
+	local mission = GetCurrentMission()
+	if mission == nil then return nil end
+
+	local deployment = getMissionData(mission)
+	local deployed = {}
+
+	for pawnId = 0, 2 do
+		if deployment.state[pawnId] == STATE_DEPLOYED then
+			table.insert(deployed, pawnId)
+		end
+	end
+
+	return deployed
+end
+
+local function getRemaining(self)
+	local mission = GetCurrentMission()
+	if mission == nil then return nil end
+
+	local deployment = getMissionData(mission)
+	local remaining = {}
+
+	for pawnId = 0, 2 do
+		if deployment.state[pawnId] == STATE_REMAINING then
+			table.insert(remaining, pawnId)
+		end
+	end
+
+	return remaining
+end
+
 local function registerDeploymentSkill()
-	DetectDeployment.events.onPawnDeployEnd:subscribe(function(pawn)
+	DetectDeployment.events.onPawnLanded:subscribe(function(pawnId)
+		local pawn = Board:GetPawn(pawnId)
 		local pawnType = pawn:GetType()
 		local deploySkill = _G[pawnType].DeploySkill
 
@@ -74,10 +273,6 @@ local function registerDeploymentSkill()
 end
 
 local function finalizeInit(self)
-	DetectDeployment.events = {}
-	DetectDeployment.events.onPawnDeployStart = Event()
-	DetectDeployment.events.onPawnDeployEnd = Event()
-
 	registerDeploymentSkill()
 
 	modApi.events.onMissionStart:subscribe(startDeploymentListener)
@@ -85,27 +280,32 @@ local function finalizeInit(self)
 end
 
 local function onModsInitialized()
-	local exit = false
-		or DetectDeployment.initialized
-		or DetectDeployment.version > VERSION
+	local isHighestVersion = true
+		and DetectDeployment.initialized ~= true
+		and DetectDeployment.version == VERSION
 
-	if exit then
-		return
+	if isHighestVersion then
+		DetectDeployment:finalizeInit()
+		DetectDeployment.initialized = true
+		DetectDeployment.isDeploymentPhase = isDeploymentPhase
+		DetectDeployment.isLandingPhase = isLandingPhase
+		DetectDeployment.getSelected = getSelected
+		DetectDeployment.getDeployed = getDeployed
+		DetectDeployment.getRemaining = getRemaining
 	end
-
-	DetectDeployment:finalizeInit()
-	DetectDeployment.initialized = true
 end
 
 
-local isNewestVersion = false
+local isNewerVersion = false
 	or DetectDeployment == nil
-	or modApi:isVersion(VERSION, DetectDeployment.version) == false
+	or VERSION > DetectDeployment.version
 
-if isNewestVersion then
+if isNewerVersion then
 	DetectDeployment = DetectDeployment or {}
 	DetectDeployment.version = VERSION
 	DetectDeployment.finalizeInit = finalizeInit
+
+	initEvents()
 
 	modApi.events.onModsInitialized:subscribe(onModsInitialized)
 end
