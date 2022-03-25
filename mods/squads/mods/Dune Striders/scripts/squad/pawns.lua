@@ -1,4 +1,7 @@
 
+local path = GetParentPath(...)
+require(path.."palette")
+
 local mod = modApi:getCurrentMod()
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
