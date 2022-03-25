@@ -25,6 +25,8 @@ function mod:init(options)
 	require(self.scriptPath.."ITB-ModUtils/modApiExt/modApiExt"):init()
 	require(self.scriptPath.."libs/modloaderfixes")
 	require(self.scriptPath.."libs/artilleryArc")
+	require(self.scriptPath.."libs/detectDeployment")
+	require(self.scriptPath.."libs/blockDeathByDeployment")
 end
 
 function mod:load(options, version)
