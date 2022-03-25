@@ -113,24 +113,24 @@ end
 
 local function onModsInitialized()
 	local isHighestVersion = true
-		and blockDeathByDeployment.initialized ~= true
-		and blockDeathByDeployment.version == VERSION
+		and BlockDeathByDeployment.initialized ~= true
+		and BlockDeathByDeployment.version == VERSION
 
 	if isHighestVersion then
-		blockDeathByDeployment:finalizeInit()
-		blockDeathByDeployment.initialized = true
+		BlockDeathByDeployment:finalizeInit()
+		BlockDeathByDeployment.initialized = true
 	end
 end
 
 
 local isNewerVersion = false
-	or blockDeathByDeployment == nil
+	or BlockDeathByDeployment == nil
 	or VERSION > DetectDeployment.version
 
 if isNewerVersion then
-	blockDeathByDeployment = blockDeathByDeployment or {}
-	blockDeathByDeployment.version = VERSION
-	blockDeathByDeployment.finalizeInit = finalizeInit
+	BlockDeathByDeployment = BlockDeathByDeployment or {}
+	BlockDeathByDeployment.version = VERSION
+	BlockDeathByDeployment.finalizeInit = finalizeInit
 
 	modApi.events.onModsInitialized:subscribe(onModsInitialized)
 end
