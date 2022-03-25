@@ -2,8 +2,8 @@
 local mod = {
 	id = "lmn_dune_striders",
 	name = "Dune Striders",
-	version = "0.1.0",
-	modApiVersion = "2.6.0",
+	version = "0.2.0",
+	modApiVersion = "2.6.4",
 	icon = "img/icon.png",
 	requirements = {}
 }
@@ -15,6 +15,10 @@ local scripts = {
 }
 
 function mod:init()
+	if not easyEdit.enabled then
+		Assert.Error("Easy Edit is disabled. Make sure it is enabled in [Mod Content] > [Configure EasyEdit] and restart the game.")
+	end
+
 	if not LApi then
 		Assert.Error("LApi not found")
 	end
