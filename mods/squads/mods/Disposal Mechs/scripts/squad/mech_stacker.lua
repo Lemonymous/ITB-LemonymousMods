@@ -1,6 +1,5 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
 lmn_StackerMech = Pawn:new{
@@ -8,7 +7,7 @@ lmn_StackerMech = Pawn:new{
 	Class = "Prime",
 	Health = 3,
 	MoveSpeed = 3,
-	Image = "lmn_MechStacker",
+	Image = "dm_stacker",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_LiftAtk" },
 	SoundLocation = "/mech/prime/punch_mech/",
@@ -21,7 +20,7 @@ AddPawnName("lmn_StackerMech")
 lmn_LiftAtk = Skill:new{
 	Name = "Fork Lift",
 	Description = "Bash a unit; or throw it, pushing adjacent tiles.",
-	Icon = "weapons/lmn_weapon_stacker.png",
+	Icon = "weapons/dm_stacker.png",
 	Class = "Prime",
 	Damage = 2,
 	Range = INT_MAX,
@@ -157,7 +156,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		
 		local fx = SpaceDamage(throwFrom)
 		fx.sSound = "/weapons/titan_fist"
-		fx.sAnimation = "lmn_exploforklift_".. GetDirection(throwFrom - p1)
+		fx.sAnimation = "dm_exploforklift_".. GetDirection(throwFrom - p1)
 		ret:AddDamage(fx)
 		
 		ret:AddMelee(p1, SpaceDamage(throwFrom), NO_DELAY)
@@ -171,7 +170,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		
 		if self.PushAdjacent and throwFrom == p2 - DIR_VECTORS[dir] then
 			spaceDamage.iPush = 5
-			spaceDamage.sImageMark = "combat/lmn_stacker_push_".. dir_back ..".png"
+			spaceDamage.sImageMark = "combat/dm_arrow_off_".. dir_back ..".png"
 		end
 		
 		ret:AddDamage(spaceDamage)
@@ -246,7 +245,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 					
 					if curr == p1 + DIR_VECTORS[dir] then
 						spaceDamage.iPush = 5
-						spaceDamage.sImageMark = "combat/lmn_stacker_push_".. i ..".png"
+						spaceDamage.sImageMark = "combat/dm_arrow_off_".. i ..".png"
 					else
 						spaceDamage.iPush = i
 					end
@@ -335,48 +334,3 @@ lmn_LiftAtk_Tip_B.GetSkillEffect = lmn_LiftAtk_Tip.GetSkillEffect
 lmn_LiftAtk_Tip_AB.GetSkillEffect = lmn_LiftAtk_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_LiftAtk")
-
-modApi:appendAsset("img/units/player/lmn_mech_stacker.png", resourcePath.. "img/units/player/stacker.png")
-modApi:appendAsset("img/units/player/lmn_mech_stacker_a.png", resourcePath.. "img/units/player/stacker_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_stacker_w.png", resourcePath.. "img/units/player/stacker_w.png")
-modApi:appendAsset("img/units/player/lmn_mech_stacker_broken.png", resourcePath.. "img/units/player/stacker_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_stacker_w_broken.png", resourcePath.. "img/units/player/stacker_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_stacker_ns.png", resourcePath.. "img/units/player/stacker_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_stacker_h.png", resourcePath.. "img/units/player/stacker_h.png")
-
--- custom blank damage icons to cause blinking to happen without showing the skull when damaging.
--- we want to stay below 1000 damage so we don't overwrite DAMAGE_DEATH events.
-modApi:appendAsset("img/combat/icons/damage_498.png", resourcePath .."img/combat/icons/DAMAGE_DEATH_HIDDEN.png") -- damage reduced by armor
-modApi:appendAsset("img/combat/icons/damage_499.png", resourcePath .."img/combat/icons/DAMAGE_DEATH_HIDDEN.png") -- normal damage
-modApi:appendAsset("img/combat/icons/damage_996.png", resourcePath .."img/combat/icons/DAMAGE_DEATH_HIDDEN.png") -- acid on thrown pawn, armor on crushed pawn (or visa versa?)
-modApi:appendAsset("img/combat/icons/damage_998.png", resourcePath .."img/combat/icons/DAMAGE_DEATH_HIDDEN.png") -- damage doubled by acid
-modApi:appendAsset("img/weapons/lmn_weapon_stacker.png", resourcePath .."img/weapons/stacker.png")
-
-for i, dir in ipairs{"up", "right", "down", "left"} do
-	modApi:appendAsset("img/combat/lmn_stacker_push_".. (i - 1) ..".png", resourcePath .."img/combat/arrow_off_".. dir ..".png")
-	Location["combat/lmn_stacker_push_".. (i - 1) ..".png"] = Location["combat/arrow_".. dir ..".png"]
-end
-
-for _, dir in ipairs{"U", "R", "L", "D"} do
-	modApi:appendAsset("img/effects/lmn_forklift_".. dir ..".png", resourcePath .."img/effects/forklift_".. dir ..".png")
-end
-
-setfenv(1, ANIMS)
-lmn_MechStacker =			MechUnit:new{ Image = "units/player/lmn_mech_stacker.png", PosX = -17, PosY = 2 }
-lmn_MechStackera =			lmn_MechStacker:new{ Image = "units/player/lmn_mech_stacker_a.png", NumFrames = 4 }
-lmn_MechStacker_broken =	lmn_MechStacker:new{ Image = "units/player/lmn_mech_stacker_broken.png" }
-lmn_MechStackerw =			lmn_MechStacker:new{ Image = "units/player/lmn_mech_stacker_w.png", PosY = 10 }
-lmn_MechStackerw_broken =	lmn_MechStackerw:new{ Image = "units/player/lmn_mech_stacker_w_broken.png" }
-lmn_MechStacker_ns =		MechIcon:new{ Image = "units/player/lmn_mech_stacker_ns.png" }
-
-lmn_exploforklift_0 = Animation:new{
-	Image = "effects/lmn_forklift_U.png",
-	NumFrames = 8,
-	Layer = LAYER_BACK,
-	Time = 0.06,
-	PosX = -22,
-	PosY = -9
-}
-lmn_exploforklift_1 = lmn_exploforklift_0:new{Image = "effects/lmn_forklift_R.png"}
-lmn_exploforklift_2 = lmn_exploforklift_0:new{Image = "effects/lmn_forklift_D.png"}
-lmn_exploforklift_3 = lmn_exploforklift_0:new{Image = "effects/lmn_forklift_L.png"}

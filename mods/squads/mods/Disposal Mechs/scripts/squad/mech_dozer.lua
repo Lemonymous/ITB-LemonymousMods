@@ -10,7 +10,7 @@ lmn_DozerMech = Pawn:new{
 	Class = "Brute",
 	Health = 3,
 	MoveSpeed = 3,
-	Image = "lmn_MechDozer",
+	Image = "dm_dozer",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_DozerAtk" },
 	SoundLocation = "/mech/brute/tank/",
@@ -22,7 +22,7 @@ AddPawnName("lmn_DozerMech")
 
 lmn_DozerAtk = Skill:new{
 	Name = "Dozer Blades",
-	Icon = "weapons/lmn_weapon_dozer.png",
+	Icon = "weapons/dm_dozer.png",
 	Class = "Brute",
 	Range = INT_MAX,				-- max range of charge.
 	MaxPawnsPushed = 2,				-- max pawns pushed in a chain.
@@ -653,21 +653,3 @@ modApi.events.onModLoaded:subscribe(function(id)
 end)
 
 modApi:addWeaponDrop("lmn_DozerAtk")
-
-modApi:appendAsset("img/units/player/lmn_mech_dozer.png", resourcePath.. "img/units/player/dozer.png")
-modApi:appendAsset("img/units/player/lmn_mech_dozer_a.png", resourcePath.. "img/units/player/dozer_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_dozer_w.png", resourcePath.. "img/units/player/dozer_w.png")
-modApi:appendAsset("img/units/player/lmn_mech_dozer_broken.png", resourcePath.. "img/units/player/dozer_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_dozer_w_broken.png", resourcePath.. "img/units/player/dozer_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_dozer_ns.png", resourcePath.. "img/units/player/dozer_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_dozer_h.png", resourcePath.. "img/units/player/dozer_h.png")
-
-modApi:appendAsset("img/weapons/lmn_weapon_dozer.png", resourcePath .."img/weapons/dozer.png")
-
-setfenv(1, ANIMS)
-lmn_MechDozer =			MechUnit:new{ Image = "units/player/lmn_mech_dozer.png", PosX = -19, PosY = 2 }
-lmn_MechDozera =		lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_a.png", NumFrames = 3 }
-lmn_MechDozer_broken =	lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_broken.png" }
-lmn_MechDozerw =		lmn_MechDozer:new{ Image = "units/player/lmn_mech_dozer_w.png", PosX = -20, PosY = 11 }
-lmn_MechDozerw_broken =	lmn_MechDozerw:new{ Image = "units/player/lmn_mech_dozer_w_broken.png" }
-lmn_MechDozer_ns =		MechIcon:new{ Image = "units/player/lmn_mech_dozer_ns.png" }

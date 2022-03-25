@@ -1,6 +1,5 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 
 lmn_ChemMech = Pawn:new{
@@ -8,7 +7,7 @@ lmn_ChemMech = Pawn:new{
 	Class = "Science",
 	Health = 3,
 	MoveSpeed = 3,
-	Image = "lmn_MechDissolver",
+	Image = "dm_dissolver",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_ChemicalAtk" },
 	SoundLocation = "/mech/science/pulse_mech/",
@@ -21,7 +20,7 @@ AddPawnName("lmn_ChemMech")
 lmn_ChemicalAtk = Skill:new{
 	Name = "Acid Jet",
 	Description = "Push and spray an adjacent tile with A.C.I.D.\n\nDamage units already inflicted with A.C.I.D.",
-	Icon = "weapons/lmn_weapon_chem.png",
+	Icon = "weapons/dm_acidjet.png",
 	Class = "Science",
 	Range = 1,
 	Push = 1,
@@ -83,7 +82,7 @@ function lmn_ChemicalAtk:GetSkillEffect(p1, p2)
 		end
 		
 		if i == distance then
-			damage.sAnimation = "lmn_acidthrower".. distance .."_".. dir 
+			damage.sAnimation = "dm_acidthrower".. distance .."_".. dir 
 		end
 		ret:AddDamage(damage)
 		
@@ -138,62 +137,4 @@ end
 lmn_ChemicalAtk_Tip_B.GetSkillEffect = lmn_ChemicalAtk_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_ChemicalAtk")
-
-modApi:appendAsset("img/units/player/lmn_mech_dissolver.png", resourcePath.. "img/units/player/dissolver.png")
-modApi:appendAsset("img/units/player/lmn_mech_dissolver_a.png", resourcePath.. "img/units/player/dissolver_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_dissolver_w.png", resourcePath.. "img/units/player/dissolver_w.png")
-modApi:appendAsset("img/units/player/lmn_mech_dissolver_broken.png", resourcePath.. "img/units/player/dissolver_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_dissolver_w_broken.png", resourcePath.. "img/units/player/dissolver_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_dissolver_ns.png", resourcePath.. "img/units/player/dissolver_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_dissolver_h.png", resourcePath.. "img/units/player/dissolver_h.png")
-
-modApi:appendAsset("img/weapons/lmn_weapon_chem.png", resourcePath .."img/weapons/acidjet.png")
-for k = 1, 3 do
-	for _, dir in ipairs({"D", "L", "R", "U"}) do
-		local ext = k .."_".. dir ..".png"
-		modApi:appendAsset("img/effects/lmn_acidthrower".. ext, resourcePath .."img/effects/acidthrower".. ext)
-	end
-end
-
-setfenv(1, ANIMS)
-lmn_MechDissolver =			MechUnit:new{ Image = "units/player/lmn_mech_dissolver.png", PosX = -19, PosY = 0 }
-lmn_MechDissolvera =		lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_a.png", NumFrames = 4 }
-lmn_MechDissolver_broken =	lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_broken.png" }
-lmn_MechDissolverw =		lmn_MechDissolver:new{ Image = "units/player/lmn_mech_dissolver_w.png", PosY = 8 }
-lmn_MechDissolverw_broken =	lmn_MechDissolverw:new{ Image = "units/player/lmn_mech_dissolver_w_broken.png" }
-lmn_MechDissolver_ns =		MechIcon:new{ Image = "units/player/lmn_mech_dissolver_ns.png" }
-
-lmn_acidthrower1_0 = Animation:new{
-	Image = "effects/lmn_acidthrower1_U.png",
-	NumFrames = 9,
-	Time = 0.07,
-	PosX = -60,
-	PosY = -8
-}
-lmn_acidthrower2_0 = lmn_acidthrower1_0:new{ Image = "effects/lmn_acidthrower2_U.png" }
-lmn_acidthrower3_0 = lmn_acidthrower1_0:new{ Image = "effects/lmn_acidthrower3_U.png" }
-
-lmn_acidthrower1_1 = lmn_acidthrower1_0:new{
-	Image = "effects/lmn_acidthrower1_R.png",
-	PosX = -62,
-	PosY = -34
-}
-lmn_acidthrower2_1 = lmn_acidthrower1_1:new{ Image = "effects/lmn_acidthrower2_R.png" }
-lmn_acidthrower3_1 = lmn_acidthrower1_1:new{ Image = "effects/lmn_acidthrower3_R.png" }
-
-lmn_acidthrower1_2 = lmn_acidthrower1_0:new{
-	Image = "effects/lmn_acidthrower1_D.png",
-	PosX = -25,
-	PosY = -34
-}
-lmn_acidthrower2_2 = lmn_acidthrower1_2:new{ Image = "effects/lmn_acidthrower2_D.png" }
-lmn_acidthrower3_2 = lmn_acidthrower1_2:new{ Image = "effects/lmn_acidthrower3_D.png" }
-
-lmn_acidthrower1_3 = lmn_acidthrower1_0:new{
-	Image = "effects/lmn_acidthrower1_L.png",
-	PosX = -22,
-	PosY = -8
-}
-lmn_acidthrower2_3 = lmn_acidthrower1_3:new{ Image = "effects/lmn_acidthrower2_L.png" }
-lmn_acidthrower3_3 = lmn_acidthrower1_3:new{ Image = "effects/lmn_acidthrower3_L.png" }
 	
