@@ -4,27 +4,10 @@
 -- Ice will also stay destroyed after undoing move to ice with a mine on it.
 -- Mines will remain if terrain changes to water or chasm(unconfirmed)
 
-local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
-local scriptPath = mod.scriptPath
-
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-
-modApi:appendAsset("img/weapons/lmn_minelayer_mine.png", resourcePath .."img/weapons/mine.png")
-modApi:appendAsset("img/combat/lmn_minelayer_mine_small.png", resourcePath .."img/combat/mine_small.png")
-modApi:appendAsset("img/combat/lmn_minelayer_mark_mine_small.png", resourcePath .."img/combat/mark_mine_small.png")
-modApi:appendAsset("img/combat/icons/lmn_minelayer_minesweeper.png", resourcePath .."img/combat/icons/icon_minesweeper_glow.png")
-modApi:appendAsset("img/combat/icons/lmn_minelayer_icon_strikeout.png", resourcePath .."img/combat/icons/icon_strikeout.png")
-
-Location["combat/lmn_minelayer_mine_small.png"] = Point(-8,3)
-Location["combat/lmn_minelayer_mark_mine_small.png"] = Point(-8,3)
-Location["combat/icons/lmn_minelayer_minesweeper.png"] = Location["combat/icons/icon_mine_glow.png"]
-Location["combat/icons/lmn_minelayer_icon_strikeout.png"] = Point(-13,10)
-
 lmn_Minelayer_Mine = Skill:new{
 	Name = "Proximity Mines",
 	Class = "Ranged",
-	Icon = "weapons/lmn_minelayer_mine.png",
+	Icon = "weapons/rf_mine.png",
 	Description = "Passive Effect\n\nLeave a mine after moving.",
 	Damage = 3,
 	PowerCost = 0,
@@ -76,21 +59,33 @@ function Move:GetSkillEffect(p1, p2, ...)
 	if IsMinelayer(Pawn) then
 		local damage = SpaceDamage(p1)
 		damage.sItem = "lmn_Minelayer_Item_Mine"
-		damage.sImageMark = "combat/lmn_minelayer_mark_mine_small.png"
+		damage.sImageMark = "combat/rf_mark_mine_small.png"
 		damage.sSound = "/impact/generic/grapple"
 		ret:AddDamage(damage)
 	end
 	
 	local item_at_destination = Board:GetItemName(p2)
-	if HasMinesweeper(Pawn) and item_at_destination then
-		lmn_Minelayer_Item_Mine_Dummy = shallow_copy(_G[item_at_destination])
-		lmn_Minelayer_Item_Mine_Dummy.Damage = SpaceDamage()
-		
-		local replace_mine = SpaceDamage(p2)
-		replace_mine.sItem = "lmn_Minelayer_Item_Mine_Dummy"
-		replace_mine.sImageMark = "combat/icons/lmn_minelayer_icon_strikeout.png"
-		
-		ret:AddDamage(replace_mine)
+	if item_at_destination then
+		if HasMinesweeper(Pawn) then
+			lmn_Minelayer_Item_Mine_Dummy = shallow_copy(_G[item_at_destination])
+			lmn_Minelayer_Item_Mine_Dummy.Damage = SpaceDamage()
+			
+			local replace_mine = SpaceDamage(p2)
+			replace_mine.sItem = "lmn_Minelayer_Item_Mine_Dummy"
+			
+			if item_at_destination == "lmn_Minelayer_Item_Mine" then
+				replace_mine.sImageMark = "combat/icons/rf_icon_minesweeper_glow.png"
+			else
+				replace_mine.sImageMark = "combat/icons/rf_icon_strikeout.png"
+			end
+			
+			ret:AddDamage(replace_mine)
+		elseif item_at_destination == "lmn_Minelayer_Item_Mine" then
+			local mark = SpaceDamage(p2)
+			mark.sImageMark = "combat/icons/icon_mine_glow.png"
+			
+			ret:AddDamage(mark)
+		end
 	end
 	
 	-- reinsert all effect from original SkillEffect
@@ -115,18 +110,18 @@ function lmn_Minelayer_Mine_Tip:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	local damage = SpaceDamage(p1)
-	damage.sItem = "lmn_Minelayer_Item_Mine_Tip"
-	damage.sImageMark = "combat/lmn_minelayer_mark_mine_small.png"
+	damage.sItem = "lmn_Minelayer_Item_Mine"
+	damage.sImageMark = "combat/rf_mark_mine_small.png"
 	ret:AddDamage(damage)
 	
 	if self.MineImmunity then
 		damage = SpaceDamage(p2)
-		damage.sItem = "lmn_Minelayer_Item_Mine_Tip_Explode"
-		damage.sImageMark = "combat/lmn_minelayer_mine_small.png"
+		damage.sItem = "lmn_Minelayer_Item_Mine"
+		damage.sImageMark = "combat/rf_mine_small.png"
 		Board:DamageSpace(damage)
 		
 		damage = SpaceDamage(p2)
-		damage.sImageMark = "combat/icons/lmn_minelayer_minesweeper.png"
+		damage.sImageMark = "combat/icons/rf_icon_minesweeper_glow.png"
 		ret:AddDamage(damage)
 	end
 	ret:AddMove(Board:GetPath(p1, p2, Pawn:GetPathProf()), FULL_DELAY)
@@ -141,15 +136,8 @@ lmn_Minelayer_Mine_Tip_A.GetSkillEffect = lmn_Minelayer_Mine_Tip.GetSkillEffect
 -- items
 ---------
 
-lmn_Minelayer_Item_Mine = { Image = "combat/lmn_minelayer_mine_small.png", Damage = SpaceDamage(0), Tooltip = "old_earth_mine", Icon = "combat/icons/icon_mine_glow.png"}
+lmn_Minelayer_Item_Mine = { Image = "combat/rf_mine_small.png", Damage = SpaceDamage(0), Tooltip = "old_earth_mine", Icon = "combat/icons/icon_mine_glow.png"}
 lmn_Minelayer_Item_Mine_Dummy = {} -- modified dynamically
-lmn_Minelayer_Item_Mine_Tip = shallow_copy(lmn_Minelayer_Item_Mine)
-lmn_Minelayer_Item_Mine_Tip_Explode = shallow_copy(lmn_Minelayer_Item_Mine)
-
-local damage = SpaceDamage(0)
-damage.sAnimation = "ExploAir1"
-
-lmn_Minelayer_Item_Mine_Tip_Explode.Damage = damage
 
 modApi:addWeaponDrop("lmn_Minelayer_Mine")
 
@@ -172,8 +160,3 @@ track_items:addItemRemovedHook(function(mission, loc, removed_item)
 		end
 	end
 end)
-
-local function init() end
-local function load() end
-
-return { init = init, load = load }

@@ -1,9 +1,6 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
+local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
-
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
@@ -13,16 +10,6 @@ local hoveredTile
 
 local function GetYVelocity(distance)
 	return 6 + 16 * (distance / 8)
-end
-
-modApi:appendAsset("img/weapons/lmn_minelayer_launcher.png", resourcePath .."img/weapons/launcher.png")
-modApi:appendAsset("img/effects/lmn_minelayer_shot_missile_U.png", resourcePath .."img/effects/shot_missile_U.png")
-modApi:appendAsset("img/effects/lmn_minelayer_shot_missile_R.png", resourcePath .."img/effects/shot_missile_R.png")
-modApi:appendAsset("img/effects/lmn_minelayer_shotup_missile.png", resourcePath .."img/effects/shotup_missile.png")
-
-for i = 1, 4 do
-	modApi:appendAsset("img/combat/lmn_minelayer_preview_arrow_".. i ..".png", resourcePath .."img/combat/preview_arrow_".. i ..".png")
-	Location["combat/lmn_minelayer_preview_arrow_".. i ..".png"] = Point(-16, 0)
 end
 
 local angle_variance = 80
@@ -61,10 +48,10 @@ lmn_Minelayer_Launcher = Skill:new{
 	Self = "lmn_Minelayer_Launcher",
 	Name = "MR Launcher",
 	Class = "Ranged",
-	Icon = "weapons/lmn_minelayer_launcher.png",
+	Icon = "weapons/rf_launcher.png",
 	Description = "Launches 2 rockets in a straight line, or over obstacles.",
-	UpShot = "effects/lmn_minelayer_shotup_missile.png",
-	ProjectileArt = "effects/lmn_minelayer_shot_missile",
+	UpShot = "effects/rf_shotup_missile.png",
+	ProjectileArt = "effects/rf_shot_missile",
 	Range = INT_MAX,
 	Attacks = 2,
 	AttacksRemaining = {},
@@ -126,31 +113,6 @@ lmn_Minelayer_Launcher_AB = lmn_Minelayer_Launcher:new{
 	TipImage = shallow_copy(lmn_Minelayer_Launcher.TipImage)
 }
 lmn_Minelayer_Launcher_AB.TipImage.CustomEnemy = "Scarab2"
-
--- returns true if pawn will die on this tile
-local function InPit(pawn)
-	local tile = pawn:GetSpace()
-	local terrain = Board:GetTerrain(tile)
-	
-	local surviveHole = pawn:IsFlying() and not pawn:IsFrozen()
-	local surviveWater = _G[pawn:GetType()].Massive or surviveHole
-	
-	return
-		(terrain == TERRAIN_WATER and not surviveWater) or
-		(terrain == TERRAIN_HOLE and not surviveHole)
-end
-
-local function GetTileHealth(tile, isTipImage)
-	if
-		GetCurrentMission()			and
-		not IsTestMechScenario()	and
-		not isTipImage
-	then
-		return modApiExt.board:getTileHealth(tile)
-	end
-	
-	return 1
-end
 
 function lmn_Minelayer_Launcher:GetTargetArea(point)
 	local ret = PointList()
@@ -398,7 +360,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 					local tile = v[1]
 					local damage = v[2]
 					local mark = SpaceDamage(tile, damage)
-					mark.sImageMark = "combat/lmn_minelayer_preview_"
+					mark.sImageMark = "combat/rf_preview_"
 					
 					if tile ~= self.TipProjectileEnd then
 						mark.sImageMark = mark.sImageMark .."arrow_"
@@ -532,8 +494,3 @@ lmn_Minelayer_Launcher_Tip_B.GetSkillEffect = lmn_Minelayer_Launcher_Tip.GetSkil
 lmn_Minelayer_Launcher_Tip_AB.GetSkillEffect = lmn_Minelayer_Launcher_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_Minelayer_Launcher")
-
-local function init() end
-local function load() end
-
-return { init = init, load = load }

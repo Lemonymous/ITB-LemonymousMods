@@ -1,37 +1,13 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
-local scriptPath = mod.scriptPath
-
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local worldConstants = LApi.library:fetch("worldConstants")
-
-modApi:appendAsset("img/units/player/lmn_mech_jeep.png", resourcePath .."img/units/player/jeep.png")
-modApi:appendAsset("img/units/player/lmn_mech_jeep_a.png", resourcePath .."img/units/player/jeep_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_jeep_w.png", resourcePath .."img/units/player/jeep_w.png")
-modApi:appendAsset("img/units/player/lmn_mech_jeep_broken.png", resourcePath .."img/units/player/jeep_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_jeep_w_broken.png", resourcePath .."img/units/player/jeep_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_jeep_ns.png", resourcePath .."img/units/player/jeep_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_jeep_h.png", resourcePath .."img/units/player/jeep_h.png")
-
-modApi:appendAsset("img/effects/lmn_shotup_jeep_grenade.png", resourcePath .."img/effects/shotup_grenade.png")
-modApi:appendAsset("img/weapons/lmn_jeep_grenade.png", resourcePath .."img/weapons/grenade.png")
-
-local a = ANIMS
-a.lmn_MechJeep =			a.MechUnit:new{ Image = "units/player/lmn_mech_jeep.png", PosX = -11, PosY = 6 }
-a.lmn_MechJeepa =			a.lmn_MechJeep:new{ Image = "units/player/lmn_mech_jeep_a.png", PosY = 5, NumFrames = 2 }
-a.lmn_MechJeep_broken =		a.lmn_MechJeep:new{ Image = "units/player/lmn_mech_jeep_broken.png" }
-a.lmn_MechJeepw =			a.lmn_MechJeep:new{ Image = "units/player/lmn_mech_jeep_w.png", PosY = 13 }
-a.lmn_MechJeepw_broken =	a.lmn_MechJeepw:new{ Image = "units/player/lmn_mech_jeep_w_broken.png" }
-a.lmn_MechJeep_ns =			a.MechIcon:new{ Image = "units/player/lmn_mech_jeep_ns.png" }
 
 lmn_JeepMech = Pawn:new{
 	Name = "Jeep",
 	Class = "Science",
 	Health = 1,
 	MoveSpeed = 5,
-	Image = "lmn_MechJeep",
+	Image = "rf_jeep",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_Jeep_Grenade" },
 	SoundLocation = "/support/civilian_truck/",
@@ -43,9 +19,9 @@ AddPawnName("lmn_JeepMech")
 lmn_Jeep_Grenade = Skill:new{
 	Name = "Hand Grenades",
 	Class = "Science",
-	Icon = "weapons/lmn_jeep_grenade.png",
+	Icon = "weapons/rf_grenade.png",
 	Description = "Lobs a grenade at one of the 8 surrounding tiles.",
-	UpShot = "effects/lmn_shotup_jeep_grenade.png",
+	UpShot = "effects/rf_shotup_grenade.png",
 	Range = 1,
 	Damage = 2,
 	Push = 0,
@@ -123,8 +99,3 @@ lmn_Jeep_Grenade_AB = lmn_Jeep_Grenade:new{
 }
 
 modApi:addWeaponDrop("lmn_Jeep_Grenade")
-
-local function init() end
-local function load() end
-
-return { init = init, load = load }

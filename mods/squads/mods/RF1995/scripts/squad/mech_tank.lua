@@ -1,50 +1,17 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
+local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
-
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
-
-modApi:appendAsset("img/units/player/lmn_mech_tank.png", resourcePath .."img/units/player/tank.png")
-modApi:appendAsset("img/units/player/lmn_mech_tank_a.png", resourcePath .."img/units/player/tank_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_tank_w.png", resourcePath .."img/units/player/tank_w.png")
-modApi:appendAsset("img/units/player/lmn_mech_tank_broken.png", resourcePath .."img/units/player/tank_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_tank_w_broken.png", resourcePath .."img/units/player/tank_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_tank_ns.png", resourcePath .."img/units/player/tank_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_tank_h.png", resourcePath .."img/units/player/tank_h.png")
-
-modApi:appendAsset("img/effects/lmn_tank_shot_cannon_U.png", resourcePath .."img/effects/shot_cannon_U.png")
-modApi:appendAsset("img/effects/lmn_tank_shot_cannon_R.png", resourcePath .."img/effects/shot_cannon_R.png")
-modApi:appendAsset("img/weapons/lmn_tank_cannon.png", resourcePath .."img/weapons/cannon.png")
-
-for i = 1, 4 do
-	modApi:appendAsset("img/combat/lmn_tank_cannon_preview_arrow_".. i ..".png", resourcePath .."img/combat/preview_arrow_".. i ..".png")
-	Location["combat/lmn_tank_cannon_preview_arrow_".. i ..".png"] = Point(-16, 0)
-end
-
-for i = 1, 2 do
-	modApi:appendAsset("img/combat/lmn_tank_cannon_damage_faded_".. i ..".png", resourcePath .."img/combat/faded_".. i ..".png")
-	Location["combat/lmn_tank_cannon_damage_faded_".. i ..".png"] = Point(-9,10)
-end
-
-local a = ANIMS
-a.lmn_MechTank =			a.MechUnit:new{ Image = "units/player/lmn_mech_tank.png", PosX = -15, PosY = 9 }
-a.lmn_MechTanka =			a.lmn_MechTank:new{ Image = "units/player/lmn_mech_tank_a.png", NumFrames = 2 }
-a.lmn_MechTank_broken =		a.lmn_MechTank:new{ Image = "units/player/lmn_mech_tank_broken.png" }
-a.lmn_MechTankw =			a.lmn_MechTank:new{ Image = "units/player/lmn_mech_tank_w.png", PosY = 17 }
-a.lmn_MechTankw_broken =	a.lmn_MechTankw:new{ Image = "units/player/lmn_mech_tank_w_broken.png" }
-a.lmn_MechTank_ns =			a.MechIcon:new{ Image = "units/player/lmn_mech_tank_ns.png" }
-
 
 lmn_TankMech = Pawn:new{
 	Name = "Light Tank",
 	Class = "Brute",
 	Health = 2,
 	MoveSpeed = 4,
-	Image = "lmn_MechTank",
+	Image = "rf_tank",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_Tank_Cannon" },
 	SoundLocation = "/support/civilian_tank/",
@@ -57,9 +24,9 @@ lmn_Tank_Cannon = Skill:new{
 	Self = "lmn_Tank_Cannon",
 	Name = "Snubnose Cannon",
 	Class = "Brute",
-	Icon = "weapons/lmn_tank_cannon.png",
+	Icon = "weapons/rf_cannon.png",
 	Description = "Fires a pushing projectile 3 tiles.",
-	ProjectileArt = "effects/lmn_tank_shot_cannon",
+	ProjectileArt = "effects/rf_shot_cannon",
 	Range = 3,
 	Damage = 1,
 	Push = true,
@@ -176,7 +143,7 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 			weapon.sScript = string.format("Board:AddAnimation(%s, 'explopush1_%s', NO_DELAY)", target:GetString(), dir)
 			
 			worldConstants:setSpeed(ret, 1)
-			ret:AddProjectile(p1, weapon, "effects/lmn_tank_shot_cannon", NO_DELAY)
+			ret:AddProjectile(p1, weapon, "effects/rf_shot_cannon", NO_DELAY)
 			worldConstants:resetSpeed(ret)
 			
 			-- minimum delay between shots.
@@ -204,10 +171,10 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 				if Board:IsPawnSpace(tile) then
 					mark.iDamage = damage
 					if tile ~= self.TipProjectileEnd then
-						mark.sImageMark = "combat/lmn_tank_cannon_preview_arrow_" .. damage ..".png"
+						mark.sImageMark = "combat/rf_preview_arrow_" .. damage ..".png"
 					end
 				elseif tile == self.TipProjectileEnd then
-					mark.sImageMark = "combat/lmn_tank_cannon_damage_faded_".. damage ..".png"
+					mark.sImageMark = "combat/rf_faded_".. damage ..".png"
 				end
 				
 				effectPreview:addDamage(ret, mark)
@@ -339,7 +306,3 @@ lmn_Tank_Cannon_Tip_AB.GetSkillEffect = lmn_Tank_Cannon_Tip.GetSkillEffect
 
 
 modApi:addWeaponDrop("lmn_Tank_Cannon")
-
-local function init() end
-local function load() end
-return { init = init, load = load }

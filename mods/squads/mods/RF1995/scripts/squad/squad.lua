@@ -1,5 +1,5 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local mechs = {
 	"lmn_HelicopterMech",
 	"lmn_TankMech",

@@ -1,25 +1,8 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
-local scriptPath = mod.scriptPath
-
+local mod = modApi:getCurrentMod()
 local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local worldConstants = LApi.library:fetch("worldConstants")
 local effectBurst = LApi.library:fetch("effectBurst")
-
-modApi:appendAsset("img/units/player/lmn_mech_helicopter.png", resourcePath .."img/units/player/helicopter.png")
-modApi:appendAsset("img/units/player/lmn_mech_helicopter_a.png", resourcePath .."img/units/player/helicopter_a.png")
-modApi:appendAsset("img/units/player/lmn_mech_helicopter_broken.png", resourcePath .."img/units/player/helicopter_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_helicopter_w_broken.png", resourcePath .."img/units/player/helicopter_w_broken.png")
-modApi:appendAsset("img/units/player/lmn_mech_helicopter_ns.png", resourcePath .."img/units/player/helicopter_ns.png")
-modApi:appendAsset("img/units/player/lmn_mech_helicopter_h.png", resourcePath .."img/units/player/helicopter_h.png")
-
-modApi:appendAsset("img/effects/lmn_helicopter_shot_missile_U.png", resourcePath .."img/effects/shot_missile_U.png")
-modApi:appendAsset("img/effects/lmn_helicopter_shot_missile_R.png", resourcePath .."img/effects/shot_missile_R.png")
-modApi:appendAsset("img/effects/lmn_helicopter_shotup_missile.png", resourcePath .."img/effects/shotup_missile.png")
-
-modApi:appendAsset("img/weapons/lmn_helicopter_rocket.png", resourcePath.."img/weapons/rocket.png")
 
 lmn_Emitter_Helicopter_Rocket = Emitter_Missile:new{
 	image = "effects/smoke/art_smoke.png",
@@ -31,20 +14,12 @@ lmn_Emitter_Helicopter_Rocket = Emitter_Missile:new{
 	layer = LAYER_FRONT
 }
 
-local a = ANIMS
-a.lmn_MechHelicopter =			a.MechUnit:new{ Image = "units/player/lmn_mech_helicopter.png", PosX = -15, PosY = 0 }
-a.lmn_MechHelicoptera =			a.lmn_MechHelicopter:new{ Image = "units/player/lmn_mech_helicopter_a.png", NumFrames = 4 }
-a.lmn_MechHelicopter_broken =	a.lmn_MechHelicopter:new{ Image = "units/player/lmn_mech_helicopter_broken.png", PosY = 9 }
-a.lmn_MechHelicopterw =			a.lmn_MechHelicopter:new{ Image = "units/player/lmn_mech_helicopter_w_broken.png", PosY = 14 }
-a.lmn_MechHelicopterw_broken =	a.lmn_MechHelicopterw:new{ Image = "units/player/lmn_mech_helicopter_w_broken.png" }
-a.lmn_MechHelicopter_ns =		a.MechIcon:new{ Image = "units/player/lmn_mech_helicopter_ns.png" }
-
 lmn_HelicopterMech = Pawn:new{
 	Name = "Helicopter",
 	Class = "Brute",
 	Health = 1,
 	MoveSpeed = 4,
-	Image = "lmn_MechHelicopter",
+	Image = "rf_helicopter",
 	ImageOffset = imageOffset,
 	SkillList = { "lmn_Helicopter_Rocket" },
 	SoundLocation = "/support/support_drone/",
@@ -57,10 +32,10 @@ AddPawnName("lmn_HelicopterMech")
 lmn_Helicopter_Rocket = Skill:new{
 	Name = "Leto Rockets",
 	Class = "Brute",
-	Icon = "weapons/lmn_helicopter_rocket.png",
+	Icon = "weapons/rf_rocket.png",
 	Description = "Lobs a rocket at a tile on a cornerless 5x5 square, damaging and pushing it.",
-	UpShot = "effects/lmn_helicopter_shotup_missile.png",
-	ProjectileArt = "effects/lmn_helicopter_shot_missile",
+	UpShot = "effects/rf_shotup_missile.png",
+	ProjectileArt = "effects/rf_shot_missile",
 	Range = 2,
 	Push = 1,
 	Damage = 1,
@@ -178,8 +153,3 @@ lmn_Helicopter_Rocket_Tip_B.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillE
 lmn_Helicopter_Rocket_Tip_AB.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect
 
 modApi:addWeaponDrop("lmn_Helicopter_Rocket")
-
-local function init() end
-local function load() end
-
-return { init = init, load = load }
