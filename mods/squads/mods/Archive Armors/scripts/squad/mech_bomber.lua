@@ -1,26 +1,4 @@
 
-local path = GetParentPath(...)
-require(path.."palette")
-
-local mod = mod_loader.mods[modApi.currentMod]
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
-
-lmn_BomberMech = Pawn:new{
-	Name = "Bomber Mech",
-	Class = "Brute",
-	Health = 2,
-	MoveSpeed = 3,
-	Image = "aa_bomber",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_Bombrun" },
-	SoundLocation = "/mech/flying/jet_mech/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-	Massive = true,
-	Flying = true,
-}
-AddPawnName("lmn_BomberMech")
-
 lmn_Bombrun = Skill:new{
 	Name = "Bomb Run",
 	Class = "Unique",

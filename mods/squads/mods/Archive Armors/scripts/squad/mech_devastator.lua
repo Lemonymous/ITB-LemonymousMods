@@ -1,25 +1,4 @@
 
-local path = GetParentPath(...)
-require(path.."palette")
-
-local mod = mod_loader.mods[modApi.currentMod]
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
-
-lmn_DevastatorMech = Pawn:new{
-	Name = "Devastator Mech",
-	Class = "Brute",
-	Health = 4,
-	MoveSpeed = 2,
-	Image = "aa_devastator",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_DevastatorCannon" },
-	SoundLocation = "/mech/brute/tank/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-	Massive = true,
-}
-AddPawnName("lmn_DevastatorMech")
-
 lmn_DevastatorCannon = Skill:new{
 	Name = "Devastator",
 	Class = "Brute",
