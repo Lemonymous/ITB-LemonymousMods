@@ -195,7 +195,7 @@ local function isLandingPhase(self)
 	local mission = GetCurrentMission()
 	if mission == nil then return false end
 
-	return getMissionData(mission).phase = PHASE_LANDING
+	return getMissionData(mission).phase == PHASE_LANDING
 end
 
 local function getSelected(self)
