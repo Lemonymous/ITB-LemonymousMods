@@ -1,5 +1,5 @@
 
-local VERSION = "1.0.0"
+local VERSION = "1.0.1"
 local STATE_SELECTED = 0
 local STATE_REMAINING = 1
 local STATE_DEPLOYED = 2
@@ -65,9 +65,6 @@ local function updateDeploymentListener(mission)
 		prev[0].state = deployment[0].state
 		prev[1].state = deployment[1].state
 		prev[2].state = deployment[2].state
-		prev[0].loc = deployment[0].loc
-		prev[1].loc = deployment[1].loc
-		prev[2].loc = deployment[2].loc
 
 		local mechs = mechs
 		mechs[0].loc = pwn0:GetSpace()
@@ -107,7 +104,6 @@ local function updateDeploymentListener(mission)
 			local mech = mechs[pawnId]
 			local saved = deployment[pawnId]
 			saved.state = mech.state
-			saved.loc = mech.loc
 		end
 
 		for pawnId = 0, 2 do
@@ -176,9 +172,9 @@ local function startDeploymentListener(mission)
 	mission.deployment = {
 		in_progress = true,
 		phase = PHASE_DEPLOYMENT,
-		[0] = { state = STATE_REMAINING, loc = OUT_OF_BOUNDS },
-		[1] = { state = STATE_REMAINING, loc = OUT_OF_BOUNDS },
-		[2] = { state = STATE_REMAINING, loc = OUT_OF_BOUNDS },
+		[0] = { state = STATE_REMAINING },
+		[1] = { state = STATE_REMAINING },
+		[2] = { state = STATE_REMAINING },
 	}
 
 	DetectDeployment.events.onDeploymentPhaseStart:dispatch()
