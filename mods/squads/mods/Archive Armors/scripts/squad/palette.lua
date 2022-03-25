@@ -1,52 +1,20 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-
-palette_hex = 
-[[
-000000
-b1ca1f
-74734b
-434d2f
-262f12
-13160f
-2e2921
-443b2d
-958c65
-]]
-
-local chars_per_line = palette_hex:find("\n") or palette_hex:len()
-local colorMap = {}
-local colors = {
-	"transparent",
-	"lights",
-	"main_highlight",
-	"main_light",
-	"main_mid",
-	"main_dark",
-	"metal_dark",
-	"metal_mid",
-	"metal_light"
-}
-
-for color_index, color_name in ipairs(colors) do
-	local rgb = {}
-	local from = (color_index-1) * chars_per_line + 1
-	local to = from + chars_per_line
-	local step = 2
-	
-	for k = from, to, 2 do
-		local color = tonumber(palette_hex:sub(k,k+1), 16)
-		table.insert(rgb, color)
-	end
-	
-	colorMap[color_name] = rgb
-end
+local mod = modApi:getCurrentMod()
 
 local palette = {
 	id = mod.id,
 	name = "Archive Armors Green",
-	colorMap = colorMap,
-	image = "img/units/player/lmn_mech_apc_ns.png"
+	image = "img/units/player/lmn_mech_apc_ns.png",
+	colorMap = {
+		lights =         { 177, 202,  31 },
+		main_highlight = { 116, 115,  75 },
+		main_light =     {  67,  77,  47 },
+		main_mid =       {  38,  47,  18 },
+		main_dark =      {  19,  22,  15 },
+		metal_dark =     {  46,  41,  33 },
+		metal_mid =      {  68,  59,  45 },
+		metal_light =    { 149, 140, 101 },
+	},
 }
 
 modApi:addPalette(palette)
