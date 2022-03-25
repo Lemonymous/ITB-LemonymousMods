@@ -1,7 +1,4 @@
 
-local mod = modApi:getCurrentMod()
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
 local effectBurst = LApi.library:fetch("effectBurst")
 
 lmn_Emitter_Helicopter_Rocket = Emitter_Missile:new{
@@ -13,21 +10,6 @@ lmn_Emitter_Helicopter_Rocket = Emitter_Missile:new{
 	burst_count = 5,
 	layer = LAYER_FRONT
 }
-
-lmn_HelicopterMech = Pawn:new{
-	Name = "Helicopter",
-	Class = "Brute",
-	Health = 1,
-	MoveSpeed = 4,
-	Image = "rf_helicopter",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_Helicopter_Rocket" },
-	SoundLocation = "/support/support_drone/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-	Flying = true,
-}
-AddPawnName("lmn_HelicopterMech")
 
 lmn_Helicopter_Rocket = Skill:new{
 	Name = "Leto Rockets",

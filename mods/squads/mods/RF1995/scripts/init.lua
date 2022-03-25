@@ -11,7 +11,6 @@ local mod =  {
 local scripts = {
 	"libs/",
 	"achievements",
-	"palette",
 	"weapons/",
 	"squad/",
 }

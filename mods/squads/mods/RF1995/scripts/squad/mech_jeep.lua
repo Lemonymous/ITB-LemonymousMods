@@ -1,21 +1,4 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
-
-lmn_JeepMech = Pawn:new{
-	Name = "Jeep",
-	Class = "Science",
-	Health = 1,
-	MoveSpeed = 5,
-	Image = "rf_jeep",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_Jeep_Grenade" },
-	SoundLocation = "/support/civilian_truck/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-}
-AddPawnName("lmn_JeepMech")
-
 lmn_Jeep_Grenade = Skill:new{
 	Name = "Hand Grenades",
 	Class = "Science",

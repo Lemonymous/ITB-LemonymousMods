@@ -1,24 +1,9 @@
 
 local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
 local effectPreview = LApi.library:fetch("effectPreview")
-
-lmn_TankMech = Pawn:new{
-	Name = "Light Tank",
-	Class = "Brute",
-	Health = 2,
-	MoveSpeed = 4,
-	Image = "rf_tank",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_Tank_Cannon" },
-	SoundLocation = "/support/civilian_tank/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-}
-AddPawnName("lmn_TankMech")
 
 lmn_Tank_Cannon = Skill:new{
 	Self = "lmn_Tank_Cannon",
