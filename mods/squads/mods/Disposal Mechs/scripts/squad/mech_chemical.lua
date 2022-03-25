@@ -1,22 +1,4 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
-
-lmn_ChemMech = Pawn:new{
-	Name = "Dissolver Mech",
-	Class = "Science",
-	Health = 3,
-	MoveSpeed = 3,
-	Image = "dm_dissolver",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_ChemicalAtk" },
-	SoundLocation = "/mech/science/pulse_mech/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-	Massive = true,
-}
-AddPawnName("lmn_ChemMech")
-
 lmn_ChemicalAtk = Skill:new{
 	Name = "Acid Jet",
 	Description = "Push and spray an adjacent tile with A.C.I.D.\n\nDamage units already inflicted with A.C.I.D.",

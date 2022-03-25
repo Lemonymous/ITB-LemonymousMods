@@ -1,22 +1,4 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
-
-lmn_StackerMech = Pawn:new{
-	Name = "Stacker Mech",
-	Class = "Prime",
-	Health = 3,
-	MoveSpeed = 3,
-	Image = "dm_stacker",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_LiftAtk" },
-	SoundLocation = "/mech/prime/punch_mech/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-	Massive = true,
-}
-AddPawnName("lmn_StackerMech")
-
 lmn_LiftAtk = Skill:new{
 	Name = "Fork Lift",
 	Description = "Bash a unit; or throw it, pushing adjacent tiles.",

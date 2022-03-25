@@ -1,24 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local resourcePath = mod.resourcePath
-local imageOffset = modApi:getPaletteImageOffset(mod.id)
 local worldConstants = LApi.library:fetch("worldConstants")
 local effectPreview = LApi.library:fetch("effectPreview")
-
-lmn_DozerMech = Pawn:new{
-	Name = "Dozer Mech",
-	Class = "Brute",
-	Health = 3,
-	MoveSpeed = 3,
-	Image = "dm_dozer",
-	ImageOffset = imageOffset,
-	SkillList = { "lmn_DozerAtk" },
-	SoundLocation = "/mech/brute/tank/",
-	DefaultTeam = TEAM_PLAYER,
-	ImpactMaterial = IMPACT_METAL,
-	Massive = true,
-}
-AddPawnName("lmn_DozerMech")
 
 lmn_DozerAtk = Skill:new{
 	Name = "Dozer Blades",
