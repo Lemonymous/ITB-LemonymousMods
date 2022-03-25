@@ -10,7 +10,6 @@ local mod =  {
 
 local scripts = {
 	"libs/",
-	"weapons/",
 	"squad/",
 }
 
