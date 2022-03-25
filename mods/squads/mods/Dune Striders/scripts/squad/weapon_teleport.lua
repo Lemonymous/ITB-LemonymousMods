@@ -21,7 +21,7 @@ function lmn_ds_Teleport:GetSkillEffect(p1, p2)
 		
 		if Pawn:IsFire() then
 			local extinguish = SpaceDamage(p2)
-			extinguish.sImageMark = "combat/icons/lmn_ds_icon_fire_immune_glow.png"
+			extinguish.sImageMark = "combat/icons/ds_icon_fire_immune_glow.png"
 			ret:AddDamage(extinguish)
 		end
 	end
@@ -36,7 +36,7 @@ function lmn_ds_Teleport:GetSkillEffect(p1, p2)
 		local p1 = %s;
 		local p2 = %s;
 		
-		Board:AddAnimation(p1, 'lmn_ds_explo_smoke', ANIM_NO_DELAY)
+		Board:AddAnimation(p1, 'ds_explo_smoke', ANIM_NO_DELAY)
 		pawn:SetInvisible(true);
 		
 	]], Board:GetPawn(p1):GetId(), p1:GetString(), p2:GetString()))
@@ -55,7 +55,7 @@ function lmn_ds_Teleport:GetSkillEffect(p1, p2)
 		local p1 = %s;
 		local p2 = %s;
 		
-		Board:AddAnimation(p2, 'lmn_ds_explo_smoke', ANIM_NO_DELAY)
+		Board:AddAnimation(p2, 'ds_explo_smoke', ANIM_NO_DELAY)
 		pawn:SetSpace(p2);
 		
 	]], Board:GetPawn(p1):GetId(), p1:GetString(), p2:GetString()))

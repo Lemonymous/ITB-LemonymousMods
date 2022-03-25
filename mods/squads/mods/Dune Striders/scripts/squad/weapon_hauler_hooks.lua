@@ -1,20 +1,14 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local utils = require(mod.scriptPath .."libs/utils")
 local effectPreview = LApi.library:fetch("effectPreview")
 local effectBurst = LApi.library:fetch("effectBurst")
 local worldConstants = LApi.library:fetch("worldConstants")
 
-modApi:copyAsset("img/combat/icons/icon_postmove_glow.png", "img/combat/icons/lmn_ds_icon_bonus_move_glow.png")
-modApi:appendAsset("img/effects/lmn_ds_bonus_move.png", mod.resourcePath .."img/effects/bonus_move.png")
-modApi:appendAsset("img/weapons/lmn_ds_hauler_hooks.png", mod.resourcePath .."img/weapons/hauler_hooks.png")
-
-Location["combat/icons/lmn_ds_icon_bonus_move_glow.png"] = Point(-13,-2)
-
 local t = .10
 local q = t/4
 ANIMS.lmn_ds_bonus_move = ANIMS.Animation:new{
-	Image = "effects/lmn_ds_bonus_move.png",
+	Image = "effects/ds_bonus_move.png",
 	PosX = -9,
 	PosY = -15,
 	NumFrames = 13,
@@ -51,7 +45,7 @@ lmn_ds_Emitter_Wind_3 = lmn_ds_Emitter_Wind_0:new{ angle = angle_3, }
 lmn_ds_HaulerHooks = Skill:new{
 	Name = "Hauler Hooks",
 	Description = "Move in a line, and haul any units behind you along.",
-	Icon = "weapons/lmn_ds_hauler_hooks.png",
+	Icon = "weapons/ds_hauler_hooks.png",
 	Class = "Science",
 	PowerCost = 2,
 	Range = INT_MAX,
@@ -173,7 +167,7 @@ function lmn_ds_HaulerHooks:GetSkillEffect(p1, p2)
 			if self.RefreshMovement and canRefreshMovement(draggedPawn.pawn) then
 				if draggedPawn.team == TEAM_PLAYER then
 					local bonusMove = SpaceDamage(draggedPawn.to)
-					bonusMove.sImageMark = "combat/icons/lmn_ds_icon_bonus_move_glow.png"
+					bonusMove.sImageMark = "combat/icons/ds_icon_bonus_move_glow.png"
 					ret:AddDamage(bonusMove)
 				end
 			end

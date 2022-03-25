@@ -1,19 +1,7 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local utils = require(mod.scriptPath .."libs/utils")
 local effectBurst = LApi.library:fetch("effectBurst")
-
-modApi:copyAsset("img/combat/icons/icon_sand_glow.png", "img/combat/icons/lmn_ds_icon_sand_glow.png")
-modApi:copyAsset("img/combat/icons/icon_smoke_glow.png", "img/combat/icons/lmn_ds_icon_smoke_glow.png")
-modApi:copyAsset("img/combat/icons/icon_smoke_immune_glow.png", "img/combat/icons/lmn_ds_icon_smoke_immune_glow.png")
-modApi:appendAsset("img/effects/lmn_ds_shot_pistol_R.png", mod.resourcePath .."img/effects/shot_pistol_R.png")
-modApi:appendAsset("img/effects/lmn_ds_shot_pistol_U.png", mod.resourcePath .."img/effects/shot_pistol_U.png")
-modApi:appendAsset("img/weapons/lmn_ds_dual_pistols.png", mod.resourcePath .."img/weapons/dual_pistols.png")
-
-local icon_loc = Point(-10,8)
-Location["combat/icons/lmn_ds_icon_sand_glow.png"] = Point(-13,12)
-Location["combat/icons/lmn_ds_icon_smoke_glow.png"] = icon_loc
-Location["combat/icons/lmn_ds_icon_smoke_immune_glow.png"] = icon_loc
 
 local function isRoadRunner(pawn)
 	return pawn:GetPathProf() % 16 == PATH_ROADRUNNER
@@ -33,7 +21,7 @@ end
 lmn_ds_DualPistols = Skill:new{
 	Name = "Dual Pistols",
 	Description = "Move in a line as allowed by your movement, attacking the last enemies you pass.",
-	Icon = "weapons/lmn_ds_dual_pistols.png",
+	Icon = "weapons/ds_dual_pistols.png",
 	Class = "Brute",
 	PowerCost = 1,
 	Damage = 1,
@@ -132,9 +120,9 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 	local smoke_create = SpaceDamage()
 	local smoke_remove = SpaceDamage()
 	
-	sand.sImageMark = "combat/icons/lmn_ds_icon_sand_glow.png"
-	smoke_create.sImageMark = "combat/icons/lmn_ds_icon_smoke_glow.png"
-	smoke_remove.sImageMark = "combat/icons/lmn_ds_icon_smoke_immune_glow.png"
+	sand.sImageMark = "combat/icons/ds_icon_sand_glow.png"
+	smoke_create.sImageMark = "combat/icons/ds_icon_smoke_glow.png"
+	smoke_remove.sImageMark = "combat/icons/ds_icon_smoke_immune_glow.png"
 	
 	local projectile = SpaceDamage(self.Damage)
 	projectile.sSound = "/props/electric_smoke_damage"
@@ -259,7 +247,7 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 				local dir = GetDirection(loc - curr)
 				local sImageMark = ""
 				local sScript = utils.GetGenericImpactSoundScript(loc, "impact/generic/general")
-				sScript = string.format("%s; Board:AddAnimation(%s, 'lmn_ds_explo_plasma', NO_DELAY);", sScript, loc:GetString())
+				sScript = string.format("%s; Board:AddAnimation(%s, 'ds_explo_plasma', NO_DELAY);", sScript, loc:GetString())
 				
 				if self.SpreadSmoke then
 					if k > 0 then
@@ -276,7 +264,7 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 				projectile.sScript = sScript
 				projectile.sImageMark = sImageMark
 				
-				ret:AddProjectile(curr, projectile, "effects/lmn_ds_shot_pistol", NO_DELAY)
+				ret:AddProjectile(curr, projectile, "effects/ds_shot_pistol", NO_DELAY)
 			end
 			
 			FireProjectile(target.right)
