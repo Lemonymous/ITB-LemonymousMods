@@ -1,5 +1,5 @@
 
-local VERSION = "1.0.1"
+local VERSION = "1.0.2"
 local STATE_SELECTED = 0
 local STATE_REMAINING = 1
 local STATE_DEPLOYED = 2
@@ -184,7 +184,7 @@ local function isDeploymentPhase(self)
 	local mission = GetCurrentMission()
 	if mission == nil then return false end
 
-	return getMissionData(mission).in_progress
+	return getMissionData(mission).in_progress == true
 end
 
 local function isLandingPhase(self)
@@ -200,10 +200,12 @@ local function getSelected(self)
 
 	local deployment = getMissionData(mission)
 
-	for pawnId = 0, 2 do
-		local mech = deployment[pawnId]
-		if mech.state == STATE_SELECTED then
-			return pawnId
+	if deployment.in_progress then
+		for pawnId = 0, 2 do
+			local mech = deployment[pawnId]
+			if mech.state == STATE_SELECTED then
+				return pawnId
+			end
 		end
 	end
 
@@ -217,9 +219,11 @@ local function getDeployed(self)
 	local deployment = getMissionData(mission)
 	local deployed = {}
 
-	for pawnId = 0, 2 do
-		if deployment.state[pawnId] == STATE_DEPLOYED then
-			table.insert(deployed, pawnId)
+	if deployment.in_progress then
+		for pawnId = 0, 2 do
+			if deployment[pawnId].state == STATE_DEPLOYED then
+				table.insert(deployed, pawnId)
+			end
 		end
 	end
 
@@ -233,9 +237,11 @@ local function getRemaining(self)
 	local deployment = getMissionData(mission)
 	local remaining = {}
 
-	for pawnId = 0, 2 do
-		if deployment.state[pawnId] == STATE_REMAINING then
-			table.insert(remaining, pawnId)
+	if deployment.in_progress then
+		for pawnId = 0, 2 do
+			if deployment[pawnId].state == STATE_REMAINING then
+				table.insert(remaining, pawnId)
+			end
 		end
 	end
 
