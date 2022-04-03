@@ -1,5 +1,5 @@
 
-local VERSION = "1.1.0"
+local VERSION = "1.1.1"
 ---------------------------------------------------
 -- Artillery Arc v1.1.0 - code library
 --
@@ -27,7 +27,7 @@ local VERSION = "1.1.0"
 ---------------------------------------------------
 
 local weaponArmed = LApi.library:fetch("weaponArmed")
-local worldConstants = LApi.library:fetch("worldConstants")
+local DEFAULT_HEIGHT = 18
 
 local function onModsInitialized()
 	if VERSION < ArtilleryArc.version then
@@ -54,7 +54,7 @@ if isNewestVersion then
 	ArtilleryArc.version = VERSION
 	
 	local function resetArtilleryHeight()
-		Values.y_velocity = worldConstants:getDefaultHeight()
+		Values.y_velocity = DEFAULT_HEIGHT
 	end
 
 	local function setSkillArtilleryHeight(skill)
