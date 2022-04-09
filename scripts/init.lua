@@ -23,6 +23,7 @@ end
 function mod:init(options)
 	require(self.scriptPath.."LApi/LApi")
 	require(self.scriptPath.."ITB-ModUtils/modApiExt/modApiExt"):init()
+	require(self.scriptPath.."libs/eventifyModApiExtHooks")
 	require(self.scriptPath.."libs/modloaderfixes")
 	require(self.scriptPath.."libs/artilleryArc")
 	require(self.scriptPath.."libs/detectDeployment")
