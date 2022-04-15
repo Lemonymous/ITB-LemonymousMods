@@ -1,314 +1,213 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local squad = "lmn_dune_striders"
-local achievements = {
-	dust = modApi.achievements:add{
-		id = "dust",
-		name = "Dust Storm",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "End a battle with 14 tiles covered in smoke\n\n"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/dust.png",
-		squad = squad,
-	},
+-- requires
+--	achievementExt
+--		difficultyEvents
+--	personalSavedata
+--	squadEvents
+--	eventifyModApiExtHooks
+--	attackEvents
 
-	artificial = modApi.achievements:add{
-		id = "artificial",
-		name = "Artificial Victory",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "Beat the game with only AI pilots\n\n"..
-			"$status"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/artificial.png",
-		squad = squad,
-	},
 
-	pacifist = modApi.achievements:add{
-		id = "pacifist",
-		name = "A Light Touch",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "Beat the game having killed fewer than 20 enemies during your turns\n\n"..
-			"$status"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/pacifist.png",
-		squad = squad,
-	},
-}
+-- defs
+local CREATOR = "Lemonymous"
+local SQUAD_DUNE_STRIDERS = "Dune_Striders"
+local DUST_TARGET = 14
+local PACIFIST_TARGET = 20
 
-local function isGame()
-	return true
-		and Game ~= nil
-		and GAME ~= nil
-end
 
-local function isSquad()
-	return true
-		and isGame()
-		and GAME.additionalSquadData.squad == squad
-end
+local mod = modApi:getCurrentMod()
+local game_savedata = GAME_savedata(CREATOR, SQUAD_DUNE_STRIDERS, "Achievements")
 
-local function isMission()
+
+-- Helper functions
+local function isRealMission()
 	local mission = GetCurrentMission()
 
 	return true
-		and isGame()
 		and mission ~= nil
 		and mission ~= Mission_Test
+		and Board
+		and Board:IsGameBoard()
 end
 
-local function isMissionBoard()
-	return true
-		and isMission()
-		and Board ~= nil
-		and Board:IsTipImage() == false
+local function isNotRealMission()
+	return not isRealMission()
 end
 
-local function isGameData()
-	return true
-		and GAME ~= nil
-		and GAME.lmn_Dune_Striders ~= nil
-		and GAME.lmn_Dune_Striders.achievementData ~= nil
+local function isGame()
+	return Game ~= nil
 end
 
-local function gameData()
-	if GAME.lmn_Dune_Striders == nil then
-		GAME.lmn_Dune_Striders = {}
+local function isPlayerInitiatedAttack()
+	local attackInfo = AttackEvents:getCurrentAttackInfo()
+	if attackInfo == nil then
+		return false
 	end
 
-	if GAME.lmn_Dune_Striders.achievementData == nil then
-		GAME.lmn_Dune_Striders.achievementData = {}
-	end
-
-	return GAME.lmn_Dune_Striders.achievementData
+	return attackInfo.pawn:GetTeam() == TEAM_PLAYER
 end
 
-local difficultyIndices = {
-	[DIFF_EASY] = "easy",
-	[DIFF_NORMAL] = "normal",
-	[DIFF_HARD] = "hard",
-	default = "hard",
+local function failAchievement(achievementId)
+	game_savedata[achievementId.."_failed"] = true
+end
+
+local function isAchievementFailed(achievementId)
+	return game_savedata[achievementId.."_failed"]
+end
+
+
+-- Achievement: Dust Storm
+local dust = modApi.achievements:addExt{
+	id = "dust",
+	name = "Dust Storm",
+	tooltip = "End a battle with 14 tiles covered in smoke.",
+	textDiffComplete = "$highscore smoke tiles",
+	retoastHighscore = true,
+	image = mod.resourcePath.."img/achievements/dust.png",
+	squad = SQUAD_DUNE_STRIDERS,
 }
 
-local COMPLETE = 1
-local INCOMPLETE = 0
-
--- dust
-local SMOKE_TILES = 14
-
-local getTooltip = achievements.dust.getTooltip
-achievements.dust.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-
-	local bronze = progress.easy == COMPLETE and "Complete" or "-"
-	local silver = progress.normal == COMPLETE and "Complete" or "-"
-	local gold = progress.hard == COMPLETE and "Complete" or "-"
-
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
-end
-
-modApi.events.onMissionEnd:subscribe(function(mission)
-	local exit = false
-		or isSquad() == false
-		or isMissionBoard() == false
-
-	if exit then
-		return
-	end
-
-	local smoke_total = 0
+local function getSmokeTileCount()
+	local smokeTileCount = 0
 
 	for _, p in ipairs(Board) do
 		if Board:IsSmoke(p) then
-			smoke_total = smoke_total + 1
+			smokeTileCount = smokeTileCount + 1
 		end
 	end
 
-	if smoke_total >= SMOKE_TILES then
-		local difficulty = GetRealDifficulty()
-		local objective = difficultyIndices[difficulty] or difficultyIndices.default
-
-		if achievements.dust:getProgress()[objective] == INCOMPLETE then
-			achievements.dust:addProgress{ [objective] = COMPLETE }
-			achievements.dust:addProgress{ complete = false }
-			achievements.dust:addProgress{ complete = true }
-		end
-	end
-end)
-
--- artificial
-local getTooltip = achievements.artificial.getTooltip
-achievements.artificial.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-	local showStatus = true
-		and isGame()
-		and isGameData()
-
-	local bronze = progress.easy > 0 and progress.easy.." islands" or "-"
-	local silver = progress.normal > 0 and progress.normal.." islands" or "-"
-	local gold = progress.hard > 0 and progress.hard.." islands" or "-"
-	local status = ""
-
-	if showStatus then
-		local failed = gameData().artificialFailed
-		local eligible = failed and "Failed" or "Eligible"
-
-		status = "Status: "..eligible.."\n\n"
-	end
-
-	result = result:gsub("%$status", status)
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
+	return smokeTileCount
 end
 
-modApi.events.onPostStartGame:subscribe(function()
-	gameData().artificialFailed = false
-end)
+function dust:getTextProgress()
+	if isRealMission() then
+		return getSmokeTileCount().." smoke tiles"
+	end
+end
 
-modApi.events.onMissionStart:subscribe(function(mission)
-	local exit = false
-		or isSquad() == false
-		or isMissionBoard() == false
-		or gameData().artificialFailed
+local function dust_onMissionEnd(mission)
+	if isNotRealMission() then
+		return
+	end
 
-	if exit then
+	local smokeTileCount = getSmokeTileCount()
+	if smokeTileCount >= DUST_TARGET then
+		dust:completeWithHighscore(smokeTileCount)
+	end
+end
+
+
+-- Achievement: Artificial
+game_savedata.artificial_failed = false
+local artificial = modApi.achievements:addExt{
+	id = "artificial",
+	name = "Artificial Victory",
+	tooltip = "Beat the game with only AI pilots.",
+	textFailed = "non-AI pilot used",
+	textDiffComplete = "$highscore islands",
+	image = mod.resourcePath.."img/achievements/artificial.png",
+	squad = SQUAD_DUNE_STRIDERS,
+}
+
+function artificial:isFailed()
+	return isAchievementFailed("artificial")
+end
+
+local function artificial_onMissionStart(mission)
+	if isNotRealMission() then
 		return
 	end
 
 	for pawnId = 0, 2 do
 		local mech = Game:GetPawn(pawnId)
 		if mech and mech:GetPilotName(1) ~= "A.I. Unit" then
-			gameData().artificialFailed = true
+			failAchievement("artificial")
 		end
 	end
-end)
-
-modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad_id)
-	local exit = false
-		or isSquad() == false
-		or gameData().artificialFailed
-
-	if exit then
-		return
-	end
-
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local chievo = achievements.artificial
-	local progress = shallow_copy(chievo:getProgress())
-
-	if progress[objective] < islandsSecured then
-		progress.complete = true
-		progress[objective] = islandsSecured
-		chievo:addProgress{ complete = false }
-		chievo:setProgress(progress)
-	end
-end)
-
--- pacifist
-local PACIFIST_TARGET = 20
-local EVENT_ENEMY_KILLED = 21
-local EVENT_MINOR_ENEMY_KILLED = 12
-local EVENT_PLAYER_TURN = 5
-
-local getTooltip = achievements.pacifist.getTooltip
-achievements.pacifist.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-	local showStatus = true
-		and isGame()
-		and isGameData()
-
-	local bronze = progress.easy > 0 and progress.easy.." islands" or "-"
-	local silver = progress.normal > 0 and progress.normal.." islands" or "-"
-	local gold = progress.hard > 0 and progress.hard.." islands" or "-"
-	local status = ""
-
-	if showStatus then
-		local kills = gameData().pacifistKills
-		local progress = kills.."/"..PACIFIST_TARGET
-		local failed = kills < PACIFIST_TARGET and "" or " (failed)"
-
-		status = "Kills: "..progress..failed.."\n\n"
-	end
-
-	result = result:gsub("%$status", status)
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
 end
 
-modApi.events.onPostStartGame:subscribe(function()
-	gameData().pacifistKills = 0
-end)
+local function artificial_onGameVictory(difficulty, islandsSecured, squad_id)
+	if artificial:isNotFailed() then
+		artificial:completeWithHighscore(islandsSecured)
+	end
+end
 
-modApi.events.onMissionUpdate:subscribe(function(mission)
-	local exit = false
-		or isSquad() == false
-		or isMission() == false
-		or isGameData() == false
-		or Game:GetEventCount(EVENT_PLAYER_TURN) == 0
 
-	if exit then
+-- Achievement: A Light Touch
+game_savedata.pacifist_kills = 0
+local pacifist = modApi.achievements:addExt{
+	id = "pacifist",
+	name = "A Light Touch",
+	tooltip = "Beat the game having killed fewer than 20 enemies during your turns.",
+	textDiffComplete = "$highscore islands",
+	retoastHighscore = true,
+	image = mod.resourcePath.."img/achievements/pacifist.png",
+	squad = SQUAD_DUNE_STRIDERS,
+}
+
+function pacifist:isFailed()
+	return game_savedata.pacifist_kills >= PACIFIST_TARGET
+end
+
+function pacifist:getTextFailed()
+	return string.format("Killed %s enemies", game_savedata.pacifist_kills)
+end
+
+function pacifist:getTextProgress()
+	if isGame() then
+		return game_savedata.pacifist_kills.." player kills"
+	end
+end
+
+local function pacifist_onPawnKilled(mission, pawn)
+	if isNotRealMission() then
 		return
 	end
 
-	local gameData = gameData()
+	if isPlayerInitiatedAttack() and pawn:IsEnemy() then
+		game_savedata.pacifist_kills = game_savedata.pacifist_kills + 1
+	end
+end
 
-	gameData.pacifistKills = 0
-		+ gameData.pacifistKills
-		+ Game:GetEventCount(EVENT_ENEMY_KILLED)
-		+ Game:GetEventCount(EVENT_MINOR_ENEMY_KILLED)
+local function pacifist_onPawnKilled(mission, pawn)
+	if true
+		and isRealMission()
+		and isPlayerInitiatedAttack()
+		and pawn:IsEnemy()
+	then
+		game_savedata.pacifist_kills = game_savedata.pacifist_kills + 1
+	end
+end
+
+local function pacifist_onGameVictory(difficulty, islandsSecured, squad_id)
+	if pacifist:isNotFailed() then
+		pacifist:completeWithHighscore(islandsSecured)
+	end
+end
+
+
+-- Subscribe to events
+modApi.events.onSquadEnteredGame:subscribe(function(squadId)
+	if squadId == SQUAD_DUNE_STRIDERS then
+		modApi.events.onMissionEnd:subscribe(dust_onMissionEnd)
+
+		modApi.events.onMissionStart:subscribe(artificial_onMissionStart)
+		modApi.events.onGameVictory:subscribe(artificial_onGameVictory)
+
+		modApi.events.onPawnKilled:subscribe(pacifist_onPawnKilled)
+		modApi.events.onGameVictory:subscribe(pacifist_onGameVictory)
+	end
 end)
 
-modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad_id)
-	local exit = false
-		or isSquad() == false
-		or gameData().pacifistKills >= PACIFIST_TARGET
+-- Unsubscribe from events
+modApi.events.onSquadExitedGame:subscribe(function(squadId)
+	if squadId == SQUAD_DUNE_STRIDERS then
+		modApi.events.onMissionEnd:unsubscribe(dust_onMissionEnd)
 
-	if exit then
-		return
-	end
+		modApi.events.onMissionStart:unsubscribe(artificial_onMissionStart)
+		modApi.events.onGameVictory:unsubscribe(artificial_onGameVictory)
 
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local chievo = achievements.pacifist
-	local progress = shallow_copy(chievo:getProgress())
-
-	if progress[objective] < islandsSecured then
-		progress.complete = true
-		progress[objective] = islandsSecured
-		chievo:addProgress{ complete = false }
-		chievo:setProgress(progress)
+		modApi.events.onPawnKilled:unsubscribe(pacifist_onPawnKilled)
+		modApi.events.onGameVictory:unsubscribe(pacifist_onGameVictory)
 	end
 end)

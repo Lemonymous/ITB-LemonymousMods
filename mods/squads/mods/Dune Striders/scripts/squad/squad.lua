@@ -6,7 +6,7 @@ modApi.events.onModLoaded:subscribe(function(id)
 
 	modApi:addSquad(
 		{
-			id = "lmn_dune_striders",
+			id = "Dune_Striders",
 			"Dune Striders",
 			"lmn_ds_Commando",
 			"lmn_ds_Gunslinger",
