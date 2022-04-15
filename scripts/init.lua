@@ -28,6 +28,11 @@ function mod:init(options)
 	require(self.scriptPath.."libs/artilleryArc")
 	require(self.scriptPath.."libs/detectDeployment")
 	require(self.scriptPath.."libs/blockDeathByDeployment")
+	require(self.scriptPath.."libs/squadEvents")
+	require(self.scriptPath.."libs/attackEvents")
+	require(self.scriptPath.."libs/difficultyEvents")
+	require(self.scriptPath.."libs/personalSavedata")
+	require(self.scriptPath.."libs/achievementExt")
 end
 
 function mod:load(options, version)
