@@ -6,7 +6,7 @@ modApi.events.onModLoaded:subscribe(function(id)
 
 	modApi:addSquad(
 		{
-			id = "lmn_Disposal_Mechs",
+			id = "Disposal_Mechs",
 			"Disposal Mechs",
 			"lmn_StackerMech",
 			"lmn_DozerMech",
