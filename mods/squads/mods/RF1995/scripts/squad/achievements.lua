@@ -1,310 +1,140 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local squad = "RF1995"
-local achievements = {
-	monsterkill = modApi.achievements:add{
-		id = "monsterkill",
-		name = "Mo-mo-mo-monster Kill!",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "Kill 4 enemies with a single attack\n\n"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/monsterkill.png",
-		squad = squad,
-	},
+-- requires
+--	achievementExt
+--		difficultyEvents
+--	personalSavedata
+--	squadEvents
+--	eventifyModApiExtHooks
+--	attackEvents
 
-	untouchable = modApi.achievements:add{
-		id = "untouchable",
-		name = "Can't Touch This",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "Beat the game without taking any Mech damage\n\n"..
-			"$status"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/untouchable.png",
-		squad = squad,
-	},
 
-	objective = modApi.achievements:add{
-		id = "objective",
-		name = "Eye on the Prize",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "Beat the game without failing an objective\n\n"..
-			"$status"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/objective.png",
-		squad = squad,
-	},
-}
+-- defs
+local CREATOR = "Lemonymous"
+local SQUAD_RF1995 = "RF1995"
+local EVENT_MECH_DAMAGED = 24
+local EVENT_POD_DESTROYED = 37
 
-local function isGame()
-	return true
-		and Game ~= nil
-		and GAME ~= nil
-end
 
-local function isSquad()
-	return true
-		and isGame()
-		and GAME.additionalSquadData.squad == squad
-end
+local mod = modApi:getCurrentMod()
+local game_savedata = GAME_savedata(CREATOR, SQUAD_RF1995, "Achievements")
 
-local function isMission()
+
+-- Helper functions
+local function isRealMission()
 	local mission = GetCurrentMission()
 
 	return true
-		and isGame()
 		and mission ~= nil
 		and mission ~= Mission_Test
+		and Board
+		and Board:IsGameBoard()
 end
 
-local function isMissionBoard()
-	return true
-		and isMission()
-		and Board ~= nil
-		and Board:IsTipImage() == false
+local function isNotRealMission()
+	return not isRealMission()
 end
 
-local function isGameData()
-	return true
-		and GAME ~= nil
-		and GAME.lmn_RF1995 ~= nil
-		and GAME.lmn_RF1995.achievementData ~= nil
+local function isGame()
+	return Game ~= nil
 end
 
-local function gameData()
-	if GAME.lmn_RF1995 == nil then
-		GAME.lmn_RF1995 = {}
-	end
-
-	if GAME.lmn_RF1995.achievementData == nil then
-		GAME.lmn_RF1995.achievementData = {}
-	end
-
-	return GAME.lmn_RF1995.achievementData
+local function failAchievement(achievementId)
+	game_savedata[achievementId.."_failed"] = true
 end
 
-local difficultyIndices = {
-	[DIFF_EASY] = "easy",
-	[DIFF_NORMAL] = "normal",
-	[DIFF_HARD] = "hard",
-	default = "hard",
+local function isAchievementFailed(achievementId)
+	return game_savedata[achievementId.."_failed"]
+end
+
+
+-- Achievement: Mo-mo-mo-monster Kill!
+local monsterkill_kills = 0
+local monsterkill = modApi.achievements:addExt{
+	id = "monsterkill",
+	name = "Mo-mo-mo-monster Kill!",
+	tooltip = "Kill 3 enemies with a single attack.",
+	textDiffComplete = "$highscore kills",
+	retoastHighscore = true,
+	image = mod.resourcePath.."img/achievements/monsterkill.png",
+	squad = SQUAD_RF1995,
 }
 
-local COMPLETE = 1
-local INCOMPLETE = 0
-
--- monsterkill
-local monsterkillEnemyCount = nil
-
-local getTooltip = achievements.monsterkill.getTooltip
-achievements.monsterkill.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-
-	local bronze = progress.easy == COMPLETE and "Complete" or "-"
-	local silver = progress.normal == COMPLETE and "Complete" or "-"
-	local gold = progress.hard == COMPLETE and "Complete" or "-"
-
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
+local function monsterkill_onPawnKilled(mission, pawn)
+	if isRealMission() and pawn:IsEnemy() then
+		monsterkill_kills = monsterkill_kills + 1
+	end
 end
 
-modApi.events.onModsLoaded:subscribe(function()
-	modApiExt:addSkillStartHook(function(mission, pawn, weaponId, p1, p2)
-		local exit = false
-			or isMissionBoard() == false
-			or isSquad() == false
-			or pawn:IsEnemy()
-			or monsterkillEnemyCount ~= nil
-
-		if exit then
-			return
-		end
-
-		local enemies = Board:GetPawns(TEAM_ENEMY)
-		monsterkillEnemyCount = enemies:size()
-	end)
-end)
-
-modApi.events.onMissionUpdate:subscribe(function()
-	local exit = false
-		or isMission() == false
-		or isSquad() == false
-		or Board:IsBusy()
-		or monsterkillEnemyCount == nil
-
-	if exit then
-		return
-	end
-
-	local difficulty = GetRealDifficulty()
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local enemyKills = monsterkillEnemyCount - Board:GetPawns(TEAM_ENEMY):size()
-	local achievementCompleted = true
-		and enemyKills >= 4
-		and achievements.monsterkill:getProgress()[objective] == INCOMPLETE
-
-	if achievementCompleted then
-		achievements.monsterkill:addProgress{ [objective] = COMPLETE }
-		achievements.monsterkill:addProgress{ complete = false }
-		achievements.monsterkill:addProgress{ complete = true }
-	end
-
-	monsterkillEnemyCount = nil
-end)
-
--- untouchable
-local EVENT_MECH_DAMAGED = 24
-
-local getTooltip = achievements.untouchable.getTooltip
-achievements.untouchable.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-	local showStatus = true
-		and isGame()
-		and isGameData()
-
-	local bronze = progress.easy > 0 and progress.easy.." islands" or "-"
-	local silver = progress.normal > 0 and progress.normal.." islands" or "-"
-	local gold = progress.hard > 0 and progress.hard.." islands" or "-"
-	local status = ""
-
-	if showStatus then
-		local failed = gameData().untouchableFailed
-		local eligible = failed and "Failed" or "Eligible"
-
-		status = "Status: "..eligible.."\n\n"
-	end
-
-	result = result:gsub("%$status", status)
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
+local function monsterkill_onAttackStart(mission, pawn, weaponId, p1, p2)
+	monsterkill_kills = 0
 end
 
-modApi.events.onPostStartGame:subscribe(function()
-	gameData().untouchableFailed = false
-end)
-
-modApi.events.onMissionUpdate:subscribe(function(mission)
-	local exit = false
-		or isSquad() == false
-		or isMission() == false
-		or gameData().untouchableFailed
-
-	if exit then
+local function monsterkill_onAttackResolved(mission, pawn, weaponId, p1, p2)
+	if isNotRealMission() or pawn:IsEnemy() then
 		return
 	end
 
-	if Game:GetEventCount(EVENT_MECH_DAMAGED) > 0 then
-		gameData().untouchableFailed = true
+	if monsterkill_kills >= 3 then
+		monsterkill:completeWithHighscore(monsterkill_kills)
 	end
-end)
-
-modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad_id)
-	local exit = false
-		or isSquad() == false
-		or gameData().untouchableFailed
-
-	if exit then
-		return
-	end
-
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local chievo = achievements.untouchable
-	local progress = shallow_copy(chievo:getProgress())
-
-	if progress[objective] < islandsSecured then
-		progress.complete = true
-		progress[objective] = islandsSecured
-		chievo:addProgress{ complete = false }
-		chievo:setProgress(progress)
-	end
-end)
-
--- objective
-local EVENT_POD_DESTROYED = 37
-
-local getTooltip = achievements.objective.getTooltip
-achievements.objective.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-	local showStatus = true
-		and isGame()
-		and isGameData()
-
-	local bronze = progress.easy > 0 and progress.easy.." islands" or "-"
-	local silver = progress.normal > 0 and progress.normal.." islands" or "-"
-	local gold = progress.hard > 0 and progress.hard.." islands" or "-"
-	local status = ""
-
-	if showStatus then
-		local failed = gameData().objectiveFailed
-		local eligible = failed and "Failed" or "Eligible"
-
-		status = "Status: "..eligible.."\n\n"
-	end
-
-	result = result:gsub("%$status", status)
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
 end
 
-modApi.events.onPostStartGame:subscribe(function()
-	gameData().objectiveFailed = false
-end)
 
-modApi.events.onMissionUpdate:subscribe(function(mission)
-	local exit = false
-		or isSquad() == false
-		or isMission() == false
-		or gameData().objectiveFailed
+-- Achievement: Can't Touch This
+game_savedata.untouchable_failed = false
+local untouchable = modApi.achievements:addExt{
+	id = "untouchable",
+	name = "Can't Touch This",
+	tooltip = "Beat the game without taking any Mech damage.",
+	textDiffComplete = "$highscore islands",
+	textFailed = "Took Mech damage",
+	retoastHighscore = true,
+	image = mod.resourcePath.."img/achievements/untouchable.png",
+	squad = SQUAD_RF1995,
+}
 
-	if exit then
-		return
+function untouchable:isFailed()
+	return isAchievementFailed("untouchable")
+end
+
+local function untouchable_onMissionUpdate(mission)
+	if isRealMission() and Game:GetEventCount(EVENT_MECH_DAMAGED) > 0 then
+		failAchievement("untouchable")
 	end
+end
 
-	if Game:GetEventCount(EVENT_POD_DESTROYED) > 0 then
-		gameData().objectiveFailed = true
+local function untouchable_onGameVictory(difficultyId, islandsSecured, squadId)
+	if untouchable:isNotFailed() then
+		untouchable:completeWithHighscore(islandsSecured)
 	end
-end)
+end
 
-modApi.events.onMissionEnd:subscribe(function(mission)
-	local exit = false
-		or isSquad() == false
-		or isMission() == false
-		or gameData().objectiveFailed
 
-	if exit then
+-- Achievement: Eye on the Price
+game_savedata.eyeontheprice_failed = false
+local eyeontheprice = modApi.achievements:addExt{
+	id = "eyeontheprice",
+	name = "Eye on the Prize",
+	tooltip = "Beat the game without failing an objective.",
+	textDiffComplete = "$highscore islands",
+	textFailed = "Objective failed",
+	retoastHighscore = true,
+	image = mod.resourcePath.."img/achievements/objective.png",
+	squad = SQUAD_RF1995,
+}
+
+function eyeontheprice:isFailed()
+	return isAchievementFailed("eyeontheprice")
+end
+
+local function eyeontheprice_onMissionUpdate()
+	if isRealMission() and Game:GetEventCount(EVENT_POD_DESTROYED) > 0 then
+		failAchievement("eyeontheprice")
+	end
+end
+
+local function eyeontheprice_onMissionEnd(mission)
+	if isNotRealMission() then
 		return
 	end
 
@@ -312,28 +142,46 @@ modApi.events.onMissionEnd:subscribe(function(mission)
 
 	for _, obj in ipairs(objectives) do
 		if obj.rep < obj.potential then
-			gameData().objectiveFailed = true
+			failAchievement("eyeontheprice")
 		end
+	end
+end
+
+local function eyeontheprice_onGameVictory(difficultyId, islandsSecured, squadId)
+	if eyeontheprice:isNotFailed() then
+		eyeontheprice:completeWithHighscore(islandsSecured)
+	end
+end
+
+
+-- Subscribe to events
+modApi.events.onSquadEnteredGame:subscribe(function(squadId)
+	if squadId == SQUAD_RF1995 then
+		modApi.events.onAttackStart:subscribe(monsterkill_onAttackStart)
+		modApi.events.onAttackResolved:subscribe(monsterkill_onAttackResolved)
+		modApi.events.onPawnKilled:subscribe(monsterkill_onPawnKilled)
+
+		modApi.events.onMissionUpdate:subscribe(untouchable_onMissionUpdate)
+		modApi.events.onGameVictory:subscribe(untouchable_onGameVictory)
+
+		modApi.events.onMissionUpdate:subscribe(eyeontheprice_onMissionUpdate)
+		modApi.events.onMissionEnd:subscribe(eyeontheprice_onMissionEnd)
+		modApi.events.onGameVictory:subscribe(eyeontheprice_onGameVictory)
 	end
 end)
 
-modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad_id)
-	local exit = false
-		or isSquad() == false
-		or gameData().objectiveFailed
+-- Unsubscribe from events
+modApi.events.onSquadExitedGame:subscribe(function(squadId)
+	if squadId == SQUAD_RF1995 then
+		modApi.events.onAttackStart:unsubscribe(monsterkill_onAttackStart)
+		modApi.events.onAttackResolved:unsubscribe(monsterkill_onAttackResolved)
+		modApi.events.onPawnKilled:unsubscribe(monsterkill_onPawnKilled)
 
-	if exit then
-		return
-	end
+		modApi.events.onMissionUpdate:unsubscribe(untouchable_onMissionUpdate)
+		modApi.events.onGameVictory:unsubscribe(untouchable_onGameVictory)
 
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local chievo = achievements.objective
-	local progress = shallow_copy(chievo:getProgress())
-
-	if progress[objective] < islandsSecured then
-		progress.complete = true
-		progress[objective] = islandsSecured
-		chievo:addProgress{ complete = false }
-		chievo:setProgress(progress)
+		modApi.events.onMissionUpdate:unsubscribe(eyeontheprice_onMissionUpdate)
+		modApi.events.onMissionEnd:unsubscribe(eyeontheprice_onMissionEnd)
+		modApi.events.onGameVictory:unsubscribe(eyeontheprice_onGameVictory)
 	end
 end)
