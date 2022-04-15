@@ -6,7 +6,7 @@ modApi.events.onModLoaded:subscribe(function(id)
 
 	modApi:addSquad(
 		{
-			id = "lmn_Archive_Armors",
+			id = "Archive_Armors",
 			"Archive Armors",
 			"lmn_DevastatorMech",
 			"lmn_BomberMech",

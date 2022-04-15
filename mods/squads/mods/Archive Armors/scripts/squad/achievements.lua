@@ -1,145 +1,65 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local squad = "lmn_Archive_Armors"
-local achievements = {
-	collateral = modApi.achievements:add{
-		id = "collateral",
-		name = "Collateral Damage",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "End a battle with half of all buildings in ruins\n\n"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/collateral.png",
-		squad = squad,
-	},
+-- requires
+--	LApi
+--	achievementExt
+--		difficultyEvents
+--	personalSavedata
+--	squadEvents
 
-	surgical = modApi.achievements:add{
-		id = "surgical",
-		name = "Surgical Operation",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "Beat the game without losing any Grid Power\n\n"..
-			"$status"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/surgical.png",
-		squad = squad,
-	},
 
-	scrappy = modApi.achievements:add{
-		id = "scrappy",
-		name = "Scrappy Victory",
-		objective = {
-			complete = true,
-			easy = 0,
-			normal = 0,
-			hard = 0,
-		},
-		tooltip = "Beat the game with default un-upgraded weapons\n\n"..
-			"$status"..
-			"Easy: $bronze\n"..
-			"Normal: $silver\n"..
-			"Hard: $gold",
-		image = mod.resourcePath.."img/achievements/scrappy.png",
-		squad = squad,
-	},
+-- defs
+local CREATOR = "Lemonymous"
+local SQUAD_ARCHIVE_ARMORS = "Archive_Armors"
+local EVENT_BUILDING_DAMAGED = 7
+local DEFAULT_WEAPONS = {
+	"lmn_DevastatorCannon",
+	"lmn_Bombrun",
+	"lmn_SmokeLauncher",
 }
 
-local function isGame()
-	return true
-		and Game ~= nil
-		and GAME ~= nil
-end
 
-local function isSquad()
-	return true
-		and isGame()
-		and GAME.additionalSquadData.squad == squad
-end
+local mod = modApi:getCurrentMod()
+local game_savedata = GAME_savedata(CREATOR, SQUAD_ARCHIVE_ARMORS, "Achievements")
 
-local function isMission()
+
+-- Helper functions
+local function isRealMission()
 	local mission = GetCurrentMission()
 
 	return true
-		and isGame()
 		and mission ~= nil
 		and mission ~= Mission_Test
+		and Board
+		and Board:IsGameBoard()
 end
 
-local function isMissionBoard()
-	return true
-		and isMission()
-		and Board ~= nil
-		and Board:IsTipImage() == false
+local function isNotRealMission()
+	return not isRealMission()
 end
 
-local function isGameData()
-	return true
-		and GAME ~= nil
-		and GAME.lmn_Archive_Armors ~= nil
-		and GAME.lmn_Archive_Armors.achievementData ~= nil
+local function failAchievement(achievementId)
+	game_savedata[achievementId.."_failed"] = true
 end
 
-local function gameData()
-	if GAME.lmn_Archive_Armors == nil then
-		GAME.lmn_Archive_Armors = {}
-	end
-
-	if GAME.lmn_Archive_Armors.achievementData == nil then
-		GAME.lmn_Archive_Armors.achievementData = {}
-	end
-
-	return GAME.lmn_Archive_Armors.achievementData
+local function isAchievementFailed(achievementId)
+	return game_savedata[achievementId.."_failed"]
 end
 
-local difficultyIndices = {
-	[DIFF_EASY] = "easy",
-	[DIFF_NORMAL] = "normal",
-	[DIFF_HARD] = "hard",
-	default = "hard",
+local function isDefaultWeapon(weaponId)
+	return list_contains(DEFAULT_WEAPONS, weaponId)
+end
+
+
+-- Achievement: Collateral Damage
+local collateral = modApi.achievements:addExt{
+	id = "collateral",
+	name = "Collateral Damage",
+	tooltip = "End a battle with half of all buildings in ruins.",
+	image = mod.resourcePath.."img/achievements/collateral.png",
+	squad = SQUAD_ARCHIVE_ARMORS,
 }
 
-local COMPLETE = 1
-local INCOMPLETE = 0
-
--- collateral
-local getTooltip = achievements.collateral.getTooltip
-achievements.collateral.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-
-	local bronze = progress.easy == COMPLETE and "Complete" or "-"
-	local silver = progress.normal == COMPLETE and "Complete" or "-"
-	local gold = progress.hard == COMPLETE and "Complete" or "-"
-
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
-end
-
-modApi.events.onMissionEnd:subscribe(function()
-	local exit = false
-		or isSquad() == false
-		or isMissionBoard() == false
-
-	if exit then
-		return
-	end
-
+local function getBuildingAndRuinCount()
 	local cutils = LApi.cutils:get()
 	local buildings = 0
 	local ruins = 0
@@ -155,136 +75,79 @@ modApi.events.onMissionEnd:subscribe(function()
 		end
 	end
 
-	local difficulty = GetRealDifficulty()
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local achievementCompleted = true
-		and ruins >= buildings
-		and achievements.collateral:getProgress()[objective] == INCOMPLETE
-
-	if achievementCompleted then
-		achievements.collateral:addProgress{ [objective] = COMPLETE }
-		achievements.collateral:addProgress{ complete = false }
-		achievements.collateral:addProgress{ complete = true }
-	end
-end)
-
--- surgical
-local EVENT_BUILDING_DAMAGED = 7
-
-local getTooltip = achievements.surgical.getTooltip
-achievements.surgical.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-	local showStatus = true
-		and isGame()
-		and isGameData()
-
-	local bronze = progress.easy > 0 and progress.easy.." islands" or "-"
-	local silver = progress.normal > 0 and progress.normal.." islands" or "-"
-	local gold = progress.hard > 0 and progress.hard.." islands" or "-"
-	local status = ""
-
-	if showStatus then
-		local failed = gameData().surgicalFailed
-		local eligible = failed and "Failed" or "Eligible"
-
-		status = "Status: "..eligible.."\n\n"
-	end
-
-	result = result:gsub("%$status", status)
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
+	return buildings, ruins
 end
 
-modApi.events.onPostStartGame:subscribe(function()
-	gameData().surgicalFailed = false
-end)
-
-modApi.events.onMissionUpdate:subscribe(function()
-	local exit = false
-		or isSquad() == false
-		or isMission() == false
-		or gameData().surgicalFailed
-
-	if exit then
+function collateral:getTextProgress()
+	if isNotRealMission() then
 		return
 	end
 
-	if Game:GetEventCount(EVENT_BUILDING_DAMAGED) > 0 then
-		gameData().surgicalFailed = true
-	end
-end)
+	local buildings, ruins = getBuildingAndRuinCount()
+	return string.format("%s of %s buildings are in ruins", ruins, buildings + ruins)
+end
 
-modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad_id)
-	local exit = false
-		or isSquad() == false
-		or gameData().surgicalFailed
-
-	if exit then
+local function collateral_onMissionEnd()
+	if isNotRealMission() then
 		return
 	end
 
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local chievo = achievements.surgical
-	local progress = shallow_copy(chievo:getProgress())
-
-	if progress[objective] < islandsSecured then
-		progress.complete = true
-		progress[objective] = islandsSecured
-		chievo:addProgress{ complete = false }
-		chievo:setProgress(progress)
+	local buildings, ruins = getBuildingAndRuinCount()
+	if ruins >= buildings then
+		collateral:completeProgress()
 	end
-end)
+end
 
--- scrappy
-local defaultWeapons = {
-	"lmn_DevastatorCannon",
-	"lmn_Bombrun",
-	"lmn_SmokeLauncher",
+
+-- Achievement: Surgical Operation
+game_savedata.surgical_failed = false
+local surgical = modApi.achievements:addExt{
+	id = "surgical",
+	name = "Surgical Operation",
+	tooltip = "Beat the game without losing any Grid Power.",
+	textDiffComplete = "$highscore islands",
+	textFailed = "Took Grid damage",
+	retoastHighscore = true,
+	image = mod.resourcePath.."img/achievements/surgical.png",
+	squad = SQUAD_ARCHIVE_ARMORS,
 }
 
-local getTooltip = achievements.scrappy.getTooltip
-achievements.scrappy.getTooltip = function(self)
-	local result = getTooltip(self)
-	local progress = self:getProgress()
-	local showStatus = true
-		and isGame()
-		and isGameData()
-
-	local bronze = progress.easy > 0 and progress.easy.." islands" or "-"
-	local silver = progress.normal > 0 and progress.normal.." islands" or "-"
-	local gold = progress.hard > 0 and progress.hard.." islands" or "-"
-	local status = ""
-
-	if showStatus then
-		local failed = gameData().scrappyFailed
-		local eligible = failed and "Failed" or "Eligible"
-
-		status = "Status: "..eligible.."\n\n"
-	end
-
-	result = result:gsub("%$status", status)
-	result = result:gsub("%$bronze", bronze)
-	result = result:gsub("%$silver", silver)
-	result = result:gsub("%$gold", gold)
-
-	return result
+function surgical:isFailed()
+	return isAchievementFailed("surgical")
 end
 
-modApi.events.onPostStartGame:subscribe(function()
-	gameData().scrappyFailed = false
-end)
+local function surgical_onMissionUpdate(mission)
+	if isRealMission() and Game:GetEventCount(EVENT_BUILDING_DAMAGED) > 0 then
+		failAchievement("surgical")
+	end
+end
 
-modApi.events.onFrameDrawn:subscribe(function()
-	local exit = false
-		or isSquad() == false
-		or isMission()
-		or gameData().scrappyFailed
+local function surgical_onGameVictory(difficultyId, islandsSecured, squadId)
+	if surgical:isNotFailed() then
+		surgical:completeWithHighscore(islandsSecured)
+	end
+end
 
-	if exit then
+
+-- Achievement: Scrappy Victory
+game_savedata.scrappy_failed = false
+local scrappy = modApi.achievements:addExt{
+	id = "scrappy",
+	name = "Scrappy Victory",
+	tooltip = "Beat the game with default un-upgraded weapons.",
+	textDiffComplete = "$highscore islands",
+	textFailed = "Modified equipment",
+	retoastHighscore = true,
+	image = mod.resourcePath.."img/achievements/scrappy.png",
+	squad = SQUAD_ARCHIVE_ARMORS,
+}
+
+function scrappy:isFailed()
+	return isAchievementFailed("scrappy")
+end
+
+local function scrappy_onMissionStart()
+	if isNotRealMission() then
 		return
 	end
 
@@ -294,31 +157,43 @@ modApi.events.onFrameDrawn:subscribe(function()
 			local weapons = mech:GetPoweredWeapons()
 
 			for _, weaponId in pairs(weapons) do
-				if not list_contains(defaultWeapons, weaponId) then
-					gameData().scrappyFailed = true
+				if not isDefaultWeapon(weaponId) then
+					failAchievement("scrappy")
 				end
 			end
 		end
 	end
+end
+
+local function scrappy_onGameVictory(difficultyId, islandsSecured, squadId)
+	if scrappy:isNotFailed() then
+		scrappy:completeWithHighscore(islandsSecured)
+	end
+end
+
+
+-- Subscribe to events
+modApi.events.onSquadEnteredGame:subscribe(function(squadId)
+	if squadId == SQUAD_ARCHIVE_ARMORS then
+		modApi.events.onMissionEnd:subscribe(collateral_onMissionEnd)
+
+		modApi.events.onMissionUpdate:subscribe(surgical_onMissionUpdate)
+		modApi.events.onGameVictory:subscribe(surgical_onGameVictory)
+
+		modApi.events.onMissionStart:subscribe(scrappy_onMissionStart)
+		modApi.events.onGameVictory:subscribe(scrappy_onGameVictory)
+	end
 end)
 
-modApi.events.onGameVictory:subscribe(function(difficulty, islandsSecured, squad_id)
-	local exit = false
-		or isSquad() == false
-		or gameData().scrappyFailed
+-- Unsubscribe from events
+modApi.events.onSquadExitedGame:subscribe(function(squadId)
+	if squadId == SQUAD_ARCHIVE_ARMORS then
+		modApi.events.onMissionEnd:unsubscribe(collateral_onMissionEnd)
 
-	if exit then
-		return
-	end
+		modApi.events.onMissionUpdate:unsubscribe(surgical_onMissionUpdate)
+		modApi.events.onGameVictory:unsubscribe(surgical_onGameVictory)
 
-	local objective = difficultyIndices[difficulty] or difficultyIndices.default
-	local chievo = achievements.scrappy
-	local progress = shallow_copy(chievo:getProgress())
-
-	if progress[objective] < islandsSecured then
-		progress.complete = true
-		progress[objective] = islandsSecured
-		chievo:addProgress{ complete = false }
-		chievo:setProgress(progress)
+		modApi.events.onMissionStart:unsubscribe(scrappy_onMissionStart)
+		modApi.events.onGameVictory:unsubscribe(scrappy_onGameVictory)
 	end
 end)
