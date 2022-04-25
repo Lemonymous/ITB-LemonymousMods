@@ -12,6 +12,10 @@ local VERSION = "1.0.1"
 --    separate boulder on the second phase of the
 --    final mission.
 --
+-- TipImageShown & TipImageHidden Event Bug
+--    These events don't fire when hovering possible
+--    weapon upgrades in the Mech upgrade window.
+--
 ---------------------------------------------------
 
 local NULL_FUNCTION = function() end
@@ -37,6 +41,27 @@ local function override_Mission_ApplyEnvironmentEffect()
 		end
 
 		return result
+	end
+end
+
+local function buildGetUpgradeDescriptionOverride(skill)
+	local originalFn = skill.GetUpgradeDescription
+
+	return function(self, pawn, ...)
+		-- Hack: The mod loader hooks into GetTipDamage to
+		-- know when a skill is being hovered. Call this
+		-- function to "inform" the mod loader this skill
+		-- is being hovered.
+		self:GetTipDamage()
+		return originalFn(self, pawn, ...)
+	end
+end
+
+local function override_Skill_GetUpgradeDescription()
+	for k, skill in pairs(_G) do
+		if type(skill) == 'table' and skill.GetSkillEffect then
+			skill.GetUpgradeDescription = buildGetUpgradeDescriptionOverride(skill)
+		end
 	end
 end
 
@@ -68,5 +93,6 @@ if isNewestVersion then
 		modApi.firePreEnvironmentHooks = NULL_FUNCTION
 		modApi.firePostEnvironmentHooks = NULL_FUNCTION
 		override_Mission_ApplyEnvironmentEffect()
+		override_Skill_GetUpgradeDescription()
 	end
 end
