@@ -24,6 +24,10 @@ local VERSION = "1.1.1"
 -- height. The library will handle resetting the
 -- value automatically.
 --
+-- requires
+--    modApiExt
+--    eventifyModApiExtEvents
+--
 ---------------------------------------------------
 
 local weaponArmed = LApi.library:fetch("weaponArmed")
@@ -88,6 +92,18 @@ if isNewestVersion then
 		resetArtilleryHeight()
 	end
 
+	ArtilleryArc.onSkillEnd = function(mission, pawn, weaponId, p1, p2)
+		local hoveredSkill = modApi:getHoveredSkill()
+		if hoveredSkill then return end
+
+		local armedSkill = weaponArmed:getArmedWeapon()
+		if armedSkill then
+			setSkillArtilleryHeight(armedSkill)
+		else
+			resetArtilleryHeight()
+		end
+	end
+
 	ArtilleryArc.onTipImageShown = function(hoveredSkill)
 		setSkillArtilleryHeight(hoveredSkill)
 	end
@@ -113,6 +129,7 @@ if isNewestVersion then
 	function ArtilleryArc:finalizeInit()
 		weaponArmed.events.onWeaponArmed:subscribe(self.onWeaponArmed)
 		weaponArmed.events.onWeaponUnarmed:subscribe(self.onWeaponUnarmed)
+		modApi.events.onSkillEnd:subscribe(self.onSkillEnd)
 		modApi.events.onTipImageShown:subscribe(self.onTipImageShown)
 		modApi.events.onTipImageHidden:subscribe(self.onTipImageHidden)
 		modApi.events.onMissionUpdate:subscribe(self.onMissionUpdate)
