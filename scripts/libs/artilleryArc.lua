@@ -1,7 +1,7 @@
 
-local VERSION = "1.1.1"
+local VERSION = "1.1.2"
 ---------------------------------------------------
--- Artillery Arc v1.1.0 - code library
+-- Artillery Arc - code library
 --
 -- by Lemonymous
 ---------------------------------------------------
