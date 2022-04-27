@@ -54,7 +54,6 @@ local monsterkill = modApi.achievements:addExt{
 	name = "Mo-mo-mo-monster Kill!",
 	tooltip = "Kill 3 enemies with a single attack.",
 	textDiffComplete = "$highscore kills",
-	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/monsterkill.png",
 	squad = SQUAD_RF1995,
 }

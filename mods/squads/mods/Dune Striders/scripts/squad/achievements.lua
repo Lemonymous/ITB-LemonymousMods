@@ -62,7 +62,6 @@ local dust = modApi.achievements:addExt{
 	name = "Dust Storm",
 	tooltip = "End a battle with 14 tiles covered in smoke.",
 	textDiffComplete = "$highscore smoke tiles",
-	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/dust.png",
 	squad = SQUAD_DUNE_STRIDERS,
 }

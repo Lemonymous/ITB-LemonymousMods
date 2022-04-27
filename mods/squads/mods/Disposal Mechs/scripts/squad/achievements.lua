@@ -49,7 +49,6 @@ local teamwork = modApi.achievements:addExt{
 	name = "Team Spirit",
 	tooltip = "Move allied mechs with attacks 5 times in a single battle.",
 	textDiffComplete = "$highscore times",
-	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/teamwork.png",
 	squad = SQUAD_DISPOSAL_MECHS,
 }
@@ -103,7 +102,6 @@ local garbage = modApi.achievements:addExt{
 	name = "Garbage Day",
 	tooltip = "Kill 7 enemies inflicted with A.C.I.D. in a single battle.",
 	textDiffComplete = "$highscore kills",
-	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/garbage.png",
 	squad = SQUAD_DISPOSAL_MECHS,
 }
