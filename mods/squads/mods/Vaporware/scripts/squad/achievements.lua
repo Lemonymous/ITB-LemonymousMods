@@ -18,6 +18,7 @@ local BUMPING_TARGET = 2
 
 local mod = modApi:getCurrentMod()
 local game_savedata = GAME_savedata(CREATOR, SQUAD_VAPORWARE, "Achievements")
+local mission_savedata_attacked = Mission_savedata(CREATOR, SQUAD_VAPORWARE, "Achievements", "attacked")
 
 
 -- Helper functions
@@ -84,35 +85,63 @@ end
 local docile = modApi.achievements:addExt{
 	id = "docile_opposition",
 	name = "Docile Opposition",
-	tooltip = "Start a turn with at least "..DOCILE_TARGET.." enemies, where none of them queued up any attacks.",
+	tooltip = "Start a turn where at least "..DOCILE_TARGET.." non-frozen enemies, withheld their attack.",
 	textDiffComplete = "$highscore docile enemies",
 	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/docile_opposition.png",
 	squad = SQUAD_VAPORWARE,
 }
 
+local function nonfrozenEnemyWithheldAttack(enemyId)
+	local enemy = Board:GetPawn(enemyId)
+
+	return true
+		and enemy:IsFrozen() == false
+		and #enemy:GetPoweredWeapons() > 0
+		and enemy:GetQueuedWeapon() == nil
+		and mission_savedata_attacked[enemyId] ~= true
+end
+
+local function docile_onMissionStart()
+	if isNotRealMission() then
+		return
+	end
+
+	clear_table(mission_savedata_attacked)
+end
+
 local function docile_onNextTurn()
 	if isNotRealMission() then
 		return
 	end
 
-	if Game:GetTeamTurn() == TEAM_PLAYER then
+	if Game:GetTeamTurn() == TEAM_ENEMY then
+		clear_table(mission_savedata_attacked)
+	else
 		local enemies = Board:GetPawns(TEAM_ENEMY)
 		local enemyCount = enemies:size()
+		local enemiesWithheldAttack = 0
 
-		if enemyCount >= DOCILE_TARGET then
-			for i = 1, enemyCount do
-				local enemyId = enemies:index(i)
-				local enemy = Board:GetPawn(enemyId)
+		for i = 1, enemyCount do
+			local enemyId = enemies:index(i)
 
-				if enemy:IsQueued() then
-					return
-				end
+			if nonfrozenEnemyWithheldAttack(enemyId) then
+				enemiesWithheldAttack = enemiesWithheldAttack + 1
 			end
+		end
 
-			docile:completeWithHighscore(enemyCount)
+		if enemiesWithheldAttack >= DOCILE_TARGET then
+			docile:completeWithHighscore(enemiesWithheldAttack)
 		end
 	end
+end
+
+local function docile_onEnemyAttackStart(mission, pawn, weaponId, p1, p2)
+	if isNotRealMission() then
+		return
+	end
+
+	mission_savedata_attacked[pawn:GetId()] = true
 end
 
 
@@ -171,7 +200,9 @@ modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 		modApi.events.onQueuedAttackCanceled:subscribe(canceled_onQueuedAttackCanceled)
 		modApi.events.onGameStateChanged:subscribe(canceled_onGameStateChanged)
 
+		modApi.events.onMissionStart:subscribe(docile_onMissionStart)
 		modApi.events.onNextTurn:subscribe(docile_onNextTurn)
+		modApi.events.onEnemyAttackStart:subscribe(docile_onEnemyAttackStart)
 
 		modApi.events.onPawnKilled:subscribe(bumping_onPawnKilled)
 		modApi.events.onAllyAttackStart:subscribe(bumping_onAllyAttackStart)
@@ -186,7 +217,9 @@ modApi.events.onSquadExitedGame:subscribe(function(squadId)
 		modApi.events.onQueuedAttackCanceled:unsubscribe(canceled_onQueuedAttackCanceled)
 		modApi.events.onGameStateChanged:unsubscribe(canceled_onGameStateChanged)
 
+		modApi.events.onMissionStart:unsubscribe(docile_onMissionStart)
 		modApi.events.onNextTurn:unsubscribe(docile_onNextTurn)
+		modApi.events.onEnemyAttackStart:unsubscribe(docile_onEnemyAttackStart)
 
 		modApi.events.onPawnKilled:unsubscribe(bumping_onPawnKilled)
 		modApi.events.onAllyAttackStart:unsubscribe(bumping_onAllyAttackStart)
