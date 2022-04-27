@@ -2,7 +2,7 @@
 local mod = {
 	id = "lmn_dune_striders",
 	name = "Dune Striders",
-	version = "0.2.2",
+	version = "0.2.3",
 	modApiVersion = "2.6.4",
 	icon = "img/icon.png",
 	requirements = {}

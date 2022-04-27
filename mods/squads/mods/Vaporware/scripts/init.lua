@@ -2,7 +2,7 @@
 local mod = {
 	id = "vaporware",
 	name = "Vaporware",
-	version = "1.0.0",
+	version = "1.0.1",
 	modApiVersion = "2.6.4",
 	icon = "img/icon.png",
 }
