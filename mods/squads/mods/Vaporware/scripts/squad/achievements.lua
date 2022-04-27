@@ -11,9 +11,9 @@
 -- defs
 local CREATOR = "Lemonymous"
 local SQUAD_VAPORWARE = "vaporware"
-local CANCELED_TARGET = 30
+local CANCELED_TARGET = 40
 local DOCILE_TARGET = 3
-local BUMPING_TARGET = 2
+local BUMPING_TARGET = 3
 
 
 local mod = modApi:getCurrentMod()
@@ -49,7 +49,6 @@ local canceled = modApi.achievements:addExt{
 	name = "Canceled!",
 	tooltip = "Cancel "..CANCELED_TARGET.." attacks on a single Island.",
 	textDiffComplete = "$highscore attacks canceled",
-	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/canceled.png",
 	squad = SQUAD_VAPORWARE,
 }
@@ -87,7 +86,6 @@ local docile = modApi.achievements:addExt{
 	name = "Docile Opposition",
 	tooltip = "Start a turn where at least "..DOCILE_TARGET.." non-frozen enemies, withheld their attack.",
 	textDiffComplete = "$highscore docile enemies",
-	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/docile_opposition.png",
 	squad = SQUAD_VAPORWARE,
 }
@@ -152,7 +150,6 @@ local bumping = modApi.achievements:addExt{
 	name = "Bumping Heads",
 	tooltip = "Kill "..BUMPING_TARGET.." enemies in a single Vortex.",
 	textDiffComplete = "$highscore kills",
-	retoastHighscore = true,
 	image = mod.resourcePath.."img/achievements/bumping_heads.png",
 	squad = SQUAD_VAPORWARE,
 }
