@@ -242,10 +242,12 @@ function vw_Vortex_Generator:GetSkillEffect(p1, p2)
 	while #clouds > 0 do
 		for i = #clouds, 1, -1 do
 			local cloud = clouds[i]
-			ret:AddScript(string.format(
-				"Board:SetSmoke(%s, true, true)",
-				cloud.loc:GetString()
-			))
+			if sim:isSmoke(cloud.loc) then
+				ret:AddScript(string.format(
+					"Board:SetSmoke(%s, true, true)",
+					cloud.loc:GetString()
+				))
+			end
 
 			local markAddCloud = true
 				and Board:IsSmoke(cloud.loc) == false
