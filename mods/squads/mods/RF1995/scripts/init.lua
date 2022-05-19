@@ -14,8 +14,8 @@ local scripts = {
 }
 
 function mod:init()
-	if not easyEdit.enabled then
-		Assert.Error("Easy Edit is disabled. Make sure it is enabled in [Mod Content] > [Configure EasyEdit] and restart the game.")
+	if not easyEdit then
+		Assert.Error("Easy Edit not found")
 	end
 
 	if not LApi then
