@@ -10,8 +10,9 @@ require(scriptPath().."easyEdit/easyEdit")
 local mod =  {
 	id = "lmn_mods",
 	name = "Lemonymous' Mods",
-	version = "0.7.2",
-	modApiVersion = "2.6.4",
+	version = "0.8.0",
+	modApiVersion = "2.7.0",
+	gameVersion = "1.2.75",
 	icon = "scripts/icon.png",
 	description = "A Collection of mods made by Lemonymous",
 	submodFolders = {"mods/"}
