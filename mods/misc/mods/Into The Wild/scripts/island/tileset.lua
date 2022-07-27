@@ -7,6 +7,7 @@ tileset:appendAssets("img/tileset/")
 tileset:setClimate("Tropical")
 
 tileset:setRainChance(30)
+tileset:setCrackChance(3)
 tileset:setEnvironmentChance{
 	[TERRAIN_ACID] = 0,
 	[TERRAIN_FOREST] = 14,
