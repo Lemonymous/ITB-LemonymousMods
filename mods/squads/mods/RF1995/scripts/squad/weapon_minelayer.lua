@@ -136,7 +136,7 @@ lmn_Minelayer_Mine_Tip_A.GetSkillEffect = lmn_Minelayer_Mine_Tip.GetSkillEffect
 -- items
 ---------
 
-lmn_Minelayer_Item_Mine = { Image = "combat/rf_mine_small.png", Damage = SpaceDamage(0), Tooltip = "old_earth_mine", Icon = "combat/icons/icon_mine_glow.png"}
+lmn_Minelayer_Item_Mine = { Image = "combat/rf_mine_small.png", Damage = SpaceDamage(0), Tooltip = "old_earth_mine", Icon = "combat/icons/icon_mine_glow.png", UsedImage = ""}
 lmn_Minelayer_Item_Mine_Dummy = {} -- modified dynamically
 
 modApi:addWeaponDrop("lmn_Minelayer_Mine")
