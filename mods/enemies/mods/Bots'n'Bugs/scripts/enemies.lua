@@ -51,10 +51,27 @@ local enemies = {
 	},
 }
 
+local function makeExclusive(id1, id2)
+	for _, list in ipairs(exclusiveElements) do
+		for _, enemy in ipairs(list) do
+			if enemy == id1 then
+				table.insert(list, id2)
+				break
+			elseif enemy == id2 then
+				table.insert(list, id1)
+				break
+			end
+		end
+	end
+
+	table.insert(exclusiveElements, {id1, id2})
+end
+
 -- config enemies
 for id, v in pairs(enemies) do
 	WeakPawns[id] = v.weakpawn
 	Spawner.max_pawns[id] = v.max_pawns -- defaults to 3
 	Spawner.max_level[id] = v.max_level -- defaults to 2
-	ExclusiveElements[id] = v.exclusive_element
+
+	makeExclusive(id, v.exclusive_element)
 end

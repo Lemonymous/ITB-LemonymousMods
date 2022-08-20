@@ -8,13 +8,6 @@ local mod = {
 	requirements = {}
 }
 
---Currently not enough different enemy types to warrant exclusion code.
---ExclusiveElements["lmn_Sprout"] = "lmn_Chomper"			-- limit slow melee.
---ExclusiveElements["lmn_Bud"] = "lmn_Puffer"				-- limit number of stable enemies.
---ExclusiveElements["lmn_Springseed"] = "lmn_Puffer"		-- limit number of very fast enemies.
-ExclusiveElements["lmn_Puffer"] = "Jelly_Explode"			-- explode near buildings is not fun.
-ExclusiveElements["lmn_Infuser"] = "lmn_Beanstalker"		-- both support.
-
 function mod:init()
 	if not easyEdit.enabled then
 		Assert.Error("Easy Edit is disabled. Make sure it is enabled in [Mod Content] > [Configure EasyEdit] and restart the game.")
@@ -41,6 +34,7 @@ function mod:init()
 	require(scriptPath.."island/tileset")
 	require(scriptPath.."island/island")
 	require(scriptPath.."island/islandComposite")
+	require(scriptPath.."island/exclusiveEnemies")
 
 	require(scriptPath.."enemies/init")
 	require(scriptPath.."missions/init")
