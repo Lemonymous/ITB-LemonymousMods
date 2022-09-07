@@ -1,7 +1,7 @@
 
-local VERSION = "2.1.0"
+local VERSION = "2.2.0"
 ---------------------------------------------------------------------
--- Trait v2.1.0 - code library
+-- Trait v2.2.0 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------------------------
@@ -75,10 +75,8 @@ local function getTraitIcon(loc)
 		end
 	end
 
-	local pilotSkill = pawn:GetPilotSkill()
-	if pilotSkill ~= "" then
-		local pilotTrait = Traits.pilotSkills[pilotSkill]
-		if pilotTrait then
+	for pilotSkill, pilotTrait in pairs(Traits.pilotSkills) do
+		if pawn:IsAbility(pilotSkill) then
 			return pilotTrait.id
 		end
 	end
@@ -272,7 +270,11 @@ if isNewestVersion then
 		overrideGetStatusTooltip()
 
 		modApi.events.onModsLoaded:subscribe(onModsLoaded)
-		modApi.events.onSaveDataUpdated:subscribe(updateAll)
+		modApi.events.onMissionChanged:subscribe(function(mission, oldMission)
+			if mission then
+				updateAll()
+			end
+		end)
 	end
 end
 
