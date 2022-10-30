@@ -1,5 +1,5 @@
 
-Assert.NotEquals(nil, LApi, "Library requires LApi")
+Assert.NotEquals(nil, memedit, "Library requires memedit")
 Assert.NotEquals(nil, DetectDeployment, "Library requires detectDeployment")
 
 local VERSION = "1.0.0"

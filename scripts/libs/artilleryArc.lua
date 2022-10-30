@@ -30,7 +30,8 @@ local VERSION = "1.1.2"
 --
 ---------------------------------------------------
 
-local weaponArmed = LApi.library:fetch("weaponArmed")
+local path = GetParentPath(...)
+local weaponArmed = require(path.."weaponArmed")
 local DEFAULT_HEIGHT = 18
 
 local function onModsInitialized()

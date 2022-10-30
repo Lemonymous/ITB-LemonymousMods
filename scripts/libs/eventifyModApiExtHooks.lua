@@ -1,5 +1,6 @@
 
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local mod = modApi:getCurrentMod()
+local modApiExt = require(mod.scriptPath.."ITB-ModUtils/modApiExt/modApiExt")
 
 local VERSION = "1.0.0"
 local EVENTS = {

@@ -1,43 +1,52 @@
 
--- initialize easyEdit
-local function scriptPath()
-	return debug.getinfo(2, "S").source:sub(2):match("(.*[/\\])")
-end
-require(scriptPath().."easyEdit/easyEdit")
-
-
--- initialize modpack
 local mod =  {
 	id = "lmn_mods",
 	name = "Lemonymous' Mods",
 	version = "0.8.5",
-	modApiVersion = "2.7.1",
+	modApiVersion = "2.7.3dev",
 	gameVersion = "1.2.78",
 	icon = "scripts/icon.png",
 	description = "A Collection of mods made by Lemonymous",
-	submodFolders = {"mods/"}
+	submodFolders = {"mods/"},
+	dependencies = {"memedit", "easyedit"}
+}
+
+local libs = {
+	"achievementExt",
+	"artilleryArc",
+	"astar",
+	"attackEvents",
+	"blockDeathByDeployment",
+	"effectBurst",
+	"effectPreview",
+	"eventifyModApiExtHooks",
+	"globals",
+	"modloaderfixes",
+	"personalSavedata",
+	"switch",
+	"trait",
+	"tutorialTips",
+	"weaponArmed",
+	"weaponPreview",
+	"worldConstants",
 }
 
 function mod:metadata()
 end
 
 function mod:init(options)
-	require(self.scriptPath.."LApi/LApi")
-	require(self.scriptPath.."ITB-ModUtils/modApiExt/modApiExt"):init()
-	require(self.scriptPath.."libs/eventifyModApiExtHooks")
-	require(self.scriptPath.."libs/modloaderfixes")
-	require(self.scriptPath.."libs/artilleryArc")
-	require(self.scriptPath.."libs/detectDeployment")
-	require(self.scriptPath.."libs/blockDeathByDeployment")
-	require(self.scriptPath.."libs/squadEvents")
-	require(self.scriptPath.."libs/attackEvents")
-	require(self.scriptPath.."libs/difficultyEvents")
-	require(self.scriptPath.."libs/personalSavedata")
-	require(self.scriptPath.."libs/achievementExt")
+	local path = self.scriptPath
+
+	self.libs = {}
+	self.libs.modApiExt = require(path.."ITB-ModUtils/modApiExt/modApiExt"):init()
+
+	for _, libId in ipairs(libs) do
+		self.libs[libId] = require(path.."libs/"..libId)
+	end
 end
 
 function mod:load(options, version)
-	require(self.scriptPath.."ITB-ModUtils/modApiExt/modApiExt"):load(options, version)
+	self.libs.modApiExt:load(options, version)
 end
 
 return mod

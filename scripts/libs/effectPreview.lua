@@ -37,7 +37,8 @@
 --
 --------------------------------------------------------
 
-local globals = LApi.library:fetch("globals")
+local path = GetParentPath(...)
+local globals = require(path.."globals")
 local displaced_index
 local effectPreview = {}
 

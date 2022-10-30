@@ -8,7 +8,8 @@
 -- add burst to water and ice tiles.
 --------------------------------------
 
-LApi.library:fetch("globals")
+local path = GetParentPath(...)
+local globals = require(path.."globals")
 
 local index_terrain
 local index_hp

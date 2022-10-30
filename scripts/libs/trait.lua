@@ -10,7 +10,7 @@ local VERSION = "2.2.0"
 -- Only one trait can be visible on a unit at the same time.
 --
 --    Requires libraries:
--- LApi
+-- memedit
 -- modApiExt
 --
 --    Fetch library:
@@ -35,7 +35,9 @@ local VERSION = "2.2.0"
 -- first created > last created
 -- 
 
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local isMemeditAvailable = memedit ~= nil
+local mod = modApi:getCurrentMod()
+local modApiExt = require(mod.scriptPath.."ITB-ModUtils/modApiExt/modApiExt")
 
 local function isManagedTrait(id)
 	local prefix = id:sub(1,5)
@@ -91,6 +93,12 @@ local function getTraitIcon(loc)
 end
 
 local function updateLoc(loc)
+	if not isMemeditAvailable then
+		Board:SetTerrainIcon(loc, getTraitIcon(loc))
+
+		return
+	end
+
 	local traitIcon_new = getTraitIcon(loc)
 	local traitIcon_old = Board:GetTerrainIcon(loc)
 
