@@ -2,8 +2,9 @@
 modApi:addWeaponDrop("vw_Vortex_Generator")
 
 
-local globals = LApi.library:fetch("globals")
-local weaponPreview = LApi.library:fetch("weaponPreview")
+local mod = modApi:getCurrentMod()
+local globals = mod.libs.globals
+local weaponPreview = mod.libs.weaponPreview
 local globalPawnIndex = globals:new()
 
 

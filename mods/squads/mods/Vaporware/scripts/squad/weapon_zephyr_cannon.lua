@@ -3,7 +3,7 @@ modApi:addWeaponDrop("vw_Zephyr_Cannon")
 
 
 local mod = mod_loader.mods[modApi.currentMod]
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 local defaultArtilleryHeight = worldConstants:getDefaultHeight()
 
 
