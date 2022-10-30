@@ -1,10 +1,6 @@
 
 local utils = {}
 
-function utils.IsTipImage()
-	return Board and Board:GetSize() == Point(6,6)
-end
-
 function utils.IsTerrainWaterLogging(point, pawn)
 	return Board:GetTerrain(point) == TERRAIN_WATER and not pawn:IsFlying()
 end
@@ -124,6 +120,9 @@ local impactSounds = {
 
 function utils.GetGenericImpactSoundScript(p, defaultSound)
 	local pawn = Board:GetPawn(p)
+	if pawn.GetImpactMaterial == nil then
+		LOG("pawn", pawn, debug.traceback())
+	end
 	local impactMaterial = pawn:GetImpactMaterial()
 	local impactSound = impactSounds[impactMaterial] or defaultSound
 	

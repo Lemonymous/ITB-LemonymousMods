@@ -1,9 +1,9 @@
 
 local mod = modApi:getCurrentMod()
 local utils = require(mod.scriptPath .."libs/utils")
-local effectPreview = LApi.library:fetch("effectPreview")
-local effectBurst = LApi.library:fetch("effectBurst")
-local worldConstants = LApi.library:fetch("worldConstants")
+local effectPreview = mod.libs.effectPreview
+local effectBurst = mod.libs.effectBurst
+local worldConstants = mod.libs.worldConstants
 
 local t = .10
 local q = t/4
@@ -72,7 +72,7 @@ lmn_ds_HaulerHooks_A = lmn_ds_HaulerHooks:new{
 }
 
 local function canRefreshMovement(pawn)
-	if utils.IsTipImage() then
+	if Board:IsTipImage() then
 		return true
 	end
 	

@@ -1,7 +1,7 @@
 
 local mod = modApi:getCurrentMod()
 local utils = require(mod.scriptPath .."libs/utils")
-local effectBurst = LApi.library:fetch("effectBurst")
+local effectBurst = mod.libs.effectBurst
 
 local function isRoadRunner(pawn)
 	return pawn:GetPathProf() % 16 == PATH_ROADRUNNER

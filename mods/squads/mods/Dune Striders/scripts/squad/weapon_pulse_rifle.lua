@@ -1,8 +1,8 @@
 
 local mod = modApi:getCurrentMod()
 local utils = require(mod.scriptPath .."libs/utils")
-local effectBurst = LApi.library:fetch("effectBurst")
-local worldConstants = LApi.library:fetch("worldConstants")
+local effectBurst = mod.libs.effectBurst
+local worldConstants = mod.libs.worldConstants
 
 lmn_ds_PulseRifle = Skill:new{
 	Name = "Pulse Rifle",
