@@ -1,6 +1,6 @@
 
 local mod = modApi:getCurrentMod()
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local modApiExt = mod.libs.modApiExt
 
 lmn_SmokeLauncher = Skill:new{
 	Name = "Smoke Launcher",

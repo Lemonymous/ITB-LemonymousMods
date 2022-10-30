@@ -54,7 +54,7 @@ function lmn_Bombrun:GetTargetArea(point)
 	return ret
 end
 
-function lmn_Bombrun:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_Bombrun:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local distance = p1:Manhattan(p2)
@@ -211,8 +211,8 @@ lmn_Bombrun_Tip_A = lmn_Bombrun_A:new{}
 lmn_Bombrun_Tip_B = lmn_Bombrun_B:new{}
 lmn_Bombrun_Tip_AB = lmn_Bombrun_AB:new{}
 
-function lmn_Bombrun_Tip:GetSkillEffect(p1, p2, parentSkill)
-	local ret = lmn_Bombrun.GetSkillEffect(self, p1, p2, parentSkill, true)
+function lmn_Bombrun_Tip:GetSkillEffect(p1, p2)
+	local ret = lmn_Bombrun.GetSkillEffect(self, p1, p2)
 	ret:AddDelay(2)
 	
 	return ret

@@ -1,6 +1,6 @@
 
 -- requires
---	LApi
+-- memedit
 --	achievementExt
 --		difficultyEvents
 --	personalSavedata
@@ -60,7 +60,6 @@ local collateral = modApi.achievements:addExt{
 }
 
 local function getBuildingAndRuinCount()
-	local cutils = LApi.cutils:get()
 	local buildings = 0
 	local ruins = 0
 
@@ -70,7 +69,7 @@ local function getBuildingAndRuinCount()
 
 		if iTerrain == TERRAIN_BUILDING then
 			buildings = buildings + 1
-		elseif iTerrain == TERRAIN_RUBBLE and cutils.Board.GetRubbleType(p) == RUBBLE_BUILDING then
+		elseif iTerrain == TERRAIN_RUBBLE and Board:GetRubbleType(p) == RUBBLE_BUILDING then
 			ruins = ruins + 1
 		end
 	end
