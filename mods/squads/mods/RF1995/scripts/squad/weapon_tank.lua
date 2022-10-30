@@ -1,9 +1,9 @@
 
 local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
-local effectPreview = LApi.library:fetch("effectPreview")
+local effectPreview = mod.libs.effectPreview
 
 lmn_Tank_Cannon = Skill:new{
 	Self = "lmn_Tank_Cannon",
@@ -84,7 +84,7 @@ function lmn_Tank_Cannon:GetProjectileEnd(p1, p2)
 	return target
 end
 
-function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScript)
+function lmn_Tank_Cannon:GetSkillEffect(p1, p2, isScript)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	if not shooter then
@@ -94,6 +94,7 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
+	local isTipImage = Board:IsTipImage()
 	
 	if isScript then
 		-- GetSkillEffect called recursively.
@@ -210,10 +211,10 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScrip
 			local fx = SkillEffect();
 			fx:AddScript([[
 				lmn_Tank_Cannon.AttacksRemaining[%s] = %s;
-				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, nil, %s, true));
+				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, true));
 			]]);
 			Board:AddEffect(fx);
-		]=], id, attacks, self.Self, p1:GetString(), p2:GetString(), tostring(isTipImage)))
+		]=], id, attacks, self.Self, p1:GetString(), p2:GetString()))
 		
 	else
 		lmn_Tank_Cannon.AttacksRemaining[id] = nil
@@ -255,8 +256,8 @@ lmn_Tank_Cannon_Tip = lmn_Tank_Cannon:new{
 	}
 }
 
-function lmn_Tank_Cannon_Tip:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScript, ...)
-	return lmn_Tank_Cannon.GetSkillEffect(self, p1, p2, parentSkill, true, isScript, ...)
+function lmn_Tank_Cannon_Tip:GetSkillEffect(p1, p2, isScript, ...)
+	return lmn_Tank_Cannon.GetSkillEffect(self, p1, p2, isScript, ...)
 end
 
 lmn_Tank_Cannon_Tip_A = lmn_Tank_Cannon_A:new{

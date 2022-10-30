@@ -1,10 +1,10 @@
 
 local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 local virtualBoard = require(scriptPath .."libs/virtualBoard")
-local effectPreview = LApi.library:fetch("effectPreview")
-local effectBurst = LApi.library:fetch("effectBurst")
+local effectPreview = mod.libs.effectPreview
+local effectBurst = mod.libs.effectBurst
 
 local hoveredTile
 
@@ -166,7 +166,7 @@ function lmn_Minelayer_Launcher:GetProjectileEnd(p1, p2)
 	return target
 end
 
-function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, isScript, useArtillery)
+function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	if not shooter then
@@ -176,6 +176,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
+	local isTipImage = Board:IsTipImage()
 	
 	if isScript then
 		-- GetSkillEffect called recursively.
@@ -433,10 +434,10 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, parentSkill, isTipImage, 
 			local fx = SkillEffect();
 			fx:AddScript([[
 				lmn_Minelayer_Launcher.AttacksRemaining[%s] = %s;
-				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, nil, %s, true, %s));
+				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, true, %s));
 			]]);
 			Board:AddEffect(fx);
-		]=], id, attacks, self.Self, p1:GetString(), p2:GetString(), tostring(isTipImage), tostring(useArtillery)))
+		]=], id, attacks, self.Self, p1:GetString(), p2:GetString(), tostring(useArtillery)))
 		
 	else
 		lmn_Minelayer_Launcher.AttacksRemaining[id] = nil
@@ -485,8 +486,8 @@ lmn_Minelayer_Launcher_Tip_AB = lmn_Minelayer_Launcher_AB:new{
 	}
 }
 
-function lmn_Minelayer_Launcher_Tip:GetSkillEffect(p1, p2, parentSkill, isTipImage, ...)
-	return lmn_Minelayer_Launcher.GetSkillEffect(self, p1, p2, parentSkill, true, ...)
+function lmn_Minelayer_Launcher_Tip:GetSkillEffect(p1, p2, ...)
+	return lmn_Minelayer_Launcher.GetSkillEffect(self, p1, p2, ...)
 end
 
 lmn_Minelayer_Launcher_Tip_A.GetSkillEffect = lmn_Minelayer_Launcher_Tip.GetSkillEffect

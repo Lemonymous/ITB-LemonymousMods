@@ -1,5 +1,6 @@
 
-local effectBurst = LApi.library:fetch("effectBurst")
+local mod = modApi:getCurrentMod()
+local effectBurst = mod.libs.effectBurst
 
 lmn_Emitter_Helicopter_Rocket = Emitter_Missile:new{
 	image = "effects/smoke/art_smoke.png",
@@ -66,7 +67,7 @@ function lmn_Helicopter_Rocket:GetTargetArea(point)
 	return ret
 end
 
-function lmn_Helicopter_Rocket:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_Helicopter_Rocket:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local distance = p1:Manhattan(p2)
@@ -82,9 +83,9 @@ function lmn_Helicopter_Rocket:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		ret:AddArtillery(damage, self.UpShot)
 		damageAnim.sAnimation = "ExploAir1"
 	else
-		effectBurst.Add(ret, p1, "lmn_Emitter_Helicopter_Rocket", dir, isTipImage)
+		effectBurst.Add(ret, p1, "lmn_Emitter_Helicopter_Rocket", dir)
 		ret:AddProjectile(damage, self.ProjectileArt)
-		effectBurst.Add(ret, p2, "lmn_Emitter_Helicopter_Rocket", dir, isTipImage)
+		effectBurst.Add(ret, p2, "lmn_Emitter_Helicopter_Rocket", dir)
 		damageAnim.sAnimation = "explopush1_".. dir
 	end
 	
@@ -126,8 +127,8 @@ lmn_Helicopter_Rocket_Tip_A = lmn_Helicopter_Rocket_A:new{}
 lmn_Helicopter_Rocket_Tip_B = lmn_Helicopter_Rocket_B:new{}
 lmn_Helicopter_Rocket_Tip_AB = lmn_Helicopter_Rocket_AB:new{}
 
-function lmn_Helicopter_Rocket_Tip:GetSkillEffect(p1, p2, parentSkill)
-	return lmn_Helicopter_Rocket.GetSkillEffect(self, p1, p2, parentSkill, true)
+function lmn_Helicopter_Rocket_Tip:GetSkillEffect(p1, p2)
+	return lmn_Helicopter_Rocket.GetSkillEffect(self, p1, p2)
 end
 
 lmn_Helicopter_Rocket_Tip_A.GetSkillEffect = lmn_Helicopter_Rocket_Tip.GetSkillEffect

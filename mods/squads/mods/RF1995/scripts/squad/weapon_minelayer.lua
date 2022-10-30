@@ -3,6 +3,8 @@
 -- However, mines are now technically not dangerous; so warning icon when moving to mines will not show up.
 -- Ice will also stay destroyed after undoing move to ice with a mine on it.
 -- Mines will remain if terrain changes to water or chasm(unconfirmed)
+local mod = modApi:getCurrentMod()
+local track_items = require(mod.scriptPath.."libs/track_items")
 
 lmn_Minelayer_Mine = Skill:new{
 	Name = "Proximity Mines",
@@ -64,7 +66,7 @@ function Move:GetSkillEffect(p1, p2, ...)
 		ret:AddDamage(damage)
 	end
 	
-	local item_at_destination = Board:GetItemName(p2)
+	local item_at_destination = Board:GetItem(p2)
 	if item_at_destination then
 		if HasMinesweeper(Pawn) then
 			lmn_Minelayer_Item_Mine_Dummy = shallow_copy(_G[item_at_destination])

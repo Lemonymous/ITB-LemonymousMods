@@ -2,7 +2,7 @@
 -- requires:
 -- ---------
 -- modApiExt
--- LApi
+-- memedit
 -- hooks
 
 -- functionlist:
@@ -19,14 +19,14 @@
 -- track_items:GetItems()
 -- returns a table with key/value pairs of point_index/item_name
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local hooks = require(mod.scriptPath .."libs/hooks")
 
 hooks:new("itemCreated")
 hooks:new("itemRemoved")
 hooks:new("itemChanged")
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 if track_items == nil or modApi:isVersion(VERSION, track_items.version) then
 	track_items = track_items or {
@@ -63,7 +63,7 @@ if track_items == nil or modApi:isVersion(VERSION, track_items.version) then
 					local pid = p2idx(loc)
 					
 					local item_prev_turn = mission[self.items_label][pid]
-					local item_this_turn = Board:GetItemName(loc)
+					local item_this_turn = Board:GetItem(loc)
 					
 					mission[self.items_label][pid] = item_this_turn
 					
