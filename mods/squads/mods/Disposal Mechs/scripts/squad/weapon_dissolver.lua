@@ -109,11 +109,11 @@ lmn_ChemicalAtk_AB = lmn_ChemicalAtk_A:new{
 lmn_ChemicalAtk_Tip = lmn_ChemicalAtk:new{}
 lmn_ChemicalAtk_Tip_B = lmn_ChemicalAtk_B:new{}
 
-function lmn_ChemicalAtk_Tip:GetSkillEffect(p1, p2, parentSkill)
+function lmn_ChemicalAtk_Tip:GetSkillEffect(p1, p2)
 	local damage = SpaceDamage(Point(1,2))
 	damage.iAcid = EFFECT_CREATE
 	Board:DamageSpace(damage)
-	return lmn_ChemicalAtk.GetSkillEffect(self, p1, p2, parentSkill, isTipImage)
+	return lmn_ChemicalAtk.GetSkillEffect(self, p1, p2)
 end
 
 lmn_ChemicalAtk_Tip_B.GetSkillEffect = lmn_ChemicalAtk_Tip.GetSkillEffect

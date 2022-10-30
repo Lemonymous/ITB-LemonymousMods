@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local worldConstants = LApi.library:fetch("worldConstants")
-local effectPreview = LApi.library:fetch("effectPreview")
+local worldConstants = mod.libs.worldConstants
+local effectPreview = mod.libs.effectPreview
 
 lmn_DozerAtk = Skill:new{
 	Name = "Dozer Blades",
@@ -156,10 +156,11 @@ end
 
 local imageMarkTip
 local imageMark
-function lmn_DozerAtk:GetTargetArea(point, parentSkill, isTipImage)
+function lmn_DozerAtk:GetTargetArea(point)
 	
 	local ret = PointList()
 	local pathing = Pawn:GetPathProf()
+	local isTipImage = Board:IsTipImage()
 	
 	if isTipImage then
 		imageMarkTip = {}
@@ -233,6 +234,7 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 	local dir = GetDirection(p2 - p1)
 	local step = DIR_VECTORS[dir]
 	local distance = p1:Manhattan(p2)
+	local isTipImage = Board:IsTipImage()
 	
 	local isImageMark
 	if isTipImage then
@@ -571,16 +573,16 @@ lmn_DozerAtk_Tip_A = lmn_DozerAtk:new()
 lmn_DozerAtk_Tip_B = lmn_DozerAtk:new()
 lmn_DozerAtk_Tip_AB = lmn_DozerAtk:new()
 
-function lmn_DozerAtk_Tip:GetTargetArea(p, parentSkill)
+function lmn_DozerAtk_Tip:GetTargetArea(p)
 	if self.TipImage.Water then
 		Board:SetTerrain(self.TipImage.Water, TERRAIN_ACID)
 		Board:SetTerrain(self.TipImage.Water, TERRAIN_WATER)
 	end
-	return lmn_DozerAtk.GetTargetArea(self, p, parentSkill, isTipImage)
+	return lmn_DozerAtk.GetTargetArea(self, p)
 end
 
-function lmn_DozerAtk_Tip:GetSkillEffect(p1, p2, parentSkill)
-	return lmn_DozerAtk.GetSkillEffect(self, p1, p2, parentSkill, isTipImage)
+function lmn_DozerAtk_Tip:GetSkillEffect(p1, p2)
+	return lmn_DozerAtk.GetSkillEffect(self, p1, p2)
 end
 
 lmn_DozerAtk_Tip.GetTargetArea = lmn_DozerAtk_Tip.GetTargetArea

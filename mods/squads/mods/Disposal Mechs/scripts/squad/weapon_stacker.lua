@@ -82,7 +82,7 @@ function lmn_LiftAtk:GetTargetArea(point)
 	return ret
 end
 
-function lmn_LiftAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_LiftAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
@@ -285,11 +285,11 @@ lmn_LiftAtk_Tip_A = lmn_LiftAtk_A:new{}
 lmn_LiftAtk_Tip_B = lmn_LiftAtk_B:new{}
 lmn_LiftAtk_Tip_AB = lmn_LiftAtk_AB:new{}
 
-function lmn_LiftAtk_Tip:GetTargetArea(point, parentSkill)
-	return lmn_LiftAtk.GetTargetArea(self, point, parentSkill)
+function lmn_LiftAtk_Tip:GetTargetArea(point)
+	return lmn_LiftAtk.GetTargetArea(self, point)
 end
 
-function lmn_LiftAtk_Tip:GetSkillEffect(p1, p2, parentSkill)
+function lmn_LiftAtk_Tip:GetSkillEffect(p1, p2)
 	if
 		self.Crush_Target	and
 		self.Crush_Type		and
@@ -303,7 +303,7 @@ function lmn_LiftAtk_Tip:GetSkillEffect(p1, p2, parentSkill)
 		Board:GetPawn(self.Crush_Target):SetCustomAnim(self.Crush_Anim)
 	end
 	
-	local ret = lmn_LiftAtk.GetSkillEffect(self, p1, p2, parentSkill, true)
+	local ret = lmn_LiftAtk.GetSkillEffect(self, p1, p2)
 	ret:AddDelay(1.5)
 	return ret
 end
