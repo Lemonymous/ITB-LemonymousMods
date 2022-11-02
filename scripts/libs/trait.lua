@@ -1,7 +1,7 @@
 
-local VERSION = "2.2.0"
+local VERSION = "2.2.1"
 ---------------------------------------------------------------------
--- Trait v2.2.0 - code library
+-- Trait v2.2.1 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------------------------
@@ -91,6 +91,10 @@ local function getTraitIcon(loc)
 end
 
 local function updateLoc(loc)
+	if not Board:IsValid(loc) then
+		return
+	end
+
 	if not isMemeditAvailable then
 		Board:SetTerrainIcon(loc, getTraitIcon(loc))
 
