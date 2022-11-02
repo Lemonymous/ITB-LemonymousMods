@@ -43,7 +43,7 @@ function lmn_Tank_Cannon:GetTargetArea(point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -55,19 +55,19 @@ function lmn_Tank_Cannon:GetProjectileEnd(p1, p2)
 	assert(type(p2) == 'userdata')
 	assert(type(p2.x) == 'number')
 	assert(type(p2.y) == 'number')
-	
+
 	local dir = GetDirection(p2 - p1)
 	local target = p1
-	
+
 	for k = 1, self.Range do
 		curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		target = curr
-		
+
 		if Board:IsBlocked(target, PATH_PROJECTILE) then
 			local pawn = Board:GetPawn(target)
 			if	not pawn					or
@@ -79,7 +79,7 @@ function lmn_Tank_Cannon:GetProjectileEnd(p1, p2)
 			end
 		end
 	end
-	
+
 	return target
 end
 
@@ -89,7 +89,7 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, numberOfAttacks)
 	if not shooter then
 		return ret
 	end
-	
+
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
@@ -98,7 +98,7 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, numberOfAttacks)
 		-- GetSkillEffect called recursively.
 		ret.iOwner = shooter:GetId()
 		ret.piOrigin = p1
-		
+
 		local target = self:GetProjectileEnd(p1, p2)
 		local pawn = Board:GetPawn(target)
 		local attacks = 1
@@ -112,23 +112,23 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, numberOfAttacks)
 			numberOfAttacks = numberOfAttacks - 1
 
 			ret:AddSound("/weapons/stock_cannons")
-			
+
 			local weapon = SpaceDamage(target, self.Damage)
 			weapon.iPush = self.Push and dir or DIR_NONE
 			weapon.sSound = "/impact/generic/explosion"
 			weapon.sScript = string.format("Board:AddAnimation(%s, 'explopush1_%s', NO_DELAY)", target:GetString(), dir)
-			
+
 			worldConstants:setSpeed(ret, 1)
 			ret:AddProjectile(p1, weapon, "effects/rf_shot_cannon", NO_DELAY)
 			worldConstants:resetSpeed(ret)
-			
+
 			-- minimum delay between shots.
 			-- can take longer due to board being resolved.
 			ret:AddDelay(0.3)
 		end
 	else
 		-- GetSkillEffect called by the game.
-		
+
 		----------------
 		-- damage marks
 		----------------
@@ -137,13 +137,13 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, numberOfAttacks)
 			worldConstants:setSpeed(ret, 999)
 			ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
 			worldConstants:resetSpeed(ret)
-			
+
 			for i, v in ipairs(self.TipMarks) do
 				local tile = v[1]
 				local damage = v[2]
 				local mark = SpaceDamage(tile)
 				mark.iPush = 0
-				
+
 				if Board:IsPawnSpace(tile) then
 					mark.iDamage = damage
 					if tile ~= self.TipProjectileEnd then
@@ -152,39 +152,39 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, numberOfAttacks)
 				elseif tile == self.TipProjectileEnd then
 					mark.sImageMark = "combat/rf_faded_".. damage ..".png"
 				end
-				
+
 				effectPreview:addDamage(ret, mark)
 			end
 		else
 			-- mark board.
 			local vBoard = virtualBoard.new()
-			
+
 			local target = p1
 			for i = 1, self.Attacks do
-				
+
 				-- GetProjectileEnd
 				for k = 1, self.Range do
 					local curr = p1 + DIR_VECTORS[dir] * k
 					if not Board:IsValid(curr) then
 						break
 					end
-					
+
 					target = curr
-					
+
 					if vBoard:IsBlocked(curr) then
 						break
 					end
 				end
-				
+
 				-- apply damage to virtual board.
 				vBoard:DamageSpace(SpaceDamage(target, self.Damage, self.Push and dir or DIR_NONE))
 			end
-			
+
 			-- preview projectile path.
 			worldConstants:setSpeed(ret, 999)
 			ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
 			worldConstants:resetSpeed(ret)
-			
+
 			-- mark tiles with vBoard state.
 			vBoard:MarkDamage(ret)
 		end
@@ -206,7 +206,7 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, numberOfAttacks)
 	elseif Board:IsTipImage() then
 		ret:AddDelay(1.3)
 	end
-	
+
 	return ret
 end
 

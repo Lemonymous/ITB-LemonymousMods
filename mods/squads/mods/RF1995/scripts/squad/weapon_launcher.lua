@@ -115,7 +115,7 @@ lmn_Minelayer_Launcher_AB.TipImage.CustomEnemy = "Scarab2"
 
 function lmn_Minelayer_Launcher:GetTargetArea(point)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		for k = 1, self.Range do
 			local curr = DIR_VECTORS[i]*k + point
@@ -137,19 +137,19 @@ function lmn_Minelayer_Launcher:GetProjectileEnd(p1, p2)
 	assert(type(p2) == 'userdata')
 	assert(type(p2.x) == 'number')
 	assert(type(p2.y) == 'number')
-	
+
 	local dir = GetDirection(p2 - p1)
 	local target = p1
-	
+
 	for k = 1, self.Range do
 		curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		target = curr
-		
+
 		if Board:IsBlocked(target, PATH_PROJECTILE) then
 			local pawn = Board:GetPawn(target)
 			if	not pawn					or
@@ -171,7 +171,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 	if not shooter then
 		return ret
 	end
-	
+
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
@@ -181,10 +181,10 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 		-- GetSkillEffect called recursively.
 		ret.iOwner = shooter:GetId()
 		ret.piOrigin = p1
-		
+
 		effectBurst.Add(ret, p1, "lmn_Emitter_Minelayer_Launcher_Small", DIR_NONE)
 		effectBurst.Add(ret, p1, "lmn_Emitter_Minelayer_Launcher_Small_Front", DIR_NONE)
-		
+
 		local id = shooter:GetId()
 		local dir = GetDirection(p2 - p1)
 		local target
@@ -194,9 +194,9 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 			attacks = numberOfAttacks
 		else
 			target = self:GetProjectileEnd(p1, p2)
-			
+
 			local pawn = Board:GetPawn(target)
-			
+
 			if pawn then
 				local health = pawn:GetHealth()
 				-- unload shots into dead pawns.
@@ -204,21 +204,21 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 					attacks = numberOfAttacks
 				else
 					local damage = self.Damage
-					
+
 					if pawn:IsAcid() then
 						health = math.ceil(health / 2)
 					elseif pawn:IsArmor() then
 						damage = damage - 1
 					end
-					
+
 					if pawn:IsShield() then
 						health = health + 1
 					end
-					
+
 					if pawn:IsFrozen() then
 						health = health + 1
 					end
-					
+
 					if Board:GetTerrain(target) == TERRAIN_ICE then
 						local tileHealth = Board:GetHealth(target)
 						attacks = math.max(1, math.min(tileHealth, attacks))
@@ -230,7 +230,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 						end
 					end
 				end
-				
+
 			elseif not Board:IsBlocked(target, PATH_PROJECTILE) then
 				-- unload shots on empty tiles.
 				attacks = numberOfAttacks
@@ -240,33 +240,33 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 
 			else
 				local health = Board:GetHealth(target)
-				
+
 				if Board:IsFrozen(target) then
 					health = health + 1
 				end
-				
+
 				if Board:IsShield(target) then
 					health = health + 1
 				end
-				
+
 				attacks = health
 			end
 		end
-		
+
 		local distance = p1:Manhattan(target)
 		attacks = math.min(numberOfAttacks, attacks)
 		numberOfAttacks = numberOfAttacks - attacks
 
 		local time = 0
 		local events = {}
-		
+
 		local function AddTrailWhile(func)
 			while func() do
 				while events[#events] and events[#events].time < time do
 					effectBurst.Add(ret, events[#events].tile, events[#events].emitter, dir)
 					table.remove(events, #events)
 				end
-				
+
 				time = time + 0.1
 				ret:AddDelay(0.1)
 			end
@@ -278,10 +278,10 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 			effectBurst.Add(ret, p1, "lmn_Emitter_Minelayer_Launcher_Small_Front", DIR_NONE)
 			ret:AddSound("/weapons/rocket_launcher")
 			ret:AddSound("/weapons/boulder_throw")
-			
+
 			local weapon = SpaceDamage(target, self.Damage)
 			weapon.sSound = "/impact/generic/explosion"
-			
+
 			if useArtillery then
 				weapon.sScript = string.format("Board:AddAnimation(%s, 'ExploArt1', NO_DELAY)", target:GetString())
 				worldConstants:setHeight(ret, GetYVelocity(distance) * math.random(80, 120) / 100)
@@ -289,12 +289,12 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 				worldConstants:resetHeight(ret)
 			else
 				local speed = math.random(55, 70) / 100
-				
+
 				weapon.sScript = string.format("Board:AddAnimation(%s, 'ExploAir1', NO_DELAY)", target:GetString())
 				worldConstants:setSpeed(ret, speed)
 				ret:AddProjectile(p1, weapon, self.ProjectileArt, NO_DELAY)
 				worldConstants:resetSpeed(ret)
-				
+
 				for k = 0, distance do
 					local iMax = 3
 					for i = 1, iMax do
@@ -308,19 +308,19 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 						)
 					end
 				end
-				
+
 				table.sort(events, function(a, b) return a.time > b.time end)
 			end
-			
+
 			-- minimum delay between shots.
 			-- can take longer due to board being resolved.
 			local delay = time + math.random(5, 40) / 100
-			
+
 			AddTrailWhile(function() return time < delay end)
 		end
-		
+
 		AddTrailWhile(function() return #events > 0 end)
-		
+
 	else
 		for k = 1, distance - 1 do
 			if Board:IsBlocked(DIR_VECTORS[dir]*k + p1, PATH_PROJECTILE) then
@@ -332,32 +332,32 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 			-- mark tipimage.
 			if useArtillery then
 				local tile = self.TipImage.Second_Target
-				
+
 				worldConstants:setHeight(ret, 0)
 				ret:AddArtillery(p1, SpaceDamage(tile), "", NO_DELAY)
 				worldConstants:resetHeight(ret)
-				
+
 				local mark = SpaceDamage(tile, self.Attacks)
 				effectPreview:addDamage(ret, mark)
 			else
 				worldConstants:setSpeed(ret, 999)
 				ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
 				worldConstants:resetSpeed(ret)
-				
+
 				for i, v in ipairs(self.TipMarks) do
 					local tile = v[1]
 					local damage = v[2]
 					local mark = SpaceDamage(tile, damage)
 					mark.sImageMark = "combat/rf_preview_"
-					
+
 					if tile ~= self.TipProjectileEnd then
 						mark.sImageMark = mark.sImageMark .."arrow_"
 					end
-					
+
 					mark.sImageMark = mark.sImageMark .. damage ..".png"
-					
+
 					effectPreview:addDamage(ret, mark)
-					
+
 					-- hack to replace mountain we just did damage to.
 					if tile == self.TipProjectileEnd then
 						ret:AddScript("Board:SetTerrain(".. tile:GetString() ..", TERRAIN_MOUNTAIN)")
@@ -366,11 +366,11 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 			end
 		else
 			hoveredTile = p2
-			
+
 			local vBoard = virtualBoard.new()
 			local target = p1
 			for i = 1, self.Attacks do
-				
+
 				if useArtillery then
 					target = p2
 				else
@@ -388,11 +388,11 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 						end
 					end
 				end
-				
+
 				-- apply damage to virtual board.
 				vBoard:DamageSpace(SpaceDamage(target, self.Damage))
 			end
-			
+
 			if useArtillery then
 				-- preview projectile path.
 				worldConstants:setHeight(ret, 0)
@@ -404,7 +404,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 				ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
 				worldConstants:resetSpeed(ret)
 			end
-			
+
 			-- mark tiles with vBoard state.
 			vBoard:MarkDamage(ret, id, "lmn_Minelayer_Launcher")
 		end
@@ -426,7 +426,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 	elseif Board:IsTipImage() then
 		ret:AddDelay(1.3)
 	end
-	
+
 	return ret
 end
 
