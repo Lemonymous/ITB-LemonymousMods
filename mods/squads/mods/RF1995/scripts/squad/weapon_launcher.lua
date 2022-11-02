@@ -54,7 +54,6 @@ lmn_Minelayer_Launcher = Skill:new{
 	ProjectileArt = "effects/rf_shot_missile",
 	Range = INT_MAX,
 	Attacks = 2,
-	AttacksRemaining = {},
 	ArtilleryHeight = GetYVelocity(3),
 	Damage = 1,
 	PowerCost = 1,
@@ -166,7 +165,7 @@ function lmn_Minelayer_Launcher:GetProjectileEnd(p1, p2)
 	return target
 end
 
-function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
+function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtillery)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	if not shooter then
@@ -177,8 +176,8 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
 	local isTipImage = Board:IsTipImage()
-	
-	if isScript then
+
+	if numberOfAttacks then
 		-- GetSkillEffect called recursively.
 		ret.iOwner = shooter:GetId()
 		ret.piOrigin = p1
@@ -189,16 +188,10 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 		local id = shooter:GetId()
 		local dir = GetDirection(p2 - p1)
 		local target
-		
-		----------------------
-		-- attack calculation
-		----------------------
-		local attacksLeft = lmn_Minelayer_Launcher.AttacksRemaining[id] or 0
-		local attacks = 1
-		
+
 		if useArtillery then
 			target = p2
-			attacks = attacksLeft
+			attacks = numberOfAttacks
 		else
 			target = self:GetProjectileEnd(p1, p2)
 			
@@ -208,7 +201,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 				local health = pawn:GetHealth()
 				-- unload shots into dead pawns.
 				if health <= 0 then
-					attacks = attacksLeft
+					attacks = numberOfAttacks
 				else
 					local damage = self.Damage
 					
@@ -233,18 +226,18 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 						if damage > 0 then
 							attacks = health / damage
 						else
-							attacks = attacksLeft
+							attacks = numberOfAttacks
 						end
 					end
 				end
 				
 			elseif not Board:IsBlocked(target, PATH_PROJECTILE) then
 				-- unload shots on empty tiles.
-				attacks = attacksLeft
-				
+				attacks = numberOfAttacks
+
 			elseif Board:IsUniqueBuilding(target) then
-				attacks = attacksLeft
-				
+				attacks = numberOfAttacks
+
 			else
 				local health = Board:GetHealth(target)
 				
@@ -261,9 +254,9 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 		end
 		
 		local distance = p1:Manhattan(target)
-		attacks = math.min(attacksLeft, attacks)
-		lmn_Minelayer_Launcher.AttacksRemaining[id] = lmn_Minelayer_Launcher.AttacksRemaining[id] - attacks
-		
+		attacks = math.min(numberOfAttacks, attacks)
+		numberOfAttacks = numberOfAttacks - attacks
+
 		local time = 0
 		local events = {}
 		
@@ -278,10 +271,7 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 				ret:AddDelay(0.1)
 			end
 		end
-		
-		---------------------
-		-- damage resolution
-		---------------------
+
 		for i = 1, attacks do
 			effectBurst.Add(ret, p1, "lmn_Emitter_Minelayer_Launcher_Big", DIR_NONE)
 			effectBurst.Add(ret, p1, "lmn_Emitter_Minelayer_Launcher_Small_Front", DIR_NONE)
@@ -337,11 +327,8 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 				useArtillery = true
 			end
 		end
-		
-		----------------
-		-- damage marks
-		----------------
-		if isTipImage then
+
+		if Board:IsTipImage() then
 			-- mark tipimage.
 			if useArtillery then
 				local tile = self.TipImage.Second_Target
@@ -422,29 +409,22 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, isScript, useArtillery)
 			vBoard:MarkDamage(ret, id, "lmn_Minelayer_Launcher")
 		end
 	end
-	
-	if not lmn_Minelayer_Launcher.AttacksRemaining[id] or lmn_Minelayer_Launcher.AttacksRemaining[id] > 0 then
-		
-		local attacks = lmn_Minelayer_Launcher.AttacksRemaining[id] or self.Attacks
-		
-		-------------------
-		-- continue attack
-		-------------------
+
+	if numberOfAttacks == nil then
+		numberOfAttacks = self.Attacks
+	end
+
+	if numberOfAttacks > 0 then
 		ret:AddScript(string.format([=[
 			local fx = SkillEffect();
 			fx:AddScript([[
-				lmn_Minelayer_Launcher.AttacksRemaining[%s] = %s;
-				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, true, %s));
+				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, %s, %s));
 			]]);
 			Board:AddEffect(fx);
-		]=], id, attacks, self.Self, p1:GetString(), p2:GetString(), tostring(useArtillery)))
-		
-	else
-		lmn_Minelayer_Launcher.AttacksRemaining[id] = nil
-		
-		if isTipImage then
-			ret:AddDelay(1.3)
-		end
+		]=], self.Self, p1:GetString(), p2:GetString(), numberOfAttacks, tostring(useArtillery)))
+
+	elseif Board:IsTipImage() then
+		ret:AddDelay(1.3)
 	end
 	
 	return ret

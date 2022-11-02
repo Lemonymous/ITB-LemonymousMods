@@ -16,7 +16,6 @@ lmn_Tank_Cannon = Skill:new{
 	Damage = 1,
 	Push = true,
 	Attacks = 1,
-	AttacksRemaining = {},
 	PowerCost = 1,
 	Upgrades = 2,
 	UpgradeCost = {2, 3},
@@ -84,7 +83,7 @@ function lmn_Tank_Cannon:GetProjectileEnd(p1, p2)
 	return target
 end
 
-function lmn_Tank_Cannon:GetSkillEffect(p1, p2, isScript)
+function lmn_Tank_Cannon:GetSkillEffect(p1, p2, numberOfAttacks)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	if not shooter then
@@ -94,33 +93,24 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, isScript)
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
-	local isTipImage = Board:IsTipImage()
-	
-	if isScript then
+
+	if numberOfAttacks then
 		-- GetSkillEffect called recursively.
 		ret.iOwner = shooter:GetId()
 		ret.piOrigin = p1
 		
 		local target = self:GetProjectileEnd(p1, p2)
 		local pawn = Board:GetPawn(target)
-		local attacksLeft = lmn_Tank_Cannon.AttacksRemaining[id] or 0
 		local attacks = 1
-		
-		----------------------
-		-- attack calculation
-		----------------------
+
 		if not Board:IsBlocked(target, PATH_PROJECTILE) then
 			-- unload shots on empty tiles.
-			attacks = attacksLeft
+			attacks = numberOfAttacks
 		end
-		
-		attacks = math.min(attacksLeft, attacks)
-		lmn_Tank_Cannon.AttacksRemaining[id] = lmn_Tank_Cannon.AttacksRemaining[id] - attacks
-		
-		---------------------
-		-- damage resolution
-		---------------------
+
 		for i = 1, attacks do
+			numberOfAttacks = numberOfAttacks - 1
+
 			ret:AddSound("/weapons/stock_cannons")
 			
 			local weapon = SpaceDamage(target, self.Damage)
@@ -142,7 +132,7 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, isScript)
 		----------------
 		-- damage marks
 		----------------
-		if isTipImage then
+		if Board:IsTipImage() then
 			-- hardcoded tipimage marks.
 			worldConstants:setSpeed(ret, 999)
 			ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
@@ -196,32 +186,25 @@ function lmn_Tank_Cannon:GetSkillEffect(p1, p2, isScript)
 			worldConstants:resetSpeed(ret)
 			
 			-- mark tiles with vBoard state.
-			vBoard:MarkDamage(ret, id, "lmn_Tank_Cannon")
+			vBoard:MarkDamage(ret)
 		end
 	end
-	
-	if not lmn_Tank_Cannon.AttacksRemaining[id] or lmn_Tank_Cannon.AttacksRemaining[id] > 0 then
-		
-		local attacks = lmn_Tank_Cannon.AttacksRemaining[id] or self.Attacks
-		
-		-------------------
-		-- continue attack
-		-------------------
+
+	if numberOfAttacks == nil then
+		numberOfAttacks = self.Attacks
+	end
+
+	if numberOfAttacks > 0 then
 		ret:AddScript(string.format([=[
 			local fx = SkillEffect();
 			fx:AddScript([[
-				lmn_Tank_Cannon.AttacksRemaining[%s] = %s;
-				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, true));
+				Board:AddEffect(_G[%q]:GetSkillEffect(%s, %s, %s));
 			]]);
 			Board:AddEffect(fx);
-		]=], id, attacks, self.Self, p1:GetString(), p2:GetString()))
-		
-	else
-		lmn_Tank_Cannon.AttacksRemaining[id] = nil
-		
-		if isTipImage then
-			ret:AddDelay(1.3)
-		end
+		]=], self.Self, p1:GetString(), p2:GetString(), numberOfAttacks))
+
+	elseif Board:IsTipImage() then
+		ret:AddDelay(1.3)
 	end
 	
 	return ret
@@ -256,8 +239,8 @@ lmn_Tank_Cannon_Tip = lmn_Tank_Cannon:new{
 	}
 }
 
-function lmn_Tank_Cannon_Tip:GetSkillEffect(p1, p2, isScript, ...)
-	return lmn_Tank_Cannon.GetSkillEffect(self, p1, p2, isScript, ...)
+function lmn_Tank_Cannon_Tip:GetSkillEffect(p1, p2, ...)
+	return lmn_Tank_Cannon.GetSkillEffect(self, p1, p2, ...)
 end
 
 lmn_Tank_Cannon_Tip_A = lmn_Tank_Cannon_A:new{

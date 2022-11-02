@@ -946,12 +946,9 @@ function this:IsBlocked(tile)
 end
 
 -- mark tiles with vBoard state.
-function this:MarkDamage(effect, pawnId, weapon)
+function this:MarkDamage(effect)
 	assert(type(effect) == 'userdata')
-	assert(type(pawnId) == 'number')
-	assert(type(weapon) == 'string')
 	
-	-- local marker = weaponMarks:new(pawnId, weapon)
 	for tileId, tileState in pairs(self.tiles) do
 		local damage = tileState.damage - tileState.damagePawn
 		local loc = idx2p(tileId)
