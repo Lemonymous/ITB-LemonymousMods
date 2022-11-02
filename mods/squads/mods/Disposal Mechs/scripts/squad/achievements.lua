@@ -29,7 +29,7 @@ local function isRealMission()
 		and mission ~= nil
 		and mission ~= Mission_Test
 		and Board
-		and Board:IsGameBoard()
+		and Board:IsMissionBoard()
 end
 
 local function isNotRealMission()
