@@ -36,8 +36,6 @@ local VERSION = "2.2.0"
 -- 
 
 local isMemeditAvailable = memedit ~= nil
-local mod = modApi:getCurrentMod()
-local modApiExt = require(mod.scriptPath.."ITB-ModUtils/modApiExt/modApiExt")
 
 local function isManagedTrait(id)
 	local prefix = id:sub(1,5)

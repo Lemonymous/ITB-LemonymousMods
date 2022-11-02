@@ -9,9 +9,6 @@
 -- track_undo_move:GetPawn()
 -- returns the pawn undoing its move this frame
 
-local mod = modApi:getCurrentMod()
-local modApiExt = mod.libs.modApiExt
-
 VERSION = "0.2.0"
 
 if track_undo_move == nil or modApi:isVersion(VERSION, track_undo_move.version) then

@@ -1,6 +1,5 @@
 
 local mod = modApi:getCurrentMod()
-local modApiExt = mod.libs.modApiExt
 
 lmn_SmokeLauncher = Skill:new{
 	Name = "Smoke Launcher",
