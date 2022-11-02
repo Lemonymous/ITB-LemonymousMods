@@ -2,9 +2,12 @@
 local mod = {
 	id = "lmn_flt_pilots",
 	name = "FTL Pilots",
-	version = "1.0.0",
-	modApiVersion = "2.6.4",
-	icon = "img/icon.png"
+	version = "1.1.0",
+	modApiVersion = "2.6.7dev",
+	gameVersion = "1.2.83",
+	icon = "img/icon.png",
+	dependencies = {"lmn_mods"},
+	libs = {},
 }
 
 function mod:metadata()
@@ -17,15 +20,14 @@ function mod:metadata()
 end
 
 function mod:init()
-	if not LApi then
-		Assert.Error("LApi not found")
+	for libId, lib in pairs(mod_loader.mods.lmn_mods.libs) do
+		self.libs[libId] = lib
 	end
 
-	LApi.library:fetch("replaceRepair/replaceRepair")
-
-	require(self.scriptPath.."pilot_crystal")
-	require(self.scriptPath.."pilot_slug")
-	require(self.scriptPath.."pilot_engi")
+	local path = mod.scriptPath
+	require(path.."pilot_crystal")
+	require(path.."pilot_slug")
+	require(path.."pilot_engi")
 end
 
 function mod:load(options, version)

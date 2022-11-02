@@ -3,7 +3,7 @@ local mod = modApi:getCurrentMod()
 local scriptPath = mod.scriptPath
 local resourcePath = mod.resourcePath
 local pilotPath = "img/portraits/pilots/"
-local replaceRepair = LApi.library:fetch("replaceRepair/replaceRepair")
+local replaceRepair = mod.libs.replaceRepair
 
 local pilot = {
 	Id = "Pilot_lmn_Engi",
