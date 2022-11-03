@@ -293,13 +293,13 @@ lmn_SwarmerAtk_A = lmn_SwarmerAtk:new{
 lmn_SwarmerAtk_Tip = lmn_SwarmerAtk:new{}
 lmn_SwarmerAtk_Tip_A = lmn_SwarmerAtk_A:new{}
 
-function lmn_SwarmerAtk_Tip:GetSkillEffect(p1, p2, parentSkill, isTipImage, ...)
-	return lmn_SwarmerAtk.GetSkillEffect(self, p1, p2, parentSkill, true, ...)
+function lmn_SwarmerAtk_Tip:GetSkillEffect(p1, p2)
+	return lmn_SwarmerAtk.GetSkillEffect(self, p1, p2)
 end
 
 lmn_SwarmerAtk_Tip_A.GetSkillEffect = lmn_SwarmerAtk_Tip.GetSkillEffect
 
-function lmn_SwarmerAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_SwarmerAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local pathing = Pawn:GetPathProf()
 	local pathingMod = pathing % 16
@@ -369,7 +369,7 @@ function lmn_SwarmerAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			
 			Board:AddPawn(clone, %s);
 			clone:Move(%s);
-		]], pawnType, pawnId, tostring(isTipImage), p1:GetString(), agent.goal:GetString()))
+		]], pawnType, pawnId, tostring(Board:IsTipImage()), p1:GetString(), agent.goal:GetString()))
 		ret:AddDelay(0.2)
 	end
 	
@@ -784,11 +784,11 @@ function lmn_WyrmAtk:GetTargetArea(p)
 end
 
 -- prepare to look into the void...
-function lmn_WyrmAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_WyrmAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local path
 	
-	if isTipImage then
+	if Board:IsTipImage() then
 		path = {}
 		for i, loc in ipairs(self.Path) do
 			path[i] = {loc = loc}
@@ -1111,8 +1111,8 @@ lmn_WyrmAtk_Tip_AB = lmn_WyrmAtk_AB:new{
 	TipImage = lmn_WyrmAtk_Tip_A.TipImage
 }
 
-function lmn_WyrmAtk_Tip:GetSkillEffect(p1, p2, parentSkill, isTipImage, ...)
-	return lmn_WyrmAtk.GetSkillEffect(self, p1, p2, parentSkill, true, ...)
+function lmn_WyrmAtk_Tip:GetSkillEffect(p1, p2)
+	return lmn_WyrmAtk.GetSkillEffect(self, p1, p2)
 end
 
 lmn_WyrmAtk_Tip_A.GetSkillEffect = lmn_WyrmAtk_Tip.GetSkillEffect

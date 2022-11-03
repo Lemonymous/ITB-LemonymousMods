@@ -142,7 +142,7 @@ local function isValidTarget(origin, target, path)
 		Board:IsBlocked(target, PATH_PROJECTILE)
 end
 
-function lmn_WyrmAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_WyrmAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	-- Queued attacks are weird. Make sure
@@ -152,7 +152,7 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		return ret
 	end
 	
-	if not isTipImage then
+	if not Board:IsTipImage() then
 		ret:AddScript(string.format([[
 			local tips = mod_loader.mods.lmn_bots_and_bugs.libs.tutorialTips;
 			tips:trigger("Wyrm_Atk", %s);
@@ -221,7 +221,7 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 				local dir = target.dir
 				local loc = target.loc
 				
-				if not isTipImage then
+				if not Board:IsTipImage() then
 					-- store direction in priority list.
 					priority[id] = priority[id] or {}
 					if not list_contains(priority[id], dir) then
@@ -348,8 +348,8 @@ lmn_WyrmAtk1_Tip = lmn_WyrmAtk1:new{}
 lmn_WyrmAtk2_Tip = lmn_WyrmAtk2:new{}
 lmn_WyrmAtkB_Tip = lmn_WyrmAtkB:new{}
 
-function lmn_WyrmAtk1_Tip:GetSkillEffect(p1, p2, parentSkill, isTipImage, ...)
-	return lmn_WyrmAtk1.GetSkillEffect(self, p1, p2, parentSkill, true, ...)
+function lmn_WyrmAtk1_Tip:GetSkillEffect(p1, p2)
+	return lmn_WyrmAtk1.GetSkillEffect(self, p1, p2)
 end
 
 lmn_WyrmAtk2_Tip.GetSkillEffect = lmn_WyrmAtk1_Tip.GetSkillEffect

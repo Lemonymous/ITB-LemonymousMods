@@ -105,7 +105,7 @@ lmn_CrusherAtk1 = Skill:new{
 	}
 }
 
-function lmn_CrusherAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_CrusherAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	-- Queued attacks are weird. Make sure

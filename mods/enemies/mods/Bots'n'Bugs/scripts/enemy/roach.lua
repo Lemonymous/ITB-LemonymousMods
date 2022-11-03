@@ -116,7 +116,7 @@ function lmn_RoachAtk1:GetTargetScore(p1, p2)
 	return result
 end
 
-function lmn_RoachAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_RoachAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	
@@ -151,7 +151,7 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	else
 		-- actual attack
 		
-		if isTipImage then
+		if Board:IsTipImage() then
 			ret:AddDelay(0.8)
 			
 		elseif self == lmn_RoachAtkB then
@@ -186,7 +186,7 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			end
 		end
 		
-		if isTipImage or shouldSpit then
+		if Board:IsTipImage() or shouldSpit then
 			local spit = SpaceDamage(p2)
 			spit.iAcid = self.Acid
 			spit.sSound = self.AcidSound1
@@ -274,8 +274,8 @@ lmn_RoachAtk1_Tip = lmn_RoachAtk1:new{}
 lmn_RoachAtk2_Tip = lmn_RoachAtk2:new{}
 lmn_RoachAtkB_Tip = lmn_RoachAtkB:new{}
 
-function lmn_RoachAtk1_Tip:GetSkillEffect(p1, p2, parentSkill, isTipImage, ...)
-	return lmn_RoachAtk1.GetSkillEffect(self, p1, p2, parentSkill, true, ...)
+function lmn_RoachAtk1_Tip:GetSkillEffect(p1, p2)
+	return lmn_RoachAtk1.GetSkillEffect(self, p1, p2)
 end
 
 lmn_RoachAtk2_Tip.GetSkillEffect = lmn_RoachAtk1_Tip.GetSkillEffect
@@ -284,14 +284,14 @@ function lmn_RoachAtkB_Tip:GetTargetArea(p, ...)
 	return Board:GetSimpleReachable(p, 2, false)
 end
 
-function lmn_RoachAtkB_Tip:GetSkillEffect(p1, p2, parentSkill, isTipImage, ...)
+function lmn_RoachAtkB_Tip:GetSkillEffect(p1, p2)
 	if p2 == self.TipImage.Target then
 		Board:SetTerrain(self.TipImage.Building, TERRAIN_MOUNTAIN)
 		Board:SetTerrain(self.TipImage.Building, TERRAIN_BUILDING)
 	else
 		p2 = self.TipImage.Target
 	end
-	local ret = lmn_RoachAtkB.GetSkillEffect(self, p1, p2, parentSkill, true, ...)
+	local ret = lmn_RoachAtkB.GetSkillEffect(self, p1, p2)
 	ret:AddDelay(0.8)
 	
 	return ret
