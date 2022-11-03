@@ -5,7 +5,8 @@
 -- tries to find valid paths for springseed to jump.
 -- requires modApiExt initialized.
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
 assert(modApiExt_internal ~= nil)
 

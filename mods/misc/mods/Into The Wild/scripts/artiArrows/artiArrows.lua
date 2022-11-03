@@ -1,5 +1,6 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
+local mod = modApi:getCurrentMod()
+local path = mod.scriptPath
 
 local this = {}
 

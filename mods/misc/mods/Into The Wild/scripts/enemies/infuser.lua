@@ -1,11 +1,12 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local switch = LApi.library:fetch("switch")
+local switch = mod.libs.switch
 local customEmitter = require(path .."scripts/libs/customEmitter")
 local teamTurn = require(path .."scripts/libs/teamTurn")
-local tutorialTips = LApi.library:fetch("tutorialTips")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local tutorialTips = mod.libs.tutorialTips
+local modApiExt = mod.libs.modApiExt
 
 local Evolution = switch{
 	[1] = function(pawnType)
@@ -231,7 +232,7 @@ function lmn_InfuserAtk1:Evolve(pawnId)
 	Board:AddEffect(fx)
 end
 
-function lmn_InfuserAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_InfuserAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	
@@ -240,7 +241,7 @@ function lmn_InfuserAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	ret:AddEmitter(p2, "lmn_Infuser_Petal_Spray_".. dir)
 	ret:AddDelay(0.5)
 	
-	if not isTipImage then
+	if not Board:IsTipImage() then
 		ret:AddScript(string.format("lmn_InfuserAtk1:Infuse(%s)", p2:GetString()))
 	end
 	
@@ -248,8 +249,8 @@ function lmn_InfuserAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 end
 
 lmn_InfuserAtk1_Tip = lmn_InfuserAtk1:new{}
-function lmn_InfuserAtk1_Tip:GetSkillEffect(p1, p2, parentSkill)
-	local ret = lmn_InfuserAtk1.GetSkillEffect(self, p1, p2, parentSkill, isTipImage)
+function lmn_InfuserAtk1_Tip:GetSkillEffect(p1, p2)
+	local ret = lmn_InfuserAtk1.GetSkillEffect(self, p1, p2)
 	local evolutionType
 	
 	local pawn = Board:GetPawn(p2)

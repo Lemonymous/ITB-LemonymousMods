@@ -1,6 +1,7 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local switch = LApi.library:fetch("switch")
+local mod = modApi:getCurrentMod()
+local path = mod.scriptPath
+local switch = mod.libs.switch
 
 local this = {
 	status		= switch{ default = function(mission, obj, endstate) return nil end },

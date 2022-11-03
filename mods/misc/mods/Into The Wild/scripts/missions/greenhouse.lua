@@ -3,8 +3,9 @@ local filepath = select(1, ...)
 local filepath_dialog = filepath.."_dialog"
 local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local switch = LApi.library:fetch("switch")
+local mod = modApi:getCurrentMod()
+local path = mod.scriptPath
+local switch = mod.libs.switch
 local asset = "greenhouse"
 
 -- returns number of buildings alive

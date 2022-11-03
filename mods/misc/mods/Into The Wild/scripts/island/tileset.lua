@@ -1,6 +1,6 @@
 
 -- create tileset
-local tileset = modApi.tileset:add("Meridia", "grass")
+local tileset = easyEdit.tileset:add("Meridia", "grass")
 
 tileset.name = "Jungle"
 tileset:appendAssets("img/tileset/")

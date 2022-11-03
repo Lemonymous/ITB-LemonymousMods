@@ -1,8 +1,8 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.scriptPath
-local switch = LApi.library:fetch("switch")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local switch = mod.libs.switch
+local modApiExt = mod.libs.modApiExt
 local utils = require(path .."libs/utils")
 local secret = require(path .."secret")
 

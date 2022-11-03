@@ -9,7 +9,7 @@ personality:AddDialogTable(dialog)
 personality:AddDialogTable(dialog_missions)
 
 -- create ceo
-local ceo = modApi.ceo:add("Meridia")
+local ceo = easyEdit.ceo:add("Meridia")
 ceo:setPersonality(personality)
 ceo:setPortrait("img/ceo/portrait.png")
 ceo:setOffice("img/ceo/office.png", "img/ceo/office_small.png")

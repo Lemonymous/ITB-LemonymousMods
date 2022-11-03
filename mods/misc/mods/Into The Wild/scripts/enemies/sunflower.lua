@@ -1,9 +1,9 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local tutorialTips = LApi.library:fetch("tutorialTips")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local tutorialTips = mod.libs.tutorialTips
+local modApiExt = mod.libs.modApiExt
 
 local function isSunFlower(pawnType)
 	return

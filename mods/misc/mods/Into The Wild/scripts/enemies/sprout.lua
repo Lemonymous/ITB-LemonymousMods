@@ -1,10 +1,10 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local trait = LApi.library:fetch("trait")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local tutorialTips = LApi.library:fetch("tutorialTips")
+local trait = mod.libs.trait
+local modApiExt = mod.libs.modApiExt
+local tutorialTips = mod.libs.tutorialTips
 local sprouts = {"lmn_Sprout1", "lmn_Sprout2", "lmn_SproutEv", "lmn_SproutBud1", "lmn_SproutBud2"}
 
 WeakPawns.lmn_Sprout = true
@@ -191,7 +191,7 @@ function lmn_SproutEvolve:GetSkillEffect(p1, p2)
 	}
 
 	ret:AddScript(string.format([[
-		local tutorialTips = LApi.library:fetch("tutorialTips", "lmn_into_the_wild");
+		local tutorialTips = mod.libs.tutorialTips", "lmn_into_the_wild;
 		tutorialTips:trigger("evolve", %s);
 	]], p1:GetString()))
 	

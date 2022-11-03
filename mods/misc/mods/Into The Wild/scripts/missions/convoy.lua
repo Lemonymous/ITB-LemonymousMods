@@ -7,10 +7,10 @@ local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_d
 -- o.category = 0/1/2 -- REP/POWER/CORE (?)
 -- o.Failed -- function
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.scriptPath
 local utils = require(path .."libs/utils")
-local switch = LApi.library:fetch("switch")
+local switch = mod.libs.switch
 
 -- returns number of pawns alive
 -- in a list of pawn id's.

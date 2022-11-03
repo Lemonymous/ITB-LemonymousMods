@@ -1,5 +1,6 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
 
 WeakPawns.lmn_Chomper = true

@@ -1,6 +1,6 @@
 
 -- create corporation
-local corporation = modApi.corporation:add("Meridia")
+local corporation = easyEdit.corporation:add("Meridia")
 corporation.Name = "Meridia Institute"
 corporation.Bark_Name = "Meridia"
 corporation.Description = "The environment on this island is unrelenting. Meridia set up to study these rare conditions."

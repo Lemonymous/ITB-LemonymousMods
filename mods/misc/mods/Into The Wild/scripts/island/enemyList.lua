@@ -1,6 +1,6 @@
 
 -- create enemy list
-local enemyList = modApi.enemyList:add("Meridia")
+local enemyList = easyEdit.enemyList:add("Meridia")
 
 enemyList.categories = {"Core", "Core", "Core", "Unique", "Unique", "Unique"}
 

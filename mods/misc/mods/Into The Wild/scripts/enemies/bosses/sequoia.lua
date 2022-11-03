@@ -1,9 +1,10 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local astar = LApi.library:fetch("astar")
+local astar = mod.libs.astar
 local pushArrows = require(path .."scripts/libs/pushArrows")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local modApiExt = mod.libs.modApiExt
 
 WeakPawns.lmn_Gnarl = false
 Spawner.max_pawns.lmn_Gnarl = 2

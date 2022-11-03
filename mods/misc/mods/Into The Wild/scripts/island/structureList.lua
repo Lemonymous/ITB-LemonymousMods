@@ -1,5 +1,5 @@
 
-local structureList = modApi.structureList:add("Meridia")
+local structureList = easyEdit.structureList:add("Meridia")
 
 structureList:addAssets(
 	"Str_Genomics_Lab",

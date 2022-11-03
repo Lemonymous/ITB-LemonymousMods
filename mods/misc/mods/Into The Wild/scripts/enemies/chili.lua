@@ -1,5 +1,5 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
 local plant_leaders = {

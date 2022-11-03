@@ -3,11 +3,12 @@ local filepath = select(1, ...)
 local filepath_dialog = filepath.."_dialog"
 local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local switch = LApi.library:fetch("switch")
+local switch = mod.libs.switch
 local pawnSpace = require(path .."scripts/libs/pawnSpace")
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 
 for i = 0, 5 do
 	modApi:addMap(path .."maps/lmn_runway".. i ..".map")
@@ -284,7 +285,7 @@ function lmn_RunwayPlaneAtk:GetTargetArea(p)
 	return ret
 end
 
-function lmn_RunwayPlaneAtk:GetSkillEffect(p1, p2, _, isTipImage)
+function lmn_RunwayPlaneAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	local shooter = Board:GetPawn(p1)
@@ -337,7 +338,7 @@ function lmn_RunwayPlaneAtk:GetSkillEffect(p1, p2, _, isTipImage)
 		ret:AddQueuedAnimation(target, "lmn_RunwayPlane_takeoff")
 		ret.q_effect:index(ret.q_effect:size()).bHide = true
 		
-		if not isTipImage then
+		if not Board:IsTipImage() then
 			ret:AddQueuedScript([[
 				local m = GetCurrentMission();
 				if m and m.ID == "Mission_lmn_Runway" then
@@ -353,14 +354,14 @@ end
 
 lmn_RunwayPlaneAtk_Tip = lmn_RunwayPlaneAtk:new{}
 function lmn_RunwayPlaneAtk_Tip:GetTargetScore() return 100 end
-function lmn_RunwayPlaneAtk_Tip:GetSkillEffect(p1, p2, parentSkill)
+function lmn_RunwayPlaneAtk_Tip:GetSkillEffect(p1, p2)
 	local size = Board:GetSize()
 	for x = 0, size.x - 1 do
 		local loc = Point(x, self.TipImage.Unit.y)
 		Board:SetCustomTile(loc, "lmn_ground_runway.png")
 	end
 	
-	return lmn_RunwayPlaneAtk.GetSkillEffect(self, p1, p2, parentSkill, true)
+	return lmn_RunwayPlaneAtk.GetSkillEffect(self, p1, p2)
 end
 
 for personalityId, dialogTable in pairs(dialog) do

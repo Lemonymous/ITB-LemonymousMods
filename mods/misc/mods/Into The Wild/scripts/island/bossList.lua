@@ -1,6 +1,6 @@
 
 -- create boss list
-local bossList = modApi.bossList:add("Meridia")
+local bossList = easyEdit.bossList:add("Meridia")
 
 bossList:addBoss("Mission_lmn_SpringseedBoss")
 bossList:addBoss("Mission_lmn_ChiliBoss")

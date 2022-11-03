@@ -1,8 +1,9 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local astar = LApi.library:fetch("astar")
-local weaponPreview = LApi.library:fetch("weaponPreview")
+local astar = mod.libs.astar
+local weaponPreview = mod.libs.weaponPreview
 
 modApi:appendAsset("img/weapons/lmn_flood_generator.png", path .."img/weapons/flood_generator.png")
 

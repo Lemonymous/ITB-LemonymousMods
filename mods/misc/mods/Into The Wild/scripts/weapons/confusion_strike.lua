@@ -1,7 +1,8 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 
 modApi:appendAsset("img/weapons/lmn_confusion_strike.png", path .."img/weapons/confusion_strike.png")
 

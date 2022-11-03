@@ -1,10 +1,10 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local worldConstants = LApi.library:fetch("worldConstants")
-local tutorialTips = LApi.library:fetch("tutorialTips")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local worldConstants = mod.libs.worldConstants
+local tutorialTips = mod.libs.tutorialTips
+local modApiExt = mod.libs.modApiExt
 local cactuses = {"lmn_Cactus1", "lmn_Cactus2"}
 
 -- TODO: hash RNG when choosing targets somehow, and reset the RNG in GetTargetScore(?).
@@ -330,7 +330,7 @@ lmn_CactusAtk2 = lmn_CactusAtk1:new{
 	}
 }
 
-function lmn_CactusAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_CactusAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local mission = GetCurrentMission()
 	local priority = {}

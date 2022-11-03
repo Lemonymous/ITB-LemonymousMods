@@ -8,7 +8,8 @@
 -- TODO: remove function continue because that cannot be stores in save file as it is.
 -- mission Geyser is using it, so that mission needs to be redone first.
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local spaceDamageObjects = require(path .."scripts/libs/spaceDamageObjects")
 local suffix = "_lmn_"
 local this = {}

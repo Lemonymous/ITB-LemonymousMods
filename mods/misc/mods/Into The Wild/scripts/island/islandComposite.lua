@@ -1,6 +1,6 @@
 
 -- create tileset
-local island_composite = modApi.islandComposite:add("Meridia")
+local island_composite = easyEdit.islandComposite:add("Meridia")
 
 island_composite.bossList = "Meridia"
 island_composite.ceo = "Meridia"

@@ -1,6 +1,6 @@
 
 -- create island
-local island = modApi.island:add("Meridia")
+local island = easyEdit.island:add("Meridia")
 
 island:appendAssets("img/island/")
 

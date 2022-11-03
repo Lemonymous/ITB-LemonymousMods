@@ -1,6 +1,7 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
-local worldConstants = LApi.library:fetch("worldConstants")
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
+local worldConstants = mod.libs.worldConstants
 
 -- icon
 modApi:appendAsset("img/weapons/lmn_deflector_ray.png", path .."img/weapons/deflector_ray.png")

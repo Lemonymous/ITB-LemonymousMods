@@ -5,7 +5,7 @@ local LOW_THREAT = false
 
 
 -- create mission list
-local missionList = modApi.missionList:add("Meridia")
+local missionList = easyEdit.missionList:add("Meridia")
 
 missionList:addMission("Mission_lmn_Runway", HIGH_THREAT)
 missionList:addMission("Mission_lmn_Convoy", HIGH_THREAT)

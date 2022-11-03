@@ -1,5 +1,6 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
 local pathfinder = require(path .."scripts/libs/springseed_pathing")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
@@ -82,7 +83,7 @@ function lmn_SpringseedAtkB:GetTargetScore(p1, p2)
 	return m.data[pid].score
 end
 
-function lmn_SpringseedAtkB:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_SpringseedAtkB:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	local mission = GetCurrentMission()
@@ -193,7 +194,7 @@ end
 
 -- hardcoded tipimage.
 lmn_SpringseedAtkB_Tip = lmn_SpringseedAtkB:new{}
-function lmn_SpringseedAtkB_Tip:GetSkillEffect(p1, p2, parentSkill)
+function lmn_SpringseedAtkB_Tip:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	local move = PointList()

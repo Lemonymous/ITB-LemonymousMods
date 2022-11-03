@@ -1,5 +1,6 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
 modApi:appendAsset("img/weapons/lmn_deploy_copter.png", path .."img/weapons/deploy_copter.png")
 modApi:appendAsset("img/portraits/npcs/lmn_copter.png", path .."img/portraits/npcs/copter.png")

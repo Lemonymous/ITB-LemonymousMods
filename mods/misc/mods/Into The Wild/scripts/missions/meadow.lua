@@ -3,7 +3,7 @@ local filepath = select(1, ...)
 local filepath_dialog = filepath.."_dialog"
 local dialog = modApi:fileExists(filepath_dialog..".lua") and require(filepath_dialog) or {}
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.scriptPath
 local utils = require(path .."libs/utils")
 

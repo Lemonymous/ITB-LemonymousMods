@@ -1,8 +1,9 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
 local tileToScreen = require(path .."scripts/libs/tileToScreen")
-local weaponPreview = LApi.library:fetch("weaponPreview")
+local weaponPreview = mod.libs.weaponPreview
 
 modApi:appendAsset("img/weapons/lmn_bioscanner.png", path .."img/weapons/bioscanner.png")
 modApi:appendAsset("img/combat/lmn_bioscanner_square.png", path .."img/combat/bioscanner_square.png")

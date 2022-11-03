@@ -20,18 +20,16 @@ lmn_Emitter_Thermal_Plant = Emitter:new{
 	fade_in = true, layer = LAYER_FRONT
 }
 
-modApi.events.onTileIsUniqueBuilding:subscribe(function(loc, uniqueBuildingName)
+BoardEvents.onIsUniqueBuilding:subscribe(function(loc, uniqueBuildingName)
 	local mission = GetCurrentMission()
 	if uniqueBuildingName == "geothermal_plant" then
-		LOG("add smoke emitter")
 		customEmitter:Add(mission, loc, "lmn_Emitter_Thermal_Plant")
 	end
 end)
 
-modApi.events.onTileUniqueBuildingDestroyed:subscribe(function(loc, uniqueBuildingName)
+BoardEvents.onUniqueBuildingDestroyed:subscribe(function(loc, uniqueBuildingName)
 	local mission = GetCurrentMission()
 	if uniqueBuildingName == "geothermal_plant" then
-		LOG("rem smoke emitter")
 		customEmitter:Rem(mission, loc, "lmn_Emitter_Thermal_Plant")
 	end
 end)

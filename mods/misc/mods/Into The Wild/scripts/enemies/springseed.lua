@@ -1,5 +1,5 @@
 
-local mod = mod_loader.mods[modApi.currentMod]
+local mod = modApi:getCurrentMod()
 local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
 local artiArrows = require(path .."scripts/artiArrows/artiArrows")
@@ -190,15 +190,11 @@ function lmn_SpringseedAtk1:Achievement(p2)
 	end
 end
 
-function lmn_SpringseedAtk1:GetSkillEffect(p1, p2, _, isTipImage)
+function lmn_SpringseedAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	if not shooter then return ret end
 	
-	-- second attack in tip image is called directly
-	-- instead of via lmn_SpringseedAtk1_Tip, so we need to
-	-- use this backup method of checking isTipImage.
-	local isTipImage = isTipImage or utils.IsTipImage()
 	local dir = GetDirection(p2 - p1)
 	local target = p1 + DIR_VECTORS[dir]
 	local doLeap = not Board:IsBlocked(p2, PATH_FLYER)
@@ -206,7 +202,7 @@ function lmn_SpringseedAtk1:GetSkillEffect(p1, p2, _, isTipImage)
 	move:push_back(p1)
 	move:push_back(p2)
 	
-	if isTipImage then
+	if Board:IsTipImage() then
 		if p2 == self.TipImage.Unit then
 			-- hardcode second jump in tipimage.
 			
@@ -292,8 +288,8 @@ end
 lmn_SpringseedAtk1_Tip = lmn_SpringseedAtk1:new{}
 lmn_SpringseedAtk2_Tip = lmn_SpringseedAtk2:new{}
 
-function lmn_SpringseedAtk1_Tip:GetSkillEffect(p1, p2, parentSkill)
-	local ret = lmn_SpringseedAtk1.GetSkillEffect(self, p1, p2, parentSkill, true)
+function lmn_SpringseedAtk1_Tip:GetSkillEffect(p1, p2)
+	local ret = lmn_SpringseedAtk1.GetSkillEffect(self, p1, p2)
 	if p1 == self.TipImage.Unit then
 		Board:GetPawn(self.TipImage.Enemy1):SetShield(true)
 	end

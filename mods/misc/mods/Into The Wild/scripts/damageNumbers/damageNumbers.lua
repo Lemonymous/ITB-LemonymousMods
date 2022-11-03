@@ -6,7 +6,8 @@
 
 -- requires png files damage_19.png through damage.29.png
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
+local mod = modApi:getCurrentMod()
+local path = mod.scriptPath
 local readPath = path .."damageNumbers/img/"
 
 for n = 19, 29 do

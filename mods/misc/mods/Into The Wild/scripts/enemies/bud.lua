@@ -1,7 +1,8 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 
 WeakPawns.lmn_Bud = false
 Spawner.max_pawns.lmn_Bud = 2

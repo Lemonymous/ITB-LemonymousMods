@@ -1,7 +1,8 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
+local mod = modApi:getCurrentMod()
+local path = mod.scriptPath
 local spaceDamageObjects = require(path .."libs/spaceDamageObjects")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local modApiExt = mod.libs.modApiExt
 
 local function onModsLoaded()
 	modApiExt:addPawnKilledHook(function(_, pawn)

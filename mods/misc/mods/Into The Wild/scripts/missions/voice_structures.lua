@@ -1,6 +1,7 @@
 
-local path = mod_loader.mods[modApi.currentMod].scriptPath
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local mod = modApi:getCurrentMod()
+local path = mod.scriptPath
+local modApiExt = mod.libs.modApiExt
 local utils = require(path .."libs/utils")
 
 local missions = {

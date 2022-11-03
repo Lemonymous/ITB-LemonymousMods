@@ -1,7 +1,8 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local utils = require(path .."scripts/libs/utils")
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local modApiExt = mod.libs.modApiExt
 
 WeakPawns.lmn_Puffer = true
 Spawner.max_pawns.lmn_Puffer = 2
@@ -213,7 +214,7 @@ end
 -- "enemy/goo_boss/attack"
 -- "enemy/goo_boss/move"
 
-function lmn_PufferAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_PufferAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	
 	local dirs = {0,1,2,3}
@@ -271,8 +272,8 @@ end
 lmn_PufferAtk1_Tip = lmn_PufferAtk1:new{Emitter = "lmn_Puffer_Cloud_Burst_Tip"}
 lmn_PufferAtk2_Tip = lmn_PufferAtk2:new{Emitter = "lmn_Puffer_Cloud_Burst_Alpha_Tip"}
 
-function lmn_PufferAtk1_Tip:GetSkillEffect(p1, p2, parentSkill)
-	ret = lmn_PufferAtk1.GetSkillEffect(self, p1, p2, parentSkill, true)
+function lmn_PufferAtk1_Tip:GetSkillEffect(p1, p2)
+	ret = lmn_PufferAtk1.GetSkillEffect(self, p1, p2)
 	ret:AddQueuedDelay(1)
 	
 	return ret

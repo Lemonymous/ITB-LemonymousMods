@@ -1,7 +1,8 @@
 
-local path = mod_loader.mods[modApi.currentMod].resourcePath
+local mod = modApi:getCurrentMod()
+local path = mod.resourcePath
 local bonus = require(path .."scripts/missions/bonusObjective")
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 
 local this = {id = "lmn_bonus_specimen"}
 local specimenBonus = 3
