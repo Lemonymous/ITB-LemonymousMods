@@ -21,6 +21,7 @@ local libs = {
 	"astar",
 	"attackEvents",
 	"blockDeathByDeployment",
+	"boardEvents",
 	"effectBurst",
 	"effectPreview",
 	"globals",
