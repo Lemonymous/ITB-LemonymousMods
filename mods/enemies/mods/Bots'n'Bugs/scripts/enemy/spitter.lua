@@ -6,7 +6,7 @@ local writepath = "img/units/aliens/"
 local readpath = path .. writepath
 local imagepath = writepath:sub(5,-1)
 local utils = require(path .."scripts/libs/utils")
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 local this = {}
 
 -- unit
@@ -139,7 +139,7 @@ function lmn_SpitterAtk1:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	
 	if not isTipImage then
 		ret:AddScript(string.format([[
-			local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+			local tips = mod_loader.mods.lmn_bots_and_bugs.libs.tutorialTips;
 			tips:trigger("Spitter_Atk", %s);
 		]], p1:GetString()))
 	end

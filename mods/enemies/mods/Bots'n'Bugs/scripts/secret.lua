@@ -1,16 +1,14 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
+local modApiExt = mod.libs.modApiExt
 local utils = require(path .."scripts/libs/utils")
-local astar = LApi.library:fetch("astar")
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local selected = require(path .."scripts/libs/selected")
-local weaponApi = require(path .."scripts/weapons/api")
+local astar = mod.libs.astar
 local multishot = require(path .."scripts/multishot/api")
-local worldConstants = LApi.library:fetch("worldConstants")
-local weaponArmed = LApi.library:fetch("weaponArmed")
-local previewer = LApi.library:fetch("weaponPreview")
-local tips = LApi.library:fetch("tutorialTips")
+local worldConstants = mod.libs.worldConstants
+local weaponArmed = mod.libs.weaponArmed
+local previewer = mod.libs.weaponPreview
+local tips = mod.libs.tutorialTips
 local a = ANIMS
 local this = {}
 
@@ -401,7 +399,7 @@ function lmn_SwarmerAtk:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		if a[_G[pawnType].Image .."e"] then
 			ret:AddScript(string.format([[
 				local loc = %s;
-				local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
+				local tips = mod_loader.mods.lmn_bots_and_bugs.libs.tutorialTips;
 				local pawn = Board:GetPawn(loc);
 				if pawn then
 					if pawn:IsFrozen() then
@@ -1306,7 +1304,7 @@ lmn_CrusherAtk_AB = lmn_CrusherAtk:new{
 --	‾‾‾‾‾‾‾‾‾‾‾‾
 
 function this:load()
-	modUtils:addPodLandedHook(function(p)
+	modApiExt:addPodLandedHook(function(p)
 		local mission = GetCurrentMission()
 		if not mission then return end
 		
@@ -1320,7 +1318,7 @@ function this:load()
 			list_contains(_G[pawn:GetType()].SkillList, "lmn_SwarmerAtk_A")
 	end
 	
-	modUtils:addPawnIsGrappledHook(function(m, pawn, isGrappled)
+	modApiExt:addPawnIsGrappledHook(function(m, pawn, isGrappled)
 		if isGrappled and IsSwarmer(pawn) then
 			tips:Trigger("Swarmer_Webbed", pawn:GetSpace())
 		end

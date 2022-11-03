@@ -1,6 +1,6 @@
 
 -- create boss list
-local bossList = modApi.bossList:add("Bots'n'Bugs")
+local bossList = easyEdit.bossList:add("Bots'n'Bugs")
 
 bossList:addBoss("Mission_SwarmerBoss")
 bossList:addBoss("Mission_SpitterBoss")

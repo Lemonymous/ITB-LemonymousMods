@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local switch = LApi.library:fetch("switch")
+local modApiExt = mod.libs.modApiExt
+local switch = mod.libs.switch
 
 local bosses = {
 	"swarmer",
@@ -35,7 +35,7 @@ for _, boss in ipairs(bosses) do
 end
 
 local function onModsLoaded()
-	modUtils:addPawnKilledHook(function(mission, pawn)
+	modApiExt:addPawnKilledHook(function(mission, pawn)
 		local pawnType = pawn:GetType()
 
 		if isCompleted:case(pawnType) then

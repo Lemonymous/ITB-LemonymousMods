@@ -1,6 +1,6 @@
 
 -- create enemy list
-local enemyList = modApi.enemyList:add("Bots'n'Bugs")
+local enemyList = easyEdit.enemyList:add("Bots'n'Bugs")
 
 enemyList.categories = {"Core", "Core", "Core", "Leaders", "Unique", "Unique"}
 

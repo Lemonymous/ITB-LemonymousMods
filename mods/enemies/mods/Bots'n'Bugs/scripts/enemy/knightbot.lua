@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local worldConstants = LApi.library:fetch("worldConstants")
+local worldConstants = mod.libs.worldConstants
 local ID = mod.id .."_blobberlings"
 local a = ANIMS
 local writepath = "img/units/snowbots/"

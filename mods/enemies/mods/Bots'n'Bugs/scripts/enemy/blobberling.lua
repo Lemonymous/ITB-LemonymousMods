@@ -1,10 +1,9 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local selected = require(path .."scripts/libs/selected")
-local trait = LApi.library:fetch("trait")
-local tips = LApi.library:fetch("tutorialTips")
+local modApiExt = mod.libs.modApiExt
+local trait = mod.libs.trait
+local tips = mod.libs.tutorialTips
 local a = ANIMS
 local writepath = "img/units/aliens/"
 local readpath = path .. writepath
@@ -249,7 +248,7 @@ function this:load()
 			local pawn = Board:GetPawn(pawnId)
 			local loc = pawn:GetSpace()
 			local queuedAttack = pawn:GetQueued()
-			local selected = selected:Get()
+			local selected = Board:GetSelectedPawn()
 			local armedWeapon = selected and selected:GetArmedWeaponId() or 0
 			local isWeaponArmed = armedWeapon > 0
 			local hasFocus = Board:IsHighlighted(loc) or pawn:IsSelected()
@@ -277,7 +276,7 @@ function this:load()
 		end
 	end)
 	
-	modUtils:addPawnTrackedHook(function(m, pawn)
+	modApiExt:addPawnTrackedHook(function(m, pawn)
 		if isBlobberling(pawn) then
 			tips:trigger("Blobberling", pawn:GetSpace())
 		end

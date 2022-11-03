@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.scriptPath
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local modApiExt = mod.libs.modApiExt
 local pawnSpace = require(path .."libs/pawnSpace")
 local getNearestLoc = require(path .."libs/getNearestLoc")
 local utils = require(path .."libs/utils")
@@ -172,17 +172,17 @@ function this:load()
 		end
 	end
 	
-	modUtils:addPawnTrackedHook(function(m, pawn)
+	modApiExt:addPawnTrackedHook(function(m, pawn)
 		TryClonePawn(m, pawn)
 	end)
 	
-	modUtils:addResetTurnHook(function()
+	modApiExt:addResetTurnHook(function()
 		-- board state is of before reset,
 		-- so wait until it updates.
 		modApi:runLater(TryClonePawns)
 	end)
 	
-	modUtils:addGameLoadedHook(function(mission)
+	modApiExt:addGameLoadedHook(function(mission)
 		if mission then
 			-- board is not created yet,
 			-- so wait until it updates.

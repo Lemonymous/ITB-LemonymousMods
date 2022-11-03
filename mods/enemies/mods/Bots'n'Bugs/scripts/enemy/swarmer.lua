@@ -1,10 +1,9 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local weaponApi = require(path .."scripts/weapons/api")
+local modApiExt = mod.libs.modApiExt
 local multishot = require(path .."scripts/multishot/api")
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local tips = LApi.library:fetch("tutorialTips")
+local tips = mod.libs.tutorialTips
 local a = ANIMS
 local writepath = "img/units/aliens/"
 local readpath = path .. writepath
@@ -96,10 +95,16 @@ lmn_SwarmerAtk1 = Skill:new{
 }
 
 function lmn_SwarmerAtk1:Fire(pawnId, p1, p2, damage)
-	local old = lmn_Swarmer2ndAtk.Damage
+	local pawn = Board:GetPawn(pawnId)
+	if pawn == nil then
+		return
+	end
+
 	lmn_Swarmer2ndAtk.Damage = damage
-	weaponApi.Fire(pawnId, "lmn_Swarmer2ndAtk", p2)
-	lmn_Swarmer2ndAtk.Damage = old
+	pawn:AddWeapon("lmn_Swarmer2ndAtk", true)
+	local weaponIndex = pawn:GetWeaponCount()
+	pawn:FireWeapon(p2, weaponIndex)
+	pawn:RemoveWeapon(weaponIndex)
 end
 
 local isTargetScore = false
@@ -203,7 +208,7 @@ function Mission_SwarmerBoss:IsBossDead()
 end
 
 function this:load()
-	modUtils:addPawnTrackedHook(function(m, pawn)
+	modApiExt:addPawnTrackedHook(function(m, pawn)
 		if IsSwarmer(pawn) then
 			tips:trigger("Swarmer", pawn:GetSpace())
 		end

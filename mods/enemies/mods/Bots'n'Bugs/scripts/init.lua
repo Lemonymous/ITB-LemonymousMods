@@ -3,10 +3,12 @@ local mod = {
 	id = "lmn_bots_and_bugs",
 	name = "Bots'n'Bugs",
 	description = "Adds 9 enemies, 6 bosses and 5 unlockable Techno-Vek.",
-	version = "2.2.0",
-	modApiVersion = "2.6.4",
+	version = "2.3.0",
+	modApiVersion = "2.6.7dev",
+	gameVersion = "1.2.83",
 	icon = "img/icon.png",
-	requirements = {}
+	dependencies = {"lmn_mods"},
+	libs = {},
 }
 
 local choices = {
@@ -14,12 +16,6 @@ local choices = {
 		id = "option_roach_delay_spit",
 		title = "Delay Roach Spit",
 		text = "Roaches won't spit the turn they emerge from the ground.",
-		option = {enabled = false}
-	},
-	{
-		id = "option_reset_tips",
-		title = "Reset Tips",
-		text = "Reset Tutorial Tips",
 		option = {enabled = false}
 	},
 }
@@ -76,15 +72,9 @@ function mod:metadata()
 end
 
 function mod:init()
-	if not easyEdit.enabled then
-		Assert.Error("Easy Edit is disabled. Make sure it is enabled in [Mod Content] > [Configure EasyEdit] and restart the game.")
+	for libId, lib in pairs(mod_loader.mods.lmn_mods.libs) do
+		self.libs[libId] = lib
 	end
-
-	if not LApi then
-		Assert.Error("LApi not found")
-	end
-
-	LApi.library:new("tutorialTips")
 	
 	for _, name in ipairs{
 		"tips",
@@ -110,39 +100,38 @@ function mod:init()
 		require(self.scriptPath .. name)
 	end
 	
-	modApi:addModsInitializedHook(function()
-		local oldGetStartingSquad = getStartingSquad
-		function getStartingSquad(choice, ...)
-			local result = oldGetStartingSquad(choice, ...)
+	-- modApi:addModsInitializedHook(function()
+		-- local oldGetStartingSquad = getStartingSquad
+		-- function getStartingSquad(choice, ...)
+			-- local result = oldGetStartingSquad(choice, ...)
 			
-			if choice == 0 then
-				local copy = {}
-				for i, v in pairs(result) do
-					copy[#copy+1] = v
-				end
+			-- if choice == 0 then
+				-- local copy = {}
+				-- for i, v in pairs(result) do
+					-- copy[#copy+1] = v
+				-- end
 				
-				for _, name in ipairs{"swarmer", "roach", "spitter", "wyrm", "crusher"} do
-					local Name = name:gsub("^.", string.upper) -- capitalize first letter
+				-- for _, name in ipairs{"swarmer", "roach", "spitter", "wyrm", "crusher"} do
+					-- local Name = name:gsub("^.", string.upper) -- capitalize first letter
 					
-					-- add technomechs at the end to
-					-- enable them as random and custom mechs.
-					if modApi.achievements:isComplete(self.id, name) then
-						table.insert(copy, 'lmn_'.. Name)
-					end
-				end
+					-- -- add technomechs at the end to
+					-- -- enable them as random and custom mechs.
+					-- if modApi.achievements:isComplete(self.id, name) then
+						-- table.insert(copy, 'lmn_'.. Name)
+					-- end
+				-- end
 				
-				return copy
-			end
+				-- return copy
+			-- end
 			
-			return result
-		end
-	end)
+			-- return result
+		-- end
+	-- end)
 end
 
 function mod:load(options, version)
 	
 	for _, name in ipairs{
-		"libs/selected",
 		"enemy/swarmer",
 		"enemy/roach",
 		"enemy/spitter",
@@ -156,12 +145,6 @@ function mod:load(options, version)
 		"secret",
 	} do
 		require(self.scriptPath .. name):load()
-	end
-	
-	-- toggle optional delayed roach spit
-	if options["option_reset_tips"].enabled then
-		LApi.library:fetch("tutorialTips"):resetAll()
-		options["option_reset_tips"].enabled = false
 	end
 end
 

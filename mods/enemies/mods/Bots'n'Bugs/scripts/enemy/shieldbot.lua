@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local modApiExt = mod.libs.modApiExt
 local ID = mod.id .."_blobberlings"
 local a = ANIMS
 local writepath = "img/units/snowbots/"
@@ -160,7 +160,7 @@ lmn_ShieldBotAtk2 = lmn_ShieldBotAtk1:new{
 ANIMS.lmn_ExploRepulseShield = ANIMS.ExploRepulse1:new{ Image = "effects/lmn_shield_bot_pulse.png" }
 
 function this:load()
-	modUtils:addPawnIsShieldedHook(function(_, pawn, isShield)
+	modApiExt:addPawnIsShieldedHook(function(_, pawn, isShield)
 		if not isShield then
 			local queuedSkill = getQueuedSkill(pawn)
 			

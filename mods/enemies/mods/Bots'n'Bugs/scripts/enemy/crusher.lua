@@ -1,8 +1,8 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
 local path = mod.resourcePath
-local modUtils = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local tips = LApi.library:fetch("tutorialTips")
+local modApiExt = mod.libs.modApiExt
+local tips = mod.libs.tutorialTips
 local a = ANIMS
 local writepath = "img/units/aliens/"
 local readpath = path .. writepath
@@ -177,7 +177,7 @@ lmn_CrusherAtkB = lmn_CrusherAtk1:new{
 }
 
 function this:load()
-	modUtils:addPawnTrackedHook(function(m, pawn)
+	modApiExt:addPawnTrackedHook(function(m, pawn)
 		if IsCrusher(pawn) then
 			tips:trigger("Crusher", pawn:GetSpace())
 		end
