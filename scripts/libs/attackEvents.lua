@@ -4,7 +4,7 @@
 -- 	eventifyModApiExtHooks
 
 
-local VERSION = "1.1.0"
+local VERSION = "1.2.0"
 local EVENTS = {
 	"onAllyAttackResolved",
 	"onAllyAttackStart",
@@ -41,12 +41,12 @@ local function onSkillStart(mission, pawn, skillId, p1, p2)
 		attacker.p2 = p2
 
 		-- Dispatch with the same arguments as onSkillStart
-		modApi.events.onAttackStart:dispatch(mission, pawn, skillId, p1, p2)
+		AttackEvents.onAttackStart:dispatch(mission, pawn, skillId, p1, p2)
 
 		if pawn:IsEnemy() then
-			modApi.events.onEnemyAttackStart:dispatch(mission, pawn, skillId, p1, p2)
+			AttackEvents.onEnemyAttackStart:dispatch(mission, pawn, skillId, p1, p2)
 		else
-			modApi.events.onAllyAttackStart:dispatch(mission, pawn, skillId, p1, p2)
+			AttackEvents.onAllyAttackStart:dispatch(mission, pawn, skillId, p1, p2)
 		end
 	end
 end
@@ -73,12 +73,12 @@ local function onMissionUpdate(mission)
 			}
 
 			-- Dispatch with the same arguments as onSkillEnd
-			modApi.events.onAttackResolved:dispatch(unpack(args))
+			AttackEvents.onAttackResolved:dispatch(unpack(args))
 
 			if attacker.pawn:IsEnemy() then
-				modApi.events.onEnemyAttackResolved:dispatch(unpack(args))
+				AttackEvents.onEnemyAttackResolved:dispatch(unpack(args))
 			else
-				modApi.events.onAllyAttackResolved:dispatch(unpack(args))
+				AttackEvents.onAllyAttackResolved:dispatch(unpack(args))
 			end
 		end
 
@@ -117,7 +117,7 @@ local function onMissionUpdate(mission)
 			else
 				if isQueued and not wasQueued then
 					queuedAttacks[pawnId] = queuedAttack
-					modApi.events.onQueuedAttackInitiated:dispatch(
+					AttackEvents.onQueuedAttackInitiated:dispatch(
 						pawn,
 						queuedAttack.piOrigin,
 						queuedAttack.piTarget,
@@ -126,7 +126,7 @@ local function onMissionUpdate(mission)
 					)
 				elseif wasQueued and not isQueued then
 					local queuedAttack = queuedAttacks[pawnId]
-					modApi.events.onQueuedAttackCanceled:dispatch(
+					AttackEvents.onQueuedAttackCanceled:dispatch(
 						pawn,
 						queuedAttack.piOrigin,
 						queuedAttack.piTarget,
@@ -146,8 +146,8 @@ end
 
 local function initEvents()
 	for _, eventId in ipairs(EVENTS) do
-		if modApi.events[eventId] == nil then
-			modApi.events[eventId] = Event()
+		if AttackEvents[eventId] == nil then
+			AttackEvents[eventId] = Event()
 		end
 	end
 end
@@ -155,7 +155,7 @@ end
 local function finalizeInit(self)
 	self.getCurrentAttackInfo = getCurrentAttackInfo
 
-	modApi.events.onSkillStart:subscribe(onSkillStart)
+	modApiExt.events.onSkillStart:subscribe(onSkillStart)
 	modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 	modApi.events.onGameExited:subscribe(onGameExited)
 end

@@ -1,5 +1,5 @@
 
-local VERSION = "1.1.2"
+local VERSION = "1.2.0"
 ---------------------------------------------------
 -- Artillery Arc - code library
 --
@@ -26,7 +26,7 @@ local VERSION = "1.1.2"
 --
 -- requires
 --    modApiExt
---    eventifyModApiExtEvents
+--    weaponArmed
 --
 ---------------------------------------------------
 
@@ -130,7 +130,7 @@ if isNewestVersion then
 	function ArtilleryArc:finalizeInit()
 		weaponArmed.events.onWeaponArmed:subscribe(self.onWeaponArmed)
 		weaponArmed.events.onWeaponUnarmed:subscribe(self.onWeaponUnarmed)
-		modApi.events.onSkillEnd:subscribe(self.onSkillEnd)
+		modApiExt.events.onSkillEnd:subscribe(self.onSkillEnd)
 		modApi.events.onTipImageShown:subscribe(self.onTipImageShown)
 		modApi.events.onTipImageHidden:subscribe(self.onTipImageHidden)
 		modApi.events.onMissionUpdate:subscribe(self.onMissionUpdate)
