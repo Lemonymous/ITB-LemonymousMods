@@ -91,10 +91,6 @@ local function getTraitIcon(loc)
 end
 
 local function updateLoc(loc)
-	if not Board:IsValid(loc) then
-		return
-	end
-
 	if not isMemeditAvailable then
 		Board:SetTerrainIcon(loc, getTraitIcon(loc))
 
