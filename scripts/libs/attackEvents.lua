@@ -1,7 +1,6 @@
 
 -- Requires:
--- 	modApiExt
--- 	eventifyModApiExtHooks
+-- 	modApiExt v1.2
 
 
 local VERSION = "1.2.0"
