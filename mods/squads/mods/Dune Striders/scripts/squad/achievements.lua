@@ -193,7 +193,7 @@ modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 		modApi.events.onMissionStart:subscribe(artificial_onMissionStart)
 		modApi.events.onGameVictory:subscribe(artificial_onGameVictory)
 
-		modApi.events.onPawnKilled:subscribe(pacifist_onPawnKilled)
+		modApiExt.events.onPawnKilled:subscribe(pacifist_onPawnKilled)
 		modApi.events.onGameVictory:subscribe(pacifist_onGameVictory)
 	end
 end)
@@ -206,7 +206,7 @@ modApi.events.onSquadExitedGame:subscribe(function(squadId)
 		modApi.events.onMissionStart:unsubscribe(artificial_onMissionStart)
 		modApi.events.onGameVictory:unsubscribe(artificial_onGameVictory)
 
-		modApi.events.onPawnKilled:unsubscribe(pacifist_onPawnKilled)
+		modApiExt.events.onPawnKilled:unsubscribe(pacifist_onPawnKilled)
 		modApi.events.onGameVictory:unsubscribe(pacifist_onGameVictory)
 	end
 end)

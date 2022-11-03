@@ -156,9 +156,9 @@ end
 -- Subscribe to events
 modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 	if squadId == SQUAD_RF1995 then
-		modApi.events.onAttackStart:subscribe(monsterkill_onAttackStart)
-		modApi.events.onAttackResolved:subscribe(monsterkill_onAttackResolved)
-		modApi.events.onPawnKilled:subscribe(monsterkill_onPawnKilled)
+		AttackEvents.onAttackStart:subscribe(monsterkill_onAttackStart)
+		AttackEvents.onAttackResolved:subscribe(monsterkill_onAttackResolved)
+		modApiExt.events.onPawnKilled:subscribe(monsterkill_onPawnKilled)
 
 		modApi.events.onMissionUpdate:subscribe(untouchable_onMissionUpdate)
 		modApi.events.onGameVictory:subscribe(untouchable_onGameVictory)
@@ -172,9 +172,9 @@ end)
 -- Unsubscribe from events
 modApi.events.onSquadExitedGame:subscribe(function(squadId)
 	if squadId == SQUAD_RF1995 then
-		modApi.events.onAttackStart:unsubscribe(monsterkill_onAttackStart)
-		modApi.events.onAttackResolved:unsubscribe(monsterkill_onAttackResolved)
-		modApi.events.onPawnKilled:unsubscribe(monsterkill_onPawnKilled)
+		AttackEvents.onAttackStart:unsubscribe(monsterkill_onAttackStart)
+		AttackEvents.onAttackResolved:unsubscribe(monsterkill_onAttackResolved)
+		modApiExt.events.onPawnKilled:unsubscribe(monsterkill_onPawnKilled)
 
 		modApi.events.onMissionUpdate:unsubscribe(untouchable_onMissionUpdate)
 		modApi.events.onGameVictory:unsubscribe(untouchable_onGameVictory)

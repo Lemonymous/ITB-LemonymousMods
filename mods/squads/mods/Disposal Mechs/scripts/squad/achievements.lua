@@ -163,14 +163,14 @@ end
 -- Subscribe to events
 modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 	if squadId == SQUAD_DISPOSAL_MECHS then
-		modApi.events.onAttackStart:subscribe(teamwork_onAttackStart)
-		modApi.events.onAttackResolved:subscribe(teamwork_onAttackResolved)
+		AttackEvents.onAttackStart:subscribe(teamwork_onAttackStart)
+		AttackEvents.onAttackResolved:subscribe(teamwork_onAttackResolved)
 		modApi.events.onMissionEnd:subscribe(teamwork_onMissionEnd)
 
-		modApi.events.onPawnKilled:subscribe(garbage_onPawnKilled)
+		modApiExt.events.onPawnKilled:subscribe(garbage_onPawnKilled)
 		modApi.events.onMissionEnd:subscribe(garbage_onMissionEnd)
 
-		modApi.events.onPawnKilled:subscribe(cleaner_onPawnKilled)
+		modApiExt.events.onPawnKilled:subscribe(cleaner_onPawnKilled)
 		modApi.events.onGameVictory:subscribe(cleaner_onGameVictory)
 	end
 end)
@@ -178,14 +178,14 @@ end)
 -- Unsubscribe from events
 modApi.events.onSquadExitedGame:subscribe(function(squadId)
 	if squadId == SQUAD_DISPOSAL_MECHS then
-		modApi.events.onAttackStart:unsubscribe(teamwork_onAttackStart)
-		modApi.events.onAttackResolved:unsubscribe(teamwork_onAttackResolved)
+		AttackEvents.onAttackStart:unsubscribe(teamwork_onAttackStart)
+		AttackEvents.onAttackResolved:unsubscribe(teamwork_onAttackResolved)
 		modApi.events.onMissionEnd:unsubscribe(teamwork_onMissionEnd)
 
-		modApi.events.onPawnKilled:unsubscribe(garbage_onPawnKilled)
+		modApiExt.events.onPawnKilled:unsubscribe(garbage_onPawnKilled)
 		modApi.events.onMissionEnd:unsubscribe(garbage_onMissionEnd)
 
-		modApi.events.onPawnKilled:unsubscribe(cleaner_onPawnKilled)
+		modApiExt.events.onPawnKilled:unsubscribe(cleaner_onPawnKilled)
 		modApi.events.onGameVictory:unsubscribe(cleaner_onGameVictory)
 	end
 end)

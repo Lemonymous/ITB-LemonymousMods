@@ -40,7 +40,7 @@ Location["effects/ds_laser_hit.png"] = laser_loc
 Location["effects/ds_laser_start.png"] = laser_loc
 
 modApi:createMechAnimations{
-	ds_commando	=
+	ds_commando =
 		{ PosX = -12, PosY = -10 },
 	ds_commando_ns =
 		{},

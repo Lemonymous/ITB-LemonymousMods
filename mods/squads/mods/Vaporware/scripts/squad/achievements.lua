@@ -194,16 +194,16 @@ end
 -- Subscribe to events
 modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 	if squadId == SQUAD_VAPORWARE then
-		modApi.events.onQueuedAttackCanceled:subscribe(canceled_onQueuedAttackCanceled)
+		AttackEvents.onQueuedAttackCanceled:subscribe(canceled_onQueuedAttackCanceled)
 		modApi.events.onGameStateChanged:subscribe(canceled_onGameStateChanged)
 
 		modApi.events.onMissionStart:subscribe(docile_onMissionStart)
 		modApi.events.onNextTurn:subscribe(docile_onNextTurn)
-		modApi.events.onEnemyAttackStart:subscribe(docile_onEnemyAttackStart)
+		AttackEvents.onEnemyAttackStart:subscribe(docile_onEnemyAttackStart)
 
-		modApi.events.onPawnKilled:subscribe(bumping_onPawnKilled)
-		modApi.events.onAllyAttackStart:subscribe(bumping_onAllyAttackStart)
-		modApi.events.onAllyAttackResolved:subscribe(bumping_onAllyAttackResolved)
+		modApiExt.events.onPawnKilled:subscribe(bumping_onPawnKilled)
+		AttackEvents.onAllyAttackStart:subscribe(bumping_onAllyAttackStart)
+		AttackEvents.onAllyAttackResolved:subscribe(bumping_onAllyAttackResolved)
 	end
 end)
 
@@ -211,15 +211,15 @@ end)
 -- Unsubscribe from events
 modApi.events.onSquadExitedGame:subscribe(function(squadId)
 	if squadId == SQUAD_VAPORWARE then
-		modApi.events.onQueuedAttackCanceled:unsubscribe(canceled_onQueuedAttackCanceled)
+		AttackEvents.onQueuedAttackCanceled:unsubscribe(canceled_onQueuedAttackCanceled)
 		modApi.events.onGameStateChanged:unsubscribe(canceled_onGameStateChanged)
 
 		modApi.events.onMissionStart:unsubscribe(docile_onMissionStart)
 		modApi.events.onNextTurn:unsubscribe(docile_onNextTurn)
-		modApi.events.onEnemyAttackStart:unsubscribe(docile_onEnemyAttackStart)
+		AttackEvents.onEnemyAttackStart:unsubscribe(docile_onEnemyAttackStart)
 
-		modApi.events.onPawnKilled:unsubscribe(bumping_onPawnKilled)
-		modApi.events.onAllyAttackStart:unsubscribe(bumping_onAllyAttackStart)
-		modApi.events.onAllyAttackResolved:unsubscribe(bumping_onAllyAttackResolved)
+		modApiExt.events.onPawnKilled:unsubscribe(bumping_onPawnKilled)
+		AttackEvents.onAllyAttackStart:unsubscribe(bumping_onAllyAttackStart)
+		AttackEvents.onAllyAttackResolved:unsubscribe(bumping_onAllyAttackResolved)
 	end
 end)
