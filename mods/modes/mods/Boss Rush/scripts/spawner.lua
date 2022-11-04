@@ -1,5 +1,6 @@
 
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
+local mod = modApi:getCurrentMod()
+local modApiExt = mod.libs.modApiExt
 
 -- mission with 5 turns has enemy spawn on turn 0, 1, 2, 3.
 
