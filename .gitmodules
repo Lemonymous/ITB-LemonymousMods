@@ -1,12 +1,3 @@
-[submodule "scripts/LApi"]
-	path = scripts/LApi
-	url = git@github.com:Lemonymous/ITB-LApi.git
-[submodule "scripts/ITB-ModUtils"]
-	path = scripts/ITB-ModUtils
-	url = git@github.com:kartoFlane/ITB-ModUtils.git
 [submodule "scripts/ReplaceRepair"]
 	path = scripts/ReplaceRepair
 	url = git@github.com:Lemonymous/ITB-Replace-Repair.git
-[submodule "scripts/easyEdit"]
-	path = scripts/easyEdit
-	url = git@github.com:Lemonymous/ITB-Easy-Edit.git
