@@ -30,8 +30,10 @@ local VERSION = "1.2.0"
 --
 ---------------------------------------------------
 
+local mod = modApi:getCurrentMod()
 local path = GetParentPath(...)
 local weaponArmed = require(path.."weaponArmed")
+local modApiExt = modapiext or require(mod.scriptPath.."modApiExt/modApiExt")
 local DEFAULT_HEIGHT = 18
 
 local function onModsInitialized()

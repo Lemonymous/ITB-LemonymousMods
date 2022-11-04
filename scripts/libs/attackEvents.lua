@@ -2,6 +2,9 @@
 -- Requires:
 -- 	modApiExt v1.2
 
+local mod = modApi:getCurrentMod()
+local modApiExt = modapiext or require(mod.scriptPath.."modApiExt/modApiExt")
+
 
 local VERSION = "1.2.0"
 local EVENTS = {

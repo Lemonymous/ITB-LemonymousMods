@@ -35,6 +35,8 @@ local VERSION = "2.2.1"
 -- first created > last created
 -- 
 
+local mod = modApi:getCurrentMod()
+local modApiExt = modapiext or require(mod.scriptPath.."modApiExt/modApiExt")
 local isMemeditAvailable = memedit ~= nil
 
 local function isManagedTrait(id)

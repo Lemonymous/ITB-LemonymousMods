@@ -11,7 +11,7 @@ local mod =  {
 	dependencies = {
 		modApiExt = "1.2",
 		memedit = "0.1.0",
-		easyedit = "2.0.0",
+		easyEdit = "2.0.0",
 	}
 }
 
@@ -54,7 +54,7 @@ function mod:init(options)
 		self.libs[libId] = require(path.."libs/"..libId)
 	end
 
-	self.libs.modApiExt = modApiExt
+	self.libs.modApiExt = modapiext
 	self.libs.replaceRepair = require(path.."replaceRepair/replaceRepair")
 end
 
