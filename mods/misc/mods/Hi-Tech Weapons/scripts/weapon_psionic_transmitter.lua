@@ -1,9 +1,9 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-local effectBurst = LApi.library:fetch("effectBurst")
-local effectPreview = LApi.library:fetch("effectPreview")
-local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
+local modApiExt = mod.libs.modApiExt
+local effectBurst = mod.libs.effectBurst
+local effectPreview = mod.libs.effectPreview
+local previewer = mod.libs.weaponPreview
 
 local weapons
 local highlighted
@@ -33,14 +33,11 @@ local function IsBurrower(pawn)
 	return _G[pawn:GetType()].Burrows
 end
 
-function lmn_Psionic_Transmitter:GetTargetArea(p1, _, isWeaponMark)
+function lmn_Psionic_Transmitter:GetTargetArea(p1)
 	local list = {}
 	local marker
 	
-	if not isWeaponMark then
-		self.Targets = {}
-		marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Psionic_Transmitter")
-	end
+	self.Targets = {}
 	
 	for dir = DIR_START, DIR_END do
 		for k = 1, self.Range do
@@ -60,25 +57,13 @@ function lmn_Psionic_Transmitter:GetTargetArea(p1, _, isWeaponMark)
 			then
 				table.insert(list, curr)
 				
-				if not isWeaponMark then
-					table.insert(self.Targets, pawn)
-					local loc = pawn:GetSpace()
-					
-					marker:MarkSpaceImage(
-						loc,
-						"combat/lmn_square.png",
-						GL_Color(255,255,255),
-						true
-					)
-					
-					marker:MarkSpaceDamage(
-						{
-							loc = loc,
-							sImageMark = "combat/icons/lmn_psi_icon_move_glow.png",
-						},
-						true
-					)
-				end
+				table.insert(self.Targets, pawn)
+				local loc = pawn:GetSpace()
+				local spaceDamage = SpaceDamage(loc)
+				spaceDamage.sImageMark = "combat/icons/lmn_psi_icon_move_glow.png"
+				
+				previewer:AddImage(loc, "combat/lmn_square.png", GL_Color(255,255,255))
+				previewer:AddDamage(spaceDamage)
 				
 				local reachable = extract_table(Board:GetReachable(
 					pawn:GetSpace(),
@@ -112,10 +97,11 @@ function lmn_Psionic_Transmitter:GetTargetArea(p1, _, isWeaponMark)
 	return ret
 end
 
-function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	local shooterId = shooter:GetId()
+	local isTipImage = Board:IsTipImage()
 	
 	-- swap target if there is a pawn at p2.
 	self.Target = Board:GetPawn(p2) or self.Target
@@ -160,37 +146,22 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	-- marks
 	---------
 	if not isTipImage then
-		local marker = weaponMarks:new(shooterId, "lmn_Psionic_Transmitter")
 		
 		-- mark tiles our target can reach.
 		for _, p in ipairs(reachable) do
-			marker:MarkSpaceImage(
-				p,
-				"combat/lmn_square.png",
-				GL_Color(50,160,90),
-				true
-			)
+			previewer:AddImage(p, "combat/lmn_square.png", GL_Color(50,160,90))
 		end
 		
 		-- mark movable pawns.
 		for _, target in ipairs(self.Targets) do
-			marker:MarkSpaceImage(
-				target:GetSpace(),
-				"combat/lmn_square.png",
-				GL_Color(255,255,255),
-				true
-			)
+			previewer:AddImage(target:GetSpace(), "combat/lmn_square.png", GL_Color(255,255,255))
 		end
 		
 		-- add an icon to movable pawns.
 		for _, target in ipairs(self.Targets) do
-			marker:MarkSpaceDamage(
-				{
-					loc = target:GetSpace(),
-					sImageMark = "combat/icons/lmn_psi_icon_move_glow.png",
-				},
-				true
-			)
+			local spaceDamage = SpaceDamage(target:GetSpace())
+			spaceDamage.sImageMark = "combat/icons/lmn_psi_icon_move_glow.png"
+			previewer:AddDamage(spaceDamage)
 		end
 	end
 	
@@ -355,13 +326,13 @@ lmn_Psionic_Transmitter_A = lmn_Psionic_Transmitter:new{
 lmn_Psionic_Transmitter_Tip = lmn_Psionic_Transmitter:new{}
 lmn_Psionic_Transmitter_Tip_A = lmn_Psionic_Transmitter_A:new{}
 
-function lmn_Psionic_Transmitter_Tip:GetSkillEffect(p1, p2, parentSkill)
+function lmn_Psionic_Transmitter_Tip:GetSkillEffect(p1, p2)
 	local enemy = Board:GetPawn(self.TipImage.Enemy)
 	local enemy2 = Board:GetPawn(self.TipImage.Enemy2)
 	enemy:FireWeapon(Point(self.TipImage.Enemy.x, self.TipImage.Enemy.y + 1), 1)
 	enemy2:FireWeapon(Point(self.TipImage.Enemy2.x - 1, self.TipImage.Enemy2.y), 1)
 	
-	local ret = lmn_Psionic_Transmitter.GetSkillEffect(self, p1, p2, parentSkill, true)
+	local ret = lmn_Psionic_Transmitter.GetSkillEffect(self, p1, p2)
 	ret:AddDelay(1)
 	
 	return ret

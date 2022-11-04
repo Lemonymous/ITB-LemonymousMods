@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local effectBurst = LApi.library:fetch("effectBurst")
-local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
+local effectBurst = mod.libs.effectBurst
+local previewer = mod.libs.weaponPreview
 
 local resetPath = false
 
@@ -31,20 +31,12 @@ lmn_Guided_Missile = Skill:new{
 	CustomRarity = 4,
 }
 
-function lmn_Guided_Missile:GetTargetArea(p1, _, isWeaponMark)
+function lmn_Guided_Missile:GetTargetArea(p1)
 	local ret = PointList()
 	ret:push_back(p1) -- add shooter's tile in order for GetSkillEffect to trigger on it and reset path.
 	
 	-- darken shooter's tile to indicate it is not a valid target.
-	if not isWeaponMark then
-		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Guided_Missile")
-		marker:MarkSpaceImage(
-			p1,
-			"combat/lmn_square.png",
-			GL_Color(110,160,150),
-			true
-		)
-	end
+	previewer:AddImage(p1, "combat/lmn_square.png", GL_Color(110,160,150))
 	
 	local size = Board:GetSize()
 	for x = 0, size.x - 1 do												-- grab every tile on the board.
@@ -129,8 +121,9 @@ local function StraightenPath(path)
 	end
 end
 
-function lmn_Guided_Missile:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_Guided_Missile:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
+	local isTipImage = Board:IsTipImage()
 	
 	assert(p1:Manhattan(p2) <= self.Range)
 	
@@ -162,13 +155,7 @@ function lmn_Guided_Missile:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	end
 	
 	if not isTipImage then
-		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Guided_Missile")
-		marker:MarkSpaceImage(
-			p1,
-			"combat/lmn_square.png",
-			GL_Color(110,160,150),
-			true
-		)
+		previewer:AddImage(p1, "combat/lmn_square.png", GL_Color(110,160,150))
 	end
 	
 	-- exit if we don't have a path.
@@ -379,8 +366,8 @@ lmn_Guided_Missile_A = lmn_Guided_Missile:new{
 lmn_Guided_Missile_Tip = lmn_Guided_Missile:new{}
 lmn_Guided_Missile_Tip_A = lmn_Guided_Missile_A:new{}
 
-function lmn_Guided_Missile_Tip:GetSkillEffect(p1, p2, parentSkill)
-	return lmn_Guided_Missile.GetSkillEffect(self, p1, p2, parentSkill, true)
+function lmn_Guided_Missile_Tip:GetSkillEffect(p1, p2)
+	return lmn_Guided_Missile.GetSkillEffect(self, p1, p2)
 end
 
 lmn_Guided_Missile_Tip_A.GetSkillEffect = lmn_Guided_Missile_Tip.GetSkillEffect

@@ -1,8 +1,8 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local worldConstants = LApi.library:fetch("worldConstants")
-local effectBurst = LApi.library:fetch("effectBurst")
-local weaponMarks = require(mod.scriptPath.."libs/weaponMarks")
+local worldConstants = mod.libs.worldConstants
+local effectBurst = mod.libs.effectBurst
+local previewer = mod.libs.weaponPreview
 
 local resetPath = false
 
@@ -31,33 +31,26 @@ lmn_Tri_Striker = Skill:new{
 	CustomRarity = 4,
 }
 
-function lmn_Tri_Striker:GetTargetArea(p1, _, isWeaponMark)
+function lmn_Tri_Striker:GetTargetArea(p1)
 	local ret = PointList()
 	ret:push_back(p1) -- add shooter's tile in order for GetSkillEffect to trigger on it.
 	
-	if not isWeaponMark then
-		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Tri_Striker")
-		local tiles = {p1}
-		
-		for dir = DIR_START, DIR_END do
-			local curr = p1 + DIR_VECTORS[dir]
-			if Board:IsValid(curr) then
-				table.insert(tiles, curr)
-			end
+	local tiles = {p1}
+	
+	for dir = DIR_START, DIR_END do
+		local curr = p1 + DIR_VECTORS[dir]
+		if Board:IsValid(curr) then
+			table.insert(tiles, curr)
 		end
-		
-		for _, tile in ipairs(tiles) do
-			local color = GL_Color(72,106,100)
-			if tile == p1 then
-				color = GL_Color(110,160,150)
-			end
-			marker:MarkSpaceImage(
-				tile,
-				"combat/lmn_square.png",
-				color,
-				true
-			)
+	end
+	
+	for _, tile in ipairs(tiles) do
+		local color = GL_Color(72,106,100)
+		if tile == p1 then
+			color = GL_Color(110,160,150)
 		end
+
+		previewer:AddImage(tile, "combat/lmn_square.png", color)
 	end
 	
 	local size = Board:GetSize()
@@ -204,8 +197,9 @@ local function TrimDisconnectedPath(path)
 	end
 end
 
-function lmn_Tri_Striker:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_Tri_Striker:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
+	local isTipImage = Board:IsTipImage()
 	
 	if not isTipImage then
 		------------------
@@ -223,7 +217,6 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 		FilterPath(self.Path, function(p) return p:Manhattan(p1) > 1 end)
 		
 		-- mark tiles within range 1 of shooter.
-		local marker = weaponMarks:new(Board:GetPawn(p1):GetId(), "lmn_Tri_Striker")
 		local tiles = {p1}
 		
 		for dir = DIR_START, DIR_END do
@@ -238,13 +231,8 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			if tile == p1 then
 				color = GL_Color(110,160,150)
 			end
-			
-			marker:MarkSpaceImage(
-				tile,
-				"combat/lmn_square.png",
-				color,
-				true
-			)
+
+			previewer:AddImage(tile, "combat/lmn_square.png", color)
 		end
 		
 		-- remove disconnected tiles from path.
@@ -338,8 +326,8 @@ lmn_Tri_Striker_Tip_A = lmn_Tri_Striker_A:new{ Path = lmn_Tri_Striker_Tip.Path }
 lmn_Tri_Striker_Tip_B = lmn_Tri_Striker_B:new{ Path = lmn_Tri_Striker_Tip.Path }
 lmn_Tri_Striker_Tip_AB = lmn_Tri_Striker_AB:new{ Path = lmn_Tri_Striker_Tip.Path }
 
-function lmn_Tri_Striker_Tip:GetSkillEffect(p1, p2, parentSkill)
-	return lmn_Tri_Striker.GetSkillEffect(self, p1, p2, parentSkill, true)
+function lmn_Tri_Striker_Tip:GetSkillEffect(p1, p2)
+	return lmn_Tri_Striker.GetSkillEffect(self, p1, p2)
 end
 
 lmn_Tri_Striker_Tip_A.GetSkillEffect = lmn_Tri_Striker_Tip.GetSkillEffect

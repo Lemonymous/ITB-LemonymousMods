@@ -251,7 +251,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
-local weaponMarks = require(scriptPath .."libs/weaponMarks")
+local previewer = mod.libs.weaponPreview
 
 local this = {
 	id = mod.id .."_virtualBoard",
@@ -952,7 +952,6 @@ function this:MarkDamage(effect, pawnId, weapon)
 	assert(type(pawnId) == 'number')
 	assert(type(weapon) == 'string')
 	
-	local marker = weaponMarks:new(pawnId, weapon)
 	for tileId, tileState in pairs(self.tiles) do
 		local damage = tileState.damage - tileState.damagePawn
 		local loc = idx2p(tileId)
@@ -1000,21 +999,15 @@ function this:MarkDamage(effect, pawnId, weapon)
 		
 		-- mark extra pushes on the same tile.
 		for i = 1, pushList[1].count do
-			marker:MarkSpaceDamage{
-				loc = loc,
-				iPush = dir
-			}
+			previewer:AddDamage(SpaceDamage(loc, 0, dir))
 		end
 		
 		-- mark damage.
 		if tileState.damage > 0 then
 			if damage > 0 then
-				marker:MarkSpaceDamage{
-					iDamage = damage,
-					loc = loc,
-					iPush = dir,
-					sImageMark = sImageMark
-				}
+				local spaceDamage = SpaceDamage(loc, damage, dir)
+				spaceDamage.sImageMark = sImageMark
+				previewer:AddDamage(spaceDamage)
 			else
 				-- faded damage already done to a pawn on a different tile.
 				local d = SpaceDamage(loc)

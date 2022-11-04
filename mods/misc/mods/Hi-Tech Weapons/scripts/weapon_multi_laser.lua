@@ -1,7 +1,7 @@
 
 local mod = mod_loader.mods[modApi.currentMod]
-local worldConstants = LApi.library:fetch("worldConstants")
-local effectPreview = LApi.library:fetch("effectPreview")
+local worldConstants = mod.libs.worldConstants
+local effectPreview = mod.libs.effectPreview
 local virtualBoard = require(mod.scriptPath.."libs/virtualBoard")
 
 totalAttacksRemaining = {}
@@ -233,9 +233,10 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 	Board:AddEffect(effect)
 end
 
-function lmn_Multi_Laser:GetSkillEffect(p1, p2, parentSkill, isTipImage)
+function lmn_Multi_Laser:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
+	local isTipImage = Board:IsTipImage()
 	if not shooter then
 		return ret
 	end
@@ -338,8 +339,8 @@ lmn_Multi_Laser_Tip = lmn_Multi_Laser:new{
 	}
 }
 
-function lmn_Multi_Laser_Tip:GetSkillEffect(p1, p2, parentSkill)
-	return lmn_Multi_Laser.GetSkillEffect(self, p1, p2, parentSkill, true)
+function lmn_Multi_Laser_Tip:GetSkillEffect(p1, p2)
+	return lmn_Multi_Laser.GetSkillEffect(self, p1, p2)
 end
 
 lmn_Multi_Laser_Tip_A = lmn_Multi_Laser_A:new{
