@@ -1,10 +1,7 @@
 
 -- requires
 --	achievementExt
---		difficultyEvents
 --	personalSavedata
---	squadEvents
---	eventifyModApiExtHooks
 --	attackEvents
 
 
@@ -158,7 +155,7 @@ modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 	if squadId == SQUAD_RF1995 then
 		AttackEvents.onAttackStart:subscribe(monsterkill_onAttackStart)
 		AttackEvents.onAttackResolved:subscribe(monsterkill_onAttackResolved)
-		modApiExt.events.onPawnKilled:subscribe(monsterkill_onPawnKilled)
+		modapiext.events.onPawnKilled:subscribe(monsterkill_onPawnKilled)
 
 		modApi.events.onMissionUpdate:subscribe(untouchable_onMissionUpdate)
 		modApi.events.onGameVictory:subscribe(untouchable_onGameVictory)
@@ -174,7 +171,7 @@ modApi.events.onSquadExitedGame:subscribe(function(squadId)
 	if squadId == SQUAD_RF1995 then
 		AttackEvents.onAttackStart:unsubscribe(monsterkill_onAttackStart)
 		AttackEvents.onAttackResolved:unsubscribe(monsterkill_onAttackResolved)
-		modApiExt.events.onPawnKilled:unsubscribe(monsterkill_onPawnKilled)
+		modapiext.events.onPawnKilled:unsubscribe(monsterkill_onPawnKilled)
 
 		modApi.events.onMissionUpdate:unsubscribe(untouchable_onMissionUpdate)
 		modApi.events.onGameVictory:unsubscribe(untouchable_onGameVictory)

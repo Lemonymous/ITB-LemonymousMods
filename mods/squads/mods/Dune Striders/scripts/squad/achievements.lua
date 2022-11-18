@@ -1,10 +1,7 @@
 
 -- requires
 --	achievementExt
---		difficultyEvents
 --	personalSavedata
---	squadEvents
---	eventifyModApiExtHooks
 --	attackEvents
 
 
@@ -193,7 +190,7 @@ modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 		modApi.events.onMissionStart:subscribe(artificial_onMissionStart)
 		modApi.events.onGameVictory:subscribe(artificial_onGameVictory)
 
-		modApiExt.events.onPawnKilled:subscribe(pacifist_onPawnKilled)
+		modapiext.events.onPawnKilled:subscribe(pacifist_onPawnKilled)
 		modApi.events.onGameVictory:subscribe(pacifist_onGameVictory)
 	end
 end)
@@ -206,7 +203,7 @@ modApi.events.onSquadExitedGame:subscribe(function(squadId)
 		modApi.events.onMissionStart:unsubscribe(artificial_onMissionStart)
 		modApi.events.onGameVictory:unsubscribe(artificial_onGameVictory)
 
-		modApiExt.events.onPawnKilled:unsubscribe(pacifist_onPawnKilled)
+		modapiext.events.onPawnKilled:unsubscribe(pacifist_onPawnKilled)
 		modApi.events.onGameVictory:unsubscribe(pacifist_onGameVictory)
 	end
 end)

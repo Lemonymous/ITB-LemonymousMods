@@ -1,9 +1,5 @@
 
--- Requires:
--- 	difficultyEvents
-
-
-local VERSION = "1.0.0"
+local VERSION = "1.1.0"
 
 -- Returns tbl[arg_1][arg_2][..][arg_n]
 -- Creates empty tables for any subtable that is `nil`

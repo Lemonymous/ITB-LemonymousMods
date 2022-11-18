@@ -9,7 +9,7 @@
 -- track_undo_move:GetPawn()
 -- returns the pawn undoing its move this frame
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 if track_undo_move == nil or modApi:isVersion(VERSION, track_undo_move.version) then
 	track_undo_move = track_undo_move or {
@@ -24,7 +24,7 @@ if track_undo_move == nil or modApi:isVersion(VERSION, track_undo_move.version) 
 	end
 	
 	function track_undo_move:finalize()
-		modApiExt:addPawnUndoMoveHook(function(mission, pawn)
+		modapiext:addPawnUndoMoveHook(function(mission, pawn)
 			pawn_undid_this_turn = pawn
 		end)
 		

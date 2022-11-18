@@ -1,10 +1,7 @@
 
 -- requires
 --	achievementExt
---		difficultyEvents
 --	personalSavedata
---	squadEvents
---	eventifyModApiExtHooks
 --	attackEvents
 
 
@@ -201,7 +198,7 @@ modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 		modApi.events.onNextTurn:subscribe(docile_onNextTurn)
 		AttackEvents.onEnemyAttackStart:subscribe(docile_onEnemyAttackStart)
 
-		modApiExt.events.onPawnKilled:subscribe(bumping_onPawnKilled)
+		modapiext.events.onPawnKilled:subscribe(bumping_onPawnKilled)
 		AttackEvents.onAllyAttackStart:subscribe(bumping_onAllyAttackStart)
 		AttackEvents.onAllyAttackResolved:subscribe(bumping_onAllyAttackResolved)
 	end
@@ -218,7 +215,7 @@ modApi.events.onSquadExitedGame:subscribe(function(squadId)
 		modApi.events.onNextTurn:unsubscribe(docile_onNextTurn)
 		AttackEvents.onEnemyAttackStart:unsubscribe(docile_onEnemyAttackStart)
 
-		modApiExt.events.onPawnKilled:unsubscribe(bumping_onPawnKilled)
+		modapiext.events.onPawnKilled:unsubscribe(bumping_onPawnKilled)
 		AttackEvents.onAllyAttackStart:unsubscribe(bumping_onAllyAttackStart)
 		AttackEvents.onAllyAttackResolved:unsubscribe(bumping_onAllyAttackResolved)
 	end

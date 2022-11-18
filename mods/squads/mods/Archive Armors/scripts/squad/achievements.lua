@@ -2,7 +2,6 @@
 -- requires
 -- memedit
 --	achievementExt
---		difficultyEvents
 --	personalSavedata
 --	squadEvents
 

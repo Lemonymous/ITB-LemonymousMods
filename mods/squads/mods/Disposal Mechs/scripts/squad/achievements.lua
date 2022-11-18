@@ -1,10 +1,7 @@
 
 -- requires
 --	achievementExt
---		difficultyEvents
 --	personalSavedata
---	squadEvents
---	eventifyModApiExtHooks
 --	attackEvents
 
 
@@ -167,10 +164,10 @@ modApi.events.onSquadEnteredGame:subscribe(function(squadId)
 		AttackEvents.onAttackResolved:subscribe(teamwork_onAttackResolved)
 		modApi.events.onMissionEnd:subscribe(teamwork_onMissionEnd)
 
-		modApiExt.events.onPawnKilled:subscribe(garbage_onPawnKilled)
+		modapiext.events.onPawnKilled:subscribe(garbage_onPawnKilled)
 		modApi.events.onMissionEnd:subscribe(garbage_onMissionEnd)
 
-		modApiExt.events.onPawnKilled:subscribe(cleaner_onPawnKilled)
+		modapiext.events.onPawnKilled:subscribe(cleaner_onPawnKilled)
 		modApi.events.onGameVictory:subscribe(cleaner_onGameVictory)
 	end
 end)
@@ -182,10 +179,10 @@ modApi.events.onSquadExitedGame:subscribe(function(squadId)
 		AttackEvents.onAttackResolved:unsubscribe(teamwork_onAttackResolved)
 		modApi.events.onMissionEnd:unsubscribe(teamwork_onMissionEnd)
 
-		modApiExt.events.onPawnKilled:unsubscribe(garbage_onPawnKilled)
+		modapiext.events.onPawnKilled:unsubscribe(garbage_onPawnKilled)
 		modApi.events.onMissionEnd:unsubscribe(garbage_onMissionEnd)
 
-		modApiExt.events.onPawnKilled:unsubscribe(cleaner_onPawnKilled)
+		modapiext.events.onPawnKilled:unsubscribe(cleaner_onPawnKilled)
 		modApi.events.onGameVictory:unsubscribe(cleaner_onGameVictory)
 	end
 end)
