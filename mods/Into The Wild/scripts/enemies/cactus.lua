@@ -529,10 +529,17 @@ lmn_Emitter_Cactus1d = Emitter:new{
 	max_alpha = 1.0,
 	min_alpha = 0.0,
 	rot_speed = 100,
-	x = 0, y = -3, variance_x = 0, variance_y = 0,
-	angle = 20, angle_variance = 220,
+	x = 0,
+	y = -3,
+	variance_x = 0,
+	variance_y = 0,
+	angle = 20,
+	angle_variance = 220,
 	timer = 0,
-	burst_count = 1, speed = 1.50, lifespan = 1.5, birth_rate = 0,
+	burst_count = 1,
+	speed = 1.50,
+	lifespan = 1.5,
+	birth_rate = 0,
 	max_particles = 16,
 	gravity = true,
 	layer = LAYER_FRONT
@@ -540,7 +547,10 @@ lmn_Emitter_Cactus1d = Emitter:new{
 
 lmn_Emitter_Cactus2d = lmn_Emitter_Cactus1d:new{
 	image = "effects/emitters/lmn_petal_cactus2.png",
-	x = 0, y = -5, variance_x = 0, variance_y = 0,
+	x = 0,
+	y = -5,
+	variance_x = 0,
+	variance_y = 0,
 	burst_count = 4,
 }
 

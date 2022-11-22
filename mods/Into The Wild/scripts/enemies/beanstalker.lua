@@ -48,21 +48,43 @@ local angle_3 = 218 + angle_variance / 2
 
 lmn_Beanstalker_Petal_10 = Emitter:new{
 	image = "effects/smoke/lmn_beanstalker_petal.png",
-	max_alpha = 1, min_alpha = 0.0,
-	x = 0, y = 15, variance_x = 20, variance_y = 15,
-	angle = angle_0, angle_variance = angle_variance,
-	timer = 0, birth_rate = 0, burst_count = 20, max_particles = 128,
-	speed = 0.80, lifespan = 1.5, rot_speed = 40, gravity = false,
+	max_alpha = 1,
+	min_alpha = 0.0,
+	x = 0,
+	y = 15,
+	variance_x = 20,
+	variance_y = 15,
+	angle = angle_0,
+	angle_variance = angle_variance,
+	timer = 0,
+	birth_rate = 0,
+	burst_count = 20,
+	max_particles = 128,
+	speed = 0.80,
+	lifespan = 1.5,
+	rot_speed = 40,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 
 lmn_Emitter_Beanstalker1d = Emitter:new{
 	image = "effects/smoke/lmn_beanstalker_petal.png",
-	max_alpha = 1, min_alpha = 0.0,
-	x = 2, y = 4, variance_x = 16, variance_y = 12,
-	angle = 0, angle_variance = 360,
-	timer = 0.2, birth_rate = 0.01, burst_count = 20, max_particles = 64,
-	speed = 0.40, lifespan = 1.5, rot_speed = 40, gravity = false,
+	max_alpha = 1,
+	min_alpha = 0.0,
+	x = 2,
+	y = 4,
+	variance_x = 16,
+	variance_y = 12,
+	angle = 0,
+	angle_variance = 360,
+	timer = 0.2,
+	birth_rate = 0.01,
+	burst_count = 20,
+	max_particles = 64,
+	speed = 0.40,
+	lifespan = 1.5,
+	rot_speed = 40,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 

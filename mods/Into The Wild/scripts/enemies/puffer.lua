@@ -92,11 +92,22 @@ CreatePilot{
 
 lmn_Puffer_Cloud_Burst = Emitter:new{
 	image = "effects/smoke/lmn_puffer_cloud.png",
-	max_alpha = 0.2, min_alpha = 0.0,
-	x = 0, y = 19, variance_x = 20, variance_y = 15,
-	angle = 0, angle_variance = 360,
-	timer = 0, birth_rate = 0, burst_count = 0, max_particles = 32,
-	speed = 0.15, lifespan = 3.0, rot_speed = 20, gravity = false,
+	max_alpha = 0.2,
+	min_alpha = 0.0,
+	x = 0,
+	y = 19,
+	variance_x = 20,
+	variance_y = 15,
+	angle = 0,
+	angle_variance = 360,
+	timer = 0,
+	birth_rate = 0,
+	burst_count = 0,
+	max_particles = 32,
+	speed = 0.15,
+	lifespan = 3.0,
+	rot_speed = 20,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 

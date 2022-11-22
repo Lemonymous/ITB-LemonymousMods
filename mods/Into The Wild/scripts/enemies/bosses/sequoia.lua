@@ -606,11 +606,22 @@ utils.appendAssets{
 
 lmn_Root_Cloud_Burst = Emitter:new{
 	image = "effects/smoke/lmn_sequoia_root_cloud.png",
-	max_alpha = 0.17, min_alpha = 0.0,
-	x = 0, y = 22, variance_x = 15, variance_y = 10,
-	angle = 0, angle_variance = 360,
-	timer = 0, birth_rate = 0, burst_count = 10, max_particles = 32,
-	speed = 0.2, lifespan = 0.7, rot_speed = 20, gravity = false,
+	max_alpha = 0.17,
+	min_alpha = 0.0,
+	x = 0,
+	y = 22,
+	variance_x = 15,
+	variance_y = 10,
+	angle = 0,
+	angle_variance = 360,
+	timer = 0,
+	birth_rate = 0,
+	burst_count = 10,
+	max_particles = 32,
+	speed = 0.2,
+	lifespan = 0.7,
+	rot_speed = 20,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 

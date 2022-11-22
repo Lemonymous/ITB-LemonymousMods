@@ -14,21 +14,41 @@ modApi:appendAsset("img/effects/smoke/lmn_geyser_spray.png", path .. "img/effect
 
 local rise = Emitter:new{
 	image = "effects/smoke/lmn_geyser_spray.png",
-	max_alpha = 0.3, min_alpha = 0.0,
-	x = 0, y = 25, variance_x = 8, variance_y = 6,
-	angle = 0, angle_variance = 360,
-	timer = .005, birth_rate = .01, burst_count = 5, max_particles = 128,
-	speed = .40, lifespan = 2.0, rot_speed = 20, gravity = false,
+	max_alpha = 0.3,
+	min_alpha = 0.0,
+	x = 0,
+	y = 25,
+	variance_x = 8,
+	variance_y = 6,
+	angle = 0,
+	angle_variance = 360,
+	timer = .005,
+	birth_rate = .01,
+	burst_count = 5,
+	max_particles = 128,
+	speed = .40,
+	lifespan = 2.0,
+	rot_speed = 20,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 
 local cloud = Emitter:new{
 	image = "effects/smoke/art_smoke.png",
 	max_alpha = 0.2,
-	x = 0, y = 25, variance_x = 2, variance_y = 8,
-	angle = 240, angle_variance = 50,
-	timer = .005, birth_rate = .07, burst_count = 5, max_particles = 64,
-	speed = 1.25, lifespan = 2.0, gravity = false,
+	x = 0,
+	y = 25,
+	variance_x = 2,
+	variance_y = 8,
+	angle = 240,
+	angle_variance = 50,
+	timer = .005,
+	birth_rate = .07,
+	burst_count = 5,
+	max_particles = 64,
+	speed = 1.25,
+	lifespan = 2.0,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 

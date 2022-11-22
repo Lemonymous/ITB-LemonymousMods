@@ -109,11 +109,22 @@ local angle_3 = 218 + angle_variance / 2
 
 lmn_Infuser_Petal_Spray_0 = Emitter:new{
 	image = "effects/smoke/lmn_infuser_petal.png",
-	max_alpha = 1, min_alpha = 0.0,
-	x = -26, y = 28, variance_x = 20, variance_y = 15,
-	angle = angle_0, angle_variance = angle_variance,
-	timer = 0.5, birth_rate = 0.1, burst_count = 30, max_particles = 128,
-	speed = 3.00, lifespan = 1.0, rot_speed = 20, gravity = false,
+	max_alpha = 1,
+	min_alpha = 0.0,
+	x = -26,
+	y = 28,
+	variance_x = 20,
+	variance_y = 15,
+	angle = angle_0,
+	angle_variance = angle_variance,
+	timer = 0.5,
+	birth_rate = 0.1,
+	burst_count = 30,
+	max_particles = 128,
+	speed = 3.00,
+	lifespan = 1.0,
+	rot_speed = 20,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 lmn_Infuser_Petal_Spray_1 = lmn_Infuser_Petal_Spray_0:new{x = -26, y = -8, angle = angle_1}
@@ -277,11 +288,22 @@ end
 
 lmn_Emitter_Infuser1d = Emitter:new{
 	image = "effects/smoke/lmn_infuser_petal.png",
-	max_alpha = 1, min_alpha = 0.0,
-	x = 0, y = 0, variance_x = 20, variance_y = 15,
-	angle = 0, angle_variance = 360,
-	timer = 0, birth_rate = 0, burst_count = 32, max_particles = 32,
-	speed = 0.40, lifespan = 2, rot_speed = 40, gravity = false,
+	max_alpha = 1,
+	min_alpha = 0.0,
+	x = 0,
+	y = 0,
+	variance_x = 20,
+	variance_y = 15,
+	angle = 0,
+	angle_variance = 360,
+	timer = 0,
+	birth_rate = 0,
+	burst_count = 32,
+	max_particles = 32,
+	speed = 0.40,
+	lifespan = 2,
+	rot_speed = 40,
+	gravity = false,
 	layer = LAYER_FRONT
 }
 
