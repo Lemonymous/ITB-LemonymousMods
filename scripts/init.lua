@@ -2,8 +2,8 @@
 local mod =  {
 	id = "lmn_mods",
 	name = "Lemonymous' Mods",
-	version = "1.0.0",
-	modApiVersion = "2.8.0",
+	version = "1.0.1",
+	modApiVersion = "2.8.2",
 	gameVersion = "1.2.83",
 	icon = "scripts/icon.png",
 	description = "A Collection of mods made by Lemonymous",

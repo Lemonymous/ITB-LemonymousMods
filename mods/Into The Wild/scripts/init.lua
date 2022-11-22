@@ -2,8 +2,8 @@
 local mod = {
 	id = "lmn_into_the_wild",
 	name = "Into The Wild",
-	version = "1.4.0",
-	modApiVersion = "2.8.0",
+	version = "1.4.1",
+	modApiVersion = "2.8.2",
 	gameVersion = "1.2.83",
 	icon = "img/icon.png",
 	dependencies = {"lmn_mods"},

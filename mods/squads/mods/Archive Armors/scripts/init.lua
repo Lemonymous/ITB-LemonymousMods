@@ -2,8 +2,8 @@
 local mod = {
 	id = "lmn_archive_armors",
 	name = "Archive Armors",
-	version = "2.0.0",
-	modApiVersion = "2.8.0",
+	version = "2.0.1",
+	modApiVersion = "2.8.2",
 	gameVersion = "1.2.83",
 	icon = "img/icon.png",
 	dependencies = {"lmn_mods"},
