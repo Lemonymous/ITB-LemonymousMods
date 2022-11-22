@@ -28,7 +28,7 @@ lmn_Flood_Generator = Skill:new{
 
 function lmn_Flood_Generator:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	local size = Board:GetSize()
 	for x = 1, size.x - 2 do
 		for y = 0, size.y - 1, size.y - 1 do
@@ -38,7 +38,7 @@ function lmn_Flood_Generator:GetTargetArea(p)
 			end
 		end
 	end
-	
+
 	for y = 1, size.y - 2 do
 		for x = 0, size.x - 1, size.x - 1 do
 			local curr = Point(x,y)
@@ -47,7 +47,7 @@ function lmn_Flood_Generator:GetTargetArea(p)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -55,7 +55,7 @@ function lmn_Flood_Generator:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local size = Board:GetSize()
 	local locs = {}
-	
+
 	local across = Point(p2.x, p2.y)
 	if p2.x == 0 then
 		across.x = size.x - 1
@@ -66,39 +66,39 @@ function lmn_Flood_Generator:GetSkillEffect(p1, p2)
 	elseif p2.y == size.y - 1 then
 		across.y = 0
 	end
-	
+
 	targets = utils.getBoard(function(p)
 		return
 			Env_lmn_FlashFlood:IsValidTarget(p) and
 			Board:IsEdge(p)
 	end)
 	table.sort(targets, function(a,b) return a:Manhattan(across) < b:Manhattan(across) end)
-	
+
 	for _, target in ipairs(targets) do
 		locs = astar:getPath(p2, target, function(p) return Env_lmn_FlashFlood:IsValidTarget(p) end)
 		if #locs > 0 then
 			break
 		end
 	end
-	
+
 	weaponPreview:SetLooping(true)
 	for i, p in ipairs(locs) do
 		weaponPreview:AddImage(p, Env_lmn_FlashFlood.CombatIcon, GL_Color(255,226,88,0.50))
-		
+
 		if i < #locs then
 			ret:AddSound("/props/tide_flood")
 		else
 			ret:AddSound("/props/tide_flood_last")
 		end
-		
+
 		local d = SpaceDamage(p)
 		d.iTerrain = TERRAIN_WATER
-		
+
 		local terrain = Board:GetTerrain(p)
 		if terrain == TERRAIN_MOUNTAIN or terrain == TERRAIN_BUILDING or Board:IsDangerousItem(p)then
 			d.iDamage = DAMAGE_DEATH
 		end
-		
+
 		ret:AddDamage(d)
 		ret:AddBounce(p, -1)
 		ret:AddDelay(0.08)
@@ -109,6 +109,6 @@ function lmn_Flood_Generator:GetSkillEffect(p1, p2)
 		weaponPreview:AddDelay(0.07)
 	end
 	weaponPreview:AddDelay(0.3)
-	
+
 	return ret
 end

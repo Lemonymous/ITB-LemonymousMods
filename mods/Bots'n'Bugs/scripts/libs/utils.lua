@@ -11,21 +11,21 @@ function this.GetProjectileEnd(p1, p2, range, pathing)
 	pathing = pathing or PATH_PROJECTILE
 	local dir = GetDirection(p2 - p1)
 	local target = p1
-	
+
 	for k = 1, range do
 		local curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		target = curr
-		
+
 		if Board:IsBlocked(target, pathing) then
 			break
 		end
 	end
-	
+
 	return target
 end
 
@@ -45,12 +45,12 @@ end
 function this.EffectAddAttackSound(fx, p, sound, isQueued)
 	assert(type(fx) == 'userdata')
 	assert(type(p) == 'userdata')
-	
+
 	local q = isQueued and 'Queued' or ''
 	local d = SpaceDamage(p)
 	d.bHide = true
 	d.sSound = sound
-	
+
 	fx['Add'..q..'Damage'](fx, d)
 end
 
@@ -64,11 +64,11 @@ end
 function this.EffectPreviewExtraDamage(fx, p, isQueued)
 	assert(type(fx) == 'userdata')
 	assert(type(p) == 'userdata')
-	
+
 	local q = isQueued and "Queued" or ""
 	local d = SpaceDamage(p, 1)
 	d.bHide = true
-	
+
 	local pawn = Board:GetPawn(p)
 	if pawn then
 		fx['Add'..q..'Script'](string.format(
@@ -76,9 +76,9 @@ function this.EffectPreviewExtraDamage(fx, p, isQueued)
 			pawn:GetId()
 		))
 	end
-	
+
 	fx['Add'..q..'Damage'](fx, d)
-	
+
 	if pawn then
 		fx['Add'..q..'Script'](string.format(
 			"Board:GetPawn(%s):SetSpace(%s)",
@@ -100,20 +100,20 @@ end
 
 -- scrambles an array.
 function this.shuffle(tbl)
-	
+
     for i = #tbl, 2, -1 do
         local j = math.random(1, i)
-		
+
 		-- neat way to swap two variables.
         tbl[i], tbl[j] = tbl[j], tbl[i]
     end
-	
+
 	return tbl
 end
 
 local function isValidDeployment(p)
 	local terrain = Board:GetTerrain(p)
-	
+
 	return
 		terrain ~= TERRAIN_MOUNTAIN	and
 		terrain ~= TERRAIN_BUILDING	and
@@ -129,34 +129,34 @@ end
 -- returns the deployment zone.
 function this.getDeploymentZone()
 	assert(Board)
-	
+
 	local deployment = extract_table(Board:GetZone("deployment"))
-	
+
 	if #deployment == 0 then
 		for x = 1, 3 do
 			for y = 1, 6 do
 				local curr = Point(x, y)
-				
+
 				if isValidDeployment(curr) then
 					table.insert(deployment, curr)
 				end
 			end
 		end
 	end
-	
+
 	return deployment
 end
 
 function this.isAdjacent(p, q)
 	assert(type(p) == 'userdata')
 	assert(type(q) == 'userdata')
-	
+
 	if p.x == q.x then
 		return math.abs(p.y - q.y) == 1
 	elseif p.y == q.y then
 		return math.abs(p.x - q.x) == 1
 	end
-	
+
 	return false
 end
 
@@ -173,7 +173,7 @@ function this.table_predicates(list, fn)
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -185,7 +185,7 @@ function this.list_predicates(list, fn)
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -193,7 +193,7 @@ end
 -- if optional parameter fn is used, add only points affirming the function.
 function this.getBoard(fn)
 	local ret = {}
-	
+
 	local size = Board:GetSize()
 	for x = 0, size.x - 1 do
 		for y = 0, size.y - 1 do
@@ -203,7 +203,7 @@ function this.getBoard(fn)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -211,7 +211,7 @@ end
 -- returns nil if no points satisfies the conditions.
 function this.getSpace(predicate)
 	assert(type(predicate) == "function")
-	
+
 	local size = Board:GetSize()
 	for y = 0, size.y - 1 do
 		for x = 0, size.x - 1 do
@@ -221,7 +221,7 @@ function this.getSpace(predicate)
 			end
 		end
 	end
-	
+
 	return nil
 end
 
@@ -232,7 +232,7 @@ function this.PointListFind(pointList, predicate)
 			return loc
 		end
 	end
-	
+
 	return nil
 end
 

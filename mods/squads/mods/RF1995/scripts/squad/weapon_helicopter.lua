@@ -57,13 +57,13 @@ function lmn_Helicopter_Rocket:GetTargetArea(point)
 		table.insert(targets, Point( 0,-1))
 		table.insert(targets, Point( 0, 1))
 	end
-	
+
 	for k = 1, #targets do
 		if Board:IsValid(point + targets[k]) then
 			ret:push_back(point + targets[k])
 		end
 	end
-	
+
 	return ret
 end
 
@@ -71,13 +71,13 @@ function lmn_Helicopter_Rocket:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local distance = p1:Manhattan(p2)
-	
+
 	local damage = SpaceDamage(p2, self.Damage)
 	if self.Push then
 		damage.iPush = dir
 		damage.sAnimation = "airpush_".. dir
 	end
-	
+
 	local damageAnim = SpaceDamage(p2, 0)
 	if distance > 1 then
 		ret:AddArtillery(damage, self.UpShot)
@@ -88,7 +88,7 @@ function lmn_Helicopter_Rocket:GetSkillEffect(p1, p2)
 		effectBurst.Add(ret, p2, "lmn_Emitter_Helicopter_Rocket", dir)
 		damageAnim.sAnimation = "explopush1_".. dir
 	end
-	
+
 	ret:AddDamage(damageAnim)
 	ret:AddBounce(p2, 1)
 	return ret

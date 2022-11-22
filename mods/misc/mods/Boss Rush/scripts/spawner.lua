@@ -14,28 +14,28 @@ function Spawner:CountLivingUpgrades()
 	local count = old_Spawner_CountLivingUpgrades(self)
 	if	not Board				or
 		not self.isFinalMission	then
-		
+
 		return count
 	end
-	
+
 	local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
 	for _, id in ipairs(pawns) do
 		if string.find(Board:GetPawn(id):GetType(), "Boss") then
 			count = count + 1
 		end
 	end
-	
+
 	return count
 end
 
 local old_Spawner_NextPawn = Spawner.NextPawn
 function Spawner:NextPawn(pawn_tables)
 	local ret = old_Spawner_NextPawn(self, pawn_tables)
-	
+
 	if	self.isFinalMission								and
 		#self.leaders_remaining > 0						and
 		self.leaders_spawned < self.leaders_to_spawn	then
-		
+
 		local leader = string.sub(ret, 1, string.len(ret) - 1) .."Boss"
 		if list_contains(self.leaders_remaining, leader) then
 			remove_element(leader, self.leaders_remaining)
@@ -93,15 +93,15 @@ end
 
 local function onPawnTracked(mission, pawn)
 	local spawner = mission:GetSpawner()
-	
+
 	if not spawner.isFinalMission then
 		return
 	end
-	
+
 	local pawnType = pawn:GetType()
 	if	spawner.leaders_remaining							and
 		list_contains(spawner.leaders_remaining, pawnType)	then
-		
+
 		remove_element(pawnType, spawner.leaders_remaining)
 		spawner.leaders_spawned = spawner.leaders_spawned + 1
 	end
@@ -113,12 +113,12 @@ local function onModsLoaded()
 		can spawn per 4 turns on the final missions,
 		(each phase), for every combination of difficulty
 		and number of islands cleared.
-		
+
 		spawns has set pawns on them, so leaders can be
 		blocked like any other pawn; however, the player
 		won't know which is which.
 	--]]
-	
+
 	SectorSpawners[DIFF_EASY][2].num_leaders = 0
 	SectorSpawners[DIFF_EASY][3].num_leaders = 0
 	SectorSpawners[DIFF_EASY][4].num_leaders = 0
@@ -134,14 +134,14 @@ local function onModsLoaded()
 	SectorSpawners[DIFF_IMPOSSIBLE][2].num_leaders = 4
 	SectorSpawners[DIFF_IMPOSSIBLE][3].num_leaders = 6
 	SectorSpawners[DIFF_IMPOSSIBLE][4].num_leaders = 8
-	
+
 	-- these can only be reached via console.
 	SectorSpawners[DIFF_EASY][1].num_leaders = 0
 	SectorSpawners[DIFF_NORMAL][1].num_leaders = 0
 	SectorSpawners[DIFF_HARD][1].num_leaders = 0
 	SectorSpawners[DIFF_VERY_HARD][1].num_leaders = 0
 	SectorSpawners[DIFF_IMPOSSIBLE][1].num_leaders = 0
-	
+
 	modApiExt:addPawnTrackedHook(onPawnTracked)
 end
 

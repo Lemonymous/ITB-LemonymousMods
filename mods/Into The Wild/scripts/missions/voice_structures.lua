@@ -22,10 +22,10 @@ local function onModsLoaded()
 		if not mission then return end
 		if not list_contains(missions, mission.ID) then return end
 		if utils.IsTipImage() then return end
-		
+
 		local criticals = shallow_copy(mission.Criticals)
 		local script = ""
-		
+
 		for i,p in ipairs(criticals) do
 			if not Board:IsDamaged(p) then
 				script = script .. string.format([[
@@ -44,7 +44,7 @@ local function onModsLoaded()
 				]], p:GetString(), mission.ID)
 			end
 		end
-		
+
 		if script == "" then return end
 		if skillEffect.effect:size() > 0 then skillEffect:AddScript(script) end
 		if skillEffect.q_effect:size() > 0 then skillEffect:AddQueuedScript(script) end

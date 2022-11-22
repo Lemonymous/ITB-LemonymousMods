@@ -141,43 +141,43 @@ local worldConstants = {}
 function worldConstants:addConstant(name, const)
 	Assert.Equals('string', type(name), "Argument #1")
 	Assert.Equals('string', type(const), "Argument #2")
-	
+
 	name = name:gsub("^.", string.upper) -- capitalize first letter
-	
+
 	default[const] = Values[const]
 	local getDefaultConstant = "getDefault".. name
 	local setConstant = "set".. name
 	local resetConstant = "reset".. name
 	local queuedSetConstant = "queuedSet".. name
 	local queuedResetConstant = "queuedReset".. name
-	
+
 	self[getDefaultConstant] = function(self)
 		return default[const]
 	end
-	
+
 	self[setConstant] = function(self, effect, value, isQueued)
 		Assert.Equals('table', type(self), "Argument #1")
 		Assert.Equals('userdata', type(effect), "Argument #2")
 		Assert.Equals('number', type(value), "Argument #3")
 		Assert.Equals({'nil', 'boolean'}, type(isQueued), "Argument #4")
-		
+
 		local AddScript = isQueued and "AddQueuedScript" or "AddScript"
 		effect[AddScript](effect, string.format("Values.%s = %s", const, value))
 	end
-	
+
 	self[resetConstant] = function(self, effect, isQueued)
 		Assert.Equals('table', type(self), "Argument #1")
 		Assert.Equals('userdata', type(effect), "Argument #2")
 		Assert.Equals({'nil', 'boolean'}, type(isQueued), "Argument #3")
-		
+
 		local AddScript = isQueued and "AddQueuedScript" or "AddScript"
 		effect[AddScript](effect, string.format("Values.%s = %s", const, default[const]))
 	end
-	
+
 	self[queuedSetConstant] = function(self, effect, value)
 		return self[setConstant](self, effect, value, true)
 	end
-	
+
 	self[queuedResetConstant] = function(self, effect)
 		return self[resetConstant](self, effect, true)
 	end

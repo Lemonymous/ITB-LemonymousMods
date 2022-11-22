@@ -12,6 +12,6 @@ return {
 		Success = {
 			"Sometimes, I wonder just how the Vek are a threat to us. In spite of their enhanced sensory perception, they still position themselves over active geysers by accident.",
 			"Sometimes, I wonder what drives the Vek. In spite of their ferocity, they seem completely oblivious to natural threats.",
-		},	
-	},	
+		},
+	},
 }

@@ -24,7 +24,7 @@ local function countAlive(list)
 			error("variable of type ".. type(id) .." is not a number")
 		end
 	end
-	
+
 	return ret
 end
 
@@ -66,7 +66,7 @@ function Mission_lmn_Convoy:StartMission()
 		table.insert(self.Criticals, pawn:GetId())
 		Board:AddPawn(pawn, p)
 	end
-	
+
 	-- this unfortunately blocks deployment as well.
 	--[[local size = Board:GetSize()
 	for x = 0, size.x - 1 do
@@ -125,7 +125,7 @@ lmn_ConvoyTruckAtk = Skill:new{
 -- some mess to account for Victoria Swift's weirdness.
 local old = ScorePositioning
 function ScorePositioning(p, pawn, ...)
-	
+
 	if pawn and pawn:GetType() == "lmn_ConvoyTruck" then
 		local id = pawn:GetId()
 		if GAME and GAME.trackedPawns and GAME.trackedPawns[id] and GAME.trackedPawns[id].loc then
@@ -135,12 +135,12 @@ function ScorePositioning(p, pawn, ...)
 			return -100
 		end
 	end
-	
+
 	return old(p, pawn, ...)
 end
 
 function lmn_ConvoyTruckAtk:GetTargetScore(p1, p2)
-	
+
 	local pawn = Board:GetPawn(p1)
 	if pawn then
 		local id = pawn:GetId()
@@ -151,7 +151,7 @@ function lmn_ConvoyTruckAtk:GetTargetScore(p1, p2)
 			return -100
 		end
 	end
-	
+
 	return 100
 end
 
@@ -166,13 +166,13 @@ function lmn_ConvoyTruckAtk:GetSkillEffect(p1, p2)
 	local dir = GetDirection(p2 - p1)
 	local isCrash
 	local target = p1
-	
+
 	for k = 1, self.Range do
 		local curr = p1 + DIR_VECTORS[dir] * k
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		if Board:IsBlocked(curr, PATH_GROUND) then
 			if Board:IsBlocked(curr, PATH_FLYER) then
 				isCrash = true
@@ -181,19 +181,19 @@ function lmn_ConvoyTruckAtk:GetSkillEffect(p1, p2)
 			end
 			break
 		end
-		
+
 		target = curr
 	end
-	
+
 	ret:AddQueuedCharge(Board:GetSimplePath(p1, target), FULL_DELAY)
-	
+
 	if isCrash then
 		local d = SpaceDamage(target + DIR_VECTORS[dir], self.Damage)
 		d.sImageMark = "combat/arrow_hit.png"
 		ret:AddQueuedMelee(target, d)
 		ret:AddQueuedDamage(SpaceDamage(target, DAMAGE_DEATH))
 	end
-	
+
 	return ret
 end
 

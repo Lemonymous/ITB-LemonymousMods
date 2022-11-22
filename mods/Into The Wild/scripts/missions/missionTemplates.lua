@@ -9,16 +9,16 @@ local this = {
 function this.GetCompletedStatusEnvironment(self)
 	local total = 0
 	local potential = 0
-	
+
 	for _, obj in ipairs(self:GetBonusCompleted()) do
 		total = obj.rep + total
 		potential = obj.potential + potential
 	end
-	
+
 	if total == potential then
 		return "Success"
 	end
-	
+
 	return "Failure"
 end
 

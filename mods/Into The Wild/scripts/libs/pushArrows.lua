@@ -14,20 +14,20 @@ local Elevation = {
 local function getArrow(dir, loc, hit)
 	assert(type(dir) == 'number')
 	assert(dir >= 0 and dir <= 3)
-	
+
 	local elevation
-	
+
 	if loc then
 		assert(type(loc) == 'userdata')
 		assert(type(loc.x) == 'number')
 		assert(type(loc.y) == 'number')
-		
+
 		terrain = Board:GetTerrain(loc)
 		elevation = Elevation[terrain]
 	end
-	
+
 	elevation = elevation or ""
-	
+
 	return "combat/lmn_arrow_".. hit .. elevation .. dir ..".png"
 end
 
@@ -54,7 +54,7 @@ utils.copyAssets{
 	{"lmn_arrow_water_1.png", "arrow_right.png"},
 	{"lmn_arrow_water_2.png", "arrow_down.png"},
 	{"lmn_arrow_water_3.png", "arrow_left.png"},
-	
+
 	{"lmn_arrow_hit_0.png", "arrow_hit_up.png"},
 	{"lmn_arrow_hit_1.png", "arrow_hit_right.png"},
 	{"lmn_arrow_hit_2.png", "arrow_hit_down.png"},

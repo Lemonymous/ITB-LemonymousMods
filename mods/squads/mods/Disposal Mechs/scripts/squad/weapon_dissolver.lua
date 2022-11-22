@@ -15,7 +15,7 @@ lmn_ChemicalAtk = Skill:new{
 	-- just the acid splash sounds a bit lacking.
 	-- using both for the time being.
 	LaunchSound = "/weapons/flamethrower",
-	ImpactSound = "/props/acid_splash",			
+	ImpactSound = "/props/acid_splash",
 	TipImage = {
 		Unit = Point(2,2),
 		Enemy = Point(2,1),
@@ -37,7 +37,7 @@ function lmn_ChemicalAtk:GetTargetArea(point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -54,7 +54,7 @@ function lmn_ChemicalAtk:GetSkillEffect(p1, p2)
 		local push = (i == distance) and dir * self.Push or DIR_NONE
 		local damage = SpaceDamage(curr, 0, push)
 		damage.iAcid = EFFECT_CREATE
-		
+
 		if Board:IsPawnSpace(curr) then
 			--damage.sSound = self.ImpactSound
 			if Board:GetPawn(curr):IsAcid() then
@@ -62,12 +62,12 @@ function lmn_ChemicalAtk:GetSkillEffect(p1, p2)
 				damage.sAnimation = "ExploAcid1"
 			end
 		end
-		
+
 		if i == distance then
 			damage.sAnimation = "dm_acidthrower".. distance .."_".. dir 
 		end
 		ret:AddDamage(damage)
-		
+
 		if i == distance then
 			ret:AddDelay(0.4)
 			local damage = SpaceDamage(curr)

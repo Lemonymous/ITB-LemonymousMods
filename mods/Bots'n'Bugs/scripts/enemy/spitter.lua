@@ -119,54 +119,54 @@ lmn_SpitterAtk1 = Skill:new{
 
 local isTargetScore = false
 function lmn_SpitterAtk1:GetTargetScore(p1, p2)
-	
+
 	isTargetScore = true
 	local result = Skill.GetTargetScore(self, p1, p2)
 	isTargetScore = false
-	
+
 	return result
 end
 
 function lmn_SpitterAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	-- Queued attacks are weird. Make sure
 	-- we have the correct pawn.
 	local pawn = Board:GetPawn(p1)
 	if not pawn or not IsSpitter(pawn) then
 		return ret
 	end
-	
+
 	if not Board:IsTipImage() then
 		ret:AddScript(string.format([[
 			local tips = mod_loader.mods.lmn_bots_and_bugs.libs.tutorialTips;
 			tips:trigger("Spitter_Atk", %s);
 		]], p1:GetString()))
 	end
-	
+
 	local dir = GetDirection(p2 - p1)
 	local target = GetProjectileEnd(p1, p2)
-	
+
 	if target == p2 then
 		-- melee
 		utils.EffectQueuedAddAttackSound(ret, p2, self.MeleeSound)
-		
+
 		local d = SpaceDamage(p2, self.Damage)
 		d.sAnimation = self.MeleeArt
-		
+
 		ret:AddQueuedMelee(p1, d)
-		
+
 		if isTargetScore then
 			local dir_vec = DIR_VECTORS[dir]
-			
+
 			-- extra targetscore for melee against building
 			if Board:IsBuilding(p2) then
 				ret:AddQueuedDamage(SpaceDamage(p2, 0))
-				
+
 			-- extra targetscore for melee vs units with building behind
 			elseif Board:IsPawnSpace(p2) and Board:IsValid(p2 + dir_vec) then
 				local behind = GetProjectileEnd(p2, p2 + dir_vec)
-				
+
 				if Board:IsBuilding(behind) then
 					ret:AddQueuedDamage(SpaceDamage(behind, 0))
 				end
@@ -180,26 +180,26 @@ function lmn_SpitterAtk1:GetSkillEffect(p1, p2)
 		ret:AddQueuedSound("impact/generic/metal")
 		ret:AddQueuedAnimation(p1, self.RangedLaunchArt .. dir)
 		ret.q_effect:index(ret.q_effect:size()).bHide = true
-		
+
 		worldConstants:queuedSetSpeed(ret, 1)
-		
+
 		local d = SpaceDamage(target)
 		d.sSound = self.RangedImpactSound1
 		ret:AddQueuedProjectile(d, "", NO_DELAY)
-		
+
 		d.iDamage = self.MinDamage
 		d.sAnimation = self.RangedImpactArt
 		d.sSound = self.RangedImpactSound2
 		ret:AddQueuedProjectile(d, self.ProjectileArt, NO_DELAY)
-		
+
 		worldConstants:queuedResetSpeed(ret)
-		
+
 		-- extra targetscore for long shot vs building
 		if isTargetScore and Board:IsBuilding(target) and p1:Manhattan(target) > 4 then
 			ret:AddQueuedDamage(SpaceDamage(target, 0))
 		end
 	end
-	
+
 	return ret
 end
 

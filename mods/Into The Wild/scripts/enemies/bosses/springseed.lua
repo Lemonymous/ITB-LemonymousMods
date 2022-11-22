@@ -57,77 +57,77 @@ function lmn_SpringseedAtkB:GetTargetScore(p1, p2)
 
 	local mission = GetCurrentMission()
 	if not mission then return 0 end
-	
+
 	local shooter = Board:GetPawn(p1)
 	if not shooter then return 0 end
-	
+
 	local id = shooter:GetId()
 	local pid = p2idx(p1)
-	
+
 	mission.lmn_springseedBoss = mission.lmn_springseedBoss or {}
 	local m = mission.lmn_springseedBoss
-	
+
 	m[id] = m[id] or {}
 	m = m[id]
 	m.data = m.data or {}
-	
+
 	m.data[pid] = {
 		offsets = {},
 		score = 0
 	}
-	
+
 	isTargetScore = true
 	Skill.GetTargetScore(self, p1, p2)
 	isTargetScore = nil
-	
+
 	return m.data[pid].score
 end
 
 function lmn_SpringseedAtkB:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local mission = GetCurrentMission()
 	if not mission then return ret end
-	
+
 	local shooter = Board:GetPawn(p1)
 	if not shooter then return ret end
-	
+
 	local id = shooter:GetId()
 	local pid = p2idx(p1)
-	
+
 	mission.lmn_springseedBoss = mission.lmn_springseedBoss or {}
 	local m = mission.lmn_springseedBoss
-	
+
 	m[id] = m[id] or {}
 	m = m[id]
 	m.data = m.data or {}
 	m.data[pid] = m.data[pid] or {}
-	
+
 	if isTargetScore then
 		-- scoring in progress, request target lock when scoring is done.
 		m.lockIn = true
-		
+
 		-- run pathfinder to find path with most damage.
 		local bestPath, score = pathfinder.GetBest(p1, self.Jumps)
 		local offsets = {}
-		
+
 		for _, loc in ipairs(bestPath) do
 			offsets[#offsets+1] = loc - p1
 		end
-		
+
 		-- store data
 		m.data[pid] = {
 			offsets = offsets,
 			score = score
 		}
-		
+
 		return ret
 	elseif m.lockIn then
 		-- scoring complete, lock in target offsets for pawn.
 		m.lockIn = false
 		m.offsets = m.data[pid].offsets
 	end
-	
+
 	-- actual attack, based on locked in target data.
 	local q1 = p1
 	local move = PointList()
@@ -136,14 +136,14 @@ function lmn_SpringseedAtkB:GetSkillEffect(p1, p2)
 		local q2 = p1 + off
 		local dir = GetDirection(q2 - q1)
 		local target = q1 + DIR_VECTORS[dir]
-		
+
 		if not Board:IsBlocked(q2, PATH_FLYER) then
 			ret:AddScript(string.format("Board:SetDangerous(%s)", q2:GetString()))
-			
+
 			local d = SpaceDamage(q1)
 			d.sImageMark = artiArrows.ColorUp(dir)
 			ret:AddQueuedDamage(d)
-			
+
 			-- actual leap via script to hide preview.
 			ret:AddQueuedScript(string.format([[
 				local leap = PointList();
@@ -153,42 +153,42 @@ function lmn_SpringseedAtkB:GetSkillEffect(p1, p2)
 				fx:AddLeap(leap, NO_DELAY);
 				Board:AddEffect(fx);
 			]], q1:GetString(), q2:GetString()))
-			
+
 			ret:AddQueuedDelay(.25) -- short delay before dealing damage mid leap.
 			ret:AddQueuedSound(self.Sound_Impact)
 			ret:AddQueuedScript(string.format("Board:AddAnimation(%s, '%s', ANIM_NO_DELAY)", target:GetString(), self.Anim_Launch .. dir))
 			ret:AddQueuedDelay(.25)
-			
+
 			local damage = SpaceDamage(target, self.Damage)
 			damage.iAcid = 1
 			ret:AddQueuedDamage(damage)
 			ret:AddQueuedDelay(0.3)
-			
+
 			q1 = q2
 		else
 			local d = SpaceDamage(q1)
 			d.sImageMark = artiArrows.WhiteUp(dir)
 			ret:AddQueuedDamage(d)
 			ret:AddQueuedScript("Board:AddAlert(".. q1:GetString() ..", 'ATTACK BLOCKED')")
-			
+
 			break
 		end
-		
+
 		move:push_back(q2)
-		
+
 		local d = SpaceDamage(q2)
 		d.sImageMark = artiArrows.ColorDown(dir)
 		ret:AddQueuedDamage(d)
-		
+
 		if utils.IsPit(q2) then
 			break
 		end
 	end
-	
+
 	pawnSpace.QueuedClearSpace(ret, p1)
 	ret:AddQueuedMove(move, NO_DELAY)
 	pawnSpace.QueuedRewind(ret)
-	
+
 	return ret
 end
 
@@ -196,25 +196,25 @@ end
 lmn_SpringseedAtkB_Tip = lmn_SpringseedAtkB:new{}
 function lmn_SpringseedAtkB_Tip:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local move = PointList()
 	move:push_back(p1)
 	local q1 = p1
 	local q2
-	
+
 	ret:AddQueuedDelay(0.25)
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):Move(Point(1,1))", self.TipImage.Enemy:GetString()))
 	ret:AddQueuedDelay(0.50)
-	
+
 	for k = 1, 3 do
 		local target = self.TipImage["Building".. k]
 		local dir = GetDirection(target - q1)
 		q2 = target + DIR_VECTORS[dir]
-		
+
 		local d = SpaceDamage(q1)
 		d.sImageMark = artiArrows.ColorUp(dir)
 		ret:AddQueuedDamage(d)
-		
+
 		if k < 3 then
 			ret:AddQueuedScript(string.format([[
 				local leap = PointList();
@@ -224,33 +224,33 @@ function lmn_SpringseedAtkB_Tip:GetSkillEffect(p1, p2)
 				fx:AddLeap(leap, NO_DELAY);
 				Board:AddEffect(fx);
 			]], q1:GetString(), q2:GetString()))
-			
+
 			ret:AddQueuedDelay(0.25) -- short delay before dealing damage mid leap.
 			ret:AddQueuedScript(string.format("Board:AddAnimation(%s, '%s', ANIM_NO_DELAY)", target:GetString(), self.Anim_Launch .. dir))
 			ret:AddQueuedDelay(0.25)
-			
+
 			local damage = SpaceDamage(target, self.Damage)
 			damage.iAcid = 1
 			ret:AddQueuedDamage(damage)
 			ret:AddQueuedDelay(0.3)
-			
+
 			q1 = q2
 		end
-		
+
 		move:push_back(q2)
-		
+
 		local d = SpaceDamage(q2)
 		d.sImageMark = artiArrows.ColorDown(dir)
 		ret:AddQueuedDamage(d)
 	end
-	
+
 	pawnSpace.QueuedClearSpace(ret, p1)
 	ret:AddQueuedMove(move, NO_DELAY)
 	pawnSpace.QueuedRewind(ret)
-	
+
 	ret:AddQueuedDelay(0.75)
 	ret:AddQueuedScript("Board:AddAlert(".. q1:GetString() ..", 'ATTACK BLOCKED')")
-	
+
 	return ret
 end
 

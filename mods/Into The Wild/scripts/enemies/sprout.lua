@@ -22,20 +22,20 @@ utils.appendAssets{
 	{"lmn_sprout1_death.png", "sprout1d.png"},
 	{"lmn_sprout1w.png", "sprout1.png"},
 	{"lmn_sprout1g.png", "sprout1g.png"},
-	
+
 	{"lmn_sprout2.png", "sprout2.png"},
 	{"lmn_sprout2a.png", "sprout2a.png"},
 	{"lmn_sprout2_emerge.png", "sprout2e.png"},
 	{"lmn_sprout2_death.png", "sprout2d.png"},
 	{"lmn_sprout2w.png", "sprout2.png"},
 	{"lmn_sprout2g.png", "sprout2g.png"},
-	
+
 	{"lmn_sprout2ev.png", "sprout2ev.png"},
-	
+
 	{"lmn_sprout1g.png", "sprout1g.png"},
 	{"lmn_sprout1ga.png", "sprout1ga.png"},
 	{"lmn_sprout1g_death.png", "sprout1gd.png"},
-	
+
 	{"lmn_sprout2g.png", "sprout2g.png"},
 	{"lmn_sprout2ga.png", "sprout2ga.png"},
 	{"lmn_sprout2g_death.png", "sprout2gd.png"},
@@ -183,7 +183,7 @@ function lmn_SproutEvolve:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	if not shooter then return ret end
-	
+
 	local status = {
 		hp = shooter:GetHealth(),
 		isAcid = shooter:IsAcid(),
@@ -194,17 +194,17 @@ function lmn_SproutEvolve:GetSkillEffect(p1, p2)
 		local tutorialTips = mod.libs.tutorialTips", "lmn_into_the_wild;
 		tutorialTips:trigger("evolve", %s);
 	]], p1:GetString()))
-	
+
 	ret:AddQueuedScript(string.format("Board:RemovePawn(%s)", p1:GetString()))
 	ret:AddQueuedAnimation(p1, self.GrowAnim)
 	ret.q_effect:index(ret.q_effect:size()).bHide = true
-	
+
 	local delay = 0
 	local time = ANIMS[self.GrowAnim].Time
 	local numFrames = ANIMS[self.GrowAnim].NumFrames
 	local frames = ANIMS[self.GrowAnim].Frames
 	local lengths = ANIMS[self.GrowAnim].Lenghts
-	
+
 	if frames then
 		for _, i in ipairs(frames) do
 			local dt = lengths and lengths[i] or time
@@ -220,7 +220,7 @@ function lmn_SproutEvolve:GetSkillEffect(p1, p2)
 			delay = numFrames * time
 		end
 	end
-	
+
 	ret:AddQueuedDelay(delay)
 	ret:AddQueuedScript(string.format("Board:AddPawn('%s', %s)", self.MyPawn, p1:GetString()))
 	local hpDiff = _G[self.MyPawn].Health - status.hp
@@ -234,7 +234,7 @@ function lmn_SproutEvolve:GetSkillEffect(p1, p2)
 	if status.isFire then
 		ret:AddQueuedScript(string.format("modApiExt_internal:getMostRecent().pawn:setFire(Board:GetPawn(%s), true)", p1:GetString()))
 	end
-	
+
 	return ret
 end
 
@@ -258,14 +258,14 @@ lmn_SproutAtk1 = Skill:new{
 function lmn_SproutAtk1:GetTargetArea(p)
 	local ret = Board:GetSimpleReachable(p, self.PathSize, self.CornersAllowed)
 	ret:push_back(p) -- if we attack this spot, we evolve.
-	
+
 	return ret
 end
 
 local isTargetScore
 function lmn_SproutAtk1:GetTargetScore(p1, p2)
 	if p1 == p2 then return 1 end -- target self to evolve. low score of 1.
-	
+
 	return Skill.GetTargetScore(self, p1, p2)
 end
 
@@ -273,10 +273,10 @@ function lmn_SproutAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	if p1 == p2 then
 		-- evolve
-		
+
 		-- rem pawn
 		ret:AddScript("Board:RemovePawn(Board:GetPawn(".. p1:GetString() .."))")
-		
+
 		-- add evolve pawn
 		local d = SpaceDamage(p1)
 		d.sPawn = self.MyPawn
@@ -383,7 +383,7 @@ local function onModsLoaded()
 			modApi.achievements:addProgress(mod.id, "sprout", {progress = 1})
 		end
 	end)
-	
+
 	local hotseat = mod_loader.mods["lmn_hotseat"]
 	if not hook_registered and type(Hotseat) == 'table' then
 		hook_registered = true
@@ -391,12 +391,12 @@ local function onModsLoaded()
 			if not hotseat.installed then
 				return
 			end
-			
+
 			local tip_id = "sprout_Hotseat"
 			if modApi:readProfileData(tip_id) then
 				return
 			end
-			
+
 			for _, pawnId in ipairs(extract_table(Board:GetPawns(TEAM_PLAYER))) do
 				local pawn = Board:GetPawn(pawnId)
 				if pawn:GetType() == "lmn_Sprout1" then

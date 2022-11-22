@@ -17,7 +17,7 @@ utils.appendAssets{
 	{"lmn_chomper1_emerge.png", "chomper1e.png"},
 	{"lmn_chomper1_death.png", "chomper1d.png"},
 	{"lmn_chomper1w.png", "chomper1.png"},
-	
+
 	{"lmn_chomper2.png", "chomper2.png"},
 	{"lmn_chomper2a.png", "chomper2a.png"},
 	{"lmn_chomper2_emerge.png", "chomper2e.png"},
@@ -65,7 +65,7 @@ a.lmn_Chomper2w = alpha:new{Image = imagePath .."lmn_chomper2w.png"}
 utils.appendAssets{
 	writePath = "img/units/player/",
 	readPath = path .."img/units/aliens/",
-	
+
 	{"lmn_chomper.png", "chomper.png"},
 	{"lmn_chomper_a.png", "chompera.png"},
 	{"lmn_chomper_broken.png", "chomperd.png"},
@@ -169,7 +169,7 @@ local bonusDamageTable = {
 
 local function getBonusDamage(casterLoc, targetLoc)
 	local bonusDamage = 0
-	
+
 	if Board:IsPawnTeam(casterLoc, TEAM_ENEMY) and Board:IsPawnTeam(targetLoc, TEAM_ENEMY) then
 		for i, damage in pairs(bonusDamageTable) do
 			if IsPassiveSkill(i) then
@@ -177,7 +177,7 @@ local function getBonusDamage(casterLoc, targetLoc)
 			end
 		end
 	end
-	
+
 	return bonusDamage
 end
 
@@ -190,9 +190,9 @@ function lmn_ChomperAtk1:GetSkillEffect(p1, p2)
 	local pawn = Board:GetPawn(target)
 	local d = SpaceDamage(adjacent)
 	local pullPawn = pawn and not pawn:IsGuarding() and distance > 1
-	
+
 	d.sSound = self.SoundBase .."/attack"
-	
+
 	if not pullPawn then
 		if Board:IsBlocked(target, PATH_PROJECTILE) then
 			ret:AddQueuedCharge(Board:GetSimplePath(p1, target - DIR_VECTORS[dir]), FULL_DELAY)
@@ -202,21 +202,21 @@ function lmn_ChomperAtk1:GetSkillEffect(p1, p2)
 		d.iDamage = self.Damage
 		d.sAnimation = self.Anim_Impact .. dir
 	end
-	
+
 	ret:AddQueuedMelee(d.loc - DIR_VECTORS[dir], d, NO_DELAY)
-	
+
 	if pullPawn then
 		-- charge pawn towards chomper.
 		ret:AddQueuedDelay(0.25)
 		ret:AddQueuedCharge(Board:GetSimplePath(target, adjacent), FULL_DELAY)
-		
+
 		local damage = math.min(DAMAGE_DEATH, self.Damage + getBonusDamage(p1, target))
 		local d = SpaceDamage(adjacent, damage)
 		d.sSound = "/weapons/charge_impact"
 		d.sAnimation = self.Anim_Impact .. dir
 		ret:AddQueuedMelee(p1, d, NO_DELAY)
 	end
-	
+
 	return ret
 end
 
@@ -264,24 +264,24 @@ lmn_ChomperAtk = Skill:new{
 
 function lmn_ChomperAtk:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		local step = DIR_VECTORS[i]
 		local target = p + step
-		
+
 		for k = 1, self.Range do
 			local curr = p + step * k
-			
+
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			if Board:IsBlocked(curr, PATH_PROJECTILE) then
 				target = curr
 				break
 			end
 		end
-		
+
 		if target == p + step then
 			ret:push_back(target)
 		else
@@ -291,7 +291,7 @@ function lmn_ChomperAtk:GetTargetArea(p)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -299,7 +299,7 @@ function lmn_ChomperAtk:GetSkillEffect(p1, p2)
 	local ret = lmn_ChomperAtk1.GetSkillEffect(self, p1, p2, lmn_ChomperAtk1)
 	ret.effect = ret.q_effect
 	ret.q_effect = SkillEffect().q_effect
-	
+
 	return ret
 end
 

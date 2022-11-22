@@ -41,7 +41,7 @@ end
 
 function Env_lmn_FlashFlood:IsValidTarget(loc)
 	local terrain = Board:GetTerrain(loc)
-	
+
 	return
 		Board:IsValid(loc)			and
 		not Board:IsPod(loc)		and
@@ -53,28 +53,28 @@ end
 
 local function isCorner(p)
 	local size = Board:GetSize()
-	
+
 	local x = p.x == 0 or p.x == size.x - 1
 	local y = p.y == 0 or p.y == size.y - 1
-	
+
 	return x and y
 end
 
 function Env_lmn_FlashFlood:Plan()
 	self.submerge = not self.submerge
-	
+
 	if self.submerge then
 		locs = utils.getBoard(function(p)
 			return
 				Env_lmn_FlashFlood:IsValidTarget(p) and
 				Board:IsEdge(p) and not isCorner(p)
 		end)
-		
+
 		if #locs == 0 then return false end
-		
+
 		utils.shuffle(locs)
 		local first = locs[1]
-		
+
 		local size = Board:GetSize()
 		local across = Point(first.x, first.y)
 		if across.x == 0 then
@@ -86,9 +86,9 @@ function Env_lmn_FlashFlood:Plan()
 		elseif across.y == size.y - 1 then
 			across.y = 0
 		end
-		
+
 		table.sort(locs, function(a,b) return a:Manhattan(across) < b:Manhattan(across) end)
-		
+
 		for _, last in ipairs(locs) do
 			self.Locations = astar:getPath(first, last, function(p) return self:IsValidTarget(p) end)
 			if #self.Locations > 0 then
@@ -101,13 +101,13 @@ function Env_lmn_FlashFlood:Plan()
 		self.MarkInProgress = true
 		self.MarkLocations = {}
 	end
-	
+
 	for _, p in ipairs(self.Locations) do
 		-- TODO: for some reason this does not prevent Vek from spawning here.
 		-- Does it have something to do with the mod loaders custom spawning code?
 		Board:BlockSpawn(p, BLOCKED_TEMP)
 	end
-	
+
 	return false -- done planning for this turn.
 end
 
@@ -118,11 +118,11 @@ end
 function Env_lmn_FlashFlood:MarkBoard()
 	local icon = self.submerge and self.CombatIcon or self.DryupIcon
 	local desc = self.submerge and "lmn_flashflood_submerge" or "lmn_flashflood_ground"
-	
+
 	if self:IsEffect() then
 		if self.MarkInProgress and not Board:IsBusy() then
 			local fx = SkillEffect()
-			
+
 			for i, loc in ipairs(self.Locations) do
 				if not list_contains(self.MarkLocations, loc) then
 					fx:AddScript(string.format("table.insert(GetCurrentMission().LiveEnvironment.MarkLocations, %s)", loc:GetString()))
@@ -134,10 +134,10 @@ function Env_lmn_FlashFlood:MarkBoard()
 					fx:AddDelay(.10)
 				end
 			end
-			
+
 			Board:AddEffect(fx)
 		end
-		
+
 		for _, loc in ipairs(self.MarkLocations) do
 			Board:MarkSpaceImage(loc, icon, GL_Color(255,226,88,0.75))
 			Board:MarkSpaceDesc(loc, desc)
@@ -153,26 +153,26 @@ end
 
 function Env_lmn_FlashFlood:ApplyEffect()
 	if not self.MarkLocations then return false end
-	
+
 	local fx = SkillEffect()
 	fx.iOwner = ENV_EFFECT
-	
+
 	self.MarkLocations = reverse_table(self.MarkLocations)
-	
+
 	while #self.MarkLocations > 0 do
 		local loc = pop_back(self.MarkLocations)
-		
+
 		if #self.MarkLocations == 0 then
 			fx:AddSound("/props/tide_flood_last")
 		else
 			fx:AddSound("/props/tide_flood")
 		end
-		
+
 		local d = SpaceDamage(loc)
-		
+
 		if self.submerge then
 			d.iTerrain = TERRAIN_WATER
-			
+
 			if Board:GetTerrain(loc) == TERRAIN_MOUNTAIN or Board:IsDangerousItem(loc) then
 				d.iDamage = DAMAGE_DEATH
 			end
@@ -181,13 +181,13 @@ function Env_lmn_FlashFlood:ApplyEffect()
 				d.iTerrain = TERRAIN_ROAD
 			end
 		end
-		
+
 		fx:AddDamage(d)
 		fx:AddBounce(d.loc, -1)
-		
+
 		fx:AddDelay(0.08)
     end
-	
+
 	local turn = Game:GetTurnCount()
 	if turn == 1 then
 		fx:AddScript("Env_lmn_FlashFlood:Voice('_Flood')")
@@ -196,9 +196,9 @@ function Env_lmn_FlashFlood:ApplyEffect()
 	--else
 	--	LOG("turn is ".. turn)
 	end
-	
+
     Board:AddEffect(fx)
-	
+
 	return false -- effects done for this turn.
 end
 
@@ -210,7 +210,7 @@ function Env_Belt:CheckBelts(...)
 			table.remove(self.Belts, i)
 		end
 	end
-	
+
 	old(self, ...)
 end
 

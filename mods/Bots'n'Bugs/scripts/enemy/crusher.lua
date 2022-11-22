@@ -107,23 +107,23 @@ lmn_CrusherAtk1 = Skill:new{
 
 function lmn_CrusherAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	-- Queued attacks are weird. Make sure
 	-- we have the correct pawn.
 	local pawn = Board:GetPawn(p1)
 	if not pawn or not IsCrusher(pawn) then
 		return ret
 	end
-	
+
 	local dir = GetDirection(p2 - p1)
 	local dir_perp = (dir + 1) % 4
 	local vec = DIR_VECTORS[dir]
 	local vec_perp = DIR_VECTORS[dir_perp]
-	
+
 	if not self.WideAttack then
 		ret:AddQueuedAnimation(p2, "lmn_explo_crusher_kaizerA_".. dir)
 		ret:AddQueuedAnimation(p2, "lmn_explo_crusher_kaizerB_".. dir)
-		
+
 		local d = SpaceDamage(p2, self.Damage)
 		d.sSound = "/weapons/sword"
 		ret:AddQueuedDamage(d)
@@ -135,7 +135,7 @@ function lmn_CrusherAtk1:GetSkillEffect(p1, p2)
 		local p3 = p1 + vec_perp
 		ret:AddQueuedAnimation(p3, "lmn_explo_crusher_kaizerA_".. dir_perp)
 		ret:AddQueuedAnimation(p2, "lmn_explo_crusher_kaizerB_".. dir)
-		
+
 		local d = SpaceDamage(p2, self.Damage)
 		d.sSound = "/weapons/sword"
 		ret:AddQueuedDamage(d)
@@ -148,7 +148,7 @@ function lmn_CrusherAtk1:GetSkillEffect(p1, p2)
 		d.loc = p3 - vec
 		ret:AddQueuedDamage(d)
 	end
-	
+
 	return ret
 end
 

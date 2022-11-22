@@ -19,7 +19,7 @@ utils.appendAssets{
 	{"lmn_springseed1_emerge.png", "springseed1e.png"},
 	{"lmn_springseed1_death.png", "springseed1d.png"},
 	{"lmn_springseed1w.png", "springseed1.png"},
-	
+
 	{"lmn_springseed2.png", "springseed2.png"},
 	{"lmn_springseed2a.png", "springseed2a.png"},
 	{"lmn_springseed2_emerge.png", "springseed2e.png"},
@@ -158,33 +158,33 @@ function lmn_SpringseedAtk1:GetTargetScore(p1, p2, ...)
 	isTargetScore = true
 	local score = Skill.GetTargetScore(self, p1, p2, ...)
 	isTargetScore = false
-	
+
 	if Board:IsBlocked(p2, PATH_GROUND) then
 		score = score - 1
 	end
-	
+
 	return score
 end
 
 function lmn_SpringseedAtk1:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		local curr = p + DIR_VECTORS[i] * 2
 		ret:push_back(curr)
 	end
-	
+
 	return ret
 end
 
 function lmn_SpringseedAtk1:Achievement(p2)
 	local m = GetCurrentMission()
 	if not m then return end
-	
+
 	local id = "lmn_achv_springseed"
 	m[id] = m[id] or 0
 	m[id] = m[id] + 1
-	
+
 	if m[id] >= 3 then
 		modApi.achievements:trigger(mod.id, "springseed")
 	end
@@ -194,60 +194,60 @@ function lmn_SpringseedAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local shooter = Board:GetPawn(p1)
 	if not shooter then return ret end
-	
+
 	local dir = GetDirection(p2 - p1)
 	local target = p1 + DIR_VECTORS[dir]
 	local doLeap = not Board:IsBlocked(p2, PATH_FLYER)
 	local move = PointList()
 	move:push_back(p1)
 	move:push_back(p2)
-	
+
 	if Board:IsTipImage() then
 		if p2 == self.TipImage.Unit then
 			-- hardcode second jump in tipimage.
-			
+
 			-- mech drives to block leap.
 			ret:AddQueuedScript(string.format("Board:GetPawn(%s):Move(%s)", self.TipImage.Enemy2:GetString(), self.TipImage.Second_Target:GetString()))
-			
+
 			local d = SpaceDamage(p1)
 			d.sImageMark = artiArrows.ColorUp(dir)
 			ret:AddQueuedDamage(d)
-			
+
 			local d = SpaceDamage(p2)
 			d.sImageMark = artiArrows.ColorDown(dir)
 			ret:AddQueuedDamage(d)
-			
+
 			-- springseed preview leap,
 			-- but move pawn away so it fails.
 			pawnSpace.QueuedClearSpace(ret, p1)
 			ret:AddQueuedMove(move, NO_DELAY)
 			pawnSpace.QueuedRewind(ret)
-			
+
 			-- alert attack blocked.
 			ret:AddQueuedDelay(0.75)
 			ret:AddQueuedScript("Board:AddAlert(".. p1:GetString() ..", 'ATTACK BLOCKED')")
-			
+
 			return ret
 		end
 	end
-	
+
 	if doLeap then
 		ret:AddScript(string.format("Board:SetDangerous(%s)", p2:GetString()))
-		
+
 		-- preview pawn moving,
 		-- but hide pawn so it fails.
 		pawnSpace.QueuedClearSpace(ret, p1)
 		ret:AddQueuedMove(move, NO_DELAY)
 		pawnSpace.QueuedRewind(ret)
-		
+
 		local d = SpaceDamage(p1)
 		d.sImageMark = artiArrows.ColorUp(dir)
 		ret:AddQueuedDamage(d)
-		
+
 		local d = SpaceDamage(p2)
 		d.sImageMark = artiArrows.ColorDown(dir)
 		ret:AddQueuedDamage(d)
-		
+
 		-- actual leap via script to hide preview.
 		ret:AddQueuedScript(string.format([[
 			local leap = PointList();
@@ -257,12 +257,12 @@ function lmn_SpringseedAtk1:GetSkillEffect(p1, p2)
 			fx:AddLeap(leap, NO_DELAY);
 			Board:AddEffect(fx);
 		]], p1:GetString(), p2:GetString()))
-		
+
 		ret:AddQueuedDelay(.25) -- short delay before dealing damage mid leap.
 		ret:AddQueuedSound(self.Sound_Impact)
 		ret:AddQueuedScript(string.format("Board:AddAnimation(%s, '%s', ANIM_NO_DELAY)", target:GetString(), self.Anim_Launch .. dir))
 		ret:AddQueuedDelay(.25)
-		
+
 		local d = SpaceDamage(target, self.Damage)
 		d.iAcid = 1
 		ret:AddQueuedDamage(d)
@@ -281,7 +281,7 @@ function lmn_SpringseedAtk1:GetSkillEffect(p1, p2)
 		ret:AddQueuedDamage(d)
 		ret:AddQueuedScript("Board:AddAlert(".. p1:GetString() ..", 'ATTACK BLOCKED')")
 	end
-	
+
 	return ret
 end
 

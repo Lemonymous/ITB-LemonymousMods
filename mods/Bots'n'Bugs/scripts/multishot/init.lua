@@ -20,14 +20,14 @@ while file_exists(readpath .."x".. i ..".png") do
 	Location[imagepath .."damage_x".. i ..".png"] = p
 	Location[imagepath .."acid_x".. i ..".png"] = p
 	Location[imagepath .."x".. i  ..".png"] = p
-	
+
 	modApi:appendAsset(writepath .."offset_damage_x".. i ..".png", readpath .."damage_x".. i ..".png")
 	modApi:appendAsset(writepath .."offset_acid_x".. i ..".png", readpath .."acid_x".. i ..".png")
 	modApi:appendAsset(writepath .."offset_x".. i ..".png", readpath .."x".. i ..".png")
 	Location[imagepath .."offset_damage_x".. i ..".png"] = p
 	Location[imagepath .."offset_acid_x".. i ..".png"] = p
 	Location[imagepath .."offset_x".. i  ..".png"] = p
-	
+
 	i = i + 1
 end
 

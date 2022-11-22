@@ -23,10 +23,10 @@ end
 
 function mod:init()
 	require(self.scriptPath .."spiderBoss")
-	
+
 	self.spawner = require(self.scriptPath .."spawners")
 	self.delay_web = require(self.scriptPath .."delay_web")
-	
+
 	self.spawner:init(self)
 end
 

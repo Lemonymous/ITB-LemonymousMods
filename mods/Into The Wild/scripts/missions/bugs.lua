@@ -29,7 +29,7 @@ function Mission_lmn_Bugs:StartMission()
 	local sector = GetSector()
 	local counts = {Core = 3, Leaders = 1, Unique = math.max(0, sector - 1)}
 	local enemylists = copy_table(EnemyLists)
-	
+
 	self.pawn_table = {}
 	for kind, count in pairs(counts) do
 		while count > 0 and #enemylists[kind] > 0 do

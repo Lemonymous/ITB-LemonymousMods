@@ -11,7 +11,7 @@ return
 		90,
 		120,
 	},
-	
+
 	turnTime =
 	{
 		"Disabled",

@@ -19,7 +19,7 @@ local function filterSpace(fx, p, pawnId, queued)
 	assert(type(p.x) == 'number')
 	assert(type(p.y) == 'number')
 	assert(type(pawnId) == 'number')
-	
+
 	queued = queued or ""
 	fx["Add".. queued .."Script"](fx, string.format([[
 		lmn_displaced = {};
@@ -114,7 +114,7 @@ function this.FilterSpace(fx, p, pawnId)
 		filterSpaceInstant(fx, p)
 		return
 	end
-	
+
 	filterSpace(fx, p, pawnId)
 end
 
@@ -136,13 +136,13 @@ function this.ClearSpace(fx, p)
 		clearSpaceInstant(fx)
 		return
 	end
-	
+
 	clearSpace(fx, p)
 end
 
 -- queued version of ClearSpace.
 function this.QueuedClearSpace(fx, p)
-	
+
 	clearSpace(fx, p, "Queued")
 end
 
@@ -152,7 +152,7 @@ function this.Rewind(fx)
 		rewindInstant()
 		return
 	end
-	
+
 	rewind(fx)
 end
 

@@ -7,7 +7,7 @@ local this = Class.inherit(Ui2)
 
 function this:new(adjust, color, duration)
 	Ui2.new(self)
-	
+
 	adjust = copy_table(adjust) or {}
 	adjust.align = adjust.align or {}
 	adjust.size = adjust.size or {}
@@ -17,17 +17,17 @@ function this:new(adjust, color, duration)
 	self.align.y = adjust.align.y or 0
 	self.size.w = adjust.size.w or 0
 	self.size.h = adjust.size.h or 0
-	
+
 	self.colorTransparent = deco.colors.transparent
 	self.color = color or sdl.rgba(0, 0, 0, 220)
 	self.translucent = true
 	self.ignoreMouse = true
-	
+
 	self:decorate{
 		DecoAlign(self.align.x, self.align.y),
 		DecoSolid2(deco.colors.transparent)
 	}
-	
+
 	self.animations.fade = UiAnim(self, duration or 100, function(anim, widget, percent)
 		widget.decorations[2].color = InterpolateColor(
 			widget.colorTransparent,
@@ -35,7 +35,7 @@ function this:new(adjust, color, duration)
 			percent
 		)
 	end)
-	
+
 	function self.animations.fade:isDone()
 		return false
 	end
@@ -44,9 +44,9 @@ end
 function this:update(screen)
 	self:widthpx(self.parent.w + self.size.w)
 		:heightpx(self.parent.h + self.size.h)
-		
+
 	self.parent:relayout()
-	
+
 	Ui2.update(self, screen)
 end
 
@@ -58,7 +58,7 @@ function this:draw(screen)
 	elseif anim:isStopped() then
 		anim:start()
 	end
-	
+
 	self.decorationx = 0
 	self.decorationy = 0
 	Ui2.draw(self, screen)

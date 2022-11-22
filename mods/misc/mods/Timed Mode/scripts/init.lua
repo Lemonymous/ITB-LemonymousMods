@@ -17,14 +17,14 @@ local option_values = {
 
 function mod:metadata()
 	local noerror, config, error = pcall(require, self.resourcePath .."config")
-	
+
 	if noerror then
 		if type(config) == 'table' then
 			setmetatable(config, {__index = option_values})
 			option_values = config
 		end
 	end
-	
+
 	modApi:addGenerationOption(
 		"option_timed_mode_mission_time",
 		"Mission timer",
@@ -53,7 +53,7 @@ function mod:init()
 	for _, subpath in ipairs(components) do
 		local name = self.scriptPath .. subpath
 		local comp = require(name)
-		
+
 		if type(comp) == 'table' and comp.init then
 			comp:init()
 		end
@@ -64,7 +64,7 @@ function mod:load(options, version)
 	for _, subpath in ipairs(components) do
 		local name = self.scriptPath .. subpath
 		local comp = require(name)
-		
+
 		if type(comp) == 'table' and comp.load then
 			comp:load(self, options, version)
 		end

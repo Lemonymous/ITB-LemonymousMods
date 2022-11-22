@@ -63,7 +63,7 @@ lmn_Emitter_slug_telepath = Emitter:new{
 	rot_speed = 360,
 	gravity = false,
 	layer = LAYER_BACK,
-	
+
 	angle_variance = 360,
 }
 
@@ -209,7 +209,7 @@ local function UpdateEmergingVek_GameDraw(mission)
 	-- This is less prone to drawing errors like scaling/clipping issues or possible positional errors on other display settings than I have tested.
 	-- I was unfortunately unable to figure out a way to draw units in alpha/boss color as well as jelly type.
 	-- TODO: find a way? Improbable.
-		
+
 	if not IsAbilityActive() then
 		display = false
 	else

@@ -109,43 +109,43 @@ end
 
 local isTargetScore = false
 function lmn_SwarmerAtk1:GetTargetScore(p1, p2)
-	
+
 	isTargetScore = true
 	local result = Skill.GetTargetScore(self, p1, p2)
 	isTargetScore = false
-	
+
 	return result
 end
 
 function lmn_SwarmerAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	-- Queued attacks are weird. Make sure
 	-- we have the correct pawn.
 	local pawn = Board:GetPawn(p1)
 	if not pawn or not IsSwarmer(pawn) then
 		return ret
 	end
-	
+
 	if isTargetScore then
 		-- extra target score against already targeted tiles
-		
+
 		isTargetScore = false
 		if Board:IsTargeted(p2) then
 			ret:AddQueuedDamage(SpaceDamage(p2, 0))
 		end
 		isTargetScore = true
 	end
-	
+
 	local dir = GetDirection(p2 - p1)
 	local distance = p1:Manhattan(p2)
-	
+
 	if distance == 1 then
 		local d = SpaceDamage(p2, self.Damage)
 		d.sImageMark = multishot.GetMark(self.Attacks, p2)
-		
+
 		ret:AddQueuedMelee(p1, d)
-		
+
 		for i = 2, self.Attacks do
 			-- double-wrap the script to force it to wait for
 			-- the board to get unbusy before executing.
@@ -159,7 +159,7 @@ function lmn_SwarmerAtk1:GetSkillEffect(p1, p2)
 		local d = SpaceDamage(p1 + DIR_VECTORS[dir], math.max(0, self.MinDamage), dir)
 		ret:AddQueuedMelee(p1, d)
 	end
-	
+
 	return ret
 end
 
@@ -191,9 +191,9 @@ lmn_Swarmer2ndAtk = lmn_SwarmerAtk1:new()
 function lmn_Swarmer2ndAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local d = SpaceDamage(p2, self.Damage)
-	
+
 	ret:AddMelee(p1, d)
-	
+
 	return ret
 end
 
@@ -203,7 +203,7 @@ function Mission_SwarmerBoss:IsBossDead()
 			return false
 		end
 	end
-	
+
 	return true
 end
 

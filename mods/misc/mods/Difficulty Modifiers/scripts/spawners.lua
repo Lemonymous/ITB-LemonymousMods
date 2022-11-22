@@ -8,14 +8,14 @@ function Spawner:CountLivingUpgrades()
 	if not Board then
 		return count
 	end
-	
+
 	local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
 	for _, id in ipairs(pawns) do
 		if string.find(Board:GetPawn(id):GetType(), "Boss") then
 			count = count + 1
 		end
 	end
-	
+
 	return count
 end
 
@@ -33,7 +33,7 @@ local function RemUpg(str)
 	if upg == "Boss" then
 		return string.sub(str, 1, l - 4)
 	end
-	
+
 	return string.sub(str, 1, l - 1)
 end
 
@@ -51,51 +51,51 @@ end
 local function GetBoss(spawner, str)
 	if	not spawner.lmn_customDiff_mission_started and
 		not this.starting_bosses
-		
+
 	then
 		return
 	end
-	
+
 	local leader
 	if IsJelly(str) then
 		leader = "Jelly_Boss"
 	else
 		leader = string.sub(str, 1, string.len(str) - 1) .."Boss"
 	end
-	
+
 	if _G[leader] then
 		return leader
 	end
-	
+
 	return nil
 end
 
 local old_Spawner_NextPawn = Spawner.NextPawn
 function Spawner:NextPawn(pawn_tables)
 	local ret = old_Spawner_NextPawn(self, pawn_tables)
-	
+
 	if IsBot(ret) then -- avoid converting bots into vek.
 		return ret
 	end
-	
+
 	if not self.non_island_vek then
-		
+
 		self.non_island_vek = {}
-		
+
 		local island_pawns = GAME:GetSpawnList(self.spawn_island)
-		
+
 		for _, vek in ipairs(EnemyLists.Core) do
 			if not list_contains(island_pawns, vek) then
 				table.insert(self.non_island_vek, vek)
 			end
 		end
-		
+
 		for _, vek in ipairs(EnemyLists.Unique) do
 			if not list_contains(island_pawns, vek) then
 				table.insert(self.non_island_vek, vek)
 			end
 		end
-		
+
 		if not this.jelly_no_touch then
 			for _, vek in ipairs(EnemyLists.Leaders) do
 				if not list_contains(island_pawns, vek) then
@@ -104,28 +104,28 @@ function Spawner:NextPawn(pawn_tables)
 			end
 		end
 	end
-	
+
 	local upg = GetUpgrade(ret)
 	local isJelly = IsJelly(ret)
-	
+
 	if	tostring(self.missionName) ~= "Sinkhole Hive" and -- avoid converting emerging hornets into ground Vek.
 		#self.non_island_vek > 0
 	then
 		local spiceroll = math.random(0, 100)
-		
+
 		local str = "Spiceroll for ".. ret ..": ".. spiceroll .." - "
-		
+
 		if spiceroll < this.non_island_chance then
 			if not IsJelly(ret) or not this.jelly_no_touch then
-				
+
 				local vek = self.non_island_vek[random_int(#self.non_island_vek) + 1]
-				
+
 				local upg = upg
 				if upg ~= "Boss" then
 					if IsJelly(vek) and upg == "2" then
 						upg = "1"
 					end
-					
+
 					if _G[vek .. upg] then -- for peace of mind
 						str = str .. "Converting to ".. vek .. upg .."."
 						ret = vek .. upg
@@ -141,21 +141,21 @@ function Spawner:NextPawn(pawn_tables)
 		else
 			str = str .."Failed."
 		end
-		
+
 		if this.logging_spice then
 			LOG(str)
 		end
 	end
-	
+
 	if upg == "2" or isJelly then
 		local bossroll = math.random(0, 100)
-		
+
 		local str = "Bossroll for ".. ret ..": ".. bossroll .." - "
-		
+
 		if bossroll < this.leader_chance then
-			
+
 			local leader = GetBoss(self, ret)
-			
+
 			if leader then
 				str = str .."Upgrading ".. ret .." to ".. leader .."."
 				ret = leader
@@ -168,16 +168,16 @@ function Spawner:NextPawn(pawn_tables)
 					str = str .."Failed to find matching boss upgrade."
 				end
 			end
-			
+
 		else
 			str = str .."Failed."
 		end
-		
+
 		if this.logging_boss then
 			LOG(str)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -190,7 +190,7 @@ end
 local oldMissionGetStartingPawns = Mission.GetStartingPawns
 function Mission:GetStartingPawns()
 	local startingCount = oldMissionGetStartingPawns(self)
-	
+
 	return startingCount + this.mod_spawn_start
 end
 
@@ -200,19 +200,19 @@ function Mission:GetSpawnsPerTurn()
 	for i, _ in ipairs(spawnCounts) do
 		spawnCounts[i] = spawnCounts[i] + this.mod_spawn_per_turn
 	end
-	
+
 	return spawnCounts
 end
 
 local oldMissionGetMaxEnemy = Mission.GetMaxEnemy
 function Mission:GetMaxEnemy()
 	local maxCount = oldMissionGetMaxEnemy(self)
-	
+
 	return maxCount + this.mod_spawn_max
 end
 
 sdlext.addGameEnteredHook(function(screen)
-	
+
 	if this.mod.installed then
 		--LOG("CustomDifficulty enabled - Modifying spawns.")
 		this.mod_spawn_start = this.options["option_mod_spawn_start"].value
@@ -240,13 +240,13 @@ sdlext.addGameEnteredHook(function(screen)
 end)
 
 function this:init(mod)
-	
+
 end
 
 function this:load(mod, options)
 	this.mod = mod
 	this.options = options
-	
+
 	modApi:addMissionStartHook(function(mission)
 		mission:GetSpawner().lmn_customDiff_mission_started = true
 	end)

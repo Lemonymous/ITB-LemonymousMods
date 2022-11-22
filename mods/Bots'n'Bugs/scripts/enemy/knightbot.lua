@@ -72,46 +72,46 @@ function lmn_KnightBotAtk1:GetTargetScore(p1, p2)
 	this.isTargetScore = true
 	local ret = Skill.GetTargetScore(self, p1, p2)
 	this.isTargetScore = false
-	
+
 	return ret
 end
 
 function lmn_KnightBotAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local dir = GetDirection(p2 - p1)
 	local vec = DIR_VECTORS[dir]
 	local target -- the point we want to eventually charge to.
-	
+
 	for k = 1, self.Range + 1 do
 		target = p1 + vec * k
-		
+
 		-- step one back if off the board.
 		if not Board:IsValid(target) then
 			target = target - vec
 			break
 		end
-		
+
 		-- stop when blocked, even by water/hole.
 		if Board:IsBlocked(target, PATH_GROUND) then
 			break
 		end
 	end
-	
+
 	local distance = p1:Manhattan(target)
 	local doDamage = Board:IsBlocked(target, PATH_FLYER)
-	
+
 	-- step one back if target is blocked or beyond range.
 	if doDamage or distance > self.Range then
 		target = target - vec
 	end
-	
+
 	if this.isTargetScore then
 		-- only score if not water/hole.
 		if doDamage then
 			-- score attack damage
 			ret:AddQueuedDamage(SpaceDamage(target + vec, 1))
-			
+
 			-- score push damage
 			local pawn = Board:GetPawn(target + vec)
 			if pawn and not pawn:IsGuarding() then
@@ -123,15 +123,15 @@ function lmn_KnightBotAtk1:GetSkillEffect(p1, p2)
 		local s = SoundEffect(target, "/enemy/snowlaser_1/move")
 		s.bHide = true
 		ret:AddQueuedDamage(s)
-		
+
 		local newSpeed = 1.0
 		worldConstants:queuedSetSpeed(ret, newSpeed)
 		ret:AddQueuedCharge(Board:GetSimplePath(p1, target), NO_DELAY)
 		worldConstants:queuedResetSpeed(ret)
-		
+
 		local distance = p1:Manhattan(target)
 		ret:AddQueuedDelay(distance * 0.07 * worldConstants:getDefaultSpeed() / newSpeed - 0.1)
-		
+
 		if doDamage then
 			local d = SpaceDamage(target + vec)
 			d.sAnimation = "explosword_".. dir
@@ -141,7 +141,7 @@ function lmn_KnightBotAtk1:GetSkillEffect(p1, p2)
 			ret:AddQueuedMelee(target, SpaceDamage(target + vec, self.Damage, self.Push and dir or DIR_NONE), NO_DELAY)
 		end
 	end
-	
+
 	return ret
 end
 

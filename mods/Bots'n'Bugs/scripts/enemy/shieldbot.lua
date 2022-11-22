@@ -40,13 +40,13 @@ local function getQueuedSkill(pawn)
 	if IsTestMechScenario() then
 		return
 	end
-	
+
 	assert(type(pawn) == 'userdata')
-	
+
 	local pawnId = pawn:GetId()
 	local pawnType = pawn:GetType()
 	local queuedAttack = pawn:GetQueued()
-	
+
 	if queuedAttack and queuedAttack.iQueuedSkill > 0 then
 		return _G[pawnType].SkillList[queuedAttack.iQueuedSkill]
 	end
@@ -87,7 +87,7 @@ function lmn_ShieldBotAtk1:GetTargetScore(p1, p2)
 	this.isTargetScore = true
 	local ret = Skill.GetTargetScore(self, p1, p2)
 	this.isTargetScore = nil
-	
+
 	-- make sure we shield ourself no matter what.
 	if ret == 0 then
 		ret = 1
@@ -97,22 +97,22 @@ end
 
 function lmn_ShieldBotAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local selfDamage = SpaceDamage(p1)
 	selfDamage.iShield = 1
 	ret:AddDamage(selfDamage)
-	
+
 	for i = DIR_START, DIR_END do
 		local curr = p2 + DIR_VECTORS[i]
-		
+
 		if Board:IsValid(curr) then
 			if this.isTargetScore then
 				-- scoring for damage
 				local spaceDamage = SpaceDamage(curr, self.Damage)
 				ret:AddQueuedDamage(spaceDamage)
-				
+
 				local pawn = Board:GetPawn(curr)
-				
+
 				-- score push damage as well.
 				if pawn and not pawn:IsGuarding() then
 					spaceDamage.loc = curr + DIR_VECTORS[i]
@@ -126,13 +126,13 @@ function lmn_ShieldBotAtk1:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	local selfDamage = SpaceDamage(p1)
 	selfDamage.iShield = -1
 	selfDamage.sAnimation = "lmn_ExploRepulseShield"
 	selfDamage.sSound = "/weapons/science_repulse"
 	ret:AddQueuedDamage(selfDamage)
-	
+
 	return ret
 end
 
@@ -163,7 +163,7 @@ function this:load()
 	modApiExt:addPawnIsShieldedHook(function(_, pawn, isShield)
 		if not isShield then
 			local queuedSkill = getQueuedSkill(pawn)
-			
+
 			if queuedSkill == "lmn_ShieldBotAtk1" or queuedSkill == "lmn_ShieldBotAtk2" then
 				pawn:ClearQueued()
 			end

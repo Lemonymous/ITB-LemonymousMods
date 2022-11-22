@@ -28,7 +28,7 @@ lmn_DevastatorCannon = Skill:new{
 
 function lmn_DevastatorCannon:GetTargetArea(point)
 	local ret = PointList()
-	
+
 	-- allow the player to select any tile in every direction,
 	-- since all we care about is the direction of the shot.
 	for i = DIR_START, DIR_END do
@@ -40,7 +40,7 @@ function lmn_DevastatorCannon:GetTargetArea(point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -49,7 +49,7 @@ function lmn_DevastatorCannon:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local target = p2
-	
+
 	-- calculate the end of the projectile.
 	for k = 1, self.Range do
 		local point = DIR_VECTORS[dir]*k + p1
@@ -59,19 +59,19 @@ function lmn_DevastatorCannon:GetSkillEffect(p1,p2)
 		end
 	end
 	target = GetProjectileEnd(p1,target,PATH_PROJECTILE)
-	
+
 	-- push back tank.
 	local damage = SpaceDamage(p1, 0, GetDirection(p1 - p2))
 	damage.sAnimation = "airpush_" .. GetDirection(p1 - p2)
 	ret:AddDamage(damage)
 	ret:AddBounce(p1, 2)
-	
+
 	if self.Smoke == 1 and p1 + DIR_VECTORS[dir] ~= target then
 		-- first apply smoke.
 		damage = SpaceDamage(p1 + DIR_VECTORS[dir])
 		damage.iSmoke = 1
 		ret:AddDamage(damage)
-		
+
 		--[[
 			then overwrite the smoke mark
 			with our own custom smoke mark
@@ -81,7 +81,7 @@ function lmn_DevastatorCannon:GetSkillEffect(p1,p2)
 		damage.sImageMark = "combat/projectile_over_smoke_".. dir ..".png"
 		ret:AddDamage(damage)
 	end
-	
+
 	-- main damage to target.
 	damage = SpaceDamage(target, self.Damage)
 	damage.sAnimation = self.sExplosion
@@ -93,7 +93,7 @@ function lmn_DevastatorCannon:GetSkillEffect(p1,p2)
 	ret:AddProjectile(damage, self.sProjectileEffect)
 	ret:AddBounce(target, self.Damage)
 	ret:AddDelay(0.2)
-	
+
 	-- damage to outer tiles.
 	local outerPoint = { DIR_VECTORS[dir], DIR_VECTORS[(dir+1)%4], DIR_VECTORS[(dir-1)%4] }
 	for k = 1, 3 do
@@ -109,7 +109,7 @@ function lmn_DevastatorCannon:GetSkillEffect(p1,p2)
 			ret:AddBounce(outerPoint[k] + target, self.SecondaryDamage)
 		end
 	end
-	
+
 	return ret
 end
 

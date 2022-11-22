@@ -37,8 +37,8 @@
 	-- in init.lua - function load:
 	local virtualBoard = require(self.scriptPath ..'virtualBoard')
 	virtualBoard.load()
-	
-	
+
+
 	-- after you have loaded it,
 	-- you can request it again in your weapons with:
 	local virtualBoard = require(mod.scriptPath ..'virtualBoard')
@@ -279,30 +279,30 @@ end
 -- gets the virtual state of a pawn.
 -- lazily initialized.
 function this:GetPawnState(pawnId)
-	
+
 	-- if tile is given as input, return the
 	-- pawnState of the pawn on the tile.
 	if type(pawnId) == 'userdata' then
 		local tile = pawnId
 		local tileState = self:GetTileState(tile)
-		
+
 		if tileState.pawn then
 			return self:GetPawnState(tileState.pawn:GetId())
 		end
-		
+
 		return nil
 	end
-	
+
 	if self.pawns[pawnId] then
 		return self.pawns[pawnId]
 	end
-	
+
 	-- initialize pawnState.
 	local pawnState = {}
 	self.pawns[pawnId] = pawnState
-	
+
 	local pawn = Board:GetPawn(pawnId)
-	
+
 	pawnState.pawn = pawn
 	pawnState.id = pawn:GetId()
 	pawnState.loc = pawn:GetSpace()
@@ -312,10 +312,10 @@ function this:GetPawnState(pawnId)
 	pawnState.isAcid = pawn:IsAcid()
 	pawnState.isArmor = pawn:IsArmor()
 	pawnState.isKilled = false
-	
+
 	pawnState.damage = 0
 	pawnState.blocked = 0
-	
+
 	return pawnState
 end
 
@@ -325,7 +325,7 @@ function this:GetTileState(tile)
 	assert(type(tile) == 'userdata')
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
-	
+
 	-- assert that tile is valid
 	local size = Board:GetSize()
 	assert(
@@ -334,16 +334,16 @@ function this:GetTileState(tile)
 		tile.x < size.x and
 	    tile.y < size.y
 	)
-	
+
 	local tileId = p2idx(tile)
 	if self.tiles[tileId] then
 		return self.tiles[tileId]
 	end
-	
+
 	-- initialize tileState.
 	local tileState = {}
 	self.tiles[tileId] = tileState
-	
+
 	tileState.loc = tile
 	tileState.pawn = Board:GetPawn(tile)
 	tileState.health = Board:GetHealth(tile)
@@ -351,7 +351,7 @@ function this:GetTileState(tile)
 	tileState.isFrozen = Board:IsFrozen(tile)
 	tileState.isShield = Board:IsShield(tile)
 	tileState.isAcid = Board:IsAcid(tile)
-	
+
 	tileState.damage = 0
 	tileState.damagePawn = 0
 	tileState.blocked = 0
@@ -362,17 +362,17 @@ function this:GetTileState(tile)
 		{dir = DIR_LEFT,  count = 0}
 	}
 	tileState.corpses = {}
-	
+
 	function tileState:GetPushDir()
 		local list = shallow_copy(self.pushList)
 		table.sort(list, function(a,b) return a.count > b.count end)
 		return list[1].count > 0 and list[1].dir or DIR_NONE
 	end
-	
+
 	if tileState.pawn then
 		self:GetPawnState(tileState.pawn:GetId())
 	end
-	
+
 	return tileState
 end
 
@@ -381,42 +381,42 @@ function this:GetPawn(input)
 	if type(input) == 'number' then
 		local pawnId = input
 		local pawnState = self:GetPawnState(pawnId)
-		
+
 		return pawnState.pawn
 	end
-	
+
 	local tile = input
 	local tileId = p2idx(tile)
 	local tileState = self:GetTileState(tile)
-	
+
 	return tileState.pawn
 end
 
 -- gets the frozen state of a pawn.
 function this:IsFrozen(pawnId)
 	assert(type(pawnId) == 'number')
-	
+
 	return self:GetPawnState(pawnId).isFrozen
 end
 
 -- gets the shield state of a pawn.
 function this:IsShield(pawnId)
 	assert(type(pawnId) == 'number')
-	
+
 	return self:GetPawnState(pawnId).isShield
 end
 
 -- gets the acid state of a pawn.
 function this:IsAcid(pawnId)
 	assert(type(pawnId) == 'number')
-	
+
 	return self:GetPawnState(pawnId).isAcid
 end
 
 -- gets the armor state of a pawn.
 function this:IsArmor(pawnId)
 	assert(type(pawnId) == 'number')
-	
+
 	return self:GetPawnState(pawnId).isArmor
 end
 
@@ -424,7 +424,7 @@ end
 function this:SetFrozen(pawnId, flag)
 	assert(type(pawnId) == 'number')
 	assert(type(flag) == 'boolean')
-	
+
 	self:GetPawnState(pawnId).isFrozen = flag
 end
 
@@ -432,7 +432,7 @@ end
 function this:SetShield(pawnId, flag)
 	assert(type(pawnId) == 'number')
 	assert(type(flag) == 'boolean')
-	
+
 	self:GetPawnState(pawnId).isShield = flag
 end
 
@@ -440,7 +440,7 @@ end
 function this:SetAcid(pawnId, flag)
 	assert(type(pawnId) == 'number')
 	assert(type(flag) == 'boolean')
-	
+
 	self:GetPawnState(pawnId).isAcid = flag
 end
 
@@ -448,14 +448,14 @@ end
 function this:SetArmor(pawnId, flag)
 	assert(type(pawnId) == 'number')
 	assert(type(flag) == 'boolean')
-	
+
 	self:GetPawnState(pawnId).isArmor = flag
 end
 
 -- gets the health of a pawn.
 function this:GetPawnHealth(pawnId)
 	assert(type(pawnId) == 'number')
-	
+
 	return self:GetPawnState(pawnId).health
 end
 
@@ -463,30 +463,30 @@ end
 function this:SetPawnHealth(pawnId, health)
 	assert(type(pawnId) == 'number')
 	assert(type(health) == 'number')
-	
+
 	local pawnState = self:GetPawnState(pawnId)
 	pawnState.health = math.max(0, health)
-	
+
 	if pawnState.health <= 0 and not pawnState.isKilled then
 		pawnState.isKilled = true
 		local tileState = self:GetTileState(pawnState.loc)
-		
+
 		-- remove dead corpseless pawns from tile.
 		if not HasCorpse(pawnState.pawn) then
 			if pawnState.isAcid then
 				tileState.isAcid = true
 			end
-			
+
 			if
 				tileState.terrain ~= TERRAIN_WATER and
 				tileState.terrain ~= TERRAIN_HOLE
 			then
 				table.insert(tileState.corpses, pawnState.id)
 			end
-			
+
 			tileState.pawn = nil
 		end
-		
+
 	elseif pawnState.health > 0 and pawnState.isKilled then
 		pawnState.isKilled = false
 	end
@@ -496,7 +496,7 @@ end
 function this:AddPawnHealth(pawnId, amount)
 	assert(type(pawnId) == 'number')
 	assert(type(amount) == 'number')
-	
+
 	self:SetPawnHealth(pawnId, self:GetPawnHealth(pawnId) + amount)
 end
 
@@ -504,7 +504,7 @@ end
 function this:SubPawnHealth(pawnId, amount)
 	assert(type(pawnId) == 'number')
 	assert(type(amount) == 'number')
-	
+
 	self:AddPawnHealth(pawnId, -amount)
 end
 
@@ -514,30 +514,30 @@ function this:SetPawnSpace(pawnId, tile)
 	assert(type(tile) == 'userdata')
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
-	
+
 	local pawnState = self:GetPawnState(pawnId)
 	local tileState = self:GetTileState(tile)
-	
+
 	-- ignore dead corpseless pawns.
 	local pawn = Board:GetPawn(pawnId)
 	if pawnState.health <= 0 and not HasCorpse(pawn) then
 		return
 	end
-	
+
 	-- assert that destination tile is clear.
 	assert(tileState.pawn == nil)
 	assert(tileState.terrain ~= TERRAIN_BUILDING)
 	assert(tileState.terrain ~= TERRAIN_MOUNTAIN)
-	
+
 	self:GetTileState(pawnState.loc).pawn = nil	-- clear old tile
 	pawnState.loc = tile						-- set pawn loc
 	tileState.pawn = pawnState.pawn				-- set tile pawn
-	
+
 	if tileState.terrain == TERRAIN_WATER then
 		-- test if pawn will drown at destination.
 		self:SetTerrain(tile, TERRAIN_WATER)
 	end
-	
+
 	-- apply acid if at destination.
 	if tileState.isAcid then
 		pawnState.isAcid = true
@@ -552,28 +552,28 @@ end
 function this:SwapPawnSpace(pawnId1, pawnId2)
 	assert(type(pawnId1) == 'number')
 	assert(type(pawnId2) == 'number')
-	
+
 	local pawnState1 = self:GetPawnState(pawnId1)
 	local pawnState2 = self:GetPawnState(pawnId2)
-	
+
 	-- assert pawns are alive or corpse.
 	assert(pawnState1.health > 0 or HasCorpse(pawnState1.pawn))
 	assert(pawnState2.health > 0 or HasCorpse(pawnState2.pawn))
-	
+
 	local tileState1 = self:GetTileState(pawnState1.loc)
 	local tileState2 = self:GetTileState(pawnState2.loc)
 	tileState1.pawn = pawnState2.pawn
 	tileState2.pawn = pawnState1.pawn
-	
+
 	local swap = pawnState1.loc
 	pawnState1.loc = pawnState2.loc
 	pawnState2.loc = swap
-	
+
 	-- test if pawns will drown at swapped positions.
 	if tileState1.terrain == TERRAIN_WATER then
 		self:SetTerrain(pawnState2.loc, TERRAIN_WATER)
 	end
-	
+
 	if tileState2.terrain == TERRAIN_WATER then
 		self:SetTerrain(pawnState1.loc, TERRAIN_WATER)
 	end
@@ -584,7 +584,7 @@ function this:GetTileHealth(tile)
 	assert(type(tile) == 'userdata')
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
-	
+
 	return self:GetTileState(tile).health
 end
 
@@ -594,10 +594,10 @@ function this:SetTileHealth(tile, health)
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
 	assert(type(health) == 'number')
-	
+
 	local tileState = self:GetTileState(tile)
 	tileState.health = math.max(0, health)
-	
+
 	if tileState.health <= 0 then
 		if
 			not Board:IsUniqueBuilding(tile)		and
@@ -605,7 +605,7 @@ function this:SetTileHealth(tile, health)
 			tileState.terrain == TERRAIN_MOUNTAIN)
 		then
 			tileState.terrain = TERRAIN_RUBBLE
-			
+
 		elseif tileState.terrain == TERRAIN_ICE then
 			self:SetTerrain(tile, TERRAIN_WATER)
 		end
@@ -618,7 +618,7 @@ function this:AddTileHealth(tile, amount)
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
 	assert(type(amount) == 'number')
-	
+
 	self:SetTileHealth(tile, self:GetTileHealth(tile) + amount)
 end
 
@@ -628,7 +628,7 @@ function this:SubTileHealth(tile, amount)
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
 	assert(type(amount) == 'number')
-	
+
 	self:AddTileHealth(tile, -amount)
 end
 
@@ -637,7 +637,7 @@ function this:GetTerrain(tile)
 	assert(type(tile) == 'userdata')
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
-	
+
 	return self:GetTileState(tile).terrain
 end
 
@@ -647,17 +647,17 @@ function this:SetTerrain(tile, terrain)
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
 	assert(type(terrain) == 'number')
-	
+
 	local tileState = self:GetTileState(tile)
 	tileState.terrain = terrain
-	
+
 	-- check if pawn will drown, or fall.
 	local pawn = tileState.pawn
 	if pawn then
 		local pawnState = self:GetPawnState(pawn:GetId())
 		local survivesPits = pawn:IsFlying() and not pawnState.isFrozen
 		local survivesWater = IsMassive(pawn) or survivesPits
-		
+
 		if
 			tileState.terrain == TERRAIN_WATER and not survivesWater or
 			tileState.terrain == TERRAIN_HOLE and not survivesPits
@@ -674,9 +674,9 @@ function this:DamagePawn(pawnId, spaceDamage)
 	assert(type(spaceDamage) == 'userdata')
 	assert(type(spaceDamage.loc.x) == 'number')
 	assert(type(spaceDamage.loc.y) == 'number')
-	
+
 	local pawnState = self:GetPawnState(pawnId)
-	
+
 	spaceDamage.loc = pawnState.loc
 	self:DamageSpace(spaceDamage)
 end
@@ -684,9 +684,9 @@ end
 function this:BumpPawn(pawnId, damage)
 	assert(type(pawnId) == 'number')
 	assert(type(damage) == 'number')
-	
+
 	local pawnState = self:GetPawnState(pawnId)
-	
+
 	if pawnState.isShield then
 		pawnState.isShield = false
 	elseif pawnState.isFrozen then
@@ -701,9 +701,9 @@ function this:BumpTile(tile, damage)
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
 	assert(type(damage) == 'number')
-	
+
 	local tileState = self:GetTileState(tile)
-	
+
 	if tileState.isShield then
 		tileState.isShield = false
 	elseif tileState.isFrozen then
@@ -721,12 +721,12 @@ function this:DamageSpace(spaceDamage)
 	assert(type(spaceDamage) == 'userdata')
 	assert(type(spaceDamage.loc.x) == 'number')
 	assert(type(spaceDamage.loc.y) == 'number')
-	
+
 	local tile = spaceDamage.loc
 	local tileState = self:GetTileState(spaceDamage.loc)
 	local damage = spaceDamage.iDamage
 	local bumpDamage = IsPassiveSkill("Passive_ForceAmp") and 2 or 1
-	
+
 	------------------
 	-- direct damage.
 	------------------
@@ -737,7 +737,7 @@ function this:DamageSpace(spaceDamage)
 		-----------------------------
 		-- direct damage to terrain.
 		-----------------------------
-		
+
 		-- shield is applied first, but only to buildings.
 		if tileState.terrain == TERRAIN_BUILDING then
 			if spaceDamage.iShield > 0 then
@@ -746,26 +746,26 @@ function this:DamageSpace(spaceDamage)
 				tileState.isShield = false
 			end
 		end
-		
+
 		-- damage second.
 		if spaceDamage.iDamage > 0 then
 			if tileState.isShield then
 				tileState.isShield = false
 				tileState.blocked = tileState.blocked + damage
 				damage = 0
-				
+
 			elseif tileState.isFrozen then
 				tileState.isFrozen = false
 				tileState.blocked = tileState.blocked + damage
 				damage = 0
-				
+
 			elseif tileState.terrain == TERRAIN_BUILDING then
 				self:SubTileHealth(tile, spaceDamage.iDamage)
 			else
 				self:SubTileHealth(tile, math.min(1, spaceDamage.iDamage))
 			end
 		end
-		
+
 		-- other effects third.
 		if spaceDamage.iFrozen == EFFECT_CREATE then
 			tileState.isFrozen = true
@@ -773,54 +773,54 @@ function this:DamageSpace(spaceDamage)
 			tileState.isFrozen = false
 		end
 	end
-	
+
 	if tileState.pawn or #tileState.corpses > 0 then
 		tileState.damagePawn = tileState.damagePawn + spaceDamage.iDamage
 	end
-	
+
 	-- keep track of stacking damage on corpses.
 	for _, pawnId in ipairs(tileState.corpses) do
 		local pawnState = self:GetPawnState(pawnId)
 		local damage = damage
-		
+
 		if pawnState.isAcid then
 			damage = damage * 2
 		elseif pawnState.isArmor then
 			damage = damage - 1
 			pawnState.blocked = pawnState.blocked + 1
 		end
-		
+
 		pawnState.damage = pawnState.damage + spaceDamage.iDamage
 	end
-	
+
 	if tileState.pawn then
 		--------------------------
 		-- direct damage to pawn.
 		--------------------------
 		local pawnState = self:GetPawnState(tileState.pawn:GetId())
-		
+
 		-- shield is applied first.
 		if spaceDamage.iShield > 0 then
 			pawnState.isShield = true
 		elseif spaceDamage.iShield == -1 then
 			pawnState.isShield = false
 		end
-		
+
 		-- damage second.
 		if damage > 0 then
-			
+
 			if pawnState.isShield then
 				pawnState.isShield = false
 				pawnState.blocked = pawnState.blocked + damage
 				tileState.blocked = tileState.blocked + damage
 				damage = 0
-				
+
 			elseif pawnState.isFrozen then
 				pawnState.isFrozen = false
 				pawnState.blocked = pawnState.blocked + damage
 				tileState.blocked = tileState.blocked + damage
 				damage = 0
-				
+
 			else
 				if pawnState.isAcid then
 					damage = damage * 2
@@ -829,26 +829,26 @@ function this:DamageSpace(spaceDamage)
 					pawnState.blocked = pawnState.blocked + 1
 					tileState.blocked = tileState.blocked + 1
 				end
-				
+
 				self:SubPawnHealth(pawnState.id, damage)
 			end
-			
+
 			pawnState.damage = pawnState.damage + spaceDamage.iDamage
 		end
-		
+
 		-- other effects third.
 		if spaceDamage.iAcid == EFFECT_CREATE then
 			pawnState.isAcid = true
 		elseif spaceDamage.iAcid == EFFECT_REMOVE then
 			pawnState.isAcid = false
 		end
-		
+
 		if spaceDamage.iFrozen == EFFECT_CREATE then
 			pawnState.isFrozen = true
 		elseif spaceDamage.iFrozen == EFFECT_REMOVE then
 			pawnState.isFrozen = false
 		end
-		
+
 		local dir = spaceDamage.iPush
 		if
 			not pawnState.pawn:IsGuarding() and
@@ -860,18 +860,18 @@ function this:DamageSpace(spaceDamage)
 			--------------------
 			local target = tile + DIR_VECTORS[dir]
 			if Board:IsValid(target) then
-				
+
 				local tileState2 = self:GetTileState(target)
-				
+
 				if tileState2.pawn then
 					---------------------------
 					-- pawn on pawn collision.
 					---------------------------
 					local pawnState2 = self:GetPawnState(tileState2.pawn:GetId())
-					
+
 					self:BumpPawn(pawnState.id, bumpDamage)
 					self:BumpPawn(pawnState2.id, bumpDamage)
-					
+
 				elseif
 					tileState2.terrain == TERRAIN_BUILDING or
 					tileState2.terrain == TERRAIN_MOUNTAIN
@@ -881,17 +881,17 @@ function this:DamageSpace(spaceDamage)
 					------------------------------
 					self:BumpPawn(pawnState.id, bumpDamage)
 					self:BumpTile(target, 1)
-					
+
 				else
 					-----------------------------
 					-- no collision - move pawn.
 					-----------------------------
-					
+
 					-- clean up potential acid from a pushed dead pawn.
 					tileState.isAcid = false
-					
+
 					self:SetPawnSpace(pawnState.id, target)
-					
+
 					-- transfer acid from dead corpseless pawn to new tile.
 					if
 						pawnState.health <= 0			and
@@ -909,15 +909,15 @@ function this:DamageSpace(spaceDamage)
 			tileState.isAcid = true
 		end
 	end
-	
+
 	tileState.damage = tileState.damage + spaceDamage.iDamage
-	
+
 	if tileState.terrain == TERRAIN_ICE then
 		if spaceDamage.iDamage > 0 then
 			self:SubTileHealth(tile, 1)
 		end
 	end
-	
+
 	if
 		spaceDamage.iPush >= 0 or
 		spaceDamage.iPush <= 3
@@ -937,9 +937,9 @@ function this:IsBlocked(tile)
 	assert(type(tile) == 'userdata')
 	assert(type(tile.x) == 'number')
 	assert(type(tile.y) == 'number')
-	
+
 	local tileState = self:GetTileState(tile)
-	
+
 	return
 		tileState.terrain == TERRAIN_MOUNTAIN or
 		tileState.terrain == TERRAIN_BUILDING or
@@ -951,38 +951,38 @@ function this:MarkDamage(effect, pawnId, weapon)
 	assert(type(effect) == 'userdata')
 	assert(type(pawnId) == 'number')
 	assert(type(weapon) == 'string')
-	
+
 	for tileId, tileState in pairs(self.tiles) do
 		local damage = tileState.damage - tileState.damagePawn
 		local loc = idx2p(tileId)
 		local sImageMark = ""
-		
+
 		local pushList = shallow_copy(tileState.pushList)
 		table.sort(pushList, function(a,b) return a.count > b.count end)
 		local dir = pushList[1].count > 0 and pushList[1].dir or DIR_NONE
-		
+
 		local pawn = Board:GetPawn(loc)
 		if pawn then
 			local pawnState = self:GetPawnState(pawn:GetId())
-			
+
 			if (pawn:IsShield() or pawn:IsFrozen()) and tileState.damage > 0 then
 				local color = pawn:IsAcid() and "acid_" or "yellow_"
 				sImageMark = "combat/icons/".. self.id .."_damage_".. color .. (pawnState.damage - pawnState.blocked) ..".png"
 				damage = 1
-				
+
 			elseif pawn:IsAcid() then
 				damage = pawnState.damage - pawnState.blocked
-				
+
 			elseif pawnState.blocked > 0 then
 				damage = pawnState.damage - pawnState.blocked + 1
-				
+
 			else
 				damage = pawnState.damage - pawnState.blocked
 			end
-			
+
 		else
 			local terrain = Board:GetTerrain(loc)
-			
+
 			if terrain == TERRAIN_BUILDING or terrain == TERRAIN_MOUNTAIN then
 				if
 					damage > 0 and (Board:IsFrozen(loc) or Board:IsShield(loc))
@@ -992,16 +992,16 @@ function this:MarkDamage(effect, pawnId, weapon)
 				end
 			end
 		end
-		
+
 		if tileState.damage > 0 then
 			pushList[1].count = pushList[1].count - 1
 		end
-		
+
 		-- mark extra pushes on the same tile.
 		for i = 1, pushList[1].count do
 			previewer:AddDamage(SpaceDamage(loc, 0, dir))
 		end
-		
+
 		-- mark damage.
 		if tileState.damage > 0 then
 			if damage > 0 then
@@ -1021,11 +1021,11 @@ end
 
 local function new()
 	assert(this.id, "virtualBoard has not been initialized")
-	
+
 	local vBoard = shallow_copy(this)
 	this.pawns = {}
 	this.tiles = {}
-	
+
 	return vBoard
 end
 

@@ -124,15 +124,15 @@ function lmn_Deflector_Ray_Tip:GetSkillEffect(p1, p2, ...)
 		d.iAcid = 1
 		Board:DamageSpace(d)
 	end
-	
+
 	if self.TipImage.Sand then
 		Board:SetTerrain(self.TipImage.Sand, TERRAIN_SAND)
 	end
-	
+
 	if self.TipImage.Ice then
 		Board:SetTerrain(self.TipImage.Ice, TERRAIN_ICE)
 	end
-	
+
 	return lmn_Deflector_Ray.GetSkillEffect(self, p1, p2, ...)
 end
 
@@ -142,16 +142,16 @@ lmn_Deflector_Ray_Tip_AB.GetSkillEffect = lmn_Deflector_Ray_Tip.GetSkillEffect
 
 function lmn_Deflector_Ray:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		for k = 1, INT_MAX do
 			local curr = p + DIR_VECTORS[i] * k
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			ret:push_back(curr)
-			
+
 			if self.Piercing then
 				local pawn = Board:GetPawn(curr)
 				if not pawn and Board:IsBlocked(curr, PATH_PROJECTILE) then
@@ -162,16 +162,16 @@ function lmn_Deflector_Ray:GetTargetArea(p)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
 function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local shooter = Board:GetPawn(p1)
 	if not shooter then return end
-	
+
 	local dir = GetDirection(p2 - p1)
 	local targets = {}
 	for k = 1, INT_MAX do
@@ -179,12 +179,12 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		local pawn = Board:GetPawn(curr)
 		local nonPawnObstacle = not pawn and Board:IsBlocked(curr, PATH_PROJECTILE)
 		if pawn or nonPawnObstacle then
 			targets[#targets+1] = curr
-			
+
 			if not self.Piercing or nonPawnObstacle then
 				break
 			end
@@ -193,7 +193,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 			break
 		end
 	end
-	
+
 	local pts = {{p = p1}}
 	if self.Adjacent then
 		for i = DIR_START, DIR_END do
@@ -203,20 +203,20 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	local delay = {
 		get = .1,
 		shoot = 0.08 * (p1:Manhattan(targets[#targets]) + 2),
 		pre_shoot = .3,
 		post_shoot = .7
 	}
-	
+
 	-- lasers:
 	-- red (recolored green for acid): "effects/lmn_laser_acid"
 	-- yellow (smoke?): "effects/laser_push"
 	-- fire: "effects/laser_fire"
 	-- frozen: "effects/laser_freeze"
-	
+
 	for _, v in ipairs(pts) do
 		local d = SpaceDamage(v.p)
 		local pawn = Board:GetPawn(v.p)
@@ -230,16 +230,16 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 		if pawn and pawn:IsAcid() then pts.acid, v.acid, v.iAcid = true, true, 2 end
 		if pawn and pawn:IsFire() then pts.fire, v.fire, v.iFire = true, true, 2 end
 	end
-	
+
 	-- start up beam.
 	local laser = SpaceDamage(targets[#targets])
-	
+
 	local function fireLaser(art, duration)
 		worldConstants:setLaserDuration(ret, duration)
 		ret:AddProjectile(laser, art, NO_DELAY)
 		worldConstants:resetLaserDuration(ret)
 	end
-	
+
 	if pts.acid then
 		for _, v in ipairs(pts) do
 			if v.acid then
@@ -255,7 +255,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 				ret:AddDelay(delay.get)
 			end
 		end
-		
+
 		ret:AddDelay(delay.pre_shoot)
 		ret:AddSound("/weapons/basic_beam")
 		fireLaser("effects/lmn_laser_acid", delay.shoot)
@@ -267,7 +267,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 		end
 		ret:AddDelay(delay.post_shoot)
 	end
-	
+
 	if pts.smoke then
 		for _, v in ipairs(pts) do
 			if v.smoke then
@@ -281,7 +281,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 				ret:AddDelay(delay.get)
 			end
 		end
-		
+
 		ret:AddDelay(delay.pre_shoot)
 		ret:AddSound("/weapons/push_beam")
 		fireLaser("effects/laser_push", delay.shoot)
@@ -293,7 +293,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 		end
 		ret:AddDelay(delay.post_shoot)
 	end
-	
+
 	if pts.fire then
 		for _, v in ipairs(pts) do
 			if v.fire then
@@ -309,7 +309,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 				ret:AddDelay(delay.get)
 			end
 		end
-		
+
 		ret:AddDelay(delay.pre_shoot)
 		ret:AddSound("/weapons/fire_beam")
 		fireLaser("effects/laser_fire", delay.shoot)
@@ -321,7 +321,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 		end
 		ret:AddDelay(delay.post_shoot)
 	end
-	
+
 	if pts.frozen then
 		for _, v in ipairs(pts) do
 			if v.frozen then
@@ -335,7 +335,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 				ret:AddDelay(delay.get)
 			end
 		end
-		
+
 		ret:AddDelay(delay.pre_shoot)
 		ret:AddSound("/weapons/freeze_beam")
 		fireLaser("effects/laser_freeze", delay.shoot)
@@ -347,7 +347,7 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 		end
 		ret:AddDelay(delay.post_shoot)
 	end
-	
+
 	for _, v in ipairs(pts) do
 		if not list_contains(targets, v.p) then
 			local d = SpaceDamage(v.p)
@@ -368,6 +368,6 @@ function lmn_Deflector_Ray:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	return ret
 end

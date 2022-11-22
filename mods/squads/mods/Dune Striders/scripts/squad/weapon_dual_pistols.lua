@@ -11,10 +11,10 @@ local function isEnemy(tile1, tile2)
 	local pawn1 = Board:GetPawn(tile1)
 	local pawn2 = Board:GetPawn(tile2)
 	if not pawn1 or not pawn2 then return false end
-	
+
 	local team1 = Board:GetPawnTeam(tile1)
 	local team2 = Board:GetPawnTeam(tile2)
-	
+
 	return team1 ~= team2
 end
 
@@ -75,31 +75,31 @@ lmn_ds_DualPistols_AB = lmn_ds_DualPistols_A:new{
 function lmn_ds_DualPistols:GetTargetArea(point)
 	local ret = PointList()
 	local range = self.MoveSpeedAsRange and Pawn:GetMoveSpeed() or self.Range
-	
+
 	if self.MoveSpeedMinimum and range == 0 then
 		range = self.MoveSpeedMinimum
 	end
-	
+
 	for dir = DIR_START, DIR_END do
 		for k = 1, range do
 			local curr = point + DIR_VECTORS[dir] * k
-			
+
 			if not Board:IsValid(curr)then
 				break
 			end
-			
+
 			if not Board:IsBlocked(curr, Pawn:GetPathProf()) then
 				if not Board:IsItem(curr) then
 					ret:push_back(curr)
 				end
 			end
-			
+
 			if not utils.IsTilePassable(curr, Pawn:GetPathProf()) then
 				break
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -115,24 +115,24 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 	local vec_left = DIR_VECTORS[dir_left]
 	local targets = 0
 	local events = {}
-	
+
 	local sand = SpaceDamage()
 	local smoke_create = SpaceDamage()
 	local smoke_remove = SpaceDamage()
-	
+
 	sand.sImageMark = "combat/icons/ds_icon_sand_glow.png"
 	smoke_create.sImageMark = "combat/icons/ds_icon_smoke_glow.png"
 	smoke_remove.sImageMark = "combat/icons/ds_icon_smoke_immune_glow.png"
-	
+
 	local projectile = SpaceDamage(self.Damage)
 	projectile.sSound = "/props/electric_smoke_damage"
-	
+
 	local first, last, increment = 0, distance, 1
-	
+
 	if self.AdvTargeting then
 		first, last, increment = distance, 0, -1
 	end
-	
+
 	-- find targets
 	for k = first, last, increment do
 		local curr = p1 + vec_forward * k
@@ -140,99 +140,99 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 		local left = utils.GetProjectileEnd(curr, curr + vec_left)
 		local rightIsEnemy = right ~= curr and isEnemy(p1, right)
 		local leftIsEnemy = left ~= curr and isEnemy(p1, left)
-		
+
 		if rightIsEnemy or leftIsEnemy then
 			targets = targets + 1
 			events[k] = {
 				right = rightIsEnemy and right or nil,
 				left = leftIsEnemy and left or nil,
 			}
-			
+
 			if targets >= self.Targets then
 				break
 			end
 		end
 	end
-	
+
 	ret:AddSound("/mech/prime/punch_mech/move")
 	ret:AddDelay(0.2)
 	ret:AddSound("/enemy/shared/moved")
 	ret:AddCharge(Board:GetPath(p1, p2, Pawn:GetPathProf()), NO_DELAY)
-	
+
 	for k = 0, distance do
 		local curr = p1 + vec_forward * k
 		local target = events[k]
-		
+
 		effectBurst.Add(ret, curr, "Emitter_Burst", dir_forward)
 		effectBurst.Add(ret, curr, "Emitter_Burst", dir_forward)
-		
+
 		-- SpreadSmoke upgrade
 		if self.SpreadSmoke then
-			
+
 				-- Mark smoke/unsmoke on traveled and adjacent tiles
 				if --[[Board:IsTerrain(curr, TERRAIN_SAND) or]] Board:IsSmoke(curr) then
 					--[[if Board:IsTerrain(curr, TERRAIN_SAND) then
 						sand.loc = curr
 						ret:AddDamage(sand)
 					end]]
-					
+
 					if Board:IsSmoke(curr) then
 						smoke_remove.loc = curr
 						ret:AddDamage(smoke_remove)
 					end
-					
+
 					smoke_create.loc = curr + vec_right
 					smoke_create.sAnimation = "exploout0_" .. dir_right
 					ret:AddDamage(smoke_create)
-					
+
 					smoke_create.loc = curr + vec_left
 					smoke_create.sAnimation = "exploout0_" .. dir_left
 					ret:AddDamage(smoke_create)
 				end
-				
+
 				-- Smoke/Unsmoke traveled and adjacent tiles
 				ret:AddScript(string.format([[
 					local p, right, left = %s, %s, %s;
-					
+
 					--[=[if Board:IsTerrain(p, TERRAIN_SAND) then
 						Board:SetTerrain(p, TERRAIN_ROAD);
 						Board:SetSmoke(p, true, true)
 					end;]=]
-					
+
 					if Board:IsSmoke(p) then
 						Board:SetSmoke(p, false, false);
 						Board:SetSmoke(p + right, true, false);
 						Board:SetSmoke(p + left, true, false);
 					end;
-					
+
 				]], curr:GetString(), vec_right:GetString(), vec_left:GetString()))
-		
+
 			if k == 0 then
 				-- Mark smoke on starting tile
 				smoke_create.loc = curr
 				smoke_create.sAnimation = "exploout0_" .. dir_back
 				ret:AddDamage(smoke_create)
-				
+
 				-- Smoke starting tile
 				ret:AddScript(string.format([[
 					local p = %s;
-					
+
 					--[=[if Board:IsTerrain(p, TERRAIN_SAND) then
 						Board:SetTerrain(p, TERRAIN_ROAD);
 					end;]=]
-					
+
 					if not Board:IsSmoke(p) then
 						Board:SetSmoke(p, true, false);
 					end;
-					
+
 				]], curr:GetString()))
 			else
 			end
 		end
-		
+
 		-- damage
 		if target then
-			
+
 			if target.right and target.left then
 				ret:AddSound("/weapons/fire_beam")
 				ret:AddSound("/weapons/mirror_shot")
@@ -240,15 +240,15 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 				ret:AddSound("/weapons/fire_beam")
 				ret:AddSound("/weapons/modified_cannons")
 			end
-			
+
 			local function FireProjectile(loc)
 				if loc == nil then return end
-				
+
 				local dir = GetDirection(loc - curr)
 				local sImageMark = ""
 				local sScript = utils.GetGenericImpactSoundScript(loc, "impact/generic/general")
 				sScript = string.format("%s; Board:AddAnimation(%s, 'ds_explo_plasma', NO_DELAY);", sScript, loc:GetString())
-				
+
 				if self.SpreadSmoke then
 					if k > 0 then
 						if loc == curr + DIR_VECTORS[dir] then
@@ -258,22 +258,22 @@ function lmn_ds_DualPistols:GetSkillEffect(p1, p2)
 						end
 					end
 				end
-				
+
 				projectile.loc = loc
 				projectile.iPush = dir
 				projectile.sScript = sScript
 				projectile.sImageMark = sImageMark
-				
+
 				ret:AddProjectile(curr, projectile, "effects/ds_shot_pistol", NO_DELAY)
 			end
-			
+
 			FireProjectile(target.right)
 			FireProjectile(target.left)
 		end
-		
+
 		ret:AddDelay(0.08)
 	end
-	
+
 	return ret
 end
 
@@ -287,12 +287,12 @@ function lmn_ds_DualPistols_Tip:GetSkillEffect(...)
 		if s:find("^Sand") then
 			Board:SetTerrain(p, TERRAIN_SAND)
 		end
-		
+
 		if s:find("^Rock") then
 			Board:AddPawn("Wall", p)
 		end
 	end
-	
+
 	return lmn_ds_DualPistols.GetSkillEffect(self, ...)
 end
 

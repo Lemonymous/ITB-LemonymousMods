@@ -38,19 +38,19 @@ local function GetProjectileEnd(p1, p2)
 	assert(type(p2) == 'userdata')
 	assert(type(p2.x) == 'number')
 	assert(type(p2.y) == 'number')
-	
+
 	local dir = GetDirection(p2 - p1)
 	local target = p1
-	
+
 	for k = 1, INT_MAX do
 		curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		target = curr
-		
+
 		if Board:IsBlocked(target, PATH_PROJECTILE) then
 			local pawn = Board:GetPawn(target)
 			if	not pawn					or
@@ -62,29 +62,29 @@ local function GetProjectileEnd(p1, p2)
 			end
 		end
 	end
-	
+
 	return target
 end
 
 function lmn_Multi_Laser:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		for k = 1, INT_MAX do
 			local curr = p + DIR_VECTORS[i] * k
-			
+
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			ret:push_back(curr)
-			
+
 			if Board:IsBlocked(curr, PATH_PROJECTILE) then
 				break
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -95,11 +95,11 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 	if not shooter then
 		return
 	end
-	
+
 	local effect = SkillEffect()
 	effect.iOwner = shooter:GetId()
 	effect.piOrigin = p1
-	
+
 	-- if board is busy, wait until it is resolved.
 	if Board:GetBusyState() ~= 0 then
 		effect:AddScript([[
@@ -110,15 +110,15 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 		Board:AddEffect(effect)
 		return
 	end
-	
+
 	local id = shooter:GetId()
 	local dir = GetDirection(p2 - p1)
 	local target = GetProjectileEnd(p1, p2)
-	
+
 	local pawn = Board:GetPawn(target)
 	local attacksLeft = totalAttacksRemaining[id]
 	local attacks = 1
-	
+
 	----------------------
 	-- attack calculation
 	----------------------
@@ -129,21 +129,21 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 			attacks = attacksLeft
 		else
 			local damage = self.Damage
-			
+
 			if pawn:IsAcid() then
 				health = math.ceil(health / 2)
 			elseif pawn:IsArmor() then
 				damage = damage - 1
 			end
-			
+
 			if pawn:IsShield() then
 				health = health + 1
 			end
-			
+
 			if pawn:IsFrozen() then
 				health = health + 1
 			end
-			
+
 			if Board:GetTerrain(target) == TERRAIN_ICE then
 				local tileHealth = Board:GetHealth(target)
 				attacks = math.max(1, math.min(tileHealth, attacks))
@@ -155,18 +155,18 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 				end
 			end
 		end
-		
+
 	elseif not Board:IsBlocked(target, PATH_PROJECTILE) then
 		-- unload shots on empty tiles.
 		attacks = attacksLeft
-		
+
 	elseif Board:IsUniqueBuilding(target) then
 		attacks = attacksLeft
-		
+
 	else
 		local terrain = Board:GetTerrain(target)
 		local health = Board:GetHealth(target)
-		
+
 		if Board:IsFrozen(target) then
 			if terrain == TERRAIN_MOUNTAIN then
 				attacks = health + 1
@@ -177,38 +177,38 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 			attacks = health
 		end
 	end
-	
+
 	attacks = math.min(attacksLeft, attacks)
 	totalAttacksRemaining[id] = totalAttacksRemaining[id] - attacks
-	
+
 	---------------------
 	-- damage resolution
 	---------------------
 	for i = 1, attacks do
 		local offset = math.random(1, 3)
 		local beam = math.random(1, 3)
-		
+
 		effect:AddSound("/weapons/push_beam")
-		
+
 		if beam == 1 then
 			effect:AddSound("/enemy/jelly/hurt")
 		elseif beam == 2 then
 			effect:AddSound("/weapons/refrigerate")
 		end
-		
+
 		local weapon = SpaceDamage(target, self.Damage)
 		weapon.sSound = "/props/shield_destroyed"
 		weapon.sScript = "Board:AddAnimation(".. target:GetString() ..", 'lmn_ExploLaser".. offset .."_".. dir .."', NO_DELAY)"
-		
+
 		worldConstants:setSpeed(effect, 0.6)
 		effect:AddProjectile(p1, weapon, "effects/lmn_multi_las_".. offset, NO_DELAY)
 		worldConstants:resetSpeed(effect)
-		
+
 		-- minimum delay between shots.
 		-- can take longer due to board being resolved.
 		effect:AddDelay(0.09)
 	end
-	
+
 	-------------------
 	-- continue attack
 	-------------------
@@ -222,14 +222,14 @@ function lmn_Multi_Laser:FireWeapon(p1, p2, isTipImage)
 		------------------
 		-- end resolution
 		------------------
-		
+
 		if isTipImage then
 			effect:AddDelay(1.3)
 		end
-		
+
 		totalAttacksRemaining[id] = nil
 	end
-	
+
 	Board:AddEffect(effect)
 end
 
@@ -240,12 +240,12 @@ function lmn_Multi_Laser:GetSkillEffect(p1, p2)
 	if not shooter then
 		return ret
 	end
-	
+
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
 	totalAttacksRemaining[id] = self.Attacks
-	
+
 	----------------
 	-- damage marks
 	----------------
@@ -254,50 +254,50 @@ function lmn_Multi_Laser:GetSkillEffect(p1, p2)
 		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
 		worldConstants:resetSpeed(ret)
-		
+
 		for i, v in ipairs(self.TipMarks) do
 			local tile = v[1]
 			local damage = v[2]
 			local mark = SpaceDamage(tile, damage)
-			
+
 			if tile ~= self.TipProjectileEnd then
 				mark.sImageMark = "combat/lmn_multi_laser_preview_".. damage ..".png"
 			end
-			
+
 			effectPreview:addDamage(ret, mark)
 		end
 	else
 		local vBoard = virtualBoard.new()
 		local target = p1
 		for i = 1, self.Attacks do
-			
+
 			-- GetProjectileEnd
 			for k = 1, INT_MAX do
 				local curr = p1 + DIR_VECTORS[dir] * k
 				if not Board:IsValid(curr) then
 					break
 				end
-				
+
 				target = curr
-				
+
 				if vBoard:IsBlocked(curr) then
 					break
 				end
 			end
-			
+
 			-- apply damage to virtual board.
 			vBoard:DamageSpace(SpaceDamage(target, self.Damage))
 		end
-		
+
 		-- preview projectile path.
 		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
 		worldConstants:resetSpeed(ret)
-		
+
 		-- mark tiles with vBoard state.
 		vBoard:MarkDamage(ret, id, "lmn_Multi_Laser")
 	end
-	
+
 	---------------------
 	-- damage resolution
 	---------------------
@@ -306,7 +306,7 @@ function lmn_Multi_Laser:GetSkillEffect(p1, p2)
 		local p2 = ]].. p2:GetString() ..[[;
 		_G[']].. self.Self ..[[']:FireWeapon(p1, p2, ]].. tostring(isTipImage) ..[[);
 	]])
-	
+
 	return ret
 end
 
@@ -399,7 +399,7 @@ lmn_ExploLaser1_0 = Animation:new{
 	Image = "effects/lmn_explo_laser1.png",
 	NumFrames = 8,
 	Time = 0.1,
-	
+
 	PosX = -10,
 	PosY = 5
 }

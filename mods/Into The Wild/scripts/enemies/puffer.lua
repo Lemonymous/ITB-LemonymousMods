@@ -18,7 +18,7 @@ utils.appendAssets{
 	{"lmn_puffer1_emerge.png", "puffer1e.png"},
 	{"lmn_puffer1_death.png", "puffer1d.png"},
 	{"lmn_puffer1w.png", "puffer1.png"},
-	
+
 	{"lmn_puffer2.png", "puffer2.png"},
 	{"lmn_puffer2a.png", "puffer2a.png"},
 	{"lmn_puffer2_emerge.png", "puffer2e.png"},
@@ -60,7 +60,7 @@ a.lmn_Puffer2w = alpha:new{Image = imagePath .."lmn_puffer2w.png"}
 utils.appendAssets{
 	writePath = "img/units/player/",
 	readPath = path .."img/units/aliens/",
-	
+
 	{"lmn_puffer.png", "puffer.png"},
 	{"lmn_puffer_a.png", "puffera.png"},
 	{"lmn_puffer_broken.png", "pufferd.png"},
@@ -127,7 +127,7 @@ local lookup = {
 for _, tip in ipairs{"", "_Tip"} do
 	for _, v in ipairs{"", "_Alpha"} do
 		local base = _G["lmn_Puffer_Cloud_Burst".. v]
-		
+
 		-- make 6 fumeclouds in each direction
 		-- + the center cloud 0.
 		for dir = DIR_START, DIR_END do
@@ -212,7 +212,7 @@ function lmn_PufferAtk2:GetTargetScore(p1, p2, ...)
 	local ret = Skill.GetTargetScore(self, p1, p2, ...)
 	isTargetScore = nil
 	--LOG(Board:GetPawn(p1):GetId() .." considers attacking ".. p2:GetString() .." with score ".. ret)
-	
+
 	return ret
 end
 
@@ -227,43 +227,43 @@ end
 
 function lmn_PufferAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local dirs = {0,1,2,3}
 	if not self.AoE then
 		dirs = {GetDirection(p2 - p1)}
 	end
-	
+
 	-- filter out invalid tiles.
 	for i = #dirs, 1, -1 do
 		if not Board:IsValid(p1 + DIR_VECTORS[dirs[i]]) then
 			table.remove(dirs, i)
 		end
 	end
-	
+
 	local smoke = SpaceDamage(p2)
 	smoke.iSmoke = 1
 	ret:AddDamage(smoke)
-	
+
 	ret:AddQueuedSound("enemy/goo_boss/attack")
 	ret:AddQueuedDelay(0.1)
-	
+
 	for k = cloudCount, 0, -1 do
 		for i, dir in ipairs(dirs) do
 			local curr = p1 + DIR_VECTORS[dir]
-			
+
 			ret:AddQueuedEmitter(curr, self.Emitter .. dir .. k)
 			ret.q_effect:index(ret.q_effect:size()).bHide = true
-			
+
 			if i == 1 then
 				ret:AddQueuedSound("enemy/shared/moved")
 			end
 		end
 		ret:AddQueuedDelay(0.02)
 	end
-	
+
 	local damage = SpaceDamage(self.Damage)
 	damage.sSound = "props/acid_splash"
-	
+
 	for _, dir in ipairs(dirs) do
 		damage.loc = p1 + DIR_VECTORS[dir]
 		if self.Push == 1 then
@@ -271,12 +271,12 @@ function lmn_PufferAtk1:GetSkillEffect(p1, p2)
 		end
 		ret:AddQueuedDamage(damage)
 	end
-	
+
 	-- add score in smoke direction.
 	if isTargetScore then
 		ret:AddQueuedDamage(SpaceDamage(p2, 1))
 	end
-	
+
 	return ret
 end
 
@@ -286,7 +286,7 @@ lmn_PufferAtk2_Tip = lmn_PufferAtk2:new{Emitter = "lmn_Puffer_Cloud_Burst_Alpha_
 function lmn_PufferAtk1_Tip:GetSkillEffect(p1, p2)
 	ret = lmn_PufferAtk1.GetSkillEffect(self, p1, p2)
 	ret:AddQueuedDelay(1)
-	
+
 	return ret
 end
 
@@ -315,18 +315,18 @@ function Move:GetTargetArea(p, ...)
 	if mover and mover:GetType() == "lmn_Puffer" then
 		local old = extract_table(oldMove(self, p, ...))
 		local ret = PointList()
-		
+
 		for _, v in ipairs(old) do
 			local terrain = Board:GetTerrain(v)
-			
+
 			if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_HOLE then
 				ret:push_back(v)
 			end
 		end
-		
+
 		return ret
 	end
-	
+
 	return oldMove(self, p, ...)
 end
 
@@ -336,15 +336,15 @@ function Move:GetSkillEffect(p1, p2, ...)
 	if mover and mover:GetType() == "lmn_Puffer" then
 		local ret = SkillEffect()
 		local pawnId = mover:GetId()
-		
+
 		-- just preview move.
 		ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1, -1))", pawnId))
 		ret:AddMove(Board:GetPath(p1, p2, Pawn:GetPathProf()), NO_DELAY)
 		ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(%s)", pawnId, p1:GetString()))
-		
+
 		-- move pawn.
 		ret:AddScript(string.format("Board:GetPawn(%s):Move(%s)", pawnId, p2:GetString()))
-		
+
 		ret:AddDelay(.32)
 		local path = extract_table(Board:GetPath(p1, p2, Pawn:GetPathProf()))
 		local dist = #path - 1
@@ -356,14 +356,14 @@ function Move:GetSkillEffect(p1, p2, ...)
 			else
 				ret:AddBurst(p, "Emitter_Burst_$tile", DIR_NONE)
 			end
-			
+
 			ret:AddBounce(p, -2)
 			ret:AddDelay(.32 / dist)
 		end
-		
+
 		return ret
 	end
-	
+
 	return oldMove(self, p1, p2, ...)
 end
 
@@ -394,38 +394,38 @@ function lmn_PufferAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local isExplode = self.Ignite and Board:IsFire(p2)
-	
+
 	ret:AddSound("enemy/goo_boss/attack")
 	ret:AddDelay(0.1)
-	
+
 	for k = cloudCount, 0, -1 do
 		local curr = p1 + DIR_VECTORS[dir]
-		
+
 		ret:AddEmitter(curr, self.Emitter .. dir .. k)
 		ret.effect:index(ret.effect:size()).bHide = true
-		
+
 		if i == 1 then
 			ret:AddSound("enemy/shared/moved")
 		end
 		ret:AddDelay(0.02)
 	end
-	
+
 	local d = SpaceDamage(p2, self.Damage)
 	d.sSound = "props/acid_splash"
-	
+
 	if isExplode then
 		d.iDamage = d.iDamage + self.Ignite
 	elseif self.Smoke then
 		d.iSmoke = 1
 	end
 	ret:AddDamage(d)
-	
+
 	if isExplode then
 		local d = SpaceDamage(p2)
 		d.sAnimation = "ExploAir2"
 		d.sSound = "impact/generic/explosion_large"
 		ret:AddDamage(d)
-		
+
 		ret:AddDelay(0.1)
 		for i = DIR_START, DIR_END do
 			local curr = p2 + DIR_VECTORS[i]
@@ -436,7 +436,7 @@ function lmn_PufferAtk:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -474,24 +474,24 @@ lmn_PufferAtk_Tip_AB = lmn_PufferAtk_AB:new{Emitter = "lmn_Puffer_Cloud_Burst_Ti
 
 modApi.events.onNextTurn:subscribe(function(mission)
 	if Game:GetTeamTurn() ~= TEAM_PLAYER then return end
-	
+
 	for i = 0, 2 do
 		local pawn = Board:GetPawn(i)
 		if pawn and pawn:GetType() == "lmn_Puffer" then
 			local loc = pawn:GetSpace()
 			if not Board:IsValid(loc) then
-				
+
 				mission.lmn_Puffer = mission.lmn_Puffer or {}
 				local p1 = mission.lmn_Puffer[i] or Point(math.random(0,7), math.random(0,7))
 				local pathing = pawn:GetPathProf()
-				
+
 				local explored = {}
 				local unexplored = {}
 				unexplored[p2idx(p1)] = {
 					loc = p1,
 					dist = 0,
 				}
-				
+
 				-- search every tile on the board until we find a spot to emerge.
 				while not utils.list_isEmpty(unexplored) do
 					local id
@@ -502,7 +502,7 @@ modApi.events.onNextTurn:subscribe(function(mission)
 							node = n
 						end
 					end
-					
+
 					-- check if tile is traversable.
 					if not Board:IsBlocked(node.loc, pathing) then
 						local fx = SkillEffect()
@@ -510,22 +510,22 @@ modApi.events.onNextTurn:subscribe(function(mission)
 						Board:AddEffect(fx)
 						break
 					end
-					
+
 					unexplored[id] = nil
 					explored[id] = node
-					
+
 					-- remove bias to any direction.
 					local input = {0,1,2,3}
 					local dirs = {}
 					for i = 1, 4 do
 						dirs[#dirs+1] = random_removal(input)
 					end
-					
+
 					-- add neighbors to unexplored.
 					for _, dir in ipairs(dirs) do
 						local loc = node.loc + DIR_VECTORS[dir]
 						local id = p2idx(loc)
-						
+
 						if Board:IsValid(loc) and not explored[id] and not unexplored[id] then
 							unexplored[p2idx(loc)] = {loc = loc, dist = p1:Manhattan(loc)}
 						end
@@ -540,13 +540,13 @@ local function onModsLoaded()
 	modApiExt:addPawnDamagedHook(function(mission, pawn)
 		if pawn:GetType() ~= "lmn_Puffer" then return end
 		if pawn:IsDead() then return end
-		
+
 		-- puffer will go underground if damaged. we need to deal with it somehow.
 		-- if we emerge next turn, we cannot be sure our tile is vacant. could pick random tile,
 		-- or have some deterministic method of finding a good tile to go to.
-		
+
 		mission.lmn_Puffer = mission.lmn_Puffer or {}
-		
+
 		local loc = pawn:GetSpace()
 		if Board:IsValid(loc) then
 			mission.lmn_Puffer[pawn:GetId()] = pawn:GetSpace()

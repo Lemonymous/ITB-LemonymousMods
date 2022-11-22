@@ -108,32 +108,32 @@ lmn_RoachAtk1 = Skill:new{
 
 local isTargetScore = false
 function lmn_RoachAtk1:GetTargetScore(p1, p2)
-	
+
 	isTargetScore = true
 	local result = Skill.GetTargetScore(self, p1, p2)
 	isTargetScore = false
-	
+
 	return result
 end
 
 function lmn_RoachAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-	
+
 	-- Queued attacks are weird. Make sure
 	-- we have the correct pawn.
 	local pawn = Board:GetPawn(p1)
 	if not pawn or not IsRoach(pawn) then
 		return ret
 	end
-	
+
 	if isTargetScore then
 		-- simulate attack for attack score
 		local scoredPawn = false
-		
+
 		for k = 1, self.Range do
 			local curr = p1 + DIR_VECTORS[dir] * k
-			
+
 			if Board:IsBlocked(curr, PATH_PROJECTILE) then
 				if Board:IsPawnSpace(curr) then
 					-- score only first pawn.
@@ -150,34 +150,34 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2)
 		end
 	else
 		-- actual attack
-		
+
 		if Board:IsTipImage() then
 			ret:AddDelay(0.8)
-			
+
 		elseif self == lmn_RoachAtkB then
 			ret:AddScript(string.format([[
 				local tips = mod_loader.mods.lmn_bots_and_bugs.libs.tutorialTips;
 				tips:trigger("Roach_Boss_Atk", %s);
 			]], p1:GetString()))
 		end
-		
+
 		for k = 1, self.Range do
 			local curr = p1 + DIR_VECTORS[dir] * k
-			
+
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			p2 = curr
-			
+
 			if Board:IsBlocked(curr, PATH_PROJECTILE) then
 				break
 			end
 		end
-		
+
 		local distance = p1:Manhattan(p2)
 		local shouldSpit = not this.delay_roach_spit
-		
+
 		if this.delay_roach_spit then
 			local m = GetCurrentMission()
 			if m then
@@ -185,17 +185,17 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2)
 				shouldSpit = m[id_spit][pawn:GetId()]
 			end
 		end
-		
+
 		if Board:IsTipImage() or shouldSpit then
 			local spit = SpaceDamage(p2)
 			spit.iAcid = self.Acid
 			spit.sSound = self.AcidSound1
 			spit.sAnimation = self.Explo
-			
+
 			local sound = SpaceDamage(p2)
 			sound.bHide = true
 			sound.sSound = self.AcidSound2
-			
+
 			if distance == 1 then
 				ret:AddProjectile(p1, spit, self.Shot, NO_DELAY)
 				ret:AddProjectile(p1, sound, "", NO_DELAY)
@@ -206,11 +206,11 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2)
 				worldConstants:resetHeight(ret)
 			end
 		end
-		
+
 		if distance == 1 then
 			local d = SpaceDamage(p2, self.Damage)
 			d.sAnimation = self.MeleeArt
-			
+
 			local s = SpaceDamage(p2)
 			s.sSound = self.MeleeSound
 			ret:AddQueuedDamage(s)
@@ -220,23 +220,23 @@ function lmn_RoachAtk1:GetSkillEffect(p1, p2)
 			worldConstants:queuedSetSpeed(ret, 999)
 			ret:AddQueuedProjectile(SpaceDamage(p2), "", NO_DELAY)
 			worldConstants:queuedResetSpeed(ret)
-			
+
 			local ranged = SpaceDamage(p2, self.Damage)
 			ranged.bHidePath = true
 			ranged.iAcid = 1
 			ranged.sSound = self.AcidSound1
-			
+
 			local sound = SpaceDamage(p2)
 			sound.bHide = true
 			sound.sSound = self.AcidSound2
-			
+
 			worldConstants:queuedSetHeight(ret, self.VelY)
 			ret:AddQueuedArtillery(ranged, self.Upshot, NO_DELAY)
 			ret:AddQueuedArtillery(sound, "", NO_DELAY)
 			worldConstants:queuedResetHeight(ret)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -293,13 +293,13 @@ function lmn_RoachAtkB_Tip:GetSkillEffect(p1, p2)
 	end
 	local ret = lmn_RoachAtkB.GetSkillEffect(self, p1, p2)
 	ret:AddDelay(0.8)
-	
+
 	return ret
 end
 
 local function enableSpit(m)
 	local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
-	
+
 	m[id_spit] = m[id_spit] or {}
 	for _, pawnId in ipairs(pawns) do
 		local pawn = Board:GetPawn(pawnId)
@@ -312,12 +312,12 @@ end
 function this:load()
 	local modOptions = getModOptions()
 	this.delay_roach_spit = modOptions["option_roach_delay_spit"].enabled
-	
+
 	if this.delay_roach_spit then
 		modApi:addMissionStartHook(function(m)
 			enableSpit(m)
 		end)
-		
+
 		modApi:addNextTurnHook(function(m)
 			if Game:GetTeamTurn() == TEAM_PLAYER then
 				enableSpit(m)

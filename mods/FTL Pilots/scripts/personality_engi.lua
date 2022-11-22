@@ -21,12 +21,12 @@ local tbl = {
 	TimeTravel_Win = {},
 	Gameover_Start = {},
 	Gameover_Response = {},
-	
+
 	-- UI Barks
 	Upgrade_PowerWeapon = {},
 	Upgrade_NoWeapon = {},
 	Upgrade_PowerGeneric = {},
-	
+
 	-- Mid-Battle
 	MissionStart = {},
 	Mission_ResetTurn = {},
@@ -139,11 +139,11 @@ local function scramble(text)
 	for i = text:len(), 2, -1 do
 		local j = math.random(1, i)
 		ret = ret .. text:sub(j, j)
-		
+
 		-- swap i with j.
 		text = text:sub(1, j - 1) .. text:sub(i, i) .. text:sub(j + 1, i - 1) .. text:sub(j, j)
 	end
-	
+
 	ret = ret .. text:sub(1, 1)
 	return ret
 end
@@ -155,7 +155,7 @@ local function getEncodeTable(raw)
 	   local e, d = raw:sub(i,i), scrambled:sub(i,i)
 	   ret[e] = d
 	end
-	
+
 	return ret
 end
 

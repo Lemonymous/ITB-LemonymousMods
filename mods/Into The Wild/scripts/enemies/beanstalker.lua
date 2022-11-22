@@ -143,9 +143,9 @@ function lmn_BeanstalkerAtk1:GetTargetScore(p1, p2, ...)
 	Skill.GetTargetScore(self, p1, p2, ...)
 	local ret = targetScore
 	targetScore = nil
-	
+
 	--LOG(string.format("score from %s to %s is %s", p1:GetString(), p2:GetString(), ret))
-	
+
 	return ret
 end
 
@@ -164,75 +164,75 @@ function lmn_BeanstalkerAtk1:GetSkillEffect(p1, p2)
 	local sideDamage = 0
 	local sideBuildings = 0
 	local damageBuilding
-	
+
 	local pawn = Board:GetPawn(target)
 	if pawn then
 		doPush = true
 		target = target - step
-		
+
 	elseif utils.IsPit(target) then
 		dropInPit = true
-		
+
 	elseif Board:IsBlocked(target, PATH_GROUND) then
 		doPush = true
-		
+
 		if utils.IsBuilding(target) then
 			damageBuilding = true
 		end
-		
+
 		target = target - step
 	end
-	
+
 	ret:AddQueuedSound("/weapons/charge")
 	ret:AddQueuedCharge(Board:GetSimplePath(p1, target), NO_DELAY)
-	
+
 	ret:AddQueuedEmitter(p1, "lmn_Beanstalker_Petal_1".. dir)
 	ret.q_effect:index(ret.q_effect:size()).bHide = true
 	ret:AddQueuedDelay(0.04)
 	ret:AddQueuedEmitter(p1, "lmn_Beanstalker_Petal_2".. dir)
 	ret.q_effect:index(ret.q_effect:size()).bHide = true
-	
+
 	local dist = p1:Manhattan(target)
 	for k = 1, dist do
 		local curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		ret:AddScript(string.format("Board:SetDangerous(%s)", curr:GetString()))
-		
+
 		-- add petal emitters as it runs.
 		for side = dir + 1, dir + 3, 2 do
 			side = side % 4
 			local curr = curr + DIR_VECTORS[side]
 			local currNext = curr + DIR_VECTORS[side]
-			
+
 			local d = SpaceDamage(curr)
 			d.iPush = side
 			d.sAnimation = "exploout0_".. side
-			
+
 			local isPushable = utils.IsPushable(curr)
-			
+
 			if isPushable then
 				d.sImageMark = pushArrows.Push(side, curr)
 				sidePushes = sidePushes + 1
 			else
 				--d.bHide = true
 			end
-			
+
 			if Board:IsValid(currNext) then
 				if isPushable and Board:IsBlocked(currNext, PATH_FLYER) then
 					d.sImageMark = pushArrows.Hit(side, curr)
 				end
-				
+
 				if utils.IsBuilding(currNext) then
 					if not Board:IsBlocked(curr, PATH_FLYER) then
 						sideBuildings = sideBuildings + 1
 					end
-					
+
 					if isPushable then
 						sideDamage = sideDamage + 1
 					end
 				end
 			end
-			
+
 			ret:AddQueuedDamage(d)
 		end
 		ret:AddQueuedDelay(0.04)
@@ -242,7 +242,7 @@ function lmn_BeanstalkerAtk1:GetSkillEffect(p1, p2)
 		ret:AddQueuedEmitter(curr, "lmn_Beanstalker_Petal_2".. dir)
 		ret.q_effect:index(ret.q_effect:size()).bHide = true
 	end
-	
+
 	if doPush then
 		local d = SpaceDamage(target)
 		d.iPush = dir
@@ -250,33 +250,33 @@ function lmn_BeanstalkerAtk1:GetSkillEffect(p1, p2)
 		d.sImageMark = pushArrows.Hit(dir, target)
 		ret:AddQueuedDamage(d)
 	end
-	
+
 	if targetScore then
-		
+
 		-- prefer long distances.
 		targetScore = targetScore + dist * self.score_dist
-		
+
 		-- enjoy pushing head on.
 		if damageBuilding then
 			targetScore = targetScore + self.score_crashBuilding
 		elseif nonPawnBlock and utils.IsBuilding(nonPawnBlock) then
 			targetScore = targetScore + self.score_buildingOnPath
 		end
-		
+
 		-- dislike potential to rush into a pit.
 		if nonPawnBlock and utils.IsPit(nonPawnBlock) then
 			targetScore = targetScore + self.score_pitRush
 		end
-		
+
 		targetScore = targetScore + sidePushes * self.score_push			-- threaten current locs.
 		targetScore = targetScore + sideBuildings * self.score_denial		-- tile denial.
 		targetScore = targetScore + sideDamage * self.score_pushBuilding	-- both are valued even more.
-		
+
 		-- dislike water.
 		if dropInPit then
 			targetScore = -10
 		end
 	end
-	
+
 	return ret
 end

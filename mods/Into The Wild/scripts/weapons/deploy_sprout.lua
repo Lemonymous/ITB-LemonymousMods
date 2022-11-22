@@ -79,6 +79,6 @@ function lmn_Deploy_SproutAtk:GetSkillEffect(p1, p2)
 		damage.fDelay = 0.15
 		ret:AddDamage(damage)
 	end
-	
+
 	return ret
 end

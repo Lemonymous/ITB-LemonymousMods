@@ -125,7 +125,7 @@ function lmn_Minelayer_Launcher:GetTargetArea(point)
 			ret:push_back(curr)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -161,7 +161,7 @@ function lmn_Minelayer_Launcher:GetProjectileEnd(p1, p2)
 			end
 		end
 	end
-	
+
 	return target
 end
 
@@ -380,9 +380,9 @@ function lmn_Minelayer_Launcher:GetSkillEffect(p1, p2, numberOfAttacks, useArtil
 						if not Board:IsValid(curr) then
 							break
 						end
-						
+
 						target = curr
-						
+
 						if vBoard:IsBlocked(curr) then
 							break
 						end

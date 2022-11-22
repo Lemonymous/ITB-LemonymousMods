@@ -16,7 +16,7 @@ local function onModsLoaded()
 		if utils.IsTipImage() then return end
 		if not pawn or pawn:GetType():sub(-4,-1) ~= "Boss" then return end
 		if skillEffect.q_effect:empty() then return end
-		
+
 		skillEffect:AddQueuedScript([[
 			local pawns = extract_table(Board:GetPawns(TEAM_ENEMY));
 			local leaders = {};
@@ -33,14 +33,14 @@ local function onModsLoaded()
 			end
 		]])
 	end)
-	
+
 	-- flytrap
 	local chompers = {"lmn_Chomper1", "lmn_Chomper2", "lmn_ChomperBoss"}
 	modApiExt:addSkillBuildHook(function(mission, pawn, weaponId, p1, p2, skillEffect)
 		if utils.IsTipImage() then return end
 		if not pawn or not list_contains(chompers, pawn:GetType()) then return end
 		if skillEffect.q_effect:empty() then return end
-		
+
 		skillEffect:AddQueuedScript([[
 			local types = {"Hornet1", "Hornet2", "HornetBoss"}
 			local pawns = extract_table(Board:GetPawns(TEAM_ENEMY));
@@ -58,7 +58,7 @@ local function onModsLoaded()
 			end
 		]])
 	end)
-	
+
 	local leaders = switch{
 		["lmn_ChiliBoss"] = function()
 			modApi.achievements:addProgress(mod.id, "leaders", { chili = true } )
@@ -77,7 +77,7 @@ local function onModsLoaded()
 		end,
 		default = function() end
 	}
-	
+
 	-- leaders
 	modApiExt:addPawnKilledHook(function(mission, pawn)
 		if modApi.achievements:isComplete(mod.id, "leaders") then

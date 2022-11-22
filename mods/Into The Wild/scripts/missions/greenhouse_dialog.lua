@@ -11,7 +11,7 @@ return {
 		},
 		Failure = {
 			"There was a time when I would have laughed if someone told me about sentient, carnivorous plants turning against us. I don't find it all that amusing anymore...",
-			"By allowing the destruction of our Greenhouses, you have severely compromised the food supply in the region, Commander.",	
+			"By allowing the destruction of our Greenhouses, you have severely compromised the food supply in the region, Commander.",
 			"Some might be salvaged, but we have lost much today.",
 		},
 		Partial = {

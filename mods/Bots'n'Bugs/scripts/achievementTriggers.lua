@@ -45,7 +45,7 @@ local function onModsLoaded()
 		-- special case for swarmers.
 		if pawnType == 'lmn_SwarmerBoss' then
 			local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
-			
+
 			for _, id in ipairs(pawns) do
 				if Board:GetPawn(id):GetType() == 'lmn_SwarmerBoss' then
 					return

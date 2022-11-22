@@ -11,7 +11,7 @@ local function onModsLoaded()
 		local pawnType = pawn:GetType()
 		local voice = pawns[pawnType]
 		if not voice then return end
-		
+
 		local fx = SkillEffect()
 		fx:AddVoice(voice, -1)
 		Board:AddEffect(fx)

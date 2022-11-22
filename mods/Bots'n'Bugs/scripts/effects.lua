@@ -164,7 +164,7 @@ for i = 0, 3 do
 		Loop = false,
 		Layer = LAYER_BACK,
 	}
-	
+
 	a["lmn_creep_front_".. i] = a["lmn_creep_back_".. i]:new{
 		Image = "combat/creepfront_strip4.png",
 		PosY = 21,

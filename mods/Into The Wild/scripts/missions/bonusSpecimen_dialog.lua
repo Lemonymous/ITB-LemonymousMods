@@ -7,7 +7,7 @@ return {
 			"We have air support standing by with tranquilizers - distract the Vek long enough to let them get into position!",
 		},
 		Success = {
-			"Thank you for your help, #squad. This will help our research efforts.",	
+			"Thank you for your help, #squad. This will help our research efforts.",
 			"Très bien, they weren't expecting a thing!",
 			"Just look at the size of the beasts! Thank you, #squad.",
 		},

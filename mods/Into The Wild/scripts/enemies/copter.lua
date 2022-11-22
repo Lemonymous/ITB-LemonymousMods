@@ -17,7 +17,7 @@ utils.appendAssets{
 	{"lmn_copter1_emerge.png", "copter1.png"},
 	{"lmn_copter1_death.png", "copter1d.png"},
 	{"lmn_copter1w.png", "copter1.png"},
-	
+
 	{"lmn_copter2.png", "copter2.png"},
 	{"lmn_copter2a.png", "copter2a.png"},
 	{"lmn_copter2_emerge.png", "copter2.png"},
@@ -116,12 +116,12 @@ lmn_CopterAtk2 = lmn_CopterAtk1:new{
 function lmn_CopterAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local direction = GetDirection(p2 - p1)
-	
+
 	local damage = SpaceDamage(p2,self.Damage)
 	damage.sAnimation = "explohornet_"..direction
-	
+
 	ret:AddQueuedMelee(p1,damage, 0.25)
-	
+
 	return ret
 end
 

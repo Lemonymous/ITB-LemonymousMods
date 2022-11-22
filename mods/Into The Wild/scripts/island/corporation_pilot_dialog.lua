@@ -261,12 +261,12 @@ return {
 		"Built strong, I guess.",
 		"Grid is holding tight!"
 	},
-	
+
 	-- Shared Mission Events
 	--[[Mission_Train_TrainStopped = {},
 	Mission_Train_TrainDestroyed = {},
 	Mission_Block_Reminder = {},
-	
+
 	-- Archive Mission Events
 	Mission_Tanks_Activated = {},
 	Mission_Tanks_PartialActivated = {},
@@ -276,7 +276,7 @@ return {
 	Mission_Dam_Reminder = {},
 	Mission_Dam_Destroyed = {},
 	Mission_Mines_Vek = {},
-	
+
 	-- R.S.T. Mission Events
 	Mission_Force_Reminder = {},
 	Mission_Lightning_Strike_Vek = {},
@@ -284,7 +284,7 @@ return {
 	Mission_Terraform_Attacks = {},
 	Mission_Cataclysm_Falling = {},
 	Mission_Solar_Destroyed = {},
-	
+
 	-- Pinnacle Mission Events
 	Mission_FreezeBots_Freed = {},
 	Mission_FreezeBots_Dead = {},
@@ -294,7 +294,7 @@ return {
 	Mission_Freeze_Mines_Vek = {},
 	Mission_SnowStorm_FrozenVek = {},
 	Mission_SnowStorm_FrozenMech = {},
-	
+
 	-- Detritus Mission Events
 	Mission_Barrels_Destroyed = {},
 	Mission_Disposal_Destroyed = {},
@@ -302,7 +302,7 @@ return {
 	Mission_Power_Destroyed = {},
 	Mission_Belt_Mech = {},
 	Mission_Teleporter_Mech = {},
-	
+
 	-- Meridia Mission Events
 	Mission_lmn_Convoy_Destroyed = {},
 	Mission_lmn_FlashFlood_Flood = {},
@@ -310,7 +310,7 @@ return {
 	Mission_lmn_Geyser_Launch_Vek = {},
 	Mission_lmn_Volcanic_Vent_Erupt_Vek = {},
 	Mission_lmn_Wind_Push = {},
-	
+
 	Mission_lmn_Runway_Imminent = {},
 	Mission_lmn_Runway_Crashed = {},
 	Mission_lmn_Runway_Takeoff = {},

@@ -26,7 +26,7 @@ utils.appendAssets{
 	{"lmn_sunflower1_emerge.png", "sunflower1e.png"},
 	{"lmn_sunflower1_death.png", "sunflower1d.png"},
 	{"lmn_sunflower1w.png", "sunflower1.png"},
-	
+
 	{"lmn_sunflower2.png", "sunflower2.png"},
 	{"lmn_sunflower2a.png", "sunflower2a.png"},
 	{"lmn_sunflower2_emerge.png", "sunflower2e.png"},
@@ -153,14 +153,14 @@ lmn_SunflowerAtk2 = lmn_SunflowerAtk1:new{
 function lmn_SunflowerAtk1:AchievementStart()
 	local m = GetCurrentMission()
 	if not m or not Board then return end
-	
+
 	m.lmn_achv_sunflower = 0
 end
 
 function lmn_SunflowerAtk1:AchievementCheck()
 	local m = GetCurrentMission()
 	if not m or not Board then return end
-	
+
 	if m.lmn_achv_sunflower >= 2 then
 		modApi.achievements:trigger(mod.id, "sunflower")
 	end
@@ -172,21 +172,21 @@ function lmn_SunflowerAtk1:GetSkillEffect(p1, p2)
 	local d = SpaceDamage(target, self.Damage)
 	d.sSound = self.Sound_Impact
 	d.sAnimation = self.Anim_Impact
-	
+
 	if not utils.IsTipImage() then
 		ret:AddQueuedScript("lmn_SunflowerAtk1:AchievementStart()")
 	end
-	
+
 	local script = string.format([[
 		local fx = SkillEffect();
 		fx:AddScript("Board:GetPawn(%s):FireWeapon(%s, 2)");
 		Board:AddEffect(fx);
 	]], p1:GetString(), p2:GetString())
-	
+
 	for i = 2, self.Attacks do
 		d.sScript = d.sScript .. script
 	end
-	
+
 	local mark = "damage"
 	local pawn = Board:GetPawn(target)
 	if Board:IsAcid(target) then
@@ -194,16 +194,16 @@ function lmn_SunflowerAtk1:GetSkillEffect(p1, p2)
 	elseif pawn and pawn:IsArmor() then
 		mark = ""
 	end
-	
+
 	d.sImageMark = "combat/icons/multishot/".. mark .."_x".. self.Attacks ..".png"
 	ret:AddQueuedSound(self.Sound_Launch)
 	ret:AddQueuedProjectile(d, self.Art_Projectile)
-	
+
 	if not utils.IsTipImage() then
 		ret:AddQueuedDelay(0.016)
 		ret:AddQueuedScript("lmn_SunflowerAtk1:AchievementCheck()")
 	end
-	
+
 	return ret
 end
 
@@ -216,19 +216,19 @@ function lmn_SunflowerAtkRepeat1:GetSkillEffect(p1, p2)
 	local d = SpaceDamage(target, self.Damage)
 	d.sSound = self.Sound_Impact
 	d.sAnimation = self.Anim_Impact
-	
+
 	if self.Freeze then
 		d.iFrozen = 1
 	end
-	
+
 	ret:AddSound(self.Sound_Launch)
 	ret:AddProjectile(p1, d, self.Art_Projectile, FULL_DELAY)
-	
+
 	if not utils.IsTipImage() then
 		ret:AddDelay(0.016)
 		ret:AddScript("lmn_SunflowerAtk1:AchievementCheck()")
 	end
-	
+
 	return ret
 end
 
@@ -239,20 +239,20 @@ lmn_SunflowerAtk2_Tip = lmn_SunflowerAtk2:new{}
 
 function lmn_SunflowerAtk1_Tip:GetSkillEffect(p1, p2, ...)
 	local damage = self.Attacks * self.Damage
-	
+
 	if damage < 4 then
 		Board:SetTerrain(self.TipImage.Building, TERRAIN_ICE)
 	end
-	
+
 	if damage < 3 then
 		Board:DamageSpace(self.TipImage.Building, 1)
 	end
-	
+
 	Board:SetTerrain(self.TipImage.Building, TERRAIN_BUILDING)
-	
+
 	local ret = lmn_SunflowerAtk1.GetSkillEffect(self, p1, p2, ...)
 	ret:AddQueuedDelay(1)
-	
+
 	return ret
 end
 
@@ -287,15 +287,15 @@ tutorialTips:add{
 
 local function onModsLoaded()
 	modApiExt:addPawnTrackedHook(function(_, pawn)
-		
+
 		if isSunFlower(pawn:GetType()) then
 			local loc = pawn:GetSpace()
 			tutorialTips:trigger("lmn_Sunflower", loc)
 		end
 	end)
-	
+
 	modApiExt:addPawnKilledHook(function(m, pawn)
-		
+
 		if pawn:IsEnemy() then
 			local id = "lmn_achv_sunflower"
 			m[id] = m[id] or 0

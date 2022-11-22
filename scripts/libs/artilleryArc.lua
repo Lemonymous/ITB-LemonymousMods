@@ -59,7 +59,7 @@ local isNewestVersion = false
 if isNewestVersion then
 	ArtilleryArc = ArtilleryArc or {}
 	ArtilleryArc.version = VERSION
-	
+
 	local function resetArtilleryHeight()
 		Values.y_velocity = DEFAULT_HEIGHT
 	end

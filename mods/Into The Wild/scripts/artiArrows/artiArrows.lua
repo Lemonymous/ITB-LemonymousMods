@@ -7,7 +7,7 @@ local this = {}
 local function getArrow(dir, color)
 	assert(type(dir) == 'number')
 	assert(dir >= 0 and dir <= 3)
-	
+
 	return "combat/lmn_art_".. color .. dir ..".png"
 end
 
@@ -28,7 +28,7 @@ end
 function this.WhiteDown(dir)
 	return getArrow(dir, "white_down_")
 end
-	
+
 local assets = {
 	{"lmn_art_white_up_0.png", "white_up_flipped.png"},
 	{"lmn_art_white_up_1.png", "white_up_flipped.png"},
@@ -38,7 +38,7 @@ local assets = {
 	{"lmn_art_white_down_1.png", "white_down_flipped.png"},
 	{"lmn_art_white_down_2.png", "white_down.png"},
 	{"lmn_art_white_down_3.png", "white_down.png"},
-	
+
 	{"lmn_art_yellow_up_0.png", "yellow_up_flipped.png"},
 	{"lmn_art_yellow_up_1.png", "yellow_up_flipped.png"},
 	{"lmn_art_yellow_up_2.png", "yellow_up.png"},
@@ -47,7 +47,7 @@ local assets = {
 	{"lmn_art_yellow_down_1.png", "yellow_down_flipped.png"},
 	{"lmn_art_yellow_down_2.png", "yellow_down.png"},
 	{"lmn_art_yellow_down_3.png", "yellow_down.png"},
-	
+
 	{"lmn_art_pink_up_0.png", "pink_up_flipped.png"},
 	{"lmn_art_pink_up_1.png", "pink_up_flipped.png"},
 	{"lmn_art_pink_up_2.png", "pink_up.png"},

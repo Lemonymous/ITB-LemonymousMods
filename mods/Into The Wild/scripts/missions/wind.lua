@@ -36,7 +36,7 @@ end
 
 function Mission_lmn_Wind:ApplyEnvironmentEffect()
 	if Game:GetTurnCount() == 0 then return false end
-	
+
 	return Mission.ApplyEnvironmentEffect(self)
 end
 
@@ -77,32 +77,32 @@ function Env_lmn_Wind:ApplyEffect()
 	local fx = SkillEffect()
 	local dir = 0
 	fx.iOwner = ENV_EFFECT
-	
+
 	fx:AddScript(string.format("Env_lmn_Wind:Voice_Push()"))
-	
+
 	fx:AddSound("/weapons/wind")
 	fx:AddEmitter(Point(3,3),"Emitter_Wind_".. dir)
 	fx:AddEmitter(Point(4,4),"Emitter_Wind_".. dir)
-	
+
 	local size = Board:GetSize()
 	for y = 1, size.y - 1 do
 		local delay
 		for x = 0, size.x - 1 do
 			local loc = Point(x, y)
-			
+
 			if Board:IsPawnSpace(loc) then
 				fx:AddDamage(SpaceDamage(loc, 0, dir))
 				delay = true
 			end
 		end
-		
+
 		if delay then
 			fx:AddDelay(0.2)
 		end
 	end
-	
+
     Board:AddEffect(fx)
-	
+
 	return false -- effects done for this turn.
 end
 

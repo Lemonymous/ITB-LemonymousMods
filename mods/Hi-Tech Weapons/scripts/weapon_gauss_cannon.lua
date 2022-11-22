@@ -41,19 +41,19 @@ local function GetProjectileEnd(p1, p2)
 	assert(type(p1.y) == 'number')
 	assert(type(p2.x) == 'number')
 	assert(type(p2.y) == 'number')
-	
+
 	local dir = GetDirection(p2 - p1)
 	local target = p1
-	
+
 	for k = 1, INT_MAX do
 		curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		target = curr
-		
+
 		if Board:IsBlocked(target, PATH_PROJECTILE) then
 			local pawn = Board:GetPawn(target)
 			if	not pawn						or
@@ -65,29 +65,29 @@ local function GetProjectileEnd(p1, p2)
 			end
 		end
 	end
-	
+
 	return target
 end
 
 function lmn_Gauss_Cannon:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		for k = 1, INT_MAX do
 			local curr = p + DIR_VECTORS[i] * k
-			
+
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			ret:push_back(curr)
-			
+
 			if Board:IsBlocked(curr, PATH_PROJECTILE) then
 				break
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -96,32 +96,32 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 	if not shooter then
 		return
 	end
-	
+
 	local effect = SkillEffect()
 	effect.iOwner = shooter:GetId()
 	effect.piOrigin = p1
-	
+
 	local id = shooter:GetId()
 	local dir = GetDirection(p2 - p1)
 	local target = GetProjectileEnd(p1, p2)
-	
+
 	local pawn = Board:GetPawn(target)
 	local damageLeft = totalDamageRemaining[id]
 	local damage = 1
-	
+
 	----------------------
 	-- damage calculation
 	----------------------
 	if pawn then
 		local health = pawn:GetHealth()
-		
+
 		if health > 0 then
 			if HasCorpse(pawn) then
 				damage = damageLeft
 			else
 				damage = math.min(damageLeft, health)
 			end
-			
+
 			if pawn:IsShield() then
 				damage = 1
 			elseif pawn:IsFrozen() then
@@ -139,7 +139,7 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 	elseif not Board:IsBlocked(target, PATH_PROJECTILE) then
 		damage = damageLeft
 	end
-	
+
 	---------------
 	-- smoke trail
 	---------------
@@ -148,16 +148,16 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 		local curr = p2 + DIR_VECTORS[dir] * k
 		effectBurst.Add(effect, curr, "lmn_Emitter_Railgun_".. dir, dir, isTipImage)
 	end
-	
+
 	---------------------
 	-- damage resolution
 	---------------------
 	local rail = SpaceDamage(target, damage)
 	rail.sSound = "/impact/generic/explosion"
 	effect:AddDamage(rail)
-	
+
 	totalDamageRemaining[id] = totalDamageRemaining[id] - damage
-	
+
 	if totalDamageRemaining[id] > 0 then
 		-------------------
 		-- continue attack
@@ -173,7 +173,7 @@ function lmn_Gauss_Cannon:FireWeapon(p1, p2, isTipImage)
 		--------
 		totalDamageRemaining[id] = nil
 	end
-	
+
 	Board:AddEffect(effect)
 end
 
@@ -184,15 +184,15 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2)
 	if not shooter then
 		return ret
 	end
-	
+
 	local id = shooter:GetId()
 	local dir = GetDirection(p2 - p1)
 	local target = p1
 	totalDamageRemaining[id] = self.Damage
-	
+
 	ret:AddSound("/weapons/modified_cannons")
 	ret:AddSound("/weapons/burst_beam")
-	
+
 	----------------
 	-- damage marks
 	----------------
@@ -201,16 +201,16 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2)
 		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
 		worldConstants:resetSpeed(ret)
-		
+
 		for i, v in ipairs(self.TipMarks) do
 			local tile = v[1]
 			local damage = v[2]
 			local mark = SpaceDamage(tile, damage)
-			
+
 			if tile ~= self.TipProjectileEnd then
 				mark.sImageMark = "combat/lmn_gauss_cannon_preview_".. damage ..".png"
 			end
-				
+
 			effectPreview:addDamage(ret, mark)
 		end
 	else
@@ -218,21 +218,21 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2)
 		local remaining = self.Damage
 		while remaining > 0 do
 			local damage = 1
-			
+
 			-- GetProjectileEnd
 			for k = 1, INT_MAX do
 				local curr = p1 + DIR_VECTORS[dir] * k
 				if not Board:IsValid(curr) then
 					break
 				end
-				
+
 				target = curr
-				
+
 				if vBoard:IsBlocked(curr) then
 					break
 				end
 			end
-			
+
 			if vBoard:IsBlocked(target) then
 				local pawnState = vBoard:GetPawnState(target)
 				if pawnState then
@@ -258,23 +258,23 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2)
 					damage = 1
 				end
 			end
-			
+
 			damage = math.min(remaining, damage)		-- clamp damage
 			remaining = math.max(0, remaining - damage)	-- deduct damage
-			
+
 			-- apply damage to virtual board.
 			vBoard:DamageSpace(SpaceDamage(target, damage))
 		end
-		
+
 		-- preview projectile path.
 		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
 		worldConstants:resetSpeed(ret)
-		
+
 		-- mark tiles with vBoard state.
 		vBoard:MarkDamage(ret, id, "lmn_Gauss_Cannon")
 	end
-	
+
 	---------------------
 	-- damage resolution
 	---------------------
@@ -283,7 +283,7 @@ function lmn_Gauss_Cannon:GetSkillEffect(p1, p2)
 		local p2 = ]].. (p1 + DIR_VECTORS[dir]):GetString() ..[[;
 		_G[']].. self.Self ..[[']:FireWeapon(p1, p2, ]].. tostring(isTipImage) ..[[);
 	]])
-	
+
 	return ret
 end
 

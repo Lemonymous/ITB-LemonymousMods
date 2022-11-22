@@ -43,19 +43,19 @@ local function isAdjacentBuilding(loc)
 			return true
 		end
 	end
-	
+
 	return false
 end
 
 local function countAligned(loc, list)
 	local count = 0
-	
+
 	for _, p in ipairs(list) do
 		if loc.x == p.x or loc.y == p.y then
 			count = count + 1
 		end
 	end
-	
+
 	return count
 end
 
@@ -79,7 +79,7 @@ local function IsEnemy(p1, p2)
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -90,23 +90,23 @@ local function getFirstEnemy(p1, p2, range)
 	local dir = GetDirection(p2 - p1)
 	local target = nil
 	local curr = p1
-	
+
 	for k = 1, range do
 		curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		local pawn = Board:GetPawn(curr)
 		local isBuilding = Board:IsBuilding(curr) and Board:IsPowered(curr)
-		
+
 		if IsEnemy(p1, curr) or isBuilding then
 			target = curr
 			break
 		end
 	end
-	
+
 	return target
 end
 
@@ -114,11 +114,11 @@ local function getCactusLocation(board)
 	-- compatibility with mod loader 2.3.4
 	local oldBoard = Board
 	Board = board
-	
+
 	local location
 	local buildings = {}
 	local validLocs = {}
-	
+
 	local size = Board:GetSize()
 	for x = 0, size.x - 1 do
 		for y = 0, size.y - 1 do
@@ -126,14 +126,14 @@ local function getCactusLocation(board)
 			if isValidLoc(curr) then
 				table.insert(validLocs, curr)
 			end
-			
+
 			if utils.IsBuilding(curr) then
 			--if Board:IsBuilding(curr) then
 				table.insert(buildings, curr)
 			end
 		end
 	end
-	
+
 	for i = #validLocs, 1, -1 do
 		local aligned = countAligned(validLocs[i], buildings)
 		if aligned == 0 then
@@ -142,15 +142,15 @@ local function getCactusLocation(board)
 			validLocs[i] = {loc = validLocs[i], aligned = aligned}
 		end
 	end
-	
+
 	if #validLocs > 0 then
 		utils.shuffle(validLocs)
 		table.sort(validLocs, function(a,b) return a.aligned < b.aligned end)
-		
+
 		rng = math.random(1, math.min(4, #validLocs))
 		location = validLocs[rng].loc
 	end
-	
+
 	Board = oldBoard
 	return location
 end
@@ -169,7 +169,7 @@ utils.appendAssets{
 	{"lmn_cactus1_emerge.png", "cactus1e.png"},
 	{"lmn_cactus1_death.png", "cactus1d.png"},
 	{"lmn_cactus1w.png", "cactus1.png"},
-	
+
 	{"lmn_cactus2.png", "cactus2.png"},
 	{"lmn_cactus2a.png", "cactus2a.png"},
 	{"lmn_cactus2_emerge.png", "cactus2e.png"},
@@ -293,21 +293,21 @@ local isTargetScore
 function lmn_CactusAtk1:GetTargetScore(p1, p2)
 	local mission = GetCurrentMission()
 	local shooter = Board:GetPawn(p1)
-	
+
 	if shooter and mission then
 		 -- clear priority lists -- and hashed rng.
 		local id = shooter:GetId()
 		mission.lmn_CactusPriority = mission.lmn_CactusPriority or {}
 		mission.lmn_CactusPriority[id] = {}
-		
+
 		--mission.lmn_CactusRng = mission.lmn_CactusRng or {}
 		--mission.lmn_CactusRng[id] = {}
 	end
-	
+
 	isTargetScore = true
 	local ret = Skill.GetTargetScore(self, p1, p2)
 	isTargetScore = false
-	
+
 	return 10
 end
 
@@ -339,39 +339,39 @@ function lmn_CactusAtk1:GetSkillEffect(p1, p2)
 	local projectile = ""
 	local shooter = Board:GetPawn(p1)
 	local damage = SpaceDamage(p1)
-	
+
 	if not shooter then
 		ret:AddQueuedProjectile(damage, "")
 		return ret
 	end
-	
+
 	local id = shooter:GetId()
-	
+
 	if mission then
 		-- retrieve priority list.
 		mission.lmn_CactusPriority = mission.lmn_CactusPriority or {}
 		mission.lmn_CactusPriority[id] = mission.lmn_CactusPriority[id] or {}
 		priority = mission.lmn_CactusPriority[id]
-		
+
 		--mission.lmn_CactusRng = mission.lmn_CactusRng or {}
 		--mission.lmn_CactusRng[id] = mission.lmn_CactusRng[id] or {}
 		--rng = mission.lmn_CactusRng[id]
 	end
-	
+
 	for dir = DIR_START, DIR_END do
 		local curr = p1 + DIR_VECTORS[dir]
-		
+
 		if Board:IsValid(curr) then
 			local target = GetProjectileEnd(p1, curr)
 			local dist = p1:Manhattan(target)
 			local closestEnemy = getFirstEnemy(p1, curr)
 			local isBuilding = Board:IsBuilding(target) and Board:IsPowered(target)
-			
+
 			if IsEnemy(p1, target) or isBuilding then
 			else
 				dist = closestEnemy and p1:Manhattan(closestEnemy) or nil
 			end
-			
+
 			table.insert(targets, {
 				id = p2idx(target),
 				loc = target,
@@ -381,53 +381,53 @@ function lmn_CactusAtk1:GetSkillEffect(p1, p2)
 			})
 		end
 	end
-	
+
 	-- filter out directions without a target.
 	for i = #targets, 1, -1 do
 		if not targets[i].dist then
 			table.remove(targets, i)
 		end
 	end
-	
+
 	-- sort list from closest to furthest targets.
 	-- add bias to previous priority targets at each distance.
 	table.sort(targets, function(a,b)
 		if a.dist == b.dist then
-			
+
 			if priority[a.dist] == a.dir then return true end	-- a is prioritized.
 			if priority[a.dist] == b.dir then return false end	-- b is prioritized.
-			
+
 			-- need fixed rng in sort.
 			rng[a.id] = rng[a.id] or math.random()
 			rng[b.id] = rng[b.id] or math.random()
-			
+
 			return rng[a.id] < rng[b.id]
 		end
-		
+
 		return a.dist < b.dist
 	end)
-	
-	
+
+
 	-- attack the closest highest priority target, and mark it as such. (add to priority queue)
 	if #targets > 0 then
 		local result = targets[1]
-		
+
 		priority[result.dist] = result.dir
-		
+
 		damage.loc = result.loc
 		damage.iDamage = self.Damage
 		damage.sAnimation = self.Anim_Impact
 		damage.sSound = self.Sound_Impact
 		projectile = self.Projectile
-		
+
 		ret:AddQueuedSound(self.Sound_Launch)
 	else
 		damage.bHide = true
 		ret:AddQueuedScript(string.format("Board:AddAlert(%s, 'NO TARGET')", p1:GetString()))
 	end
-	
+
 	ret:AddQueuedProjectile(damage, projectile)
-	
+
 	return ret
 end
 
@@ -448,35 +448,35 @@ function lmn_CactusAtk1_Tip:GetSkillEffect(p1, p2)
 	local enemy = self.TipImage.Enemy
 	local dest = Point(unit.x, enemy.y)
 	local building = self.TipImage.Building
-	
+
 	if p2 == unit then
-		
+
 		local damage = SpaceDamage(building, self.Damage)
 		local repair = SpaceDamage(building)
 		damage.sScript = "Board:ClearSpace(".. building:GetString() ..")"
 		repair.sScript = "Board:SetTerrain(".. building:GetString() ..", TERRAIN_BUILDING)"
-		
+
 		-- move taunter into place.
 		ret:AddDelay(0.67)
 		ret:AddScript(string.format("Board:GetPawn(%s):Move(%s)", enemy:GetString(), dest:GetString()))
 		ret:AddDelay(0.08)
-		
+
 		-- increase speed so fake projectile hits instantly.
 		worldConstants:queuedSetSpeed(ret, 1000)
 		ret:AddQueuedProjectile(damage, "", NO_DELAY)
 		ret:AddQueuedProjectile(repair, "", NO_DELAY)
 		worldConstants:queuedResetSpeed(ret)
-		
+
 		-- display redirected projectile arrow.
 		ret:AddScript(string.format("Board:AddAnimation(%s, 'lmn_Cactus_Damage_Close_'.. %s, ANIM_NO_DELAY)", dest:GetString(), self.Damage))
-		
+
 	else
 		-- second attack on taunting enemy.
 		local d = SpaceDamage(dest, self.Damage)
 		d.sAnimation = self.Anim_Impact
 		ret:AddDamage(d)
 	end
-	
+
 	return ret
 end
 
@@ -486,7 +486,7 @@ lmn_CactusAtk2_Tip.GetSkillEffect = lmn_CactusAtk1_Tip.GetSkillEffect
 local function Achievement_Start()
 	local mission = GetCurrentMission()
 	if not mission then return end
-	
+
 	-- if false, stay false, otherwise set true.
 	mission.lmn_achv_cactus = mission.lmn_achv_cactus ~= false
 end
@@ -497,9 +497,9 @@ local oldSpawnPawn
 -- custom SpawnPawn function to relocate Cactus.
 local spawnPawn = function(self, pawn, ...)
 	if not callSelf and pawn and pawn.GetType and isCactus(pawn:GetType()) then -- TODO: make better
-		
+
 		Achievement_Start()
-		
+
 		local loc = getCactusLocation(self)
 		if loc then
 			callSelf = true
@@ -570,15 +570,15 @@ local function onModsLoaded()
 	local function Achievement_Fail(mission)
 		mission = mission or GetCurrentMission()
 		if not mission then return end
-		
+
 		mission.lmn_achv_cactus = false
 	end
-	
+
 	modApiExt:addPawnTrackedHook(function(mission, pawn)
-		
+
 		if isCactus(pawn:GetType()) then
 			Achievement_Fail(mission)
-			
+
 			tutorialTips:trigger("cactus", pawn:GetSpace())
 		end
 	end)

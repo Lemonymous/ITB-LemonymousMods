@@ -43,7 +43,7 @@ return {
         Shambala,
         Country Roads
 	]],
-	
+
 	-- Game States
 	--Gamestart = {},
 	--FTL_Found = {},
@@ -69,14 +69,14 @@ return {
 	Gameover_Response = {
 		"This... This is our fault. The experiment got out of hand. We couldn't contain it. And now the entire world will pay the price. If you can go back in time, this is your chance, commander. Adieu, mon ami.",
 		"It is too late for us. Adieu, Commandant.",
-		"Perhaps in another world, we will see the sun once more."	
+		"Perhaps in another world, we will see the sun once more."
 	},
-	
+
 	-- UI Barks
 	--Upgrade_PowerWeapon = {},
 	--Upgrade_NoWeapon = {},
 	--Upgrade_PowerGeneric = {},
-	
+
 	-- Mid-Battle
 	MissionStart = {
 		"Please. Prioritize protecting my people... If possible...",
@@ -99,10 +99,10 @@ return {
 	MissionEnd_Retreat = {
 		"They retreated faster than one would have expected.",
 		"Some of the Vek have escaped their imminent deaths...",
-		"You have frightened them off! That will have to do!",	
+		"You have frightened them off! That will have to do!",
 		"Yes, flee!",
 	},
-	
+
 	PodIncoming = {
 		"Qu'est c'est qui s'est passe?... Commander, our sensors have indicated that a pod has crashed near your location.",
 		"Is this one of the time pods you have told us about?",
@@ -149,7 +149,7 @@ return {
 		"Watch yourself around these pits, #squad.",
 		"Gravity has claimed another.",
 	},
-	Vek_Smoke = {	
+	Vek_Smoke = {
 		"Basic survival instincts. They avoid smoke... And fire.",
 		"Foolish monster, blinded and choking.",
 		"Make sure you avoid the same fate, #squad.",
@@ -172,7 +172,7 @@ return {
 		"Turn them against each other!",
 		"Foolish creatures cannot stop themselves!",
 	},
-	
+
 	--DoubleVekKill_Self = {},
 	DoubleVekKill_Obs = {
 		"Extraordinaire!",
@@ -186,11 +186,11 @@ return {
 		"Turn them against each other!",
 		"Well manipulated, commander!",
 	},
-	
+
 	--MntDestroyed_Self = {},
 	--MntDestroyed_Obs = {},
 	--MntDestroyed_Vek = {},
-	
+
 	PowerCritical = {
 		"Commander! S'il vous plait... Please, if the grid falls, we're done for! Defend it!",
 		"Please, be careful - we're trying to hold on...",
@@ -214,7 +214,7 @@ return {
 		"Commander! Don't tempt fate!",
 		"Good heavens, my poor heart is in my throat!",
 	},
-	
+
 	-- Generic Missions
 	Mission_Generic_Briefing = {
 		"My people lived through a lot... We tenaciously adapted with the help of science. The Vek proved to be our one weakness. Please, #squad, help us survive this tribulation as well.",
@@ -232,12 +232,12 @@ return {
 		"We shouldn't rely only on your help to fight the Vek, #squad... But we have no other choice.",
 		"I know you tried hard, but sometimes having an unfavorable outcome proves to be just inevitable.",
 	},
-	
+
 	-- Unsure if these should be filled in or not.
 	--Mission_Survive_Briefing = {},
 	--Mission_Survive_Success = {},
 	--Mission_Survive_Failure = {},
-	
+
 	-- >=3 grid damage during a mission.
 	Mission_ExtremeDamage = {
 		"So many casualties! We value our people above everything. If you have to sacrifice an objective to save a life, I would prefer that.",
@@ -251,7 +251,7 @@ return {
 		"They will be remembered for their sacrifice, always.",
 		"They will live on in our memories!",
 	},
-	
+
 	-- Generic Objectives
 	-- Lose less than x mech health
 	Mission_MechHealth_Briefing = {
@@ -269,7 +269,7 @@ return {
 		"We will repair your mechs, but I cannot help but feel that we could have put these resources to better use...",
 		"Do not worry, we will aid in the repairs..."
 	},
-	
+
 	-- Lose less than x grid
 	Mission_GridHealth_Briefing = {
 		"My father... He always treated people as expendable human resources. I don't agree with his views. Please do your best to save my people.",
@@ -285,7 +285,7 @@ return {
 		"A lot of innocent lives will be buried under the rubble. But we don't have time to mourn the dead. We must go on.",
 		"My heart is filled with grief, but we must all soldier on. I am sure you've done your best...",
 	},
-	
+
 	-- Kill x enemies
 	Mission_KillAll_Briefing = {
 		"The Vek retreat when the battle goes against them, then regroup and attack again somewhere else. Wipe them out for good this time!",
@@ -302,7 +302,7 @@ return {
 		"Ah, they have escaped your wrath. Dommage.",
 		"...Perhaps I expect too much. I beg your pardon...",
 	},
-	
+
 	-- Block x spawns
 	Mission_Block_Briefing = {
 		"We're studying a fragile ecosystem in this region. If too many Vek break through, the ecosystem will be devastated",
@@ -319,7 +319,7 @@ return {
 		"This will play havoc with our studies. Ah, it cannot be helped...",
 		"This ecosystem will collapse, I am afraid. What a shame...",
 	},
-	
+
 	Mission_BossGeneric_Briefing = {
 		"Our bioscans report an unknown Vek approaching our tower. We need your help, #squad!",
 		"It cannot be... what is that thing!?",

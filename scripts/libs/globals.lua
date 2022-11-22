@@ -34,7 +34,7 @@ if isNewestVersion then
 
 	function globals:new()
 		local index = self.free[#self.free]
-		
+
 		if index ~= nil then
 			table.remove(self.free, #self.free)
 			self[index] = nil

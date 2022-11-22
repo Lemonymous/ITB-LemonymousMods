@@ -37,25 +37,25 @@ local pilot_template = {
 
 function mod:metadata()
 	local modcontent = modApi:getCurrentModcontentPath()
-	
+
     sdlext.config(modcontent, function(obj)
 		if not obj.modOptions then return end
 		local entry = obj.modOptions[mod.id]
 		if not entry then return end
-		
+
 		-- version 2.0.0 changed options substantially.
 		-- Resetting options if lower version detected.
 		if modApi:isVersion("2", entry.version) then
 			return
 		end
-		
+
 		entry.options = {}
     end)
-	
+
 	for _, v in pairs(choices) do
 		modApi:addGenerationOption(v.id, v.title, v.text, v.option or { enabled == true })
 	end
-	
+
 	-- add pilots in metadata to avoid error message if mod is not enabled.
 	-- it might be preferrable to remove traces of pilots from profile,
 	-- but that could prove difficult.
@@ -75,7 +75,7 @@ function mod:init()
 	for libId, lib in pairs(mod_loader.mods.lmn_mods.libs) do
 		self.libs[libId] = lib
 	end
-	
+
 	for _, name in ipairs{
 		"tips",
 		"enemies",
@@ -99,38 +99,38 @@ function mod:init()
 	} do
 		require(self.scriptPath .. name)
 	end
-	
+
 	-- modApi:addModsInitializedHook(function()
 		-- local oldGetStartingSquad = getStartingSquad
 		-- function getStartingSquad(choice, ...)
 			-- local result = oldGetStartingSquad(choice, ...)
-			
+
 			-- if choice == 0 then
 				-- local copy = {}
 				-- for i, v in pairs(result) do
 					-- copy[#copy+1] = v
 				-- end
-				
+
 				-- for _, name in ipairs{"swarmer", "roach", "spitter", "wyrm", "crusher"} do
 					-- local Name = name:gsub("^.", string.upper) -- capitalize first letter
-					
+
 					-- -- add technomechs at the end to
 					-- -- enable them as random and custom mechs.
 					-- if modApi.achievements:isComplete(self.id, name) then
 						-- table.insert(copy, 'lmn_'.. Name)
 					-- end
 				-- end
-				
+
 				-- return copy
 			-- end
-			
+
 			-- return result
 		-- end
 	-- end)
 end
 
 function mod:load(options, version)
-	
+
 	for _, name in ipairs{
 		"enemy/swarmer",
 		"enemy/roach",

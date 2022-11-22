@@ -59,12 +59,12 @@ trait:add{
 
 local function ExplosiveEffect(self, p)
 	local ret = SkillEffect()
-	
+
 	local damage = SpaceDamage(p)
 	damage.sSound = self.sSound
 	damage.sAnimation = "explo_fire1"
 	ret:AddDamage(damage)
-	
+
 	for dir = DIR_START, DIR_END do
 		local curr = p + DIR_VECTORS[dir]
 		if Board:IsValid(curr) then
@@ -74,7 +74,7 @@ local function ExplosiveEffect(self, p)
 			ret:AddDamage(damage)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -100,7 +100,7 @@ AddPawnName("lmn_Blobberling1")
 
 function lmn_Blobberling1:GetDeathEffect(p)
 	local ret = self:ExplosiveEffect(p)
-	
+
 	ret:AddDelay(0.1)
 	ret:AddScript(string.format([[
 		local p, pawnTypes = %s, %s;
@@ -109,7 +109,7 @@ function lmn_Blobberling1:GetDeathEffect(p)
 			Board:RemovePawn(pawn);
 		end;
 	]], p:GetString(), save_table(pawnTypes)))
-	
+
 	return ret
 end
 
@@ -160,27 +160,27 @@ lmn_BlobberlingAtk1.GetTargetScore = Skill.GetTargetScore
 
 function lmn_BlobberlingAtk1:GetSkillEffect(p1, p2)
 	local ret = self:ExplosiveEffect(p1)
-	
+
 	ret.effect:index(1).iDamage = DAMAGE_DEATH
 	ret.effect:index(1).bHide = true
 	ret.q_effect = ret.effect
 	ret.effect = SkillEffect().effect
-	
+
 	-- dummy damage to mark the space.
 	ret:AddQueuedDamage(SpaceDamage(p1))
-	
+
 	ret:AddScript(string.format([[
 		local tips = LApi.library:fetch("tutorialTips", "lmn_bots_and_bugs");
 		tips:trigger("Blobberling_Atk", %s);
 	]], p1:GetString()))
-	
+
 	local pawn = Board:GetPawn(p1)
 	if not pawn then
 		return ret
 	end
-	
+
 	local pawnId = pawn:GetId()
-	
+
 	ret:AddQueuedDelay(0.1)
 	ret:AddQueuedScript(string.format([[
 		local pawn = Board:GetPawn(%s);
@@ -188,7 +188,7 @@ function lmn_BlobberlingAtk1:GetSkillEffect(p1, p2)
 			Board:RemovePawn(pawn);
 		end
 	]], pawnId))
-	
+
 	return ret
 end
 
@@ -210,12 +210,12 @@ lmn_BlobberlingAtk1_Tip = lmn_BlobberlingAtk1:new{}
 
 function lmn_BlobberlingAtk1_Tip:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local damage = SpaceDamage(p1, DAMAGE_DEATH)
 	damage.sSound = self.sSound
 	damage.sAnimation = "explo_fire1"
 	ret:AddQueuedDamage(damage)
-	
+
 	for dir = DIR_START, DIR_END do
 		local curr = p1 + DIR_VECTORS[dir]
 		if Board:IsValid(curr) then
@@ -225,7 +225,7 @@ function lmn_BlobberlingAtk1_Tip:GetSkillEffect(p1, p2)
 			ret:AddQueuedDamage(damage)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -241,9 +241,9 @@ function this:load()
 	-- to enable streamlined additional preview to queued attacks.
 	modApi:addMissionUpdateHook(function(m)
 		if m == Mission_Test then return end
-		
+
 		local pawns = extract_table(Board:GetPawns(TEAM_ANY))
-		
+
 		for _, pawnId in ipairs(pawns) do
 			local pawn = Board:GetPawn(pawnId)
 			local loc = pawn:GetSpace()
@@ -252,7 +252,7 @@ function this:load()
 			local armedWeapon = selected and selected:GetArmedWeaponId() or 0
 			local isWeaponArmed = armedWeapon > 0
 			local hasFocus = Board:IsHighlighted(loc) or pawn:IsSelected()
-			
+
 			if
 				isBlobberling(pawn)		and
 				queuedAttack			and
@@ -262,20 +262,20 @@ function this:load()
 				loc == queuedAttack.piOrigin
 			then
 				local alpha = .25
-				
+
 				if not hasFocus then
 					local d = SpaceDamage(queuedAttack.piOrigin)
 					d.sImageMark = "combat/icons/lmn_blobberling_death.png"
 					Board:MarkSpaceDamage(d)
-					
+
 					alpha = .75
 				end
-				
+
 				Board:MarkSpaceSimpleColor(queuedAttack.piOrigin, GL_Color(255, 66, 66, alpha))
 			end
 		end
 	end)
-	
+
 	modApiExt:addPawnTrackedHook(function(m, pawn)
 		if isBlobberling(pawn) then
 			tips:trigger("Blobberling", pawn:GetSpace())

@@ -51,20 +51,20 @@ lmn_DeploySkill_Copter = DeploySkill_Tank:new{
 
 function lmn_DeploySkill_Copter:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for dir = DIR_START, DIR_END do
 		for i = 2, self.ArtillerySize do
 			local curr = Point(p + DIR_VECTORS[dir] * i)
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			if not Board:IsBlocked(curr, PATH_FLYER) then
 				ret:push_back(curr)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -138,6 +138,6 @@ function lmn_Deploy_CopterAtk:GetSkillEffect(p1, p2)
 		damage.fDelay = 0.15
 		ret:AddDamage(damage)
 	end
-	
+
 	return ret
 end

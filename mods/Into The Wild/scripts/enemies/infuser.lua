@@ -29,7 +29,7 @@ local function isValidTarget(loc)
 	local mission = GetCurrentMission()
 	if not mission then return false end
 	mission.lmn_infusedPawns = mission.lmn_infusedPawns or {}
-	
+
 	local pawn = Board:GetPawn(loc)
 	if pawn and pawn:GetTeam() == TEAM_ENEMY then
 		local pawnId = pawn:GetId()
@@ -37,7 +37,7 @@ local function isValidTarget(loc)
 			return GetEvolution(pawn:GetType())
 		end
 	end
-	
+
 	return false
 end
 
@@ -166,24 +166,24 @@ lmn_InfuserAtk1 = Skill:new{
 
 function lmn_InfuserAtk1:GetTargetScore(p1, p2)
 	--local score = Skill.GetTargetScore(self, p1, p2)
-	
+
 	if isValidTarget(p2) then
 		return 5
 	end
-	
+
 	return -10
 end
 
 function lmn_InfuserAtk1:Infuse(p2)
 	local mission = GetCurrentMission()
 	local pawn = Board:GetPawn(p2)
-	
+
 	if not mission then return end
 	if not pawn then return end
-	
+
 	local pawnId = pawn:GetId()
 	customEmitter:Add(nil, pawnId, "lmn_Infuser_Petal_Evolving")--, {"Evolving", "This unit will evolve to a stronger unit next turn."})
-	
+
 	mission.lmn_infusedPawns = mission.lmn_infusedPawns or {}
 	mission.lmn_infusedPawns[pawnId] = Game:GetTurnCount()
 end
@@ -193,7 +193,7 @@ function lmn_InfuserAtk1:Evolve(pawnId)
 	local pawnType = pawn:GetType()
 	local evolutionType = GetEvolution(pawnType)
 	if not evolutionType then return end
-	
+
 	local fx = SkillEffect()
 	local loc = pawn:GetSpace()
 	local locIsValid = Board:IsValid(loc)
@@ -203,29 +203,29 @@ function lmn_InfuserAtk1:Evolve(pawnId)
 		isFire = pawn:IsFire(),
 		isShield = pawn:IsShield()
 	}
-	
+
 	if locIsValid then
 		fx:AddAnimation(loc, self.Anim_Impact)
 		fx:AddScript(string.format("Board:AddAlert(%s, 'EVOLUTION COMPLETE')", loc:GetString()))
 	end
-	
+
 	fx:AddSound(self.Sound_Impact)
 	fx:AddDelay(.5)
 	fx:AddSound("ui/general/level_up")
-	
+
 	if locIsValid then
 		fx:AddScript(string.format("Board:Ping(%s, GL_Color(255,255,255))", loc:GetString()))
 	end
-	
+
 	-- swap pawns and update hp and status effects.
 	fx:AddScript(string.format("Board:RemovePawn(Board:GetPawn(%s))", pawnId))
 	fx:AddScript(string.format([[
 		local evolutionType, loc, status = '%s', %s, %s;
-		
+
 		local pawn = PAWN_FACTORY:CreatePawn(evolutionType);
 		Board:AddPawn(pawn);
 		pawn:SetSpace(loc);
-		
+
 		if status.damage > 0 then
 			pawn:SetHealth(_G[evolutionType].Health - status.damage);
 		end
@@ -239,23 +239,23 @@ function lmn_InfuserAtk1:Evolve(pawnId)
 			pawn:SetShield(true);
 		end
 	]], evolutionType, loc:GetString(), save_table(status)))
-	
+
 	Board:AddEffect(fx)
 end
 
 function lmn_InfuserAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-	
-	
+
+
 	ret:AddSound("enemy/shared/moved")
 	ret:AddEmitter(p2, "lmn_Infuser_Petal_Spray_".. dir)
 	ret:AddDelay(0.5)
-	
+
 	if not Board:IsTipImage() then
 		ret:AddScript(string.format("lmn_InfuserAtk1:Infuse(%s)", p2:GetString()))
 	end
-	
+
 	return ret
 end
 
@@ -263,26 +263,26 @@ lmn_InfuserAtk1_Tip = lmn_InfuserAtk1:new{}
 function lmn_InfuserAtk1_Tip:GetSkillEffect(p1, p2)
 	local ret = lmn_InfuserAtk1.GetSkillEffect(self, p1, p2)
 	local evolutionType
-	
+
 	local pawn = Board:GetPawn(p2)
 	if pawn then
 		evolutionType = GetEvolution(pawn:GetType())
 	end
-	
+
 	ret:AddEmitter(p2, "lmn_Infuser_Petal_Evolving_Tip")
 	ret:AddDelay(3)
 	ret:AddAnimation(p2, self.Anim_Impact)
 	ret:AddScript(string.format("Board:AddAlert(%s, 'EVOLUTION COMPLETE')", p2:GetString()))
 	ret:AddDelay(.5)
-	
+
 	if evolutionType then
 		-- swap pawns.
 		ret:AddScript(string.format("Board:RemovePawn(%s)", p2:GetString()))
 		ret:AddScript(string.format("Board:AddPawn('%s', %s)", evolutionType, p2:GetString()))
 	end
-	
+
 	ret:AddDelay(2)
-	
+
 	return ret
 end
 
@@ -315,18 +315,18 @@ tutorialTips:add{
 
 modApi.events.onNextTurn:subscribe(function(mission)
 	mission.lmn_infusedPawns = mission.lmn_infusedPawns or {}
-	
+
 	local rem = {}
 	local isVekTurn = teamTurn:isVekTurn()
 	local turnCount = Game:GetTurnCount()
-	
+
 	for pawnId, evolveTurn in pairs(mission.lmn_infusedPawns) do
 		local pawn = Board:GetPawn(pawnId)
-		
+
 		if pawn then
 			local loc = pawn:GetSpace()
 			local canEvolve = evolveTurn < (turnCount - (isVekTurn and 0 or 1))
-			
+
 			if canEvolve and not pawn:IsFrozen() and not pawn:IsDead() then
 				lmn_InfuserAtk1:Evolve(pawnId)
 			end
@@ -334,7 +334,7 @@ modApi.events.onNextTurn:subscribe(function(mission)
 			rem[#rem+1] = pawnId
 		end
 	end
-	
+
 	for _, pawnId in ipairs(rem) do
 		mission.lmn_infusedPawns[pawnId] = nil
 	end
@@ -342,11 +342,11 @@ end)
 
 local function onModsLoaded()
 	modApiExt:addPawnTrackedHook(function(_, pawn)
-		
+
 		if pawn:GetType() == "lmn_Infuser1" then
 			tutorialTips:trigger("infuser", pawn:GetSpace())
 		end
 	end)
 end
-	
+
 modApi.events.onModsLoaded:subscribe(onModsLoaded)

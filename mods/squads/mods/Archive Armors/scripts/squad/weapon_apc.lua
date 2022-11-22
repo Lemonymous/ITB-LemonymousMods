@@ -34,17 +34,17 @@ lmn_SmokeLauncher = Skill:new{
 local function iterateDiamond(center, size, cond, action)
 	assert(type(cond) == "function")
 	assert(type(action) == "function")
-	
+
 	local corner = center - Point(size, size)
 	local p = Point(corner)
-	
+
 	for i = 0, ((size*2+1)*(size*2+1)) do
 		local diff = center - p
 		local dist = math.abs(diff.x) + math.abs(diff.y)
-		
+
 		if	dist <= size	and
 			cond(p)			then
-			
+
 			action(p)
 		end
 		p = p + VEC_RIGHT
@@ -58,10 +58,10 @@ end
 local function iterateSquare(center, size, cond, action)
 	assert(type(cond) == "function")
 	assert(type(action) == "function")
-	
+
 	local corner = center - Point(size, size)
 	local p = Point(corner)
-	
+
 	for i = 1, ((size*2+1)*(size*2+1)) do
 		if cond(p) then
 			action(p)
@@ -82,7 +82,7 @@ local targetInfo ={
 
 function lmn_SmokeLauncher:GetTargetArea(point)
 	local ret = PointList()
-	
+
 	if self.Diagonal then
 		iterateSquare(
 			point,
@@ -108,42 +108,42 @@ function lmn_SmokeLauncher:GetTargetArea(point)
 			end
 		)
 	end
-	
+
 	for dir = DIR_START, DIR_END do
 		for i = 2, self.ArtillerySize do
 			local curr = Point(point + DIR_VECTORS[dir] * i)
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			if not self.OnlyEmpty or not Board:IsBlocked(curr, PATH_GROUND) then
 				ret:push_back(curr)
 			end
 
 		end
 	end
-	
+
 	return ret
 end
 
 function lmn_SmokeLauncher:ReplacePylon()
 	local mission = GetCurrentMission()
 	if not mission then return end
-	
+
 	local voiceId = "MissionFinal_Pylon_Smoked"
-	
+
 	if not mission[mod.id .."_smokeEvac"] then
 		mission[mod.id .."_smokeEvac"] = true
 		voiceId = "MissionFinal_Pylon_Smoked_First"
 	end
-	
+
 	local deployment = {}
 	local size = Board:GetSize()
 	for x = 0, size.x - 1 do
 		for y = 0, size.y -1 do
 			local tile = Point(x, y)
 			local terrain = Board:GetTerrain(tile)
-			
+
 			if
 				not Board:IsPawnSpace(tile)				and
 				not Board:IsBlocked(tile, PATH_GROUND)	and
@@ -159,23 +159,23 @@ function lmn_SmokeLauncher:ReplacePylon()
 			end
 		end
 	end
-	
+
 	if #deployment > 0 then
 		TriggerVoiceEvent(VoiceEvent(voiceId, PAWN_ID_CEO, 0))
-		
+
 		local effect = SkillEffect()
 		local building = SpaceDamage()
 		building.iTerrain = TERRAIN_BUILDING
 		--effect:AddVoice(voiceId, PAWN_ID_CEO)
 		effect:AddDelay(1.5)
-		
+
 		building.loc = random_removal(deployment)
 		if Board:IsPawnSpace(building.loc) then
 			building.iDamage = DAMAGE_DEATH
 		end
 		effect:AddDropper(building,"combat/tiles_grass/building_fall.png")
 		effect:AddDropper(building, "combat/tiles_grass/building_fall.png")
-		
+
 		Board:AddEffect(effect)
 	end
 end
@@ -208,20 +208,20 @@ function lmn_SmokeLauncher:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	--ret:AddBounce(p1, 2)
-	
+
 	targetInfo.pawn = Board:GetPawn(p1)
 	targetInfo.weaponId = targetInfo.pawn:GetArmedWeaponId()
 	targetInfo.target = p2
-	
+
 	local damage = SpaceDamage(p2, self.Damage)
 	damage.sAnimation = ""
 	damage.iSmoke = 1
-	
+
 	local evac
-	
+
 	if
 		Board:IsBuilding(p2) and
-		self.Evac	
+		self.Evac
 	then
 		if
 			not Board:IsUniqueBuilding(p2) and
@@ -234,9 +234,9 @@ function lmn_SmokeLauncher:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			damage.sImageMark = "combat/icons/aa_people_none.png"
 		end
 	end
-	
+
 	ret:AddArtillery(damage, self.UpShot)
-	
+
 	if evac then
 		ret:AddDelay(0.14)
 		ret:AddBounce(p2, -2)
@@ -246,7 +246,7 @@ function lmn_SmokeLauncher:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 			Board:Ping(p, GL_Color(255,255,255,1));
 			Game:TriggerSound("/ui/battle/population_points");
 		]])
-		
+
 		if
 			not IsTestMechScenario() and
 			not isTipImage
@@ -262,14 +262,14 @@ function lmn_SmokeLauncher:GetSkillEffect(p1, p2, parentSkill, isTipImage)
 					Board:Ping(p, GL_Color(255,255,255,1));
 					Game:TriggerSound("/ui/map/flyin_rewards");
 				]])
-				
+
 				ret:AddScript("lmn_SmokeLauncher:EvacVoice(".. Board:GetPawn(p1):GetId() ..")")
 			end
 		end
 	else
 		ret:AddBounce(p2, 2)
 	end
-	
+
 	return ret
 end
 
@@ -332,19 +332,19 @@ lmn_SmokeLauncher_Tip_AB = lmn_SmokeLauncher_AB:new{}
 
 function lmn_SmokeLauncher_Tip:GetSkillEffect(p1, p2, parentSkill)
 	local ret = SkillEffect()
-	
+
 	-- (re)populate building if on first target.
 	if p2 == self.TipImage.Target then
 		Board:SetPopulated(true, self.TipImage.Target)
 	end
-	
+
 	local ret = lmn_SmokeLauncher.GetSkillEffect(self, p1, p2, parentSkill, true)
-	
+
 	-- add delay if _not_ on first target.
 	if p2 ~= self.TipImage.Target then
 		ret:AddDelay(2)
 	end
-	
+
 	return ret
 end
 
@@ -358,7 +358,7 @@ local function HasSmokeLauncher()
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -373,7 +373,7 @@ function TriggerVoiceEvent(event, ...)
 		oldTriggerVoiceEvent(event, ...)
 		return
 	end
-	
+
 	oldTriggerVoiceEvent(event, ...)
 end
 
@@ -402,11 +402,11 @@ modApi.events.onMissionUpdate:subscribe(function()
 		targetInfo.target == highlighted							and
 		targetInfo.weaponId > 0										and
 		targetInfo.pawn:GetArmedWeaponId() == targetInfo.weaponId	and
-		
-		Board:IsBuilding(targetInfo.target)							and					
+
+		Board:IsBuilding(targetInfo.target)							and
 		Board:IsPowered(targetInfo.target)							and
 		not Board:IsUniqueBuilding(targetInfo.target)				then
-		
+
 		Board:MarkFlashing(targetInfo.target, true)
 	end
 end)

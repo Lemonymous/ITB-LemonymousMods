@@ -20,7 +20,7 @@ local function countAlive(list)
 			error("variable of type ".. type(loc) .." is not a Point")
 		end
 	end
-	
+
 	return ret
 end
 

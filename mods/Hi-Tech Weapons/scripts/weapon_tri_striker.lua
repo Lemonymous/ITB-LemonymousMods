@@ -34,16 +34,16 @@ lmn_Tri_Striker = Skill:new{
 function lmn_Tri_Striker:GetTargetArea(p1)
 	local ret = PointList()
 	ret:push_back(p1) -- add shooter's tile in order for GetSkillEffect to trigger on it.
-	
+
 	local tiles = {p1}
-	
+
 	for dir = DIR_START, DIR_END do
 		local curr = p1 + DIR_VECTORS[dir]
 		if Board:IsValid(curr) then
 			table.insert(tiles, curr)
 		end
 	end
-	
+
 	for _, tile in ipairs(tiles) do
 		local color = GL_Color(72,106,100)
 		if tile == p1 then
@@ -52,7 +52,7 @@ function lmn_Tri_Striker:GetTargetArea(p1)
 
 		previewer:AddImage(tile, "combat/lmn_square.png", color)
 	end
-	
+
 	local size = Board:GetSize()
 	for x = 0, size.x - 1 do						-- grab every tile on the board.
 		for y = 0, size.y - 1 do
@@ -62,7 +62,7 @@ function lmn_Tri_Striker:GetTargetArea(p1)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -81,10 +81,10 @@ local function GetPath(p1, p2)
 	assert(type(p2) == type(p1))
 	assert(Board:IsValid(p1))
 	assert(Board:IsValid(p2))
-	
+
 	local path = {p1}
 	local currDist = p1:Manhattan(p2)
-	
+
 	while path[#path] ~= p2 do
 		for dir = DIR_START, DIR_END do
 			local p = path[#path] + DIR_VECTORS[dir]
@@ -95,11 +95,11 @@ local function GetPath(p1, p2)
 			end
 		end
 	end
-	
+
 	if #path == 1 then -- mimicing Board:GetPath
 		return {}
 	end
-	
+
 	return path
 end
 
@@ -110,11 +110,11 @@ local function TrimPath(path, first, last)
 	assert(last >= 1)
 	assert(#path >= first)
 	assert(#path >= last)
-	
+
 	for i = first - 1, 1, -1 do
 		table.remove(path, i)
 	end
-	
+
 	for i = #path, last + 1, -1 do
 		table.remove(path, i)
 	end
@@ -124,7 +124,7 @@ end
 local function ExtendPath(path, p)
 	assert(type(path) == 'table')
 	assert(#path > 0)
-	
+
 	local path2 = GetPath(path[#path], p)
 	for i = 2, #path2 do				-- ignore first index as the paths will share it.
 		table.insert(path, path2[i])	-- connect paths
@@ -134,14 +134,14 @@ end
 -- removes any duplicate tiles in 'path'.
 local function RemoveDuplicate(path)
 	assert(type(path) == 'table')
-	
+
 	local copy = shallow_copy(path)
-	
+
 	-- purge 'path'
 	for i, v in ipairs(path) do
 		path[i] = nil
 	end
-	
+
 	-- reconstruct path in order without duplicates.
 	for i = #copy, 1, -1 do
 		if not list_contains(path, copy[i]) then
@@ -154,7 +154,7 @@ end
 local function FilterPath(path, func)
 	assert(type(path) == 'table')
 	assert(type(func) == 'function')
-	
+
 	for i = #path, 1, -1 do
 		if not func(path[i]) then
 			table.remove(path, i)
@@ -166,13 +166,13 @@ end
 local function IsAdjacent(p1, p2)
 	assert(type(p1) == type(Point()))
 	assert(type(p2) == type(p1))
-	
+
 	if p1.x == p2.x then
 		return math.abs(p1.y - p2.y) == 1
 	elseif p1.y == p2.y then
 		return math.abs(p1.x - p2.x) == 1
 	end
-	
+
 	return false
 end
 
@@ -180,17 +180,17 @@ end
 -- are not adjacent any other tiles in the list.
 local function TrimDisconnectedPath(path)
 	assert(type(path) == 'table')
-	
+
 	for i = #path - 1, 1, -1 do
 		local isAdjacent = false
-		
+
 		for j = #path, i + 1, -1 do
 			isAdjacent = IsAdjacent(path[i], path[j])
 			if isAdjacent then
 				break
 			end
 		end
-		
+
 		if not isAdjacent then
 			table.remove(path, i)
 		end
@@ -200,7 +200,7 @@ end
 function lmn_Tri_Striker:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local isTipImage = Board:IsTipImage()
-	
+
 	if not isTipImage then
 		------------------
 		-- construct path
@@ -210,22 +210,22 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2)
 		else
 			ExtendPath(self.Path, p2) -- extend out to p2.
 		end
-		
+
 		RemoveDuplicate(self.Path)
-		
+
 		-- remove tiles within range 1 of shooter.
 		FilterPath(self.Path, function(p) return p:Manhattan(p1) > 1 end)
-		
+
 		-- mark tiles within range 1 of shooter.
 		local tiles = {p1}
-		
+
 		for dir = DIR_START, DIR_END do
 			local curr = p1 + DIR_VECTORS[dir]
 			if Board:IsValid(curr) then
 				table.insert(tiles, curr)
 			end
 		end
-		
+
 		for _, tile in ipairs(tiles) do
 			local color = GL_Color(72,106,100)
 			if tile == p1 then
@@ -234,10 +234,10 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2)
 
 			previewer:AddImage(tile, "combat/lmn_square.png", color)
 		end
-		
+
 		-- remove disconnected tiles from path.
 		TrimDisconnectedPath(self.Path)
-		
+
 		-- exit if we don't have a valid path.
 		if
 			p1:Manhattan(p2) <= 1 or
@@ -246,42 +246,42 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2)
 			self.Path = nil
 			return ret
 		end
-		
+
 		-- fetch the 3 last points in path.
 		TrimPath(self.Path, math.max(1, 1 + #self.Path - self.Targets), #self.Path)
 	end
-	
+
 	---------------------
 	-- impact resolution
 	---------------------
 	-- create a strike path in ascending order, using index 1 as root.
 	local strikePath = shallow_copy(self.Path)
 	table.sort(strikePath, function(a,b) return a:Manhattan(self.Path[1]) < b:Manhattan(self.Path[1]) end)
-	
+
 	-- get median direction.
 	local middleIndex = math.floor((#strikePath + 1) / 2)
 	local dir = GetDirection(strikePath[middleIndex] - p1)
-	
+
 	-- strike tiles
 	for i, tile in ipairs(strikePath) do
 		ret:AddSound("weapons/defense_strike")
-		
+
 		local artillery = SpaceDamage(tile, self.Damage)
 		artillery.sAnimation = "explo_fire1"
-		
+
 		if not self.ArtiTrail then
 			artillery.bHidePath = true
 			artillery.sImageMark = "combat/lmn_tri_striker_down_".. dir ..".png"
 		end
-		
+
 		if i == 1 then
 			artillery.sSound = "/impact/generic/explosion_large"
 		else
 			artillery.sSound = "/impact/generic/explosion"
 		end
-		
+
 		effectBurst.Add(ret, p1, "lmn_Emitter_Tri_Striker_Static", DIR_NONE, isTipImage)
-		
+
 		ret:AddScript([[
 			lmn_tri_striker_orig_emitter = Emitter_Missile;
 			Emitter_Missile = lmn_Emitter_Tri_Striker;
@@ -294,13 +294,13 @@ function lmn_Tri_Striker:GetSkillEffect(p1, p2)
 		]])
 		ret:AddDelay(0.12)
 	end
-	
+
 	if not self.ArtiTrail then
 		local mark = SpaceDamage(p1)
 		mark.sImageMark = "combat/lmn_tri_striker_up_".. dir ..".png"
 		ret:AddDamage(mark)
 	end
-	
+
 	return ret
 end
 

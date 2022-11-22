@@ -13,19 +13,19 @@ local ping_end_large = ping_start + 20
 local function toMins(frames)
 	local mins = math.floor(frames / 3600)
 	local secs = math.ceil(frames / 60 - mins * 60)
-	
+
 	mins = tostring(mins)
 	secs = tostring(secs)
-	
+
 	while mins:len() < 2 do mins = "0".. mins end
 	while secs:len() < 2 do secs = "0".. secs end
-	
+
 	return mins, secs
 end
 
 function this:new(time)
 	Ui2().new(self)
-	
+
 	self:widthpx(80):heightpx(30)
 		:decorate{
 			DecoFrame(),
@@ -33,17 +33,17 @@ function this:new(time)
 		}
 		:settooltip("Turn will end when timer reaches zero")
 		:setTime(time)
-		
+
 	UiCover{ align = {x = -2, y = -2} }:addTo(self)
 end
 
 function this:setTime(time)
 	local m = GetCurrentMission()
 	if not m then return end
-	
+
 	m.lmn_timed_mode = m.lmn_timed_mode or {}
 	m.lmn_timed_mode.timer = (time or 0)
-	
+
 	return self
 end
 
@@ -53,10 +53,10 @@ function this:getTime()
 		m.lmn_timed_mode = m.lmn_timed_mode or {}
 		m.lmn_timed_mode.timer = m.lmn_timed_mode.timer or 0
 		local mins, secs = toMins(m.lmn_timed_mode.timer)
-		
+
 		return mins ..":".. secs
 	end
-	
+
 	return "00:00"
 end
 
@@ -67,50 +67,50 @@ end
 function this:update(screen)
 	self:pospx(screen:w() / 2 - self.w / 2, screen:h() / 20)
 	self.parent:relayout()
-	
+
 	self._time = self:getTime()
-	
+
 	local mins = tonumber(self._time:match("^(.+):"))
 	local secs = mins * 60 + tonumber(self._time:match(":(.+)$"))
-	
+
 	if not self.initialized then
 		self.initialized = true
 		Game:TriggerSound("ui/battle/select_unit")
 		UiFrameping(deco.colors.white, 1000, ping_width, ping_start, ping_end_large, nil):addTo(self)
 	end
-	
+
 	if secs <= 10 then
-		
+
 		if secs == 0 then
-			
+
 			Game:TriggerSound("ui/battle/withdraw")
 			Game:TriggerSound("ui/battle/end_turn_notification")
 			UiFrameping(color.red, 1000, ping_width + 2, ping_start + 2, ping_end_large + 10, nil):addTo(self)
-			
+
 		else
 			Game:TriggerSound("ui/battle/radio_window_in")
 			UiFrameping(color.red, 1000, ping_width, ping_start, ping_end_large, nil):addTo(self)
 		end
-		
+
 		if not IsColorEqual(self.decorations[2].textset.color, color.red) then
 			self.decorations[1].bordercolor = color.red
 			self.decorations[2].text = self._time
 			self.decorations[2]:setcolor(color.red)
 		end
-		
+
 	elseif secs <= 15 then
 		Game:TriggerSound("ui/battle/radio_window_in")
 		UiFrameping(color.gray, 500, ping_width, ping_start, ping_end, nil):addTo(self)
 	end
-	
+
 	self.decorations[2]:setsurface(self._time)
-	
+
 	Ui2.update(self, screen)
 end
 
 function this:draw(screen)
 	self.visible = self.initialized and not sdlext.isConsoleOpen()
-	
+
 	sdlext.occlude_draw(Ui2, self, screen, sdlext.CurrentWindowRect)
 end
 

@@ -51,21 +51,21 @@ end
 
 function this.Update(mission, obj)
 	local status = mission:GetBonusStatus(obj, false)
-	
+
 	Game:AddObjective(string.format("Keep at least %s enemies alive\n(Current: %s)", specimenBonus, GetAlive()), status)
 end
 
 function this.GetInfo(mission, obj, endstate)
 	local info = {}
 	info.text_id = "Mission_lmn_Specimen"
-	
+
 	if endstate then
 		info.success = mission:GetBonusStatus(obj, endstate) == OBJ_COMPLETE
 		info.text_id = info.text_id .. (info.success and "_Success" or "_Failure")
 	else
-		info.text_id = info.text_id .."_Briefing"		    	
+		info.text_id = info.text_id .."_Briefing"
 	end
-	
+
 	return info
 end
 
@@ -73,14 +73,14 @@ local missionEnd = Mission.MissionEnd
 function Mission.MissionEnd(self, ...)
 	local isBonusSpecimen = list_contains(self.BonusObjs, this.id)
 	local enemies
-	
+
 	if isBonusSpecimen then
 		local fx = SkillEffect()
 		local t = 0
 		local events = {}
 		enemies = extract_table(Board:GetPawns(TEAM_ENEMY))
-		
 		getMissionData(self).specimen = #enemies
+
 		if #enemies > 0 then
 			for _, id in ipairs(enemies) do
 				local pawn = Board:GetPawn(id)
@@ -93,52 +93,52 @@ function Mission.MissionEnd(self, ...)
 					events[#events+1] = {loc = loc, type = "drop", t = t_drop}
 					events[#events+1] = {loc = loc, type = "impact", t = t_impact}
 				end
-				
+
 				t = t + 0.4
 			end
-			
+
 			t = t + 1.6
-			
+
 			for _, id in ipairs(enemies) do
 				local loc = Board:GetPawn(id):GetSpace()
 				events[#events+1] = {loc = loc, type = "ping", t = t}
-				
+
 				t = t + 0.2
 			end
-			
+
 			-- sort events in relation to time.
 			table.sort(events, function(a,b) return a.t > b.t end)
 			t = 0
-			
+
 			while #events > 0 do
 				local e = events[#events]
-				
+
 				while e and t >= e.t do
 					if e.type == "ping" then
 						fx:AddSound("/props/square_lightup")
 						fx:AddScript(string.format("Board:Ping(%s, GL_Color(50, 255, 50))", e.loc:GetString()))
-						
+
 					elseif e.type == "launch" then
 						fx:AddSound("/props/airstrike")
 						worldConstants:setSpeed(fx, .5)
 						fx:AddAirstrike(e.loc, "units/mission/lmn_specimen_plane.png")
 						fx.effect:index(fx.effect:size()).fDelay = 0
 						worldConstants:resetSpeed(fx)
-						
+
 					elseif e.type == "drop" then
 						fx:AddScript(string.format("Board:AddAnimation(%s, 'lmn_Specimen_Drop_1', ANIM_NO_DELAY)", e.loc:GetString()))
-						
+
 					elseif e.type == "impact" then
 						fx:AddSound("/impact/generic/general")
 						fx:AddSound("/enemy/shared/moved")
 						fx:AddScript(string.format("Board:AddAnimation(%s, 'lmn_Specimen_Explo_Smoke2', ANIM_NO_DELAY)", e.loc:GetString()))
 						fx:AddScript(string.format("Board:AddAnimation(%s, 'Stunned', ANIM_NO_DELAY)", e.loc:GetString()))
 					end
-					
+
 					table.remove(events, #events)
 					e = events[#events]
 				end
-				
+
 				if e then
 					if e.t - t > 0 then
 						fx:AddDelay(e.t - t)
@@ -146,16 +146,16 @@ function Mission.MissionEnd(self, ...)
 					t = e.t
 				end
 			end
-			
+
 			fx:AddDelay(0.2)
 			fx:AddSound("/ui/battle/mission_complete_objective_".. (#enemies >= specimenBonus and "completed" or "failed"))
-			
+
 			Board:AddEffect(fx)
 		end
 	end
-	
+
 	missionEnd(self, ...)
-	
+
 	if isBonusSpecimen then
 		for _, id in ipairs(enemies) do
 			Board:GetPawn(id):SetTeam(TEAM_ENEMY)

@@ -27,7 +27,7 @@ lmn_LiftAtk = Skill:new{
 		Second_Target = Point(2,1),
 	}
 }
-	
+
 -- returns whether thrown pawn can crush target pawn.
 function lmn_LiftAtk:CanCrush(thrown, target)
 	return	target										and
@@ -49,36 +49,36 @@ end
 
 function lmn_LiftAtk:GetTargetArea(point)
 	local ret = PointList()
-	
+
 	for dir = DIR_START, DIR_END do
 		local curr = point + DIR_VECTORS[dir]
-		
+
 		if Board:IsValid(curr) then
 			ret:push_back(curr)
 			local thrownPawn = Board:GetPawn(curr)
 			if	thrownPawn				and
 				IsThrowable(thrownPawn)	then
-				
+
 				for k = 2, self.Range do
 					local curr = point + DIR_VECTORS[dir] * k
-					
+
 					if not Board:IsValid(curr) then
 						break
 					end
-					
+
 					local targetPawn = Board:GetPawn(curr)
-					
+
 					if	not Board:IsBlocked(curr, PATH_PROJECTILE)
 					or	(targetPawn									 and
 						self:CanCrush(thrownPawn, targetPawn))		then
-						
+
 						ret:push_back(curr)
 					end
 				end
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -92,7 +92,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 	local bash = true
 	local thrownPawn
 	local pawnSpace
-	
+
 	if distance > 1 then
 		if pawnFront then
 			thrownPawn = pawnFront
@@ -106,7 +106,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	if bash then
 		local fx = SpaceDamage(p2)
 		fx.sSound = "/weapons/titan_fist"
@@ -118,16 +118,16 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 		end
 		ret:AddDamage(fx)
 		ret:AddDelay(0.05)
-		
+
 		ret:AddMelee(p1, SpaceDamage(p2), 0.20)
-		
+
 		local dmg = SpaceDamage(p2, self.Damage)
 		ret:AddDamage(dmg)
-		
+
 	elseif thrownPawn then
 		local throwFrom = thrownPawn:GetSpace()
 		local crushedPawn = Board:GetPawn(p2)
-		
+
 		local damage = 0
 		if self.ImpactDamage then
 			local isEnemy =	isEnemy(Pawn:GetTeam(), thrownPawn:GetTeam())
@@ -135,41 +135,41 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 				damage = self.Damage
 			end
 		end
-		
+
 		local fx = SpaceDamage(throwFrom)
 		fx.sSound = "/weapons/titan_fist"
 		fx.sAnimation = "dm_exploforklift_".. GetDirection(throwFrom - p1)
 		ret:AddDamage(fx)
-		
+
 		ret:AddMelee(p1, SpaceDamage(throwFrom), NO_DELAY)
-		
+
 		ret:AddDelay(0.1)
 		local id = thrownPawn:GetId()
 		-- hide pawn we are about to throw.
 		ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1, -1))", id))
 		-- preview damage to thrown pawn on it's original tile.
 		local spaceDamage = SpaceDamage(throwFrom, damage)
-		
+
 		if self.PushAdjacent and throwFrom == p2 - DIR_VECTORS[dir] then
 			spaceDamage.iPush = 5
 			spaceDamage.sImageMark = "combat/dm_arrow_off_".. dir_back ..".png"
 		end
-		
+
 		ret:AddDamage(spaceDamage)
-		
+
 		-- return pawn we are about to throw.
 		ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(%s)", id, throwFrom:GetString()))
-		
+
 		-- empty damage event to apply fire, etc.
 		local spaceDamage = SpaceDamage(throwFrom)
 		ret:AddDamage(spaceDamage)
-		
+
 		local leap = PointList()
 		leap:push_back(throwFrom)
 		leap:push_back(p2)
-		
+
 		ret:AddLeap(leap, NO_DELAY)
-		
+
 		if thrownPawn:IsMech() then
 			ret:AddDelay(0.48)
 			ret:AddSound("mech/land")
@@ -177,7 +177,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 		else
 			ret:AddDelay(0.8)
 		end
-		
+
 		-- hide thrown pawn.
 		ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1, -1))", id))
 		-- kill pawn being crushed.
@@ -199,7 +199,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 		end
 		-- return thrown pawn.
 		ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(%s)",id , p2:GetString()))
-		
+
 		-- deal damage we previewed to thrown pawn at it's destination.
 		ret:AddScript(string.format([[
 			local p2, damage, id = %s, %s, %s
@@ -215,7 +215,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 				end
 			end
 		]], p2:GetString(), damage, id))
-		
+
 		if self.PushAdjacent then
 			local dirs = {0, 1, 2, 3}
 			for _, i in ipairs(dirs) do
@@ -224,7 +224,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 					local dmg = self.DamageAdjacent and self.Damage or 0
 					local spaceDamage = SpaceDamage(curr, dmg)
 					spaceDamage.sAnimation = "exploout0_".. i
-					
+
 					if curr == p1 + DIR_VECTORS[dir] then
 						spaceDamage.iPush = 5
 						spaceDamage.sImageMark = "combat/dm_arrow_off_".. i ..".png"
@@ -236,7 +236,7 @@ function lmn_LiftAtk:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -295,14 +295,14 @@ function lmn_LiftAtk_Tip:GetSkillEffect(p1, p2)
 		self.Crush_Type		and
 		self.Crush_Anim
 	then
-		
+
 		Board:ClearSpace(self.Crush_Target)
 		local unit = SpaceDamage(self.Crush_Target)
 		unit.sPawn = self.Crush_Type
 		Board:DamageSpace(unit)
 		Board:GetPawn(self.Crush_Target):SetCustomAnim(self.Crush_Anim)
 	end
-	
+
 	local ret = lmn_LiftAtk.GetSkillEffect(self, p1, p2)
 	ret:AddDelay(1.5)
 	return ret

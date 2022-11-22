@@ -20,13 +20,13 @@ local this = {}
 function this:Add(mission, loc, emitter, desc, continue)
 	mission = mission or GetCurrentMission()
 	if not mission then return end
-	
+
 	assert(type(emitter) == 'string')
 	assert(_G[emitter])
 	assert(not continue or type(continue) == 'function')
-	
+
 	if _G[emitter].timer < 0 then return end
-	
+
 	if type(loc) == 'number' then
 		-- attach emitter to pawnId
 		local pawnId = loc
@@ -43,7 +43,7 @@ function this:Add(mission, loc, emitter, desc, continue)
 		assert(type(loc) == 'userdata')
 		assert(type(loc.x) == 'number')
 		assert(type(loc.y) == 'number')
-		
+
 		local pid = p2idx(loc)
 		mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
 		mission.lmn_tileEmitters[pid] = mission.lmn_tileEmitters[pid] or {}
@@ -60,10 +60,10 @@ end
 function this:Rem(mission, loc, emitter)
 	mission = mission or GetCurrentMission()
 	if not mission then return end
-	
+
 	assert(type(emitter) == 'string')
 	assert(_G[emitter])
-	
+
 	if type(loc) == 'number' then
 		-- rem emitter from pawnId
 		local pawnId = loc
@@ -75,7 +75,7 @@ function this:Rem(mission, loc, emitter)
 		assert(type(loc) == 'userdata')
 		assert(type(loc.x) == 'number')
 		assert(type(loc.y) == 'number')
-		
+
 		local pid = p2idx(loc)
 		mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
 		mission.lmn_tileEmitters[pid] = mission.lmn_tileEmitters[pid] or {}
@@ -85,10 +85,10 @@ end
 
 local function updateEmitters(loc, emitters, t)
 	t = t or os.clock()
-	
+
 	if Board:IsValid(loc) then
 		local copy = shallow_copy(emitters)
-		
+
 		for emitter, v in pairs(copy) do
 			if t > v.t then
 				if not v.started or not v.continue or v.continue(loc, emitter) then
@@ -109,12 +109,12 @@ local function updateDesc(loc, emitters)
 	if Board:IsValid(loc) then
 		for emitter, v in pairs(emitters) do
 			if v.title and v.desc then
-				
+
 				local tooltipId = "customEmitter".. suffix .. emitter
 				if not TILE_TOOLTIPS[tooltipId] then
 					TILE_TOOLTIPS[tooltipId] = {v.title, v.desc}
 				end
-				
+
 				Board:MarkSpaceDesc(loc, tooltipId)
 			end
 		end
@@ -124,15 +124,15 @@ end
 modApi.events.onFrameDrawn:subscribe(function()
 	local mission = GetCurrentMission()
 	if not mission or not Board then return end
-	
+
 	mission.lmn_pawnEmitters = mission.lmn_pawnEmitters or {}
 	mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
-	
+
 	local t = os.clock()
 	local rem = {}
-	
+
 	for pawnId, emitters in pairs(mission.lmn_pawnEmitters) do
-		
+
 		local pawn = Board:GetPawn(pawnId)
 		if pawn then
 			updateEmitters(pawn:GetSpace(), emitters, t)
@@ -140,11 +140,11 @@ modApi.events.onFrameDrawn:subscribe(function()
 			rem[#rem+1] = pawnId
 		end
 	end
-	
+
 	for pid, emitters in pairs(mission.lmn_tileEmitters) do
 		updateEmitters(idx2p(pid), emitters, t)
 	end
-	
+
 	for _, id in ipairs(rem) do
 		table.remove(mission.lmn_pawnEmitters, id)
 	end
@@ -153,14 +153,14 @@ end)
 modApi.events.onMissionUpdate:subscribe(function(mission)
 	mission.lmn_pawnEmitters = mission.lmn_pawnEmitters or {}
 	mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
-	
+
 	for pawnId, emitters in pairs(mission.lmn_pawnEmitters) do
 		local pawn = Board:GetPawn(pawnId)
 		if pawn then
 			updateDesc(pawn:GetSpace(), emitters)
 		end
 	end
-	
+
 	for pid, emitters in pairs(mission.lmn_tileEmitters) do
 		updateDesc(idx2p(pid), emitters)
 	end
@@ -169,16 +169,16 @@ end)
 modApi.events.onPostLoadGame:subscribe(function()
 	modApi:runLater(function(mission)
 		local t = os.clock()
-		
+
 		mission.lmn_pawnEmitters = mission.lmn_pawnEmitters or {}
 		mission.lmn_tileEmitters = mission.lmn_tileEmitters or {}
-		
+
 		for _, emitters in pairs(mission.lmn_pawnEmitters) do
 			for _, v in pairs(emitters) do
 				v.t = t
 			end
 		end
-		
+
 		for _, emitters in pairs(mission.lmn_tileEmitters) do
 			for _, v in pairs(emitters) do
 				v.t = t

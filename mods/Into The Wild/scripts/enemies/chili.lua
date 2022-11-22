@@ -24,7 +24,7 @@ utils.appendAssets{
 	{"lmn_chili1_emerge.png", "chili1e.png"},
 	{"lmn_chili1_death.png", "chili1d.png"},
 	{"lmn_chili1w.png", "chili1.png"},
-	
+
 	{"lmn_chili2.png", "chili2.png"},
 	{"lmn_chili2a.png", "chili2a.png"},
 	{"lmn_chili2_emerge.png", "chili2e.png"},
@@ -65,7 +65,7 @@ a.lmn_Chili2w = alpha:new{Image = imagePath .."lmn_chili2w.png"}
 utils.appendAssets{
 	writePath = "img/units/player/",
 	readPath = path .."img/units/aliens/",
-	
+
 	{"lmn_chili.png", "chili.png"},
 	{"lmn_chili_a.png", "chilia.png"},
 	{"lmn_chili_broken.png", "chilid.png"},
@@ -162,11 +162,11 @@ lmn_ChiliAtk2 = lmn_ChiliAtk1:new{
 
 function lmn_ChiliAtk1:GetTargetArea(p, ...)
 	local ret = Skill.GetTargetArea(self, p, ...)
-	
+
 	if self.Destruct then
 		ret:push_back(p)
 	end
-	
+
 	return ret
 end
 
@@ -176,7 +176,7 @@ function lmn_ChiliAtk1:GetTargetScore(p1, p2, ...)
 	local ret = Skill.GetTargetScore(self, p1, p2, ...)
 	isTargetScore = nil
 	--LOG(Board:GetPawn(p1):GetId() .." considers attacking ".. p1:GetString() .." > ".. p2:GetString() .." with score ".. ret)
-	
+
 	return ret
 end
 
@@ -189,7 +189,7 @@ end
 
 function lmn_ChiliAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	if p1 == p2 then
 		if self.Destruct then
 			local d = SpaceDamage(p2, DAMAGE_DEATH)
@@ -197,10 +197,10 @@ function lmn_ChiliAtk1:GetSkillEffect(p1, p2)
 			d.iFire = 1
 			ret:AddQueuedBounce(p2, 3)
 			ret:AddQueuedDamage(d)
-			
+
 			for i = DIR_START, DIR_END do
 				local curr = p2 + DIR_VECTORS[i]
-				
+
 				local d = SpaceDamage(curr, DAMAGE_DEATH)
 				d.sSound = "/impact/generic/explosion"
 				d.sAnimation = "exploout2_".. i
@@ -209,54 +209,54 @@ function lmn_ChiliAtk1:GetSkillEffect(p1, p2)
 				ret:AddQueuedBounce(curr, 2)
 			end
 		end
-		
+
 		return ret
 	end
-	
+
 	local dir = GetDirection(p2 - p1)
 	local adjacent = p1 + DIR_VECTORS[dir]
 	local target
 	local doneDamage
 	local fireEnd
-	
+
 	if self.Projectile then
 		target = GetProjectileEnd(p1, adjacent)
 	else
 		target = adjacent
 	end
-	
+
 	if self.Projectile then
 		local d = SpaceDamage(target)
 		d.sSound = self.Sound_Impact
-		
+
 		ret:AddQueuedSound(self.Sound_Launch)
 		ret:AddQueuedProjectile(d, self.Art_Projectile)
 	end
-	
+
 	-- find last tile we can burn.
 	for k = 0, self.ExtraRange do
 		fireEnd = target + DIR_VECTORS[dir] * k
-		
+
 		local terrain = Board:GetTerrain(fireEnd)
-		
+
 		if terrain == TERRAIN_MOUNTAIN or terrain == TERRAIN_BUILDING then
 			break
 		end
-		
+
 		if not Board:IsValid(fireEnd + DIR_VECTORS[dir]) then
 			break
 		end
 	end
-	
+
 	local distance = target:Manhattan(fireEnd)
 	local damage = SpaceDamage()
 	damage.iFire = 1
-	
+
 	ret:AddQueuedSound("/weapons/flamethrower")
-	
+
 	for k = 0, distance do
 		damage.loc = target + DIR_VECTORS[dir] * k
-		
+
 		if doneDamage then
 			damage.iDamage = 0
 			damage.iPush = DIR_NONE
@@ -265,11 +265,11 @@ function lmn_ChiliAtk1:GetSkillEffect(p1, p2)
 			damage.iDamage = self.Damage
 			damage.iPush = self.Push == 1 and dir or DIR_NONE
 		end
-		
+
 		if k == distance then
 			damage.sAnimation = "flamethrower".. (distance + 1) .."_".. dir
 		end
-		
+
 		if not isTargetScore then
 			-- actual damage.
 			ret:AddQueuedScript(string.format("lmn_ChiliAtk1:Achievement(%s)", damage.loc:GetString()))
@@ -278,12 +278,12 @@ function lmn_ChiliAtk1:GetSkillEffect(p1, p2)
 			-- only score tiles we damage.
 			ret:AddQueuedDamage(damage)
 		end
-		
+
 		if k < distance then
 			ret:AddQueuedDelay(0.1)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -328,30 +328,30 @@ lmn_ChiliAtk = Skill:new{
 
 function lmn_ChiliAtk:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		local step = DIR_VECTORS[i]
-		
+
 		for k = 1, (1 + self.ExtraRange) do
 			local curr = p + step * k
-			
+
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			ret:push_back(curr)
-			
+
 			local terrain = Board:GetTerrain(curr)
 			if terrain == TERRAIN_BUILDING or terrain == TERRAIN_MOUNTAIN then
 				break
 			end
 		end
 	end
-	
+
 	if self.Destruct then
 		ret:push_back(p)
 	end
-	
+
 	return ret
 end
 
@@ -359,7 +359,7 @@ function lmn_ChiliAtk:GetSkillEffect(p1, p2)
 	local ret = lmn_ChiliAtk1.GetSkillEffect(self, p1, p2, lmn_ChiliAtk1)
 	ret.effect = ret.q_effect
 	ret.q_effect = SkillEffect().q_effect
-	
+
 	return ret
 end
 

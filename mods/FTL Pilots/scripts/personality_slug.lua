@@ -21,12 +21,12 @@ local dialogTable = {
 	TimeTravel_Win = {"^_^"},
 	Gameover_Start = {"o_O","O_o","O_O","o_o"},
 	Gameover_Response = {"T_T",">_<","¨_¨","-_-"},
-	
+
 	-- UI Barks
 	Upgrade_PowerWeapon = {"$_$","n_n","^_^",},
 	Upgrade_NoWeapon = {"¤_¤","~_~","._.","!_!","=_="},
 	Upgrade_PowerGeneric = {"$_$","n_n","^_^",},
-	
+
 	-- Mid-Battle
 	MissionStart = {"o_o","._.","@_@","c_c",},
 	Mission_ResetTurn = {"?_?","z_z","*_*","o_O"},

@@ -122,7 +122,7 @@ local function IsEnemy(p1, p2)
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -131,57 +131,57 @@ local function isValidTarget(origin, target, path)
 		Board:IsValid(target)			and
 		origin ~= target				and
 		not list_contains(path, target)	and
-		
+
 		-- allow destroyed buildings to pull shots as well.
 		--(Board:IsBuilding(target) or IsEnemy(origin, target))
-		
+
 		-- target enemy units as well.
 		--(Board:IsBuilding(target) or Board:IsPawnSpace(target))
-		
+
 		-- target every blocked tile.
 		Board:IsBlocked(target, PATH_PROJECTILE)
 end
 
 function lmn_WyrmAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	-- Queued attacks are weird. Make sure
 	-- we have the correct pawn.
 	local pawn = Board:GetPawn(p1)
 	if not pawn or not IsWyrm(pawn) then
 		return ret
 	end
-	
+
 	if not Board:IsTipImage() then
 		ret:AddScript(string.format([[
 			local tips = mod_loader.mods.lmn_bots_and_bugs.libs.tutorialTips;
 			tips:trigger("Wyrm_Atk", %s);
 		]], p1:GetString()))
 	end
-	
+
 	local mission = GetCurrentMission()
 	local id = pawn:GetId()
 	local priority = {}
 	local rng = {}
-	
+
 	if mission then
 		-- retrieve priority list.
 		mission.lmn_WyrmPriority = mission.lmn_WyrmPriority or {}
 		mission.lmn_WyrmPriority[id] = mission.lmn_WyrmPriority[id] or {}
 		priority = mission.lmn_WyrmPriority[id]
 	end
-	
+
 	local path = {p2}
 	if Board:IsBlocked(p2, PATH_PROJECTILE) then -- don't jump after hitting empty tile.
 		for k = 1, self.Bounces or 0 do
 			-- use offset from p1 to current node as identifier for priority list.
 			local id = p2idx(path[k] - p1)
-			
+
 			-- gather adjacent targets.
 			local targets = {}
 			for dir = DIR_START, DIR_END do
 				local loc = path[k] + DIR_VECTORS[dir]
-				
+
 				if isValidTarget(p1, loc, path) then
 					targets[#targets+1] = {
 						id = id,
@@ -190,7 +190,7 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2)
 					}
 				end
 			end
-			
+
 			if #targets > 0 then
 				-- sort list according to current direction priority,
 				-- and randomize priority for newly seen targets.
@@ -199,28 +199,28 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2)
 						if dir == a.dir then return true end	-- a is prioritized.
 						if dir == b.dir then return false end	-- b is prioritized.
 					end
-					
+
 					-- need fixed rng in sort.
 					rng[a.id] = rng[a.id] or math.random()
 					rng[b.id] = rng[b.id] or math.random()
-					
+
 					return rng[a.id] < rng[b.id]
 				end)
-				
+
 				local priorityIndex = 1
-				
+
 				-- prioritize units above buildings.
 				for i, target in ipairs(targets) do
 					if Board:IsPawnSpace(target.loc) then
 						priorityIndex = i
 					end
 				end
-				
+
 				local target = targets[priorityIndex]
 				local id = target.id
 				local dir = target.dir
 				local loc = target.loc
-				
+
 				if not Board:IsTipImage() then
 					-- store direction in priority list.
 					priority[id] = priority[id] or {}
@@ -228,7 +228,7 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2)
 						table.insert(priority[id], dir)
 					end
 				end
-				
+
 				path[#path+1] = loc
 			else
 				-- no more targets.
@@ -236,24 +236,24 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	-- attack resolution.
 	local dmg = self.Damage
 	for i, loc in ipairs(path) do
 		local d = SpaceDamage(loc, dmg)
-		
+
 		if i == 1 then
 			-- attack sounds
 			ret:AddQueuedSound("enemy/jelly/hurt")
 			ret:AddQueuedSound("enemy/spider_soldier_1/hurt")
 			ret:AddQueuedSound("impact/generic/web")
-			
+
 			worldConstants:queuedSetSpeed(ret, .3)
 			ret:AddQueuedProjectile(d, "effects/shot_firefly2", NO_DELAY)
 			worldConstants:queuedResetSpeed(ret)
 			ret:AddQueuedDelay(0.20)
 			ret:AddQueuedScript(string.format("Board:AddAnimation(%s, 'ExploFirefly2', NO_DELAY)", loc:GetString()))
-			
+
 			-- impact sounds
 			ret:AddQueuedSound("enemy/centipede_1/attack")
 			ret:AddQueuedSound("props/freezing_mine")
@@ -261,33 +261,33 @@ function lmn_WyrmAtk1:GetSkillEffect(p1, p2)
 			ret:AddQueuedDelay(0.02)
 		else
 			local from = path[i-1]
-			
+
 			-- fire bouncing projectile.
 			ret:AddQueuedScript(string.format("lmn_WyrmAtk1:Bounce(%s, %s, %s)", from:GetString(), loc:GetString(), id))
-			
+
 			local dir = GetDirection(loc - from)
 			d.sImageMark = "combat/lmn_wyrm_arrow_".. dir ..".png"
-			
+
 			ret:AddQueuedDelay(0.12)
 			ret:AddQueuedDamage(d)
 			ret:AddQueuedScript(string.format("Board:AddAnimation(%s, 'ExploFirefly2', NO_DELAY)", loc:GetString()))
-			
+
 			-- impact sounds
 			ret:AddQueuedSound("enemy/centipede_1/attack")
 			ret:AddQueuedSound("props/freezing_mine")
 			ret:AddQueuedSound("impact/generic/web")
 			ret:AddQueuedDelay(0.02)
 		end
-		
+
 		dmg = math.floor(dmg / 2)
 	end
-	
+
 	-- additional slowdown after attack,
 	-- to let the player register what happened.
 	if #path > 1 then
 		ret:AddQueuedDelay(0.7)
 	end
-	
+
 	return ret
 end
 
@@ -297,20 +297,20 @@ function lmn_WyrmAtk1:Bounce(p1, p2, iOwner)
 	-- when scorpions lose their web (state 2),
 	-- the projectile would be delayed
 	-- until that animation is done.
-	
+
 	if Board:GetBusyState() == 2 then
 		return
 	end
-	
+
 	local fx = SkillEffect()
 	fx.piOrigin = p1
 	fx.iOwner = iOwner
-	
+
 	local d = SpaceDamage(p2)
 	worldConstants:setSpeed(fx, .5)
 	fx:AddProjectile(p1, d, "effects/shot_firefly2", NO_DELAY)
 	worldConstants:resetSpeed(fx)
-	
+
 	Board:AddEffect(fx)
 end
 

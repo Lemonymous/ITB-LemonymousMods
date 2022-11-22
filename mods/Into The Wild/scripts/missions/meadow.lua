@@ -50,13 +50,13 @@ local function isDeploymentZone(loc)
 			end
 		end
 	end
-	
+
 	return list_contains(zone, loc)
 end
 
 local function isValidSpawn(loc, avoidDeployment)
 	local isDeploymentZone = avoidDeployment and isDeploymentZone(loc)
-	
+
 	return
 		not Board:IsBlocked(loc, PATH_GROUND)	and
 		not isDeploymentZone					and
@@ -67,12 +67,12 @@ end
 function Mission_lmn_Meadow:SpawnSprouts(count)
 	local board = utils.getBoard()
 	utils.shuffle(board)
-	
+
 	for _, loc in ipairs(board) do
 		if count <= 0 then
 			break
 		end
-		
+
 		if isValidSpawn(loc) then
 			count = count - 1
 			if math.random() < self.sprouts.upg_chance then
@@ -88,24 +88,24 @@ function Mission_lmn_Meadow:StartMission()
 	local diff = GetDifficulty() == DIFF_EASY and "DIFF_EASY" or "DIFF_DEFAULT"
 	local sprouts = self.sprouts[diff]
 	local sector = GetSector()
-	
+
 	-- init sprout vars for this mission instance.
 	self.sprouts = {
 		init_count = sprouts.init_count[math.max(1, math.min(sector, #sprouts.init_count))],
 		spawn_chance = sprouts.spawn_chance[math.max(1, math.min(sector, #sprouts.spawn_chance))],
 		upg_chance = sprouts.upg_chance[math.max(1, math.min(sector, #sprouts.upg_chance))]
 	}
-	
+
 	local sector = GetSector()
 	local counts = {Core = 2, Unique = math.min(0, sector - 2)}
-	
+
 	-- populate list as we get more plants in game.
 	local enemylists = 
 	{
 		Core = {"lmn_Sunflower", "lmn_Springseed"},--"lmn_Sprout", "lmn_Bud", 
 		Unique = {"lmn_Sunflower", "lmn_Infuser1"} -- temp to avoid crash on island 3-4
 	}
-	
+
 	self.pawn_table = {}
 	for kind, count in pairs(counts) do
 		if #enemylists[kind] > 0 then
@@ -114,32 +114,32 @@ function Mission_lmn_Meadow:StartMission()
 			end
 		end
 	end
-	
+
 	local spawner = self:GetSpawner()
 	spawner.max_pawns = shallow_copy(spawner.max_pawns)
 	spawner.max_pawns.lmn_Sprout = INT_MAX
-	
+
 	self:SpawnSprouts(self.sprouts.init_count)
 	Board:SpawnQueued()
 end
 
 function Mission_lmn_Meadow:UpdateSpawning()
 	local count = self:GetSpawnCount()
-	
+
 	if self.TurnLimit - Game:GetTurnCount() > 2 then
 		local sprouts = 0
-		
+
 		for i = count, 1, -1 do
 			if math.random() < self.sprouts.spawn_chance then
 				sprouts = sprouts + 1
 			end
 		end
-		
+
 		self:SpawnSprouts(sprouts * 2)
-		
+
 		count = count - sprouts
 	end
-	
+
 	if count > 0 then
 		self:SpawnPawns(count)
 	end

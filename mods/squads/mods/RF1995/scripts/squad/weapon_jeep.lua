@@ -33,24 +33,24 @@ function lmn_Jeep_Grenade:GetTargetArea(point)
 		Point( 0,-1), Point( 0, 1),
 		Point( 1,-1), Point( 1, 0), Point( 1, 1)
 	}
-	
+
 	for k = 1, #targets do
 		if Board:IsValid(point + targets[k]) then
 			ret:push_back(point + targets[k])
 		end
 	end
-	
+
 	return ret
 end
 
 function lmn_Jeep_Grenade:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local damage = SpaceDamage(p2, self.Damage)
 	damage.sAnimation = "explo_fire1"
 	ret:AddArtillery(damage, self.UpShot)
 	ret:AddBounce(p2, 3)
-	
+
 	if self.Push == 1 then
 		for i = DIR_START, DIR_END do
 			local curr = DIR_VECTORS[i] + p2
@@ -60,7 +60,7 @@ function lmn_Jeep_Grenade:GetSkillEffect(p1, p2)
 			ret:AddDamage(damage)
 		end
 	end
-	
+
 	return ret
 end
 

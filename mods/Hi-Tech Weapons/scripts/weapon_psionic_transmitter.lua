@@ -36,16 +36,16 @@ end
 function lmn_Psionic_Transmitter:GetTargetArea(p1)
 	local list = {}
 	local marker
-	
+
 	self.Targets = {}
-	
+
 	for dir = DIR_START, DIR_END do
 		for k = 1, self.Range do
 			local curr = p1 + DIR_VECTORS[dir] * k
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			local pawn = Board:GetPawn(curr)
 			if
 				-- grab points of pawns that
@@ -56,21 +56,21 @@ function lmn_Psionic_Transmitter:GetTargetArea(p1)
 				-- pawn:IsPowered() TODO: not sure how to detect this.
 			then
 				table.insert(list, curr)
-				
+
 				table.insert(self.Targets, pawn)
 				local loc = pawn:GetSpace()
 				local spaceDamage = SpaceDamage(loc)
 				spaceDamage.sImageMark = "combat/icons/lmn_psi_icon_move_glow.png"
-				
+
 				previewer:AddImage(loc, "combat/lmn_square.png", GL_Color(255,255,255))
 				previewer:AddDamage(spaceDamage)
-				
+
 				local reachable = extract_table(Board:GetReachable(
 					pawn:GetSpace(),
 					pawn:GetMoveSpeed(),
 					pawn:GetPathProf()
 				))
-				
+
 				for _, p in ipairs(reachable) do
 					if
 						Board:GetTerrain(p) ~= TERRAIN_WATER or
@@ -82,18 +82,18 @@ function lmn_Psionic_Transmitter:GetTargetArea(p1)
 					end
 				end
 			end
-			
+
 			if not self.Pierce and Board:IsBlocked(curr, PATH_PROJECTILE) then
 				break
 			end
 		end
 	end
-	
+
 	local ret = PointList()
 	for _, p in ipairs(list) do
 		ret:push_back(p)
 	end
-	
+
 	return ret
 end
 
@@ -102,12 +102,12 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 	local shooter = Board:GetPawn(p1)
 	local shooterId = shooter:GetId()
 	local isTipImage = Board:IsTipImage()
-	
+
 	-- swap target if there is a pawn at p2.
 	self.Target = Board:GetPawn(p2) or self.Target
-	
+
 	local target = self.Target
-	
+
 	if isTipImage then
 		-- hardcoded tipimage target.
 		target = Board:GetPawn(self.TipImage.Enemy)
@@ -121,19 +121,19 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 			weaponId = shooter:GetArmedWeaponId()
 		}
 	end
-	
+
 	-- return if we have
 	-- no pawn to move.
 	if not target then
 		return ret
 	end
-	
+
 	local reachable = extract_table(Board:GetReachable(
 		target:GetSpace(),
 		target:GetMoveSpeed(),
 		target:GetPathProf()
 	))
-	
+
 	if IsBurrower(target) then
 		for i = #reachable, 1, -1 do
 			if Board:GetTerrain(reachable[i]) == TERRAIN_WATER then
@@ -141,22 +141,22 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	---------
 	-- marks
 	---------
 	if not isTipImage then
-		
+
 		-- mark tiles our target can reach.
 		for _, p in ipairs(reachable) do
 			previewer:AddImage(p, "combat/lmn_square.png", GL_Color(50,160,90))
 		end
-		
+
 		-- mark movable pawns.
 		for _, target in ipairs(self.Targets) do
 			previewer:AddImage(target:GetSpace(), "combat/lmn_square.png", GL_Color(255,255,255))
 		end
-		
+
 		-- add an icon to movable pawns.
 		for _, target in ipairs(self.Targets) do
 			local spaceDamage = SpaceDamage(target:GetSpace())
@@ -164,12 +164,12 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 			previewer:AddDamage(spaceDamage)
 		end
 	end
-	
+
 	-- return if target cannot reach p2.
 	if not list_contains(reachable, p2) then
 		return ret
 	end
-	
+
 	-----------
 	-- effects
 	-----------
@@ -177,39 +177,39 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 	local tData = _G[target:GetType()]
 	local dir = GetDirection(t1 - p1)
 	local distance = p1:Manhattan(t1)
-	
+
 	ret:AddSound("ui/battle/radio_window_in")
-	
+
 	local d = SpaceDamage(p1)
 	d.sAnimation = "lmn_Psi_Radio"
 	d.bHide = true
 	d.sSound = "voice/ralph"
 	ret:AddDamage(d)
-	
+
 	local d = SpaceDamage(t1)
 	d.sSound = "impact/generic/tractor_beam"
 	d.bHide = true
 	ret:AddDamage(d)
-	
+
 	local d = SpaceDamage(t1)
 	d.sSound = "ui/battle/psion_attack"
 	d.bHide = true
 	ret:AddDamage(d)
-	
+
 	for k = 0, distance - 1 do
 		local curr = p1 + DIR_VECTORS[dir] * k
 		effectBurst.Add(ret, curr, "lmn_Emitter_Psi_Stun_".. dir, dir, isTipImage)
 		ret:AddDelay(0.05)
 	end
-	
+
 	local d = SpaceDamage(t1)
 	d.sAnimation = "lmn_Psi_Stun"
 	d.bHide = true
 	ret:AddDamage(d)
-	
+
 	effectPreview:addHiddenLeap(ret, t1, t1, NO_DELAY)
 	ret:AddSound(tData.SoundLocation .."hurt")
-	
+
 	local delay = 0
 	local inc = 0.1
 	while delay < 0.7 do
@@ -217,9 +217,9 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 		ret:AddDelay(inc)
 		effectBurst.Add(ret, t1, "lmn_Emitter_Psi_Stun_Static_".. dir, DIR_NONE, isTipImage)
 	end
-	
+
 	ret:AddSound("ui/battle/radio_window_out")
-	
+
 	---------------
 	-- move target
 	---------------
@@ -235,7 +235,7 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 		local base = tData.Image
 		local anim_burrow_psi = "lmn_psi_".. base
 		local anim_burrow_psi_rev = "lmn_psi_".. base .."_rev"
-		
+
 		-- make a new burrow and unburrow animation,
 		-- for every pawn type we come across
 		-- to circumvent caching.
@@ -246,11 +246,11 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 			ANIMS[anim_burrow_psi_rev .."a"] = ANIMS[base .."e"]:new{}
 			local anim = ANIMS[anim_burrow_psi .."a"]
 			local anim_rev = ANIMS[anim_burrow_psi_rev .."a"]
-			
+
 			-- add slightly more time to animation
 			-- to avoid invisible end frame.
 			anim.Time = anim.Time + anim.Time / anim.NumFrames
-			
+
 			-- reverse frames.
 			anim_rev.Frames = {}
 			if anim.Frames then
@@ -263,12 +263,12 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 				end
 			end
 		end
-		
+
 		lmn_Burrow_Dummy.Health = tData.Health
 		lmn_Burrow_Dummy.ImageOffset = tData.ImageOffset
 		local health = target:GetHealth()
 		local anim = ANIMS[anim_burrow_psi .."a"]
-		
+
 		ret:AddScript([[
 			local p1 = ]].. t1:GetString() ..[[;
 			Board:GetPawn(]].. id ..[[):SetSpace(Point(-1, -1));
@@ -296,16 +296,16 @@ function lmn_Psionic_Transmitter:GetSkillEffect(p1, p2)
 			Board:GetPawn(]].. id ..[[):SetSpace(p2);
 			Board:RemovePawn(dummy);
 		]])
-		
+
 		-- preview movement.
 		effectPreview:addMove(ret, target, p2)
-		
+
 	elseif target:IsTeleporter() then
 		ret:AddTeleport(p1, p2, FULL_DELAY)
 	else
 		ret:AddMove(Board:GetPath(t1, p2, target:GetPathProf()), FULL_DELAY)
 	end
-	
+
 	return ret
 end
 
@@ -331,10 +331,10 @@ function lmn_Psionic_Transmitter_Tip:GetSkillEffect(p1, p2)
 	local enemy2 = Board:GetPawn(self.TipImage.Enemy2)
 	enemy:FireWeapon(Point(self.TipImage.Enemy.x, self.TipImage.Enemy.y + 1), 1)
 	enemy2:FireWeapon(Point(self.TipImage.Enemy2.x - 1, self.TipImage.Enemy2.y), 1)
-	
+
 	local ret = lmn_Psionic_Transmitter.GetSkillEffect(self, p1, p2)
 	ret:AddDelay(1)
-	
+
 	return ret
 end
 
@@ -421,7 +421,7 @@ lmn_Emitter_Psi_Stun_Static_1 = lmn_Emitter_Psi_Stun_Static_0:new{}
 lmn_Emitter_Psi_Stun_Static_2 = lmn_Emitter_Psi_Stun_Static_0:new{}
 lmn_Emitter_Psi_Stun_Static_3 = lmn_Emitter_Psi_Stun_Static_0:new{}
 
-ANIMS.lmn_Psi_Stun = ANIMS.Animation:new{ 	
+ANIMS.lmn_Psi_Stun = ANIMS.Animation:new{ 
 	Image = "combat/icons/stun_strip5.png",
 	PosX = -8, PosY = -3,
 	NumFrames = 5,
@@ -439,20 +439,20 @@ ANIMS.lmn_Psi_Radio = ANIMS.Animation:new{
 
 modApi.events.onMissionUpdate:subscribe(function()
 	local rem = {}
-	
+
 	weapons = weapons or {}
 	for id, v in pairs(weapons) do
 		if not selected or v.weaponId ~= selected:GetArmedWeaponId() then
 			v.weapon.Target = nil
 			table.insert(rem, id)
 		end
-		
+
 		if v.weapon.Target then
 			local p1 = Board:GetPawn(id):GetSpace()
 			local p2 = v.weapon.Target:GetSpace()
 			local dir = GetDirection(p2 - p1)
 			local distance = p1:Manhattan(p2)
-			
+
 			if distance == 1 then
 				local d = SpaceDamage(p2)
 				d.sImageMark = "combat/lmn_psi_close_y_".. dir ..".png"
@@ -467,12 +467,12 @@ modApi.events.onMissionUpdate:subscribe(function()
 			end
 		end
 	end
-	
+
 	for _, id in ipairs(rem) do
 		weapons[id] = nil
 	end
 end)
-	
+
 modApi.events.onTestMechEntered:subscribe(function()
 	modApi:runLater(function()
 		for id = 0, 2 do
@@ -506,20 +506,20 @@ local function onModsLoaded()
 	modApiExt:addPawnSelectedHook(function(_, pawn)
 		selected = pawn
 	end)
-	
+
 	modApiExt:addPawnDeselectedHook(function()
 		if selected then
 			weapons = weapons or {}
 			weapons[selected:GetId()] = nil
 		end
-		
+
 		selected = nil
 	end)
-	
+
 	modApiExt:addTileHighlightedHook(function(_, tile)
 		highlighted = tile
 	end)
-	
+
 	modApiExt:addTileUnhighlightedHook(function()
 		highlighted = nil
 	end)

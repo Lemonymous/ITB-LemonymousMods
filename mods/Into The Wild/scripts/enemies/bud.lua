@@ -18,7 +18,7 @@ utils.appendAssets{
 	{"lmn_bud1_emerge.png", "bud1e.png"},
 	{"lmn_bud1_death.png", "bud1d.png"},
 	{"lmn_bud1w.png", "bud1.png"},
-	
+
 	{"lmn_bud2.png", "bud2.png"},
 	{"lmn_bud2a.png", "bud2a.png"},
 	{"lmn_bud2_emerge.png", "bud2e.png"},
@@ -112,7 +112,7 @@ lmn_BudAtk1 = Skill:new{
 -- area artillery
 function lmn_BudAtk1:GetTargetArea(p)
 	local list = Board:GetReachable(p, self.PathSize, PATH_FLYER)
-	
+
 	local ret = PointList()
 	for _, loc in ipairs(extract_table(list)) do
 		-- sometimes 0 movement units don't wait for the previous pawn
@@ -122,7 +122,7 @@ function lmn_BudAtk1:GetTargetArea(p)
 			ret:push_back(loc)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -144,16 +144,16 @@ lmn_BudAtk2 = lmn_BudAtk1:new{
 
 function lmn_BudAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
-	
+
 	local seed = SpaceDamage(p2)
 	seed.sPawn = self.MyPawn
 	ret:AddDamage(SpaceDamage(p1, self.SelfDamage))
 	ret:AddSound("enemy/hornet_1/move")
-	
+
 	worldConstants:setHeight(ret, 20)
 	ret:AddArtillery(p1, seed, self.Projectile, NO_DELAY)
 	worldConstants:resetHeight(ret)
-	
+
 	-- seriously dumb hack to prevent several copters aimed at the same tile.
 	-- units with move speed 0 doesn't always seem to be willing to wait for the
 	-- previous unit to finish it's attack before starting it's own.
@@ -161,11 +161,11 @@ function lmn_BudAtk1:GetSkillEffect(p1, p2)
 	local dummy = SpaceDamage(p2, 1)
 	dummy.bHide = true
 	ret:AddQueuedArtillery(dummy, "", NO_DELAY)
-	
+
 	-- clear queued target shortly thereafter.
 	ret:AddDelay(0.1)
 	ret:AddScript(string.format("Board:GetPawn(%s):ClearQueued()", p1:GetString()))
-	
+
 	return ret
 end
 
@@ -174,13 +174,13 @@ lmn_BudAtk2_Tip = lmn_BudAtk2:new{}
 
 function lmn_BudAtk1_Tip.GetSkillEffect(self, p1, p2, ...)
 	local ret = lmn_BudAtk1.GetSkillEffect(self, p1, p2, ...)
-	
+
 	local copter = {
 		p1 = self.TipImage.Target,
 		p2 = self.TipImage.Second_Origin
 	}
-	
-	ret:AddQueuedScript(string.format("Board:GetPawn(%s):Move(%s)", copter.p1:GetString(), copter.p2:GetString()))		
+
+	ret:AddQueuedScript(string.format("Board:GetPawn(%s):Move(%s)", copter.p1:GetString(), copter.p2:GetString()))
 	return ret
 end
 

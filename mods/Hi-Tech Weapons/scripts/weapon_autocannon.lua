@@ -39,19 +39,19 @@ local function GetProjectileEnd(p1, p2)
 	assert(type(p2) == 'userdata')
 	assert(type(p2.x) == 'number')
 	assert(type(p2.y) == 'number')
-	
+
 	local dir = GetDirection(p2 - p1)
 	local target = p1
-	
+
 	for k = 1, INT_MAX do
 		curr = p1 + DIR_VECTORS[dir] * k
-		
+
 		if not Board:IsValid(curr) then
 			break
 		end
-		
+
 		target = curr
-		
+
 		if Board:IsBlocked(target, PATH_PROJECTILE) then
 			local pawn = Board:GetPawn(target)
 			if	not pawn					or
@@ -63,29 +63,29 @@ local function GetProjectileEnd(p1, p2)
 			end
 		end
 	end
-	
+
 	return target
 end
 
 function lmn_Autocannon:GetTargetArea(p)
 	local ret = PointList()
-	
+
 	for i = DIR_START, DIR_END do
 		for k = 1, INT_MAX do
 			local curr = p + DIR_VECTORS[i] * k
-			
+
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			ret:push_back(curr)
-			
+
 			if Board:IsBlocked(curr, PATH_PROJECTILE) then
 				break
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -96,11 +96,11 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 	if not shooter then
 		return
 	end
-	
+
 	local effect = SkillEffect()
 	effect.iOwner = shooter:GetId()
 	effect.piOrigin = p1
-	
+
 	-- if board is busy, wait until it is resolved.
 	if Board:GetBusyState() ~= 0 then
 		effect:AddScript([[
@@ -111,15 +111,15 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 		Board:AddEffect(effect)
 		return
 	end
-	
+
 	local id = shooter:GetId()
 	local dir = GetDirection(p2 - p1)
 	local target = GetProjectileEnd(p1, p2)
-	
+
 	local pawn = Board:GetPawn(target)
 	local attacksLeft = totalAttacksRemaining[id]
 	local attacks = 1
-	
+
 	----------------------
 	-- attack calculation
 	----------------------
@@ -127,30 +127,30 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 		-- unload shots on empty tiles.
 		attacks = attacksLeft
 	end
-	
+
 	attacks = math.min(attacksLeft, attacks)
 	totalAttacksRemaining[id] = totalAttacksRemaining[id] - attacks
-	
+
 	---------------------
 	-- damage resolution
 	---------------------
 	for i = 1, attacks do
 		effect:AddSound("/weapons/unstable_cannon")
-		
+
 		local weapon = SpaceDamage(target, self.Damage)
 		weapon.iPush = self.Push and dir or DIR_NONE
 		weapon.sSound = "/impact/generic/explosion"
 		weapon.sScript = "Board:AddAnimation(".. target:GetString() ..", 'explopush1_".. dir .."', NO_DELAY)"
-		
+
 		worldConstants:setSpeed(effect, 1)
 		effect:AddProjectile(p1, weapon, "effects/shot_mechtank", NO_DELAY)
 		worldConstants:resetSpeed(effect)
-		
+
 		-- minimum delay between shots.
 		-- can take longer due to board being resolved.
 		effect:AddDelay(0.3)
 	end
-	
+
 	-------------------
 	-- continue attack
 	-------------------
@@ -164,14 +164,14 @@ function lmn_Autocannon:FireWeapon(p1, p2, isTipImage)
 		------------------
 		-- end resolution
 		------------------
-		
+
 		if isTipImage then
 			effect:AddDelay(1.3)
 		end
-		
+
 		totalAttacksRemaining[id] = nil
 	end
-	
+
 	Board:AddEffect(effect)
 end
 
@@ -182,12 +182,12 @@ function lmn_Autocannon:GetSkillEffect(p1, p2)
 	if not shooter then
 		return ret
 	end
-	
+
 	local id = shooter:GetId()
 	local distance = p1:Manhattan(p2)
 	local dir = GetDirection(p2 - p1)
 	totalAttacksRemaining[id] = self.Attacks
-	
+
 	----------------
 	-- damage marks
 	----------------
@@ -196,20 +196,20 @@ function lmn_Autocannon:GetSkillEffect(p1, p2)
 		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(self.TipProjectileEnd), "", NO_DELAY)
 		worldConstants:resetSpeed(ret)
-		
+
 		for i, v in ipairs(self.TipMarks) do
 			local tile = v[1]
 			local damage = v[2]
 			local mark = SpaceDamage(tile, damage)
 			mark.sImageMark = "combat/lmn_autocannon_preview_"
-			
+
 			if tile ~= self.TipProjectileEnd then
 				mark.sImageMark = mark.sImageMark .."arrow_"
 			end
-			
+
 			if self.Push then
 				mark.iPush = 5 -- hack to preview push_box without arrow.
-				
+
 				if Board:IsValid(tile + VEC_UP) then
 					mark.sImageMark = mark.sImageMark .."push_" .. damage ..".png"
 				else
@@ -218,41 +218,41 @@ function lmn_Autocannon:GetSkillEffect(p1, p2)
 			else
 				mark.sImageMark = mark.sImageMark .. damage ..".png"
 			end
-			
+
 			effectPreview:addDamage(ret, mark)
 		end
 	else
 		local vBoard = virtualBoard.new()
 		local target = p1
 		for i = 1, self.Attacks do
-			
+
 			-- GetProjectileEnd
 			for k = 1, INT_MAX do
 				local curr = p1 + DIR_VECTORS[dir] * k
 				if not Board:IsValid(curr) then
 					break
 				end
-				
+
 				target = curr
-				
+
 				if vBoard:IsBlocked(curr) then
 					break
 				end
 			end
-			
+
 			-- apply damage to virtual board.
 			vBoard:DamageSpace(SpaceDamage(target, self.Damage, self.Push and dir or DIR_NONE))
 		end
-		
+
 		-- preview projectile path.
 		worldConstants:setSpeed(ret, 999)
 		ret:AddProjectile(p1, SpaceDamage(target), "", NO_DELAY)
 		worldConstants:resetSpeed(ret)
-		
+
 		-- mark tiles with vBoard state.
 		vBoard:MarkDamage(ret, id, "lmn_Autocannon")
 	end
-	
+
 	---------------------
 	-- damage resolution
 	---------------------
@@ -261,7 +261,7 @@ function lmn_Autocannon:GetSkillEffect(p1, p2)
 		local p2 = ]].. p2:GetString() ..[[;
 		_G[']].. self.Self ..[[']:FireWeapon(p1, p2, ]].. tostring(isTipImage) ..[[);
 	]])
-	
+
 	return ret
 end
 

@@ -65,7 +65,7 @@ function lmn_DozerAtk:GetDozerData(point, dir, range)
 	local step = DIR_VECTORS[dir]
 	local trainLength = 0
 	local t = 0
-	
+
 	ret.virtualBoard = {}
 	function ret:GetPawn(offset)
 		if self.virtualBoard[offset] == false then
@@ -73,26 +73,26 @@ function lmn_DozerAtk:GetDozerData(point, dir, range)
 		end
 		return self.virtualBoard[offset] or Board:GetPawn(point + step * offset)
 	end
-	
+
 	function ret:SetPawn(pawn, offset)
 		self.virtualBoard[offset] = pawn
 	end
-	
+
 	-- a recursive search for building a list of
 	-- pawns and how far they can be pushed.
 	local function CanMoveOneStep(offset)
 		local curr = point + step * offset
-		
+
 		if not Board:IsValid(curr) then
 			ret.distanceToSolid = offset
 			return false
-			
+
 		elseif IsSolid(curr) then
 			ret.distanceToSolid = offset
 			return false
-			
+
 		end
-		
+
 		local pawn = ret:GetPawn(offset)
 		if not pawn then
 			return true
@@ -101,7 +101,7 @@ function lmn_DozerAtk:GetDozerData(point, dir, range)
 				trainLength = trainLength + 1
 				if CanMoveOneStep(offset + 1) then
 					ret:SetPawn(false, offset)
-					
+
 					if IsPit(curr + step, pawn:GetPathProf()) then
 						ret.pushablePawns[pawn:GetId()].maxOffset = offset + 1
 					else
@@ -113,16 +113,16 @@ function lmn_DozerAtk:GetDozerData(point, dir, range)
 				trainLength = trainLength - 1
 			end
 		end
-		
+
 		return false
 	end
-	
+
 	-- make a list of all pawns we can push.
 	for k = 1, INT_MAX do
 		if not Board:IsValid(point + step * k) then
 			break
 		end
-		
+
 		local pawn = Board:GetPawn(point + step * k)
 		if pawn then
 			ret:SetPawn(pawn, k)								-- set pawn's virtual location
@@ -133,14 +133,14 @@ function lmn_DozerAtk:GetDozerData(point, dir, range)
 			}
 		end
 	end
-	
+
 	-- figure out how far we can move.
 	while t < range do
 		local curr = point + step * (t + 1)
 		if	Board:IsValid(curr)					and
 			not IsPit(curr, Pawn:GetPathProf())	and
 			CanMoveOneStep(t + 1)				then
-			
+
 			ret:SetPawn(false, t)
 			ret:SetPawn(Pawn, t + 1)
 		else
@@ -148,30 +148,30 @@ function lmn_DozerAtk:GetDozerData(point, dir, range)
 		end
 		t = t + 1
 	end
-	
+
 	ret.distanceMoved = t
-	
+
 	return ret
 end
 
 local imageMarkTip
 local imageMark
 function lmn_DozerAtk:GetTargetArea(point)
-	
+
 	local ret = PointList()
 	local pathing = Pawn:GetPathProf()
 	local isTipImage = Board:IsTipImage()
-	
+
 	if isTipImage then
 		imageMarkTip = {}
 	else
 		imageMark = {}
 	end
-	
+
 	for dir = DIR_START, DIR_END do
 		local step = DIR_VECTORS[dir]
 		local isImageMark
-		
+
 		if isTipImage then
 			imageMarkTip[dir] = {}
 			isImageMark = imageMarkTip[dir]
@@ -179,78 +179,78 @@ function lmn_DozerAtk:GetTargetArea(point)
 			imageMark[dir] = {}
 			isImageMark = imageMark[dir]
 		end
-		
+
 		for k = 1, INT_MAX do										-- populate a table for imageMarks
 			local curr = point + step * k
 			if not Board:IsValid(curr) then
 				break
 			end
-			
+
 			if not Board:IsPawnSpace(curr) then
 				isImageMark[k] = true
 			end
 		end
-		
+
 		local data = self:GetDozerData(point, dir, self.Range)
-		
+
 		for k = 1, data.distanceMoved do							-- add all tiles we can move to.
 			ret:push_back(point + step * k)
 		end
-		
+
 		local crashDist = data.distanceMoved + 1					-- add another tile if we can crash.
 		local pawn = data:GetPawn(crashDist)
 		local curr = point + step * crashDist
 		local terrain = Board:GetTerrain(curr)
-		
+
 		if	Board:IsValid(curr)					and
 			crashDist <= self.Range				and
 			not IsPit(curr, Pawn:GetPathProf())	then
-			
+
 			if pawn and IsPushable(pawn) then
 				if self.Push then
 					if	Board:IsValid(curr + step)
 					or	self.CollideEdge			then
-						
+
 						ret:push_back(curr)
 					end
 				end
-				
+
 			elseif
 				self.CollideWall				and
 				(terrain == TERRAIN_MOUNTAIN
 			or	terrain == TERRAIN_BUILDING)	then
-				
+
 				ret:push_back(curr)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
 function lmn_DozerAtk:GetSkillEffect(p1, p2)
-	
+
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local step = DIR_VECTORS[dir]
 	local distance = p1:Manhattan(p2)
 	local isTipImage = Board:IsTipImage()
-	
+
 	local isImageMark
 	if isTipImage then
 		isImageMark = imageMarkTip[dir]
 	else
 		isImageMark = imageMark[dir]
 	end
-	
+
 	local data = self:GetDozerData(p1, dir, distance)						-- get data for this target tile.
 	local moveLoc = p1 + step * data.distanceMoved
-	
+
 	local pawnLocs = {}
 	for _, v in pairs(data.pushablePawns) do								-- hash pawns by distance from dozer.
 		pawnLocs[v.offset] = shallow_copy(v)
 	end
-	
+
 	local charges = {}
 	local furthestPush = 0
 	local trainLength = 0
@@ -259,102 +259,102 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 		if v then
 			local time = v.offset - trainLength
 			charges[time] = charges[time] or {}
-			
+
 			local moveDist = maxDist + 1
 			if v.maxOffset then
 				moveDist = math.min(moveDist, v.maxOffset)
 			end
-			
+
 			furthestPush = math.max(furthestPush, moveDist)
 			table.insert(charges[time], {id = v.pawn:GetId(), initLoc = v.loc, start = loc, stop = moveDist})
 			pawnLocs[loc] = nil
-			
+
 			trainLength = trainLength + 1
 			for k = loc + 1, moveDist do
 				addCharge(k, moveDist)
 			end
 			trainLength = trainLength - 1
-			
+
 			pawnLocs[moveDist] = v
 			v.offset = moveDist
 			distance = math.max(distance, moveDist)
 		end
 	end
-	
+
 	for k = 1, data.distanceMoved do
 		addCharge(k, data.distanceMoved)									-- init charge recursion.
 	end
-	
+
 	worldConstants:setSpeed(ret, self.VelX)
 	ret:AddCharge(Board:GetPath(p1, moveLoc, PATH_FLYER), NO_DELAY)			-- charge dozer.
 	worldConstants:resetSpeed(ret)
-	
+
 	local damage = SpaceDamage(p1)											-- throw dust behind dozer.
 	damage.sAnimation = "exploout0_".. (dir+2)%4
 	ret:AddDamage(damage)
-	
+
 	for k = 1, distance do
-		
+
 		if charges[k] then													-- charge pushable pawns at their correct timings.
-			
+
 			for _, v in ipairs(charges[k]) do
 				local start = p1 + step * v.start
 				local stop = p1 + step * v.stop
-				
+
 				worldConstants:setSpeed(ret, self.VelX)
 				effectPreview:filterTile(ret, start, v.id)				-- sort the tile and charge the specific pawnId.
 				ret:AddCharge(Board:GetPath(start, stop, PATH_FLYER), NO_DELAY)
 				effectPreview:rewindTile(ret, start)
 				worldConstants:resetSpeed(ret)
-				
+
 				if start ~= v.initLoc then
 					effectPreview:addCharge(ret, v.initLoc, stop)		-- update the preview of the increased charge length.
 				end
 			end
 		end
-		
+
 		if k <= data.distanceMoved + 1 then
 			local curr = p1 + step * (k - 1)
 			ret:AddBounce(curr, -3)
 		end
-		
+
 		if k <= data.distanceMoved then
 			ret:AddDelay(0.08 * worldConstants:getDefaultSpeed() / self.VelX)
 		end
 	end
-	
+
 	effectPreview:addCharge(ret, p1, moveLoc)
-	
+
 	if moveLoc ~= p2 then													-- if we should crash,
-		
+
 		local dirs = {"up", "right", "down", "left"}
 		local pawn = data:GetPawn(data.distanceMoved + 1)
 		if pawn then
 			if self.Push then
-				
-				local spaceDamage = SpaceDamage(p2)	
+
+				local spaceDamage = SpaceDamage(p2)
 				spaceDamage.sSound = self.ImpactSound
 				ret:AddDamage(spaceDamage)									-- collision sound
-				
+
 				local spaceDamage = SpaceDamage(p2, self.Damage)
-				
+
 				if Board:IsValid(p2 + step) then
 					spaceDamage.iPush = dir
 					if isImageMark[data.distanceMoved + 1] then
 						spaceDamage.sImageMark = "combat/arrow_hit_".. dirs[dir+1] ..".png"
 					end
 				end
-				
+
 				if self.Damage > 0 then
 					spaceDamage.sAnimation = "ExploAir".. math.min(2, self.Damage)
 				end
-				
+
 				if p1 == moveLoc then
 					ret:AddMelee(p1, spaceDamage, NO_DELAY)					-- main push
 				else
 					ret:AddDamage(spaceDamage)
 				end
-				
+
 				if self.ChainPush then
 					local pushed = 0
 					for k = data.distanceMoved + 2, furthestPush do
@@ -362,12 +362,12 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 						if not Board:IsValid(curr) then
 							break
 						end
-						
+
 						local pawn = data:GetPawn(k)
 						if pawn and IsPushable(pawn) then
 							if	Board:IsValid(curr + step)
 							or	self.CollideEdge			then
-								
+
 								ret:AddDelay(0.5)
 								local spaceDamage = SpaceDamage(curr, self.Damage, dir)
 								if isImageMark[k] then
@@ -386,14 +386,14 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 			if	self.CollideWall				and
 				(terrain == TERRAIN_MOUNTAIN
 			or	terrain == TERRAIN_BUILDING)	then
-				
+
 				local spaceDamage = SpaceDamage(p2, self.Damage)
 				spaceDamage.sSound = self.ImpactSound
-				
+
 				if self.Damage > 0 then
 					spaceDamage.sAnimation = "ExploAir".. math.min(2, self.Damage)
 				end
-				
+
 				if p1 == moveLoc then
 					ret:AddMelee(p1, spaceDamage)							-- building collision
 				else
@@ -402,11 +402,11 @@ function lmn_DozerAtk:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	if isTipImage then
 		ret:AddDelay(1.5)
 	end
-	
+
 	return ret
 end
 
@@ -598,7 +598,7 @@ lmn_DozerAtk_Tip_AB.GetSkillEffect = lmn_DozerAtk_Tip.GetSkillEffect
 local function injectValues(dst, src)
 	assert(type(src) == 'table')
 	assert(type(dst) == 'table')
-	
+
 	for i, v in pairs(src) do
 		dst[i] = v
 	end
@@ -618,7 +618,7 @@ modApi.events.onModLoaded:subscribe(function(id)
 		injectValues(lmn_DozerAtk_Tip_A, lmn_DozerAtk_2A)
 		injectValues(lmn_DozerAtk_Tip_B, lmn_DozerAtk_2B)
 		injectValues(lmn_DozerAtk_Tip_AB, lmn_DozerAtk_2AB)
-		
+
 	elseif options["option_dozer"].value == 3 then
 		injectValues(lmn_DozerAtk, lmn_DozerAtk_3)
 		injectValues(lmn_DozerAtk_A, lmn_DozerAtk_3A)
@@ -628,7 +628,7 @@ modApi.events.onModLoaded:subscribe(function(id)
 		injectValues(lmn_DozerAtk_Tip_A, lmn_DozerAtk_3A)
 		injectValues(lmn_DozerAtk_Tip_B, lmn_DozerAtk_3B)
 		injectValues(lmn_DozerAtk_Tip_AB, lmn_DozerAtk_3AB)
-		
+
 	else
 		injectValues(lmn_DozerAtk, lmn_DozerAtk_1)
 		injectValues(lmn_DozerAtk_A, lmn_DozerAtk_1A)

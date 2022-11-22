@@ -63,7 +63,7 @@ return {
 			"Those poor little animals, slain by these cruel monsters."
 		},
 	},
-	
+
 	-- Archive generic
 	Archive = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -134,7 +134,7 @@ return {
 			"We've lost the agroforest!"
 		},
 	},
-	
+
 	-- RST generic
 	Rust = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -204,7 +204,7 @@ return {
 			"Farmland's turned to rubble, commander."
 		},
 	},
-	
+
 	-- Pinnacle generic
 	Pinnacle = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -259,7 +259,7 @@ return {
 			"[ Agroforest has been destroyed ]"
 		},
 	},
-	
+
 	-- Detritus generic
 	Detritus = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -329,7 +329,7 @@ return {
 			"Region will have to do without its agroforest now."
 		},
 	},
-	
+
 	-- Meridia generic
 	Meridia = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -399,7 +399,7 @@ return {
 			"We won't hear the end of this for months, trust me.."
 		},
 	},
-	
+
 	-- AI generic
 	Artificial = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -451,7 +451,7 @@ return {
 			"Update: Agroforest destroyed"
 		},
 	},
-	
+
 	-- Archimedes
 	Aquatic = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -520,7 +520,7 @@ return {
 			"I must confess, I don't quite trust these humans to play with genetics as haphazardly as they do."
 		},
 	},
-	
+
 	-- Abe Isamu
 	Assassin = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -577,7 +577,7 @@ return {
 			"The farm is destroyed. Focus on killing the Vek."
 		},
 	},
-	
+
 	-- Bethany Jones
 	Genius = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -647,7 +647,7 @@ return {
 			"Oh no, that beautiful farmland is..."
 		},
 	},
-	
+
 	-- Henry Kwan
 	Hotshot = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -717,7 +717,7 @@ return {
 			"Sucks we lost that pretty forest, but nothing we can do now."
 		},
 	},
-	
+
 	-- Chen Rong
 	Leader = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -787,7 +787,7 @@ return {
 			"Agroforest was destroyed ensure we take no further losses here!"
 		},
 	},
-	
+
 	-- Isaac Jones
 	Medic = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -857,7 +857,7 @@ return {
 			"The a-a-agroforest, it's been d-destroyed!"
 		},
 	},
-	
+
 	-- Silica
 	Miner = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -921,7 +921,7 @@ return {
 			"Unauthorized demolition of #corp botanical-zoological infrastructure detected."
 		},
 	},
-	
+
 	-- Ralph Karlsson
 	Original = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -991,7 +991,7 @@ return {
 			"We've lost the agroforest!"
 		},
 	},
-	
+
 	-- Prospero
 	Recycler = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -1049,7 +1049,7 @@ return {
 			"Agroforest destroyed, garden biodiversity threatened."
 		},
 	},
-	
+
 	-- Harold Schmidt
 	Repairman = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -1119,7 +1119,7 @@ return {
 			"Truly wasteful, to have all that flora and fauna killed off!"
 		},
 	},
-	
+
 	-- Camila Vera
 	Soldier = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -1189,7 +1189,7 @@ return {
 			"Damn, agroforest is history."
 		},
 	},
-	
+
 	-- Gana
 	Warrior = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -1247,7 +1247,7 @@ return {
 			"The agroforest's structural integrity has been found lacking."
 		},
 	},
-	
+
 	-- Lily Reed
 	Youth = {
 		Mission_lmn_Convoy_Destroyed = {
@@ -1317,7 +1317,7 @@ return {
 			"Come on, that agroforest was my favorite!"
 		},
 	},
-	
+
 	-- Kazaaakpleth
 	Mantis = {
 		Mission_lmn_Convoy_Destroyed = {"Tch'k; Jjk."},
@@ -1350,7 +1350,7 @@ return {
 		Mission_lmn_Hotel_Destroyed = {"Tch'k; Vk; K'tca."},
 		Mission_lmn_Agroforest_Destroyed = {"Tch'k; Jjk."},
 	},
-	
+
 	-- Adriane
 	Rock = {
 		Mission_lmn_Convoy_Destroyed = {":: Nnn… HRN. ::"},
@@ -1377,7 +1377,7 @@ return {
 		Mission_lmn_Hotel_Destroyed = {":: NNN-HR! HrrrRNN! ::"},
 		Mission_lmn_Agroforest_Destroyed = {":: Nnn… HRN. ::"},
 	},
-	
+
 	-- Mafan
 	Zoltan = {
 		Mission_lmn_Convoy_Destroyed = {"\\ *::.:.*:* /"},

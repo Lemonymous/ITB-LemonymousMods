@@ -11,7 +11,7 @@ function this:draw(screen, widget)
 	if self.decosetx then
 		widget.decorationx = self.decosetx
 	end
-	
+
 	if self.decosety then
 		widget.decorationy = self.decosety
 	end

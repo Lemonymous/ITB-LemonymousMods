@@ -16,5 +16,4 @@ return {
 			"Well done commander! You seem to be able to handle any threat.",
 		}
 	},
-	
 }
