@@ -21,9 +21,7 @@ ANIMS.lmn_Specimen_Drop_1 = ANIMS.Animation:new{
 
 ANIMS.lmn_Specimen_Explo_Smoke2 = ANIMS.ExploAir2:new{ Image = "effects/lmn_specimen_explo_smoke2.png" }
 
-local function missionData()
-	local mission = GetCurrentMission()
-
+local function getMissionData(mission)
 	if mission.lmn_Into_The_Wild == nil then
 		mission.lmn_Into_The_Wild = {}
 	end
@@ -37,7 +35,7 @@ local function GetAlive()
 	local specimen = true
 		and mission ~= nil
 		and mission ~= Mission_Test
-		and missionData().specimen
+		and getMissionData(mission).specimen
 
 	return specimen or Board:GetPawns(TEAM_ENEMY):size()
 end
@@ -81,8 +79,8 @@ function Mission.MissionEnd(self, ...)
 		local t = 0
 		local events = {}
 		enemies = extract_table(Board:GetPawns(TEAM_ENEMY))
-		missionData().specimen = #enemies
 		
+		getMissionData(self).specimen = #enemies
 		if #enemies > 0 then
 			for _, id in ipairs(enemies) do
 				local pawn = Board:GetPawn(id)
@@ -164,7 +162,7 @@ function Mission.MissionEnd(self, ...)
 		end
 	end
 
-	missionData().specimen = nil
+	getMissionData(self).specimen = nil
 end
 
 bonus:Add(this)
