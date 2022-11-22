@@ -5,33 +5,33 @@
 
 local VERSION = "0.1.0"
 local EVENTS = {
+	"onAcidCreated",
+	"onAcidRemoved",
+	"onBuildingCreated",
 	"onBuildingDamaged",
 	"onBuildingDestroyed",
-	"onDamaged",
-	"onHealthChanged",
-	"onHighlighted",
-	"onIsAcid",
-	"onIsBuilding",
-	"onIsFire",
-	"onIsFrozen",
-	"onIsItem",
-	"onIsNotAcid",
-	"onIsNotBuilding",
-	"onIsNotFire",
-	"onIsNotFrozen",
-	"onIsNotItem",
-	"onIsNotShield",
-	"onIsNotSmoke",
-	"onIsNotUniqueBuilding",
-	"onIsShield",
-	"onIsSmoke",
-	"onIsUniqueBuilding",
-	"onItemNameChanged",
-	"onMaxHealthChanged",
+	"onBuildingRemoved",
+	"onFireCreated",
+	"onFireRemoved",
+	"onFrozenCreated",
+	"onFrozenRemoved",
+	"onItemChanged",
+	"onItemCreated",
+	"onItemRemoved",
+	"onShieldCreated",
+	"onShieldRemoved",
+	"onSmokeCreated",
+	"onSmokeRemoved",
 	"onTerrainChanged",
-	"onUnhighlighted",
+	"onTileDamaged",
+	"onTileHealthChanged",
+	"onTileHighlighted",
+	"onTileMaxHealthChanged",
+	"onTileUnhighlighted",
 	"onUniqueBuildingDestroyed",
-	"onUniqueBuildingNameChanged",
+	"onUniqueBuildingChanged",
+	"onUniqueBuildingCreated",
+	"onUniqueBuildingRemoved",
 }
 
 local function initTrackedTiles()
@@ -79,7 +79,7 @@ function updateBoard(self)
 		local healthMax = Board:GetMaxHealth(point)
 
 		local building = Board:IsBuilding(point)
-		local uniqueBuilding = Board:IsUniqueBuilding(point)
+		local uniqueBuilding = building and Board:IsUniqueBuilding(point)
 		local uniqueBuildingName = Board:GetUniqueBuilding(point)
 		local item = Board:IsItem(point)
 		local itemName = Board:GetItem(point)
@@ -93,20 +93,20 @@ function updateBoard(self)
 			local mission = GetCurrentMission()
 
 			if highlighted then
-				BoardEvents.onHighlighted:dispatch(mission, point)
+				BoardEvents.onTileHighlighted:dispatch(mission, point)
 			else
-				BoardEvents.onUnhighlighted:dispatch(mission, point)
+				BoardEvents.onTileUnhighlighted:dispatch(mission, point)
 			end
 
 			trackedTile.highlighted = highlighted
 		end
 
 		if health ~= trackedTile.health then
-			BoardEvents.onHealthChanged:dispatch(point, trackedTile.health, health)
+			BoardEvents.onTileHealthChanged:dispatch(point, trackedTile.health, health)
 
 			local damage = trackedTile.health - health
 			if damage > 0 then
-				BoardEvents.onDamaged:dispatch(point, damage)
+				BoardEvents.onTileDamaged:dispatch(point, damage)
 
 				if trackedTile.terrain == TERRAIN_BUILDING then
 					BoardEvents.onBuildingDamaged:dispatch(point, damage)
@@ -125,16 +125,16 @@ function updateBoard(self)
 		end
 
 		if healthMax ~= trackedTile.healthMax then
-			BoardEvents.onMaxHealthChanged:dispatch(point, trackedTile.healthMax, healthMax)
+			BoardEvents.onTileMaxHealthChanged:dispatch(point, trackedTile.healthMax, healthMax)
 
 			trackedTile.healthMax = healthMax
 		end
 
 		if building ~= trackedTile.building then
 			if building then
-				BoardEvents.onIsBuilding:dispatch(point)
+				BoardEvents.onBuildingCreated:dispatch(point)
 			else
-				BoardEvents.onIsNotBuilding:dispatch(point)
+				BoardEvents.onBuildingRemoved:dispatch(point)
 			end
 
 			trackedTile.building = building
@@ -142,46 +142,46 @@ function updateBoard(self)
 
 		if uniqueBuilding ~= trackedTile.uniqueBuilding then
 			if uniqueBuilding then
-				BoardEvents.onIsUniqueBuilding:dispatch(point, uniqueBuildingName)
+				BoardEvents.onUniqueBuildingCreated:dispatch(point, uniqueBuildingName)
 			else
-				BoardEvents.onIsNotUniqueBuilding:dispatch(point, trackedTile.uniqueBuildingName)
+				BoardEvents.onUniqueBuildingRemoved:dispatch(point, trackedTile.uniqueBuildingName)
 			end
 
 			trackedTile.uniqueBuilding = uniqueBuilding
 		end
 
+		if uniqueBuildingName ~= trackedTile.uniqueBuildingName then
+			BoardEvents.onUniqueBuildingChanged:dispatch(point, uniqueBuildingName, trackedTile.uniqueBuildingName)
+
+			trackedTile.uniqueBuildingName = uniqueBuildingName
+		end
+
 		if item ~= trackedTile.item then
 			if item then
-				BoardEvents.onIsItem:dispatch(point, itemName)
+				BoardEvents.onItemCreated:dispatch(point, itemName)
 			else
-				BoardEvents.onIsNotItem:dispatch(point, trackedTile.itemName)
+				BoardEvents.onItemRemoved:dispatch(point, trackedTile.itemName)
 			end
 
 			trackedTile.item = item
 		end
 
-		if uniqueBuildingName ~= trackedTile.uniqueBuildingName then
-			BoardEvents.onUniqueBuildingNameChanged:dispatch(point, uniqueBuildingName, trackedTile.uniqueBuildingName)
-
-			trackedTile.uniqueBuildingName = uniqueBuildingName
-		end
-
 		if itemName ~= trackedTile.itemName then
-			BoardEvents.onItemNameChanged:dispatch(point, itemName, trackedTile.itemName)
+			BoardEvents.onItemChanged:dispatch(point, itemName, trackedTile.itemName)
 
 			trackedTile.itemName = itemName
 		end
 
 		if terrain ~= trackedTile.terrain then
-			BoardEvents.onTerrainChanged:dispatch(point, trackedTile.terrain, terrain)
+			BoardEvents.onTerrainChanged:dispatch(point, terrain, trackedTile.terrain)
 			trackedTile.terrain = terrain
 		end
 
 		if shield ~= trackedTile.shield then
 			if shield then
-				BoardEvents.onIsShield:dispatch(point)
+				BoardEvents.onShieldCreated:dispatch(point)
 			else
-				BoardEvents.onIsNotShield:dispatch(point)
+				BoardEvents.onShieldRemoved:dispatch(point)
 			end
 
 			trackedTile.shield = shield
@@ -189,9 +189,9 @@ function updateBoard(self)
 
 		if frozen ~= trackedTile.frozen then
 			if frozen then
-				BoardEvents.onIsFrozen:dispatch(point)
+				BoardEvents.onFrozenCreated:dispatch(point)
 			else
-				BoardEvents.onIsNotFrozen:dispatch(point)
+				BoardEvents.onFrozenRemoved:dispatch(point)
 			end
 
 			trackedTile.frozen = frozen
@@ -199,9 +199,9 @@ function updateBoard(self)
 
 		if smoke ~= trackedTile.smoke then
 			if smoke then
-				BoardEvents.onIsSmoke:dispatch(point)
+				BoardEvents.onSmokeCreated:dispatch(point)
 			else
-				BoardEvents.onIsNotSmoke:dispatch(point)
+				BoardEvents.onSmokeRemoved:dispatch(point)
 			end
 
 			trackedTile.smoke = smoke
@@ -209,9 +209,9 @@ function updateBoard(self)
 
 		if fire ~= trackedTile.fire then
 			if fire then
-				BoardEvents.onIsFire:dispatch(point)
+				BoardEvents.onFireCreated:dispatch(point)
 			else
-				BoardEvents.onIsNotFire:dispatch(point)
+				BoardEvents.onFireRemoved:dispatch(point)
 			end
 
 			trackedTile.fire = fire
@@ -219,9 +219,9 @@ function updateBoard(self)
 
 		if acid ~= trackedTile.acid then
 			if acid then
-				BoardEvents.onIsAcid:dispatch(point)
+				BoardEvents.onAcidCreated:dispatch(point)
 			else
-				BoardEvents.onIsNotAcid:dispatch(point)
+				BoardEvents.onAcidRemoved:dispatch(point)
 			end
 
 			trackedTile.acid = acid

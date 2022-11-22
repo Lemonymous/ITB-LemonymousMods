@@ -20,14 +20,14 @@ lmn_Emitter_Thermal_Plant = Emitter:new{
 	fade_in = true, layer = LAYER_FRONT
 }
 
-BoardEvents.onIsUniqueBuilding:subscribe(function(loc, uniqueBuildingName)
+BoardEvents.onUniqueBuildingCreated:subscribe(function(loc, uniqueBuildingName)
 	local mission = GetCurrentMission()
 	if uniqueBuildingName == "geothermal_plant" then
 		customEmitter:Add(mission, loc, "lmn_Emitter_Thermal_Plant")
 	end
 end)
 
-BoardEvents.onUniqueBuildingDestroyed:subscribe(function(loc, uniqueBuildingName)
+BoardEvents.onUniqueBuildingRemoved:subscribe(function(loc, uniqueBuildingName)
 	local mission = GetCurrentMission()
 	if uniqueBuildingName == "geothermal_plant" then
 		customEmitter:Rem(mission, loc, "lmn_Emitter_Thermal_Plant")
