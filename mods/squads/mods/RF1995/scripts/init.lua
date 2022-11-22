@@ -2,8 +2,8 @@
 local mod =  {
 	id = "lmn_RF1995",
 	name = "RF1995",
-	version = "2.0.1",
-	modApiVersion = "2.8.2",
+	version = "2.0.2",
+	modApiVersion = "2.8.3",
 	gameVersion = "1.2.83",
 	icon = "img/icon.png",
 	dependencies = {"lmn_mods"},
