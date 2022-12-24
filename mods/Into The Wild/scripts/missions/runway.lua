@@ -120,12 +120,15 @@ local function IsRunwayClear(p)
 end
 
 local function GetDistanceFromRunway(p1)
+	local pawn = Board:GetPawn(p1)
+	if not pawn then return 100 end
+	
 	local zone = extract_table(Board:GetZone("plane"))
 
 	local dist = INT_MAX
 
 	for _, p2 in ipairs(zone) do
-		local path = Board:GetPath(p1, p2, Pawn:GetPathProf())
+		local path = Board:GetPath(p1, p2, pawn:GetPathProf())
 		local size = path:size()
 
 		if size < dist then
