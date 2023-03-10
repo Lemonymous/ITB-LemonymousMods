@@ -88,6 +88,7 @@ CreatePilot{
 	Sex = SEX_VEK,
 	Skill = "Survive_Death",
 	Rarity = 0,
+	Blacklist = {"Invulnerable", "Popular"},
 }
 
 lmn_Puffer_Cloud_Burst = Emitter:new{
