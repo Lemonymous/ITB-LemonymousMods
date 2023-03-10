@@ -76,6 +76,7 @@ function lmn_Engi_Repair:GetSkillEffect(p1, p2)
 end
 
 CreatePilot(pilot)
+modApi:addPilotDrop{id = pilot.Id, pod = false, ftl = true }
 
 require(scriptPath .."personality_engi")
 
