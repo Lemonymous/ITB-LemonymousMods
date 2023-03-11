@@ -5,7 +5,7 @@ local mod = {
 	description = "Adds 9 enemies, 6 bosses and 5 unlockable Techno-Vek.",
 	version = "2.3.0",
 	modApiVersion = "2.8.0",
-	gameVersion = "1.2.83",
+	gameVersion = "1.2.88",
 	icon = "img/icon.png",
 	dependencies = {"lmn_mods"},
 	libs = {},
@@ -33,6 +33,7 @@ local pilot_template = {
 	Sex = SEX_VEK,
 	Skill = "Survive_Death",
 	Rarity = 0,
+	Blacklist = {"Invulnerable", "Popular"},
 }
 
 function mod:metadata()
@@ -65,7 +66,8 @@ function mod:metadata()
 			Personality = "Vek",
 			Sex = SEX_VEK,
 			Skill = "Survive_Death",
-			Rarity = 0
+			Rarity = 0,
+			Blacklist = {"Invulnerable", "Popular"},
 		}
 		_G[id] = Pilot:new(pilot)
 	end
@@ -100,33 +102,33 @@ function mod:init()
 		require(self.scriptPath .. name)
 	end
 
-	-- modApi:addModsInitializedHook(function()
-		-- local oldGetStartingSquad = getStartingSquad
-		-- function getStartingSquad(choice, ...)
-			-- local result = oldGetStartingSquad(choice, ...)
+	modApi:addModsInitializedHook(function()
+		local oldGetStartingSquad = getStartingSquad
+		function getStartingSquad(choice, ...)
+			local result = oldGetStartingSquad(choice, ...)
 
-			-- if choice == 0 then
-				-- local copy = {}
-				-- for i, v in pairs(result) do
-					-- copy[#copy+1] = v
-				-- end
+			if choice == 0 then
+				local copy = {}
+				for i, v in pairs(result) do
+					copy[#copy+1] = v
+				end
 
-				-- for _, name in ipairs{"swarmer", "roach", "spitter", "wyrm", "crusher"} do
-					-- local Name = name:gsub("^.", string.upper) -- capitalize first letter
+				for _, name in ipairs{"swarmer", "roach", "spitter", "wyrm", "crusher"} do
+					local Name = name:gsub("^.", string.upper) -- capitalize first letter
 
-					-- -- add technomechs at the end to
-					-- -- enable them as random and custom mechs.
-					-- if modApi.achievements:isComplete(self.id, name) then
-						-- table.insert(copy, 'lmn_'.. Name)
-					-- end
-				-- end
+					-- add technomechs at the end to
+					-- enable them as random and custom mechs.
+					if modApi.achievements:isComplete(self.id, name) then
+						table.insert(copy, 'lmn_'.. Name)
+					end
+				end
 
-				-- return copy
-			-- end
+				return copy
+			end
 
-			-- return result
-		-- end
-	-- end)
+			return result
+		end
+	end)
 end
 
 function mod:load(options, version)
