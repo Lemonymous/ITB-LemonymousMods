@@ -91,6 +91,7 @@ CreatePilot{
 	Sex = SEX_VEK,
 	Skill = "Survive_Death",
 	Rarity = 0,
+	Blacklist = {"Invulnerable", "Popular"},
 }
 
 lmn_Chili1 = Pawn:new{
