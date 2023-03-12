@@ -2,7 +2,7 @@
 local mod = {
 	id = "lmn_flt_pilots",
 	name = "FTL Pilots",
-	version = "1.1.0",
+	version = "1.2.0",
 	modApiVersion = "2.9.1",
 	gameVersion = "1.2.88",
 	icon = "img/icon.png",
