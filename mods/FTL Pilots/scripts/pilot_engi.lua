@@ -43,7 +43,7 @@ function lmn_Engi_Repair:RepairTrain(p2)
 	local train = Board:GetPawn(mission.Train)
 	if train then
 		Board:RemovePawn(train)
-		train = PAWN_FACTORY:CreatePawn("Train_Pawn")
+		train = PAWN_FACTORY:CreatePawn(mission.TrainPawn)
 		Board:AddPawn(train, mission.TrainLoc)
 
 		mission.Train = train:GetId()
