@@ -34,6 +34,8 @@ local function IsAbilityActive()
 end
 
 CreatePilot(pilot)
+modApi:addPilotDrop{id = pilot.Id, pod = false, ftl = true }
+
 require(mod.scriptPath .."personality_slug")
 
 tooltip.Add(

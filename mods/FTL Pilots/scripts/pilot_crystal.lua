@@ -15,6 +15,7 @@ local pilot = {
 }
 
 CreatePilot(pilot)
+modApi:addPilotDrop{id = pilot.Id, pod = false, ftl = true }
 
 tooltip.Add(
 	"Freeze_Walk",
