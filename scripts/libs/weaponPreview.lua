@@ -1,7 +1,7 @@
 
 local VERSION = "3.1.2"
 ----------------------------------------------------------------------
--- Weapon Preview v3.1.2 - code library
+-- Weapon Preview - code library
 -- https://github.com/Lemonymous/ITB-LemonymousMods/wiki/weaponPreview
 --
 -- by Lemonymous
