@@ -1,5 +1,5 @@
 
-local VERSION = "3.1.2"
+local VERSION = "3.1.3"
 ----------------------------------------------------------------------
 -- Weapon Preview - code library
 -- https://github.com/Lemonymous/ITB-LemonymousMods/wiki/weaponPreview
@@ -84,6 +84,7 @@ if Assert.TypeGLColor == nil then
 	end
 end
 
+local OUT_OF_BOUNDS = Point(-1, -1)
 local PREFIX = "_weapon_preview_%s_"
 local PREFIX_ANIM = string.format(PREFIX, "1")
 local PREFIX_EMITTER = string.format(PREFIX, "emitter")
@@ -174,6 +175,7 @@ local actingMarker
 local targetMarker
 local effectMarker
 local queuedMarker
+local time_prev = 0
 
 local getTargetAreaCallers = {}
 local getSkillEffectCallers = {}
@@ -559,57 +561,53 @@ local function getPreviewLength(marks)
 		end
 	end
 
-	return length * 60
+	return length
 end
 
-local function getAnimFrame(mark, frameStart, frameCurr)
+local function getAnimFrame(mark, time_start, time_curr)
 	local base = ANIMS[PREFIX_ANIM..mark.anim]
 	local lengths = base.__Lengths
-	local duration = mark.duration * 60
+	local duration = mark.duration
 
 	if mark.loop then
-		frameCurr = frameStart + (frameCurr - frameStart) % duration
+		time_start = time_curr + (time_start - time_curr) % duration
 	end
 
-	local frame = frameStart
+	local frame = time_start
 	for i = 1, base.__NumFrames do
-		frame = frame + lengths[i] * 60
-		if frame > frameCurr or i == base.__NumFrames then
+		frame = frame + lengths[i]
+		if frame > time_curr or i == base.__NumFrames then
 			local prefix = string.format(PREFIX, i)
 			return prefix..mark.anim
 		end
 	end
 end
 
-local function markSpaces(marks, frameCurr)
-	local frame = 0
+local function markSpaces(marks, time_curr)
+	local time_start = 0
 	local looping = marks.loop
 
 	if looping ~= false then
 		local length = getPreviewLength(marks)
 		if length > 0 then
-			frameCurr = frameCurr % length
+			time_curr = time_curr % length
 		else
-			frameCurr = 0
+			time_curr = 0
 		end
 	end
 
 	for _, mark in ipairs(marks) do
 		if mark.fn then
-			local duration = INT_MAX
-
-			if mark.duration then
-				duration = mark.duration * 60
-			end
+			local duration = mark.duration or INT_MAX
 
 			if mark.fn == "AddAnimation" then
-				mark.data[2] = getAnimFrame(mark, frame, frameCurr)
+				mark.data[2] = getAnimFrame(mark, time_start, time_curr)
 
 			elseif mark.fn == "DamageSpace" then
 				mark.data[1] = spaceEmitter(mark.loc, PREFIX_EMITTER..mark.emitter)
 			end
 
-			if mark.loop or frame <= frameCurr and frameCurr <= frame + duration then
+			if mark.loop or time_start <= time_curr and time_curr <= time_start + duration then
 				if mark.script then
 					mark.fn(unpack(mark.data))
 				else
@@ -618,11 +616,19 @@ local function markSpaces(marks, frameCurr)
 			end
 		end
 
-		frame = frame + (mark.delay or 0) * 60
+		time_start = time_start + (mark.delay or 0)
 	end
 end
 
+local function onMissionChanged(mission, missionOld)
+	time_prev = os.clock()
+end
+
 local function onMissionUpdate()
+
+	local time_now = os.clock()
+	local time_delta = time_now - time_prev
+	time_prev = time_now
 
 	-- clear preview entries for removed units
 	for pawnId, _ in pairs(queuedPreviewMarks) do
@@ -632,7 +638,7 @@ local function onMissionUpdate()
 	end
 
 	local selected = Board:GetSelectedPawn()
-	local highlighted = Board:GetHighlighted()
+	local highlighted = Board:GetHighlighted() or OUT_OF_BOUNDS
 	local highlightedPawn = Board:GetPawn(highlighted)
 	local boardIsBusy = Board:IsBusy()
 
@@ -650,13 +656,13 @@ local function onMissionUpdate()
 
 	if targetMarker:isActive() then
 		markSpaces(previewMarks[STATE_TARGET_AREA], targetMarker.ticker)
-		targetMarker.ticker = targetMarker.ticker + 1
+		targetMarker.ticker = targetMarker.ticker + time_delta
 	end
 
 	if effectMarker:isActive() then
 		if not boardIsBusy and pointListContains(previewTargetArea, highlighted) then
 			markSpaces(previewMarks[STATE_SKILL_EFFECT], effectMarker.ticker)
-			effectMarker.ticker = effectMarker.ticker + 1
+			effectMarker.ticker = effectMarker.ticker + time_delta
 		else
 			events.onSkillEffectHidden:dispatch(effectMarker:unpack())
 			effectMarker:clear()
@@ -686,7 +692,7 @@ local function onMissionUpdate()
 		local queuedMarks = queuedPreviewMarks[queuedMarker.pawnId]
 		if queuedMarks then
 			markSpaces(queuedMarks, queuedMarker.ticker)
-			queuedMarker.ticker = queuedMarker.ticker + 1
+			queuedMarker.ticker = queuedMarker.ticker + time_delta
 		end
 	end
 end
@@ -807,6 +813,7 @@ if isNewestVersion then
 
 		WeaponPreview.events = events
 
+		modApi.events.onMissionChanged:subscribe(onMissionChanged)
 		modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 	end
 end
