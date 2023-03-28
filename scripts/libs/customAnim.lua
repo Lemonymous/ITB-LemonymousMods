@@ -1,162 +1,228 @@
 
----------------------------------------------------------------------
--- Custom Animation v1.0 - code library
---[[-----------------------------------------------------------------
-	preliminary library for adding animations that can be stopped at will.
+local VERSION = "1.0.0"
+local PREFIX = "_custom_anim_%s_"
+local PREFIX_ANIM = string.format(PREFIX, "1")
+local EVENTS = {
+	"onPawnAnimationAdded",
+	"onTileAnimationAdded",
+	"onPawnAnimationRemoved",
+	"onTileAnimationRemoved",
+}
 
-	currently works for
-	- animations without custom Length and Frames.
-	- each tile or pawn having one animation of each id.
+local function sum_list(list)
+	local accum = 0
 
-]]-------------------------------------------------------------------
+	for _, num in ipairs(list) do
+		accum = accum + num
+	end
 
-local a = ANIMS
-local suffix = "_lmn_"
-local this = {}
+	return accum
+end
+
+local function list_find(list, key, value)
+	for i, v in ipairs(list) do
+		if v[key] == value then
+			return i
+		end
+	end
+
+	return -1
+end
+
+local function create_new_entry(animId, suffix, desc)
+	local anim = ANIMS[animId]
+	return {
+		id = animId..suffix,
+		animId = animId,
+		anim = anim,
+		time_start = os.clock(),
+		title = desc and desc[1] or nil,
+		desc = desc and desc[2] or nil,
+	}
+end
+
 
 -- add an animation to a location or a pawnId
 -- until it is removed by Rem.
-function this:Add(mission, loc, anim, desc)
-	local m = mission or GetCurrentMission()
+local function add(self, loc, animId, suffix, desc)
+	local m = GetCurrentMission()
 	if not m then return end
 
-	assert(type(anim) == 'string')
-	assert(a[anim])
-	assert(not continue or type(continue) == 'function')
+	Assert.Equals('table', type(self), "Check for . vs :")
+	Assert.Equals({'number', 'userdata'}, type(loc), "Argument #1")
+	Assert.Equals('string', type(animId), "Argument #2")
+	Assert.Equals({'nil', 'table'}, type(desc), "Argument #3")
+	Assert.Equals('table', type(ANIMS[animId]), "Animation '"..animId.."' does not exist")
+	Assert.Equals({'nil', 'string'}, type(suffix), "Argument #4")
 
-	local base = a[anim]
-	if base.Time <= 0 then return end	-- don't play animations non-positive duration.
-	if base.Lengths then return end		-- no support for this yet.
-	if base.Frames then return end		-- no support for this yet.
+	suffix = suffix or ""
+	if self:get(loc, animId, suffix) ~= nil then
+		return
+	end
 
 	if type(loc) == 'number' then
 		local pawnId = loc
-		-- attach animation to pawnId
 		m.lmn_pawnAnims = m.lmn_pawnAnims or {}
 		m.lmn_pawnAnims[pawnId] = m.lmn_pawnAnims[pawnId] or {}
-		m.lmn_pawnAnims[pawnId][anim] = m.lmn_pawnAnims[pawnId][anim] or {
-			t = os.clock(),
-			numFrames = base.NumFrames,
-			duration = base.Time * base.NumFrames,
-			title = desc and desc[1] or nil,
-			desc = desc and desc[2] or nil
-		}
-	else
-		-- add animation to location
-		assert(type(loc) == 'userdata')
-		assert(type(loc.x) == 'number')
-		assert(type(loc.y) == 'number')
+		table.insert(m.lmn_pawnAnims[pawnId], create_new_entry(animId, suffix, desc))
 
-		local pid = p2idx(loc)
+		self.events.onPawnAnimationAdded:dispatch(pawnId, animId, suffix)
+	else
+		Assert.TypePoint(loc, "Argument #1")
+
+		local pid = point2index(loc)
 		m.lmn_tileAnims = m.lmn_tileAnims or {}
 		m.lmn_tileAnims[pid] = m.lmn_tileAnims[pid] or {}
-		m.lmn_tileAnims[pid][anim] = m.lmn_tileAnims[pid][anim] or {
-			t = os.clock(),
-			numFrames = base.NumFrames,
-			duration = base.Time * base.NumFrames,
-			title = desc and desc[1] or nil,
-			desc = desc and desc[2] or nil
-		}
+		table.insert(m.lmn_tileAnims[pid], create_new_entry(animId, suffix, desc))
+
+		self.events.onTileAnimationAdded:dispatch(loc, animId, suffix)
 	end
 end
 
--- remove an animation from a location or a pawnId
-function this:Rem(mission, loc, anim)
-	mission = mission or GetCurrentMission()
+
+local function rem(self, loc, animId, suffix)
+	mission = GetCurrentMission()
 	if not mission then return end
 
-	assert(type(anim) == 'string')
-	assert(a[anim])
+	Assert.Equals('table', type(self), "Check for . vs :")
+	Assert.Equals('string', type(animId), "Argument #2")
+	Assert.Equals('table', type(ANIMS[animId]), "Animation '"..animId.."' does not exist")
+	Assert.Equals({'nil', 'string'}, type(suffix), "Argument #3")
+
+	suffix = suffix or ""
 
 	if type(loc) == 'number' then
-		local pawnId = loc
-		-- rem animation from pawnId
-		mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
-		mission.lmn_pawnAnims[pawnId] = mission.lmn_pawnAnims[pawnId] or {}
-		mission.lmn_pawnAnims[pawnId][anim] = nil
-	else
-		-- rem animation from location
-		assert(type(loc) == 'userdata')
-		assert(type(loc.x) == 'number')
-		assert(type(loc.y) == 'number')
-
-		local pid = p2idx(loc)
-		mission.lmn_tileAnims = mission.lmn_tileAnims or {}
-		mission.lmn_tileAnims[pid] = mission.lmn_tileAnims[pid] or {}
-		mission.lmn_tileAnims[pid][anim] = nil
-	end
-end
-
--- returns true if loc of pawn has custom animation playing.
-function this:Is(mission, loc, anim)
-	mission = mission or GetCurrentMission()
-	if not mission then return end
-
-	assert(type(anim) == 'string')
-	assert(a[anim])
-
-	if type(loc) == 'number' then
-		-- rem animation from pawnId
 		mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
 		mission.lmn_pawnAnims[pawnId] = mission.lmn_pawnAnims[pawnId] or {}
 
-		return mission.lmn_pawnAnims[pawnId][anim]
+		local index = list_find(mission.lmn_pawnAnims[pawnId], "id", animId..suffix)
+		if index ~= -1 then
+			table.remove(mission.lmn_pawnAnims[pawnId], index)
+			self.events.onPawnAnimationRemoved:dispatch(pawnId, animId, suffix)
+		end
 	else
-		-- rem animation from location
-		assert(type(loc) == 'userdata')
-		assert(type(loc.x) == 'number')
-		assert(type(loc.y) == 'number')
+		Assert.TypePoint(loc, "Argument #1")
 
-		local pid = p2idx(loc)
+		local pid = point2index(loc)
 		mission.lmn_tileAnims = mission.lmn_tileAnims or {}
 		mission.lmn_tileAnims[pid] = mission.lmn_tileAnims[pid] or {}
 
-		return mission.lmn_tileAnims[pid][anim]
+		local index = list_find(mission.lmn_tileAnims[pid], "id", animId..suffix)
+		if index ~= -1 then
+			table.remove(mission.lmn_tileAnims[pid], index)
+			self.events.onTileAnimationRemoved:dispatch(loc, animId, suffix)
+		end
 	end
 end
 
-local function createAnim(anim)
-	local base = a[anim]
-	-- create animations if they don't exist.
-	if not a[anim .. suffix .."1"] then
-		-- TODO: make work with Frames and Lengths.
 
-		-- chop up animation to single frame units.
-		for i = 1, base.NumFrames do
-			a[anim .. suffix .. i] = base:new{
-				Frames = {i-1},
+local function get(self, loc, animId, suffix)
+	mission = GetCurrentMission()
+	if not mission then return end
+
+	Assert.Equals('table', type(self), "Check for . vs :")
+	Assert.Equals('string', type(animId), "Argument #2")
+	Assert.Equals('table', type(ANIMS[animId]), "Animation '"..animId.."' does not exist")
+	Assert.Equals({'nil', 'string'}, type(suffix), "Argument #3")
+
+	suffix = suffix or ""
+
+	if type(loc) == 'number' then
+		mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
+		mission.lmn_pawnAnims[pawnId] = mission.lmn_pawnAnims[pawnId] or {}
+
+		local index = list_find(mission.lmn_pawnAnims[pawnId], "id", animId..suffix)
+		if index ~= -1 then
+			return mission.lmn_pawnAnims[pawnId][index]
+		end
+
+		return nil
+	else
+		Assert.TypePoint(loc, "Argument #1")
+
+		local pid = point2index(loc)
+		mission.lmn_tileAnims = mission.lmn_tileAnims or {}
+		mission.lmn_tileAnims[pid] = mission.lmn_tileAnims[pid] or {}
+
+		local index = list_find(mission.lmn_tileAnims[pid], "id", animId..suffix)
+		if index ~= -1 then
+			return mission.lmn_tileAnims[pid][index]
+		end
+
+		return nil
+	end
+end
+
+
+local function createAnim(id, animId)
+	local base = ANIMS[animId]
+
+	-- chop up animation to single frame units.
+	if not ANIMS[PREFIX_ANIM..id] then
+		local frames = base.Frames
+		local lengths = base.Lengths
+
+		if not frames then
+			frames = {}
+			for i = 1, base.NumFrames do
+				frames[i] = i - 1
+			end
+		end
+
+		if not lengths then
+			lengths = {}
+			for i = 1, #frames do
+				lengths[i] = base.Time
+			end
+		end
+
+		for i, frame in ipairs(frames) do
+			local prefix = string.format(PREFIX, i)
+			ANIMS[prefix..id] = base:new{
+				__NumFrames = #frames,
+				__Lengths = lengths,
+				__SumLengths = sum_list(lengths),
+				Frames = { frame },
+				Lengths = nil,
 				Loop = false,
-				Time = 0.032 -- 2 frames
+				Time = 0.0,
 			}
 		end
 	end
 end
 
-local function updateAnims(loc, anims, t)
-	t = t or os.clock()
 
+local function updateAnims(loc, anims, time_now)
 	if Board:IsValid(loc) then
-		local copy = shallow_copy(anims)
+		for _, entry in ipairs(anims) do
+			createAnim(entry.id, entry.animId)
+			local anim = ANIMS[PREFIX_ANIM..entry.id]
 
-		for anim, v in pairs(copy) do
-			if t > v.t then
-				createAnim(anim)
+			-- Wrap time to be within the length of the full animation
+			time_now = (entry.time_start + time_now) % anim.__SumLengths
 
-				local frame = 1 + math.floor(((v.t + t) % v.duration) * v.numFrames / v.duration)
-				Board:AddAnimation(loc, anim .. suffix .. frame, ANIM_NO_DELAY)
+			local frame_end_time = 0
+			for i = 1, anim.__NumFrames do
+				frame_end_time = frame_end_time + anim.__Lengths[i]
+				if frame_end_time > time_now or i == anim.__NumFrames then
+					local prefix = string.format(PREFIX, i)
+					Board:AddAnimation(loc, prefix..entry.id, ANIM_NO_DELAY)
+					break
+				end
 			end
 		end
 	end
 end
 
+
 local function updateDesc(loc, anims)
 	if Board:IsValid(loc) then
-		for anim, v in pairs(anims) do
-			if v.title and v.desc then
+		for _, entry in ipairs(anims) do
+			if entry.title and entry.desc then
 
-				local tooltipId = "customAnim".. suffix .. anim
+				local tooltipId = PREFIX_ANIM..entry.animId
 				if not TILE_TOOLTIPS[tooltipId] then
-					TILE_TOOLTIPS[tooltipId] = {v.title, v.desc}
+					TILE_TOOLTIPS[tooltipId] = {entry.title, entry.desc}
 				end
 
 				Board:MarkSpaceDesc(loc, tooltipId)
@@ -165,7 +231,8 @@ local function updateDesc(loc, anims)
 	end
 end
 
-sdlext.addFrameDrawnHook(function()
+
+local function onMissionUpdate(mission)
 	local mission = GetCurrentMission()
 	if not mission or not Board then return end
 
@@ -175,7 +242,7 @@ sdlext.addFrameDrawnHook(function()
 	local t = os.clock()
 	local rem = {}
 
-	for pawnId, anims in pairs(mission.lmn_pawnAnims) do -- TODO: play for locations as well.
+	for pawnId, anims in pairs(mission.lmn_pawnAnims) do
 
 		local pawn = Board:GetPawn(pawnId)
 		if pawn then
@@ -186,52 +253,75 @@ sdlext.addFrameDrawnHook(function()
 	end
 
 	for pid, anims in pairs(mission.lmn_tileAnims) do
-		updateAnims(idx2p(pid), anims, t)
+		updateAnims(index2point(pid), anims, t)
 	end
 
-	for _, id in ipairs(rem) do
-		table.remove(mission.lmn_pawnAnims, id)
+	for i = #rem, 1, -1 do
+		table.remove(mission.lmn_pawnAnims, #rem)
 	end
-end)
 
-function this:load()
+	mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
+	mission.lmn_tileAnims = mission.lmn_tileAnims or {}
 
-	modApi:addMissionUpdateHook(function(mission)
-		mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
-		mission.lmn_tileAnims = mission.lmn_tileAnims or {}
-
-		for pawnId, anims in pairs(mission.lmn_pawnAnims) do
-			local pawn = Board:GetPawn(pawnId)
-			if pawn then
-				updateDesc(pawn:GetSpace(), anims)
-			end
+	for pawnId, anims in pairs(mission.lmn_pawnAnims) do
+		local pawn = Board:GetPawn(pawnId)
+		if pawn then
+			updateDesc(pawn:GetSpace(), anims)
 		end
+	end
 
-		for pid, anims in pairs(mission.lmn_tileAnims) do
-			updateDesc(idx2p(pid), anims)
-		end
-	end)
-
-	modApi:addPostLoadGameHook(function()
-		modApi:runLater(function(mission)
-			local t = os.clock()
-
-			mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
-			mission.lmn_tileAnims = mission.lmn_tileAnims or {}
-
-			for _, anims in pairs(mission.lmn_pawnAnims) do
-				for _, v in pairs(anims) do
-					v.t = t
-				end
-			end
-
-			for _, anims in pairs(mission.lmn_tileAnims) do
-				for _, v in pairs(anims) do
-					v.t = t
-				end
-			end
-		end)
-	end)
+	for pid, anims in pairs(mission.lmn_tileAnims) do
+		updateDesc(index2point(pid), anims)
+	end
 end
 
-return this
+
+local function initEvents()
+	CustomAnim.events = CustomAnim.events or {}
+
+	for _, eventId in ipairs(EVENTS) do
+		if CustomAnim.events[eventId] == nil then
+			CustomAnim.events[eventId] = Event()
+		end
+	end
+end
+
+
+local function finalizeInit(self)
+	modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
+
+	self.add = add
+	self.rem = rem
+	self.get = get
+end
+
+
+local function onModsInitialized()
+	local isHighestVersion = true
+		and CustomAnim.initialized ~= true
+		and CustomAnim.version == VERSION
+
+	if isHighestVersion then
+		CustomAnim:finalizeInit()
+		CustomAnim.initialized = true
+	end
+end
+
+
+local isNewerVersion = false
+	or CustomAnim == nil
+	or VERSION > CustomAnim.version
+
+
+if isNewerVersion then
+	CustomAnim = CustomAnim or {}
+	CustomAnim.version = VERSION
+	CustomAnim.finalizeInit = finalizeInit
+
+	modApi.events.onModsInitialized:subscribe(onModsInitialized)
+
+	initEvents()
+end
+
+
+return CustomAnim
