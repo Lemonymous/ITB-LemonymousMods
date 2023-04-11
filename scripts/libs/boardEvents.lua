@@ -3,7 +3,7 @@
 -- 	memedit
 
 
-local VERSION = "0.2.0"
+local VERSION = "0.3.0"
 local EVENTS = {
 	"onAcidCreated",
 	"onAcidRemoved",
@@ -18,6 +18,8 @@ local EVENTS = {
 	"onItemChanged",
 	"onItemCreated",
 	"onItemRemoved",
+	"onLavaCreated",
+	"onLavaRemoved",
 	"onShieldCreated",
 	"onShieldRemoved",
 	"onSmokeCreated",
@@ -56,6 +58,7 @@ local function initTrackedTiles()
 		trackedTile.smoke = false
 		trackedTile.fire = false
 		trackedTile.acid = false
+		trackedTile.lava = false
 	end
 
 	return trackedTiles
@@ -88,7 +91,8 @@ function updateBoard(self)
 		local smoke = Board:IsSmoke(point)
 		local fire = Board:IsFire(point)
 		local acid = Board:IsAcid(point)
-
+		local lava = Board:IsTerrain(point,TERRAIN_LAVA)
+		
 		if highlighted ~= trackedTile.highlighted then
 			local mission = GetCurrentMission()
 
@@ -226,6 +230,17 @@ function updateBoard(self)
 
 			trackedTile.acid = acid
 		end
+		
+		if lava ~= trackedTile.lava then
+			if lava then
+				BoardEvents.onLavaCreated:dispatch(point)
+			else
+				BoardEvents.onLavaRemoved:dispatch(point)
+			end
+
+			trackedTile.lava = lava
+		end
+		
 	end
 end
 
