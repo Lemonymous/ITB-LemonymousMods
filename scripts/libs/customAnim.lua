@@ -1,5 +1,5 @@
 
-local VERSION = "1.0.0"
+local VERSION = "1.0.1"
 local PREFIX = "_custom_anim_%s_"
 local PREFIX_ANIM = string.format(PREFIX, "1")
 local EVENTS = {
