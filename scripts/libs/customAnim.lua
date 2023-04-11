@@ -92,6 +92,7 @@ local function rem(self, loc, animId, suffix)
 	suffix = suffix or ""
 
 	if type(loc) == 'number' then
+		local pawnId = loc
 		mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
 		mission.lmn_pawnAnims[pawnId] = mission.lmn_pawnAnims[pawnId] or {}
 
@@ -128,6 +129,7 @@ local function get(self, loc, animId, suffix)
 	suffix = suffix or ""
 
 	if type(loc) == 'number' then
+		local pawnId = loc
 		mission.lmn_pawnAnims = mission.lmn_pawnAnims or {}
 		mission.lmn_pawnAnims[pawnId] = mission.lmn_pawnAnims[pawnId] or {}
 
