@@ -49,7 +49,6 @@ Mission_lmn_Greenhouse = Mission_Critical:new{
 	MapTags = {"generic", "lmn_jungle_leader"},
 	Objectives = objAfterMission:case(2),
 	Image = asset,
-	UseBonus = false,
 	GlobalSpawnMod = 1,
 }
 

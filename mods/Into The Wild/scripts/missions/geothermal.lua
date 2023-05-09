@@ -48,7 +48,6 @@ Mission_lmn_Geothermal_Plant = Mission_Critical:new{
 	Name = "Geothermal Plants",
 	MapTags = {"generic", "lmn_jungle_leader"},
 	Objectives = objAfterMission:case(2),
-	UseBonus = false,
 	Image = asset,
 }
 
