@@ -79,7 +79,7 @@ end
 
 
 local function rem(self, loc, animId, suffix)
-	mission = GetCurrentMission()
+	local mission = GetCurrentMission()
 	if not mission then return end
 
 	Assert.Equals('table', type(self), "Check for . vs :")
@@ -116,7 +116,7 @@ end
 
 
 local function get(self, loc, animId, suffix)
-	mission = GetCurrentMission()
+	local mission = GetCurrentMission()
 	if not mission then return end
 
 	Assert.Equals('table', type(self), "Check for . vs :")
