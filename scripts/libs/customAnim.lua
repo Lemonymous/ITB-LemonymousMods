@@ -1,5 +1,5 @@
 
-local VERSION = "1.0.3"
+local VERSION = "1.0.4"
 local PREFIX = "_custom_anim_%s_"
 local PREFIX_ANIM = string.format(PREFIX, "1")
 local EVENTS = {
@@ -199,7 +199,7 @@ local function updateAnims(loc, anims, time_now)
 			local anim = ANIMS[PREFIX_ANIM..entry.id]
 
 			-- Wrap time to be within the length of the full animation
-			time_now = (entry.time_start + time_now) % anim.__SumLengths
+			local time_now = (entry.time_start + time_now) % anim.__SumLengths
 
 			local frame_end_time = 0
 			for i = 1, anim.__NumFrames do
