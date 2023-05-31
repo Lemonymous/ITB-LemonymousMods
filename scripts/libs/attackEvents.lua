@@ -6,7 +6,7 @@ local mod = modApi:getCurrentMod()
 local modApiExt = modapiext or require(mod.scriptPath.."modApiExt/modApiExt")
 
 
-local VERSION = "1.2.0"
+local VERSION = "1.2.1"
 local EVENTS = {
 	"onAllyAttackResolved",
 	"onAllyAttackStart",
@@ -158,6 +158,7 @@ local function finalizeInit(self)
 	self.getCurrentAttackInfo = getCurrentAttackInfo
 
 	modApiExt.events.onSkillStart:subscribe(onSkillStart)
+	modApiExt.events.onFinalEffectStart:subscribe(onSkillStart)
 	modApi.events.onMissionUpdate:subscribe(onMissionUpdate)
 	modApi.events.onGameExited:subscribe(onGameExited)
 end
