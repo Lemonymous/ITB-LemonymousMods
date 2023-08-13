@@ -76,7 +76,7 @@ local function canRefreshMovement(pawn)
 		return true
 	end
 
-	return pawn:IsActive() and not pawn:IsMovementAvailable()
+	return pawn:IsActive() and pawn:IsMovementSpent()
 end
 
 function lmn_ds_HaulerHooks:GetTargetArea(point)
@@ -193,7 +193,7 @@ function lmn_ds_HaulerHooks:GetSkillEffect(p1, p2)
 					ret:AddScript(string.format([[
 						local pawn = Board:GetPawn(%s);
 						local p = pawn:GetSpace();
-						pawn:SetMovementAvailable(true);
+						pawn:SetMovementSpent(false);
 						Board:Ping(p, GL_Color(100,255,100));
 						Board:AddAnimation(p, "lmn_ds_bonus_move", ANIM_DELAY);
 					]], arrivingPawn.pawn:GetId()))
