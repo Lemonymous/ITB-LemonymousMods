@@ -77,7 +77,7 @@ local function onMissionUpdate(mission)
 			-- Dispatch with the same arguments as onSkillEnd
 			AttackEvents.onAttackResolved:dispatch(unpack(args))
 
-			if attacker.pawn:IsEnemy() then
+			if attacker.pawn and attacker.pawn:IsEnemy() then
 				AttackEvents.onEnemyAttackResolved:dispatch(unpack(args))
 			else
 				AttackEvents.onAllyAttackResolved:dispatch(unpack(args))
