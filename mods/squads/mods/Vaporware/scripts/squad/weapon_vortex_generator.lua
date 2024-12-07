@@ -323,7 +323,7 @@ function vw_Vortex_Generator:GetSkillEffect(p1, p2)
 			local pawn = Board:GetPawn(pawnId) 
 			if pawn then 
 				Board:RemovePawn(pawn) 
-			end
+			end 
 		]], globalPawnIndex)
 
 		ret:AddDelay(0.4)
