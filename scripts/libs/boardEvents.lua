@@ -1,9 +1,30 @@
 
--- Requires:
+-- Soft requirement, but will not error without:
 -- 	memedit
 
+local function fallback(self, key, defaultValue)
+	return defaultValue
+end
 
-local VERSION = "0.3.0"
+local BoardProxy = {}
+setmetatable(BoardProxy, {
+	__index = function(tbl, key)
+		if memedit then
+			local board_func = Board[key]
+			if type(board_func) == 'function' then
+				return function(_, ...)
+					return board_func(Board, ...)
+				end
+			else
+				return board_func
+			end
+		else
+			return fallback
+		end
+	end
+})
+
+local VERSION = "0.5.0"
 local EVENTS = {
 	"onAcidCreated",
 	"onAcidRemoved",
@@ -11,6 +32,10 @@ local EVENTS = {
 	"onBuildingDamaged",
 	"onBuildingDestroyed",
 	"onBuildingRemoved",
+	"onMountainCreated",
+	"onMountainDamaged",
+	"onMountainDestroyed",
+	"onMountainRemoved",
 	"onFireCreated",
 	"onFireRemoved",
 	"onFrozenCreated",
@@ -25,10 +50,12 @@ local EVENTS = {
 	"onSmokeCreated",
 	"onSmokeRemoved",
 	"onTerrainChanged",
+	"onTileCracked",
 	"onTileDamaged",
 	"onTileHealthChanged",
 	"onTileHighlighted",
 	"onTileMaxHealthChanged",
+	"onTileUncracked",
 	"onTileUnhighlighted",
 	"onUniqueBuildingDestroyed",
 	"onUniqueBuildingChanged",
@@ -45,20 +72,22 @@ local function initTrackedTiles()
 
 		trackedTile.terrain = Board:GetTerrain(point)
 		trackedTile.health = Board:GetHealth(point)
-		trackedTile.healthMax = Board:GetMaxHealth(point)
+		trackedTile.healthMax = BoardProxy:GetMaxHealth(point, 0)
 
 		trackedTile.highlighted = false
-		trackedTile.building = false
-		trackedTile.uniqueBuilding = false
-		trackedTile.uniqueBuildingName = nil
-		trackedTile.item = false
-		trackedTile.itemName = nil
-		trackedTile.shield = false
-		trackedTile.frozen = false
-		trackedTile.smoke = false
-		trackedTile.fire = false
-		trackedTile.acid = false
-		trackedTile.lava = false
+		trackedTile.building = Board:IsBuilding(point)
+		trackedTile.uniqueBuilding = trackedTile.building and Board:IsUniqueBuilding(point)
+		trackedTile.uniqueBuildingName = BoardProxy:GetUniqueBuilding(point, "")
+		trackedTile.item = Board:IsItem(point)
+		trackedTile.itemName = Board:GetItem(point)
+		trackedTile.shield = BoardProxy:IsShield(point, false)
+		trackedTile.frozen = Board:IsFrozen(point)
+		trackedTile.smoke = Board:IsSmoke(point)
+		trackedTile.fire = Board:IsFire(point)
+		trackedTile.acid = Board:IsAcid(point)
+		trackedTile.lava = Board:IsTerrain(point,TERRAIN_LAVA)
+		trackedTile.cracked = Board:IsCracked(point)
+		trackedTile.mountain = false
 	end
 
 	return trackedTiles
@@ -79,20 +108,21 @@ function updateBoard(self)
 		local highlighted = Board:IsHighlighted(point)
 		local terrain = Board:GetTerrain(point)
 		local health = Board:GetHealth(point)
-		local healthMax = Board:GetMaxHealth(point)
+		local healthMax = BoardProxy:GetMaxHealth(point, 0)
 
 		local building = Board:IsBuilding(point)
 		local uniqueBuilding = building and Board:IsUniqueBuilding(point)
-		local uniqueBuildingName = Board:GetUniqueBuilding(point)
+		local uniqueBuildingName = BoardProxy:GetUniqueBuilding(point, "")
 		local item = Board:IsItem(point)
 		local itemName = Board:GetItem(point)
-		local shield = Board:IsShield(point)
+		local shield = BoardProxy:IsShield(point, false)
 		local frozen = Board:IsFrozen(point)
 		local smoke = Board:IsSmoke(point)
 		local fire = Board:IsFire(point)
 		local acid = Board:IsAcid(point)
 		local lava = Board:IsTerrain(point,TERRAIN_LAVA)
-		
+		local cracked = Board:IsCracked(point)
+		local mountain = Board:IsTerrain(point,TERRAIN_MOUNTAIN)
 		if highlighted ~= trackedTile.highlighted then
 			local mission = GetCurrentMission()
 
@@ -108,7 +138,7 @@ function updateBoard(self)
 		if health ~= trackedTile.health then
 			BoardEvents.onTileHealthChanged:dispatch(point, trackedTile.health, health)
 
-			local damage = trackedTile.health - health
+			local damage = math.min(trackedTile.health, healthMax) - health
 			if damage > 0 then
 				BoardEvents.onTileDamaged:dispatch(point, damage)
 
@@ -121,6 +151,14 @@ function updateBoard(self)
 						if trackedTile.uniqueBuilding then
 							BoardEvents.onUniqueBuildingDestroyed:dispatch(point, trackedTile.uniqueBuildingName)
 						end
+					end
+				end
+                
+				if trackedTile.terrain == TERRAIN_MOUNTAIN then
+					BoardEvents.onMountainDamaged:dispatch(point, damage)
+
+					if health == 0 then
+						BoardEvents.onMountainDestroyed:dispatch(point)
 					end
 				end
 			end
@@ -142,6 +180,16 @@ function updateBoard(self)
 			end
 
 			trackedTile.building = building
+		end
+        
+		if mountain ~= trackedTile.mountain then
+			if mountain then
+				BoardEvents.onMountainCreated:dispatch(point)
+			else
+				BoardEvents.onMountainRemoved:dispatch(point)
+			end
+
+			trackedTile.mountain = mountain
 		end
 
 		if uniqueBuilding ~= trackedTile.uniqueBuilding then
@@ -230,7 +278,7 @@ function updateBoard(self)
 
 			trackedTile.acid = acid
 		end
-		
+
 		if lava ~= trackedTile.lava then
 			if lava then
 				BoardEvents.onLavaCreated:dispatch(point)
@@ -240,7 +288,18 @@ function updateBoard(self)
 
 			trackedTile.lava = lava
 		end
-		
+
+		if cracked ~= trackedTile.cracked then
+			if Board:IsCrackable(point) then
+				if cracked then
+					BoardEvents.onTileCracked:dispatch(point)
+				else
+					BoardEvents.onTileUncracked:dispatch(point)
+				end
+			end
+
+			trackedTile.cracked = cracked
+		end
 	end
 end
 
