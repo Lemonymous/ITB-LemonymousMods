@@ -40,10 +40,13 @@ a.lmn_crusherd =	base:new{ Image = "units/aliens/lmn_crusher_death.png", PosX = 
 a.lmn_crusherw =	base:new{ Image = "units/aliens/lmn_crusher_Bw.png", PosX = -24, PosY = 3 }
 
 local function IsCrusher(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_CrusherAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_CrusherAtk2") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_CrusherAtkB")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnCrusher) == "function" then
+		return pawn_type:IsLmnCrusher(pawn) == true
+	end
+
+	return pawn_type.LmnCrusher == true
 end
 
 lmn_Crusher1 = Pawn:new{
@@ -58,6 +61,7 @@ lmn_Crusher1 = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	Portrait = "enemy/lmn_Crusher1",
 	Massive = true,
+	LmnCrusher = true,
 }
 AddPawnName("lmn_Crusher1")
 

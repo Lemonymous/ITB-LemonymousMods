@@ -39,10 +39,13 @@ a.lmn_wyrma =	base:new{ Image = "units/aliens/lmn_wyrma.png", NumFrames = 5 }
 a.lmn_wyrmd =	base:new{ Image = "units/aliens/lmn_wyrm_death.png", PosX = -20, NumFrames = 8, Time = 0.14, Loop = false}
 
 local function IsWyrm(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_WyrmAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_WyrmAtk2") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_WyrmAtkB")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnWyrm) == "function" then
+		return pawn_type:IsLmnWyrm(pawn) == true
+	end
+
+	return pawn_type.LmnWyrm == true
 end
 
 lmn_Wyrm1 = Pawn:new{
@@ -57,6 +60,7 @@ lmn_Wyrm1 = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	Portrait = "enemy/lmn_Wyrm1",
 	Flying = true,
+	LmnWyrm = true,
 }
 AddPawnName("lmn_Wyrm1")
 

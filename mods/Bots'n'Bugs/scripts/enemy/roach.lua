@@ -31,10 +31,13 @@ a.lmn_roachd =	base:new{ Image = "units/aliens/lmn_roach_death.png", NumFrames =
 a.lmn_roachw =	base:new{ Image = "units/aliens/lmn_roach_Bw.png", PosY = 10 }
 
 local function IsRoach(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_RoachAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_RoachAtk2") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_RoachAtkB")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnRoach) == "function" then
+		return pawn_type:IsLmnRoach(pawn) == true
+	end
+
+	return pawn_type.LmnRoach == true
 end
 
 lmn_Roach1 = Pawn:new{
@@ -49,6 +52,7 @@ lmn_Roach1 = Pawn:new{
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
 	Portrait = "enemy/lmn_Roach1",
+	LmnRoach = true,
 }
 AddPawnName("lmn_Roach1")
 

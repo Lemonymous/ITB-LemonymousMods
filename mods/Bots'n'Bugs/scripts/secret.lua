@@ -1312,14 +1312,14 @@ function this:load()
 		table.insert(mission.podMarkedTiles, p)
 	end)
 
-	local function IsSwarmer(pawn)
+	local function IsPlayerSwarmer(pawn)
 		return
 			list_contains(_G[pawn:GetType()].SkillList, "lmn_SwarmerAtk") or
 			list_contains(_G[pawn:GetType()].SkillList, "lmn_SwarmerAtk_A")
 	end
 
 	modApiExt:addPawnIsGrappledHook(function(m, pawn, isGrappled)
-		if isGrappled and IsSwarmer(pawn) then
+		if isGrappled and IsPlayerSwarmer(pawn) then
 			tips:Trigger("Swarmer_Webbed", pawn:GetSpace())
 		end
 	end)

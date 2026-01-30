@@ -30,10 +30,13 @@ a.lmn_swarmerd =	base:new{ Image = imagepath .."lmn_swarmer_death.png", PosX = -
 a.lmn_swarmerw =	base:new{ Image = imagepath .."lmn_swarmer_Bw.png", PosY = 10 }
 
 local function IsSwarmer(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_SwarmerAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_SwarmerAtk2") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_SwarmerAtkB")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnSwarmer) == "function" then
+		return pawn_type:IsLmnSwarmer(pawn) == true
+	end
+
+	return pawn_type.LmnSwarmer == true
 end
 
 lmn_Swarmer1 = Pawn:new{
@@ -49,6 +52,7 @@ lmn_Swarmer1 = Pawn:new{
 	ImpactMaterial = IMPACT_INSECT,
 	HalfSpawn = true,
 	Clones = 1,
+	LmnSwarmer = true,
 }
 AddPawnName("lmn_Swarmer1")
 

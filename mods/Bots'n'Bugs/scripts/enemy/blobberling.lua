@@ -32,9 +32,13 @@ a.lmn_blobberlingd =	base:new{ Image = imagepath .."lmn_blobberling_death.png", 
 a.lmn_blobberlingw =	base:new{ Image = imagepath .."lmn_blobberling_Bw.png", PosX = -15, PosY = 14 }
 
 local function isBlobberling(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_BlobberlingAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_BlobberlingAtk2")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnBlobberling) == "function" then
+		return pawn_type:IsLmnBlobberling(pawn) == true
+	end
+
+	return pawn_type.LmnBlobberling == true
 end
 
 local pawnTypes = {"lmn_Blobberling1", "lmn_Blobberling2", "lmn_BlobberlingBoss"}
@@ -94,7 +98,8 @@ lmn_Blobberling1 = Pawn:new{
 	Portrait = "enemy/lmn_Blobberling1",
 	AvoidingMines = true,
 	Minor = true, -- double explosive? no thanks.
-	ExplosiveEffect = ExplosiveEffect
+	ExplosiveEffect = ExplosiveEffect,
+	LmnBlobberling = true,
 }
 AddPawnName("lmn_Blobberling1")
 

@@ -59,17 +59,23 @@ a.lmn_colonya = base:new{ Image = "units/aliens/lmn_colonya.png", PosY = 0, NumF
 a.lmn_colonyd = base:new{ Image = "units/aliens/lmn_colony_death.png", PosX = -33, PosY = -15, NumFrames = 8, Time = 0.14, Loop = false }
 
 local function IsFloater(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_FloaterAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_FloaterAtk2") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_FloaterAtkB")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnFloater) == "function" then
+		return pawn_type:IsLmnFloater(pawn) == true
+	end
+
+	return pawn_type.LmnFloater == true
 end
 
 local function IsColony(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_ColonyAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_ColonyAtk2") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_ColonyAtkB")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnColony) == "function" then
+		return pawn_type:IsLmnColony(pawn) == true
+	end
+
+	return pawn_type.LmnColony == true
 end
 
 -- returns true if the tile has creep.
@@ -104,7 +110,8 @@ lmn_Floater1 = Pawn:new{
 	ImpactMaterial = IMPACT_BLOB,
 	SoundLocation = "/enemy/jelly/",
 	Portrait = "enemy/lmn_Floater1",
-	Flying = true
+	Flying = true,
+	LmnFloater = true,
 }
 AddPawnName("lmn_Floater1")
 
@@ -282,6 +289,7 @@ lmn_Colony1 = Pawn:new{
 	Pushable = false,
 	HalfSpawn = true,
 	IsDeathEffect = true,
+	LmnColony = true,
 }
 AddPawnName("lmn_Colony1")
 

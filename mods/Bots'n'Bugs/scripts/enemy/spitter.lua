@@ -42,10 +42,13 @@ a.lmn_spitterd =	base:new{ Image = "units/aliens/lmn_spitter_death.png", PosX = 
 a.lmn_spitterw =	base:new{ Image = "units/aliens/lmn_spitter_Bw.png", PosY = 1 }
 
 local function IsSpitter(pawn)
-	return
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_SpitterAtk1") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_SpitterAtk2") or
-		list_contains(_G[pawn:GetType()].SkillList, "lmn_SpitterAtkB")
+	local pawn_type = _G[pawn:GetType()]
+
+	if type(pawn_type.IsLmnSpitter) == "function" then
+		return pawn_type:IsLmnSpitter(pawn) == true
+	end
+
+	return pawn_type.LmnSpitter == true
 end
 
 lmn_Spitter1 = Pawn:new{
@@ -60,6 +63,7 @@ lmn_Spitter1 = Pawn:new{
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
 	Portrait = "enemy/lmn_Spitter1",
+	LmnSpitter = true,
 }
 AddPawnName("lmn_Spitter1")
 
