@@ -6,6 +6,7 @@ return {
 	description = "Misc mods by Lemonymous.",
 	icon = "scripts/icon.png",
 	submodFolders = {"mods/"},
+	enabled = false,
 	init = function() end,
 	load = function() end
 }
