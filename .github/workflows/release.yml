@@ -37,6 +37,19 @@ jobs:
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Generate changelog
+        id: changelog
+        run: |
+          LATEST_VERSION=$(git tag --sort=-creatordate | grep '^v' | head -n1 || echo "")
+          if [ -n "$LATEST_VERSION" ]; then
+            git log $LATEST_VERSION..HEAD --pretty=format:'- %s (%h)' > changelog.txt
+          else
+            git log --pretty=format:'- %s (%h)' > changelog.txt
+          fi
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          cat changelog.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create release archive
         run: |
           zip -r ${{ steps.vars.outputs.tag }}.zip . \
@@ -54,6 +67,6 @@ jobs:
           name: ${{ steps.vars.outputs.name }}
           prerelease: ${{ steps.vars.outputs.prerelease }}
           artifacts: ${{ steps.vars.outputs.tag }}.zip
-          generateReleaseNotes: true
+          body: ${{ steps.changelog.outputs.CHANGELOG }}
           allowUpdates: true
           replacesArtifacts: true
