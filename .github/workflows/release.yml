@@ -22,7 +22,7 @@ jobs:
       - name: Checkout repository with submodules
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
           fetch-tags: true
           submodules: recursive
 
@@ -54,12 +54,11 @@ jobs:
       - name: Create release archive
         run: |
           zip -r ${{ steps.vars.outputs.tag }}.zip . \
-              -x ".git/*" \
-                 ".github/*" \
-                 ".gitignore" \
-                 ".gitmodules" \
-                 ".gitattributes" \
-                 "**/.git/*"
+              -x "**/.git/**" \
+                 "**/.github/**" \
+                 "**/.gitignore" \
+                 "**/.gitmodules" \
+                 "**/.gitattributes"
 
       - name: Create or update GitHub Release
         uses: ncipollo/release-action@v1
