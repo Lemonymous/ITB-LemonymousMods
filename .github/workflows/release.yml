@@ -38,19 +38,18 @@ jobs:
           fi
 
       - name: Generate changelog
-        id: changelog
         run: |
-          LATEST_VERSION=$(git tag --sort=-creatordate | grep '^v' | head -n1 || echo "")
+          LATEST_VERSION=$(git tag --sort=-creatordate | grep '^v' | head -n1 || true)
+
           if [ -n "$LATEST_VERSION" ]; then
-            git log $LATEST_VERSION..HEAD --pretty=format:'- %s (%h)' > changelog.txt
+            echo "Changes since $LATEST_VERSION:" > changelog.txt
+            echo "" >> changelog.txt
+            git log "$LATEST_VERSION..HEAD" --pretty=format:'- %s (%h)' >> changelog.txt
           else
-            git log --pretty=format:'- %s (%h)' > changelog.txt
+            echo "All changes:" > changelog.txt
+            echo "" >> changelog.txt
+            git log --pretty=format:'- %s (%h)' >> changelog.txt
           fi
-          {
-            echo "CHANGELOG<<EOF"
-            cat changelog.txt
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
 
       - name: Create release archive
         run: |
