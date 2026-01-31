@@ -38,18 +38,26 @@ jobs:
           fi
 
       - name: Generate changelog
+        id: changelog
         run: |
-          LATEST_VERSION=$(git tag --sort=-creatordate | grep '^v' | head -n1 || true)
+          BASE_VERSION=$(git tag --list 'v*' --sort=-creatordate | head -n1)
 
-          if [ -n "$LATEST_VERSION" ]; then
-            echo "Changes since $LATEST_VERSION:" > changelog.txt
-            echo "" >> changelog.txt
-            git log "$LATEST_VERSION..HEAD" --pretty=format:'- %s (%h)' >> changelog.txt
+          if [ -n "$BASE_VERSION" ]; then
+            echo "Generating changelog since $BASE_VERSION"
+            git log "$BASE_VERSION"..HEAD \
+              --pretty=format:'- %s (%h)' > changelog.txt
           else
-            echo "All changes:" > changelog.txt
-            echo "" >> changelog.txt
-            git log --pretty=format:'- %s (%h)' >> changelog.txt
+            echo "No versioned releases found; generating full changelog"
+            git log --pretty=format:'- %s (%h)' > changelog.txt
           fi
+
+          {
+            echo "## Changes since ${BASE_VERSION:-initial commit}"
+            echo
+            cat changelog.txt
+          } > changelog_final.txt
+
+          mv changelog_final.txt changelog.txt
 
       - name: Create release archive
         run: |
