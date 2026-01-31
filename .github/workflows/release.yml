@@ -22,6 +22,8 @@ jobs:
       - name: Checkout repository with submodules
         uses: actions/checkout@v4
         with:
+          fetch-depth: 1
+          fetch-tags: true
           submodules: recursive
 
       - name: Decide release type
@@ -37,27 +39,17 @@ jobs:
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Generate changelog
-        id: changelog
+      - name: Generate release body
+        id: body
         run: |
-          BASE_VERSION=$(git tag --list 'v*' --sort=-creatordate | head -n1)
+          BASE=$(git tag --list 'v*' --sort=-creatordate | head -n1)
+          TARGET="${{ steps.vars.outputs.tag }}"
 
-          if [ -n "$BASE_VERSION" ]; then
-            echo "Generating changelog since $BASE_VERSION"
-            git log "$BASE_VERSION"..HEAD \
-              --pretty=format:'- %s (%h)' > changelog.txt
+          if [ -n "$BASE" ]; then
+            echo "BODY=Changelog: https://github.com/${{ github.repository }}/compare/$BASE...$TARGET" >> $GITHUB_OUTPUT
           else
-            echo "No versioned releases found; generating full changelog"
-            git log --pretty=format:'- %s (%h)' > changelog.txt
+            echo "BODY=" >> $GITHUB_OUTPUT
           fi
-
-          {
-            echo "## Changes since ${BASE_VERSION:-initial commit}"
-            echo
-            cat changelog.txt
-          } > changelog_final.txt
-
-          mv changelog_final.txt changelog.txt
 
       - name: Create release archive
         run: |
@@ -76,6 +68,7 @@ jobs:
           name: ${{ steps.vars.outputs.name }}
           prerelease: ${{ steps.vars.outputs.prerelease }}
           artifacts: ${{ steps.vars.outputs.tag }}.zip
-          bodyFile: changelog.txt
+          body: ${{ steps.body.outputs.BODY }}
           allowUpdates: true
           replacesArtifacts: true
+          generateReleaseNotes: false
