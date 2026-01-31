@@ -68,6 +68,6 @@ jobs:
           name: ${{ steps.vars.outputs.name }}
           prerelease: ${{ steps.vars.outputs.prerelease }}
           artifacts: ${{ steps.vars.outputs.tag }}.zip
-          body: ${{ steps.changelog.outputs.CHANGELOG }}
+          bodyFile: changelog.txt
           allowUpdates: true
           replacesArtifacts: true
