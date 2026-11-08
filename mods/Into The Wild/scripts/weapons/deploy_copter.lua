@@ -114,6 +114,7 @@ lmn_Deploy_CopterAtk = Prime_Spear:new{
 	Push = 1,
 	Damage = 0,
 	PathSize = 1,
+	Upgrades = 0,
 	TipImage = {
 		Unit = Point(2,2),
 		Enemy = Point(2,1),
