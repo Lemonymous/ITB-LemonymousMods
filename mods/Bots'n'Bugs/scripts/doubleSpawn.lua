@@ -6,16 +6,13 @@ local pawnSpace = require(path .."libs/pawnSpace")
 local getNearestLoc = require(path .."libs/getNearestLoc")
 local utils = require(path .."libs/utils")
 local module_id = mod.id .."_doublespawn"
-local cloneable = {
-	"lmn_Swarmer1",
-	"lmn_Swarmer2",
-	"lmn_SwarmerBoss"
-}
+
 local this = {}
 local isMissionStart = false
 
 local function isCloneable(pawn)
-	return list_contains(cloneable, pawn:GetType())
+	local clones = _G[pawn:GetType()].Clones
+	return clones and clones >= 1
 end
 
 local function isHalfSpawn(pawn)
